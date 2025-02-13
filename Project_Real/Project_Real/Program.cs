@@ -1,0 +1,200 @@
+﻿namespace Project_Real;
+
+public class Program
+{
+	public static void Main()
+	{
+		/*CultureInfo.CurrentCulture = new CultureInfo("en-us");
+
+		string num = "+134.15";
+		Real f = num;
+
+		Console.WriteLine(Real.MAXWHOLEINT);
+		Console.WriteLine(Real.MAXFRACTIONINT);
+		Console.WriteLine(Real.FRACTIONLENGTH);
+		Console.WriteLine(string.Join(',', Real.HUNDRED));
+
+		Console.WriteLine(float.Parse(num));
+		Console.WriteLine(f.ToBinaryString());
+		Console.WriteLine(f.ToString());
+
+		bool[] a = [true, false, true, false, false, false, false, true];
+		bool[] b = [false, true, true, true, false, false, true, false];
+		bool[] c = [false, false, true, false, false, true, false, false];
+
+		Console.WriteLine(Real.ToUInt(c));
+		Console.WriteLine(Real.ToUInt(b));
+		Console.WriteLine("-" + Real.ToUInt(Real.BitAbs(Real.BitSubstract(c, b, false).Item2)));*/
+
+		/*Real r1 = "-5.3";
+		Real r2 = "+3.6";
+		Console.WriteLine(r2 - r1);
+		Console.WriteLine();
+
+		Real f1 = "+0.1";
+		Real f2 = "+0.2";
+		Real f3 = "+0.3";
+		double f4 = 0.1;
+		double f5 = 0.2;
+		double f6 = 0.3;
+		Console.WriteLine($" ({f4})  +  ({f5})  =  ({f6})  ->  ({f4})  +  ({f5})  ==  ({f4 + f5}) => {f4 + f5 == f6}");
+		Console.WriteLine($"({f1}) + ({f2}) = ({f3}) -> ({f1}) + ({f2}) == ({f1 + f2})            => {f1 + f2 == f3}");
+
+
+		bool[] b = [false, true, false, true, false, false, false, false];
+		bool[] c = [true, true, false, false, false, false, false, false];*/
+
+		//Console.WriteLine(string.Join(',', Real.BitMultiply(b, c)));
+		//Console.ReadKey();
+		//Console.WriteLine();
+
+		/*Natural natural = "6999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+		double @double = 6999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999d;
+		Natural nat2 = "128";
+
+		Console.WriteLine("Double:");
+		Console.WriteLine(@double);
+		Console.WriteLine("(<double> == <double> + 128)  \t" + (@double == @double + 128));
+		Console.WriteLine(@double + 128);
+		Console.WriteLine();
+		Console.WriteLine("Natural:");
+		Console.WriteLine(natural);
+		Console.WriteLine("(<natural> == <natural> + 128)\t" + (natural == natural + nat2));
+		Console.WriteLine(Natural.Add(natural, nat2));
+		Console.WriteLine();
+
+		Console.WriteLine("Trim:");
+		Console.WriteLine(Natural.TrimEnd(nat2 - (nat2 + new Natural("1"))));
+		Console.WriteLine(Natural.TrimEnd(new Natural("0001000")));
+		Console.WriteLine();*/
+
+		/*Console.WriteLine("Integer:");
+		Integer i1 = "-100";
+		Integer i2 = "2";
+		Console.WriteLine(i1 + i2);
+		Console.WriteLine();*/
+
+		/*Digit a = '9';
+		Digit b = '9';
+		(bool f, Digit c) = Digit.Substract(a, b);
+		Console.WriteLine(c);
+		Console.WriteLine(f);*/
+
+		/*bool[] a = Digit.BitMultiply([false, true, true, true], [true, true, false, false]);
+		BoolMatrixToString(a);*/
+
+		/*(bool[] a, bool[] b) = Digit.BitDivide([false, true, true, true], [true, true, false, false]);
+		BoolMatrixToString(a);
+		BoolMatrixToString(b);*/
+
+		/*Digit b = new();
+		Digit c = b;
+		b = Digit.Add(b, new Digit('1')).Digit;
+		Console.WriteLine(b);
+		Console.WriteLine(c);*/
+
+		/*BoolMatrixToString(Digit.BitSubstract([false, true, true, true] *//*2+4+8=14*//*, [true, true, false, false] *//*1+2=3*//*));
+		(bool a, Digit b) = Digit.Substract(new Digit('9'), new Digit('6'), true);
+		//(Digit a, Digit b) = Digit.Divide(new Digit('9'), new Digit('3'));
+		Console.WriteLine(a);
+		Console.WriteLine(b);*/
+
+		/*Console.WriteLine(new Natural([new Digit('0'), new Digit('0')]));
+		Console.WriteLine(new Natural("00"));
+		Console.WriteLine(new Natural(""));*/
+
+		/*Console.WriteLine("Multiplicaton:");
+		Console.ReadKey();
+		Console.WriteLine(Integer.Multiply(new Integer("-35419993"), new Integer("1524315243"))); // -53,991,235,236,853,299*/
+
+		/*(Natural w, Natural r) = Natural.Divide(new Natural("132"), new Natural("4"));
+		Console.WriteLine(w);
+		Console.WriteLine(r);*/
+
+		/*Console.WriteLine("Division:");
+		Console.WriteLine(new Integer("10") / new Integer("3"));
+		Console.WriteLine(new Integer("10") % new Integer("3"));
+		Console.WriteLine(new Integer("10") / new Integer("-3"));
+		Console.WriteLine(new Integer("10") % new Integer("-3"));
+		Console.WriteLine(new Integer("-10") / new Integer("3"));
+		Console.WriteLine(new Integer("-10") % new Integer("3"));
+		Console.WriteLine(new Integer("-10") / new Integer("-3"));
+		Console.WriteLine(new Integer("-10") % new Integer("-3"));
+		Console.WriteLine();*/
+
+		/*Console.WriteLine("Float formats:");
+		//double f = 0.; // hiba
+		//double f = 0.; // hiba
+		//double f = 0.f; // hiba
+		double f1 = .0;
+		double f2 = 0.0;
+		Console.WriteLine(f1);
+		Console.WriteLine(f2);*/
+
+		//Writable w = new();
+		/*Digit a = new Digit();
+		Digit b = a;
+		a = '5';
+		Console.WriteLine(b);*/
+
+		/*Console.WriteLine("Positive formats:");
+		Positive p0 = new();
+		//Positive phiba = new(".0"); hiba
+		Positive p1 = new("0");
+		Positive p2 = new("010.");
+		Positive p3 = new("00.00");
+		Console.WriteLine(p0);
+		Console.WriteLine(p1);
+		Console.WriteLine(p2);
+		Console.WriteLine(p3);
+		Console.WriteLine();*/
+
+		//Natural.Divide("25", "2");
+
+		//Console.WriteLine(Natural.Power("6", "2"));
+		//Console.WriteLine(Natural.Power("10", "100"));
+		Console.WriteLine(Natural.Power("645", "219"));
+		Console.WriteLine(Math.Pow(645, 219));
+
+		//var p8 = Positive.Divide(new Positive("927"), new Positive("0.000"));
+
+		//Console.WriteLine(Positive.Add(new Positive("6."), new Positive("1.3")));
+		//Console.WriteLine(Positive.Substract(new Positive("6."), new Positive("1.3")));
+		//Console.WriteLine(Positive.Multiply(new Positive("6."), new Positive("1.3")));
+		/*Console.WriteLine(Positive.Divide(new Positive("6."), new Positive("1.6")));
+		Console.WriteLine(Positive.Divide(new Positive("3."), new Positive("0.6")));
+		Console.WriteLine(Positive.Divide(new Positive("68.5"), new Positive("1.6")));*/
+		
+		/*var p1 = Positive.GetWhole(Positive.Divide(new Positive("2368.5456"), new Positive("12.67")).Value);
+		var p2 = Positive.Divide(new Positive("23.68"), new Positive("2368.0000"));
+		var p3 = Positive.Divide(new Positive("1423.927"), new Positive("2368.456"));
+		var p4 = Positive.Divide(new Positive("0.927"), new Positive("0.000023456"));
+		var p5 = Positive.Divide(new Positive("0.0927"), new Positive("0.000023456"));
+		var p6 = Positive.Divide(new Positive("0.00927"), new Positive("0.000023456"));
+		var p7 = Positive.Divide(new Positive("927.000001"), new Positive("0.00092700"));
+		Console.WriteLine(p1);  // 186.	941247040
+		Console.WriteLine(p2);  // 0.	01
+		Console.WriteLine(p3);	// 0.	601204751
+		Console.WriteLine(p4);	// 0.	601204751
+		Console.WriteLine(p5);  // 0.	601204751
+		Console.WriteLine(p6);  // 0.	601204751
+		Console.WriteLine(p7);  // 0.	601204751*/
+
+		/*Console.Write(p1.Item2);
+		MatrixToString(p1.Item1);
+		Console.Write(p2.Item2);
+		MatrixToString(p2.Item1);
+		Console.Write(p3.Item2);
+		MatrixToString(p3.Item1);*/
+	}
+
+	public static void MatrixToString<T>(T[] a)
+	{
+		Console.Write($"[{a[0]}");
+		for (int i = 1; i < a.Length; ++i)
+		{
+			Console.Write($", {a[i]}");
+		}
+		Console.WriteLine("]");
+	}
+}

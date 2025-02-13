@@ -1,0 +1,139 @@
+﻿namespace Project_Real;
+
+public readonly struct Integer
+{
+	#region Fields
+
+	public readonly bool Sign;
+	public readonly Natural Value;
+
+	#endregion
+
+	#region Properties
+
+	public readonly bool IsZero => Value.IsZero;
+	public readonly int Length => Value.Length;
+	public readonly Digit this[Index i] => Value.Digits[i];
+	public readonly Digit[] Digits => Value.Digits;
+
+	#endregion
+
+	#region Constructors
+
+	public Integer()
+	{
+		Sign = true;
+		Value = new Natural();
+	}
+
+	public Integer(string number)
+	{
+		int start = 0;
+
+		if (number.Length > 1 && !(number[0] >= '0' && number[0] <= '9'))
+		{
+			Sign = number[0] switch
+			{
+				'+' => true,
+				'-' => false,
+				_ => throw new ArgumentException()
+			};
+
+			start = 1;
+		}
+		else
+			Sign = true;
+
+		Value = new Natural(number[start..]);
+
+		Sign |= IsZero;
+	}
+
+	public Integer(bool sign, Natural value)
+	{
+		Value = value;
+		Sign = sign || IsZero;
+	}
+	
+	#endregion
+
+	#region Public methods
+
+	public override string ToString()
+	{
+		return $"{(Sign ? '+' : '-')}{Value}"; 
+	}
+
+	public static bool Equals(Integer i1, Integer i2)
+	{
+		return i1.Sign == i2.Sign && Natural.Equals(i1.Value, i2.Value);
+	}
+
+	public static bool GreaterThan(Integer i1, Integer i2)
+	{
+		if (i1.Sign != i2.Sign)
+			return i1.Sign;
+		else
+			return Natural.GreaterThan(i1.Value, i2.Value);
+	}
+
+	public static Integer Add(Integer i1, Integer i2)
+	{
+		if (i1.Sign && i2.Sign)
+			return new Integer(i1.Sign, Natural.Add(i1.Value, i2.Value));
+		else
+		{
+			if (i2.Sign)
+				(i1, i2) = (i2, i1);
+
+			(bool swap, Natural value) = Natural.Substract(i1.Value, i2.Value);
+
+			return new Integer(!swap, value);
+		}
+	}
+
+	public static Integer Substract(Integer i1, Integer i2)
+	{
+		return Add(i1, new Integer(!i2.Sign, i2.Value));
+	}
+
+	public static Integer Multiply(Integer i1, Integer i2)
+	{
+		return new Integer(i1.Sign == i2.Sign, Natural.Multiply(i1.Value, i2.Value));
+	}
+
+	public static (Integer Whole, Integer Remainder) Divide(Integer i1, Integer i2)
+	{
+		(Natural whole, Natural remainder) = Natural.Divide(i1.Value, i2.Value);
+		return (new Integer(i1.Sign == i2.Sign, whole), new Integer(i1.Sign, remainder));
+	}
+
+	public override readonly bool Equals(object? obj)
+	{
+		return obj is Integer integer && Equals(this, integer);
+	}
+
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException();
+	}
+
+	#endregion
+
+	#region Operators
+
+	public static implicit operator Integer(string num) => new(num);
+	public static bool operator ==(Integer f1, Integer f2) => Equals(f1, f2);
+	public static bool operator !=(Integer f1, Integer f2) => !Equals(f1, f2);
+	public static bool operator >(Integer f1, Integer f2) => GreaterThan(f1, f2);
+	public static bool operator <(Integer f1, Integer f2) => GreaterThan(f2, f1);
+	public static bool operator >=(Integer f1, Integer f2) => !GreaterThan(f2, f1);
+	public static bool operator <=(Integer f1, Integer f2) => !GreaterThan(f1, f2);
+	public static Integer operator +(Integer f1, Integer f2) => Add(f1, f2);
+	public static Integer operator -(Integer f1, Integer f2) => Substract(f1, f2);
+	public static Integer operator *(Integer f1, Integer f2) => Multiply(f1, f2);
+	public static Integer operator /(Integer f1, Integer f2) => Divide(f1, f2).Whole;
+	public static Integer operator %(Integer f1, Integer f2) => Divide(f1, f2).Remainder;
+
+	#endregion
+}
