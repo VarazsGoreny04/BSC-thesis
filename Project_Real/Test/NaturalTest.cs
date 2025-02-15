@@ -22,17 +22,12 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void BadCharConstructor()
-	{
-		string nullString = null!;
-
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullString); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(""); });
-	}
-
-	[TestMethod]
 	public void StringConstructor()
 	{
+		string nullString = null!;
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullString); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(""); });
+
 		string characters;
 		Natural number;
 
@@ -53,7 +48,7 @@ public class NaturalTest
 		Digit[] digits;
 		Natural number;
 
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < 1_000; ++i)
 		{
 			characters = [.. i.ToString()];
 
@@ -74,7 +69,7 @@ public class NaturalTest
 		string integer;
 		Natural number;
 
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < 1_000; ++i)
 		{
 			integer = i.ToString();
 			number = new(integer);
@@ -92,7 +87,7 @@ public class NaturalTest
 
 		char[] characters = new char[100];
 
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 100; ++i)
 		{
 			Array.Fill(characters, '0');
 
@@ -105,8 +100,6 @@ public class NaturalTest
 			Natural number = new(new string(characters));
 			number = Natural.TrimEnd(number);
 
-			Assert.IsTrue(90 >= number.Length);
-			Assert.IsTrue(80 <= number.Length);
 			Assert.AreNotEqual(Digit.ZERO, number[0]);
 			Assert.AreEqual(characters.Length - characters.TakeWhile(x => x == '0').Count(), number.Length);
 		}
@@ -118,10 +111,9 @@ public class NaturalTest
 		Random rnd = new();
 		string characters;
 		Digit[] digits;
-		Natural numberDigits;
-		Natural numberCharacters;
+		Natural numberDigits, numberCharacters;
 
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 100; ++i)
 		{
 			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
 
@@ -146,5 +138,169 @@ public class NaturalTest
 
 			Assert.AreNotEqual(numberCharacters, numberDigits);
 		}
+	}
+
+	[TestMethod]
+	public void GreaterThanMethod()
+	{
+		Random rnd = new();
+		bool expected;
+		int int1, int2;
+		string characters1, characters2;
+		Digit[] digits1, digits2;
+		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(int.MaxValue - 1);
+			int2 = rnd.Next(int.MaxValue - 1);
+
+			characters1 = int1.ToString();
+			characters2 = int2.ToString();
+
+			digits1 = new Digit[characters1.Length];
+			for (int j = 0; j < characters1.Length; ++j)
+				digits1[j] = new Digit(characters1[^(j + 1)]);
+
+			digits2 = new Digit[characters2.Length];
+			for (int j = 0; j < characters2.Length; ++j)
+				digits2[j] = new Digit(characters2[^(j + 1)]);
+
+			numberCharacters1 = new(characters1);
+			numberCharacters2 = new(characters2);
+			numberDigits1 = new(digits1);
+			numberDigits2 = new(digits2);
+
+			expected = int1 > int2;
+
+			Assert.AreEqual(expected, Natural.GreaterThan(numberCharacters1, numberCharacters2));
+			Assert.AreEqual(expected, Natural.GreaterThan(numberCharacters1, numberDigits2));
+			Assert.AreEqual(expected, Natural.GreaterThan(numberDigits1, numberDigits2));
+			Assert.AreEqual(expected, Natural.GreaterThan(numberDigits1, numberCharacters2));
+		}
+	}
+
+	[TestMethod]
+	public void AddMethod()
+	{
+		Random rnd = new();
+		int int1, int2;
+		Natural natural1, natural2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(int.MaxValue / 2);
+			int2 = rnd.Next(int.MaxValue / 2);
+
+			natural1 = new(int1.ToString());
+			natural2 = new(int2.ToString());
+
+			Assert.AreEqual((int1 + int2).ToString(), Natural.Add(natural1, natural2).ToString());
+		}
+	}
+
+	[TestMethod]
+	public void SubstractMethod()
+	{
+		Random rnd = new();
+		int int1, int2;
+		Natural natural1, natural2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(int.MaxValue / 2);
+			int2 = rnd.Next(int.MaxValue / 2);
+
+			natural1 = new(int1.ToString());
+			natural2 = new(int2.ToString());
+
+			Assert.AreEqual(Math.Abs(int1 - int2).ToString(), Natural.Substract(natural1, natural2).Value.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void MultiplyMethod()
+	{
+		Random rnd = new();
+		int max = (int)Math.Sqrt(int.MaxValue);
+		int int1, int2;
+		Natural natural1, natural2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(max);
+			int2 = rnd.Next(max);
+
+			natural1 = new(int1.ToString());
+			natural2 = new(int2.ToString());
+
+			Assert.AreEqual((int1 * int2).ToString(), Natural.Multiply(natural1, natural2).ToString());
+		}
+	}
+
+	[TestMethod]
+	public void DivideMethod()
+	{
+		Random rnd = new();
+		int int1, int2;
+		Natural natural1, natural2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(int.MaxValue);
+			int2 = rnd.Next(1, int.MaxValue);
+
+			natural1 = new(int1.ToString());
+			natural2 = new(int2.ToString());
+
+			(Natural whole, Natural remainder) = Natural.Divide(natural1, natural2);
+
+			Assert.AreEqual((int1 / int2).ToString(), whole.ToString());
+			Assert.AreEqual((int1 % int2).ToString(), remainder.ToString());
+		}
+
+		Assert.AreEqual("0", Natural.Divide("0", "1").Whole);
+		Assert.ThrowsException<DivideByZeroException>(() => Natural.Divide("1", "0"));
+	}
+
+	[TestMethod]
+	public void SecondPowerMethod()
+	{
+		Random rnd = new();
+		int max = (int)Math.Sqrt(int.MaxValue);
+		int int1;
+		Natural natural1;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(1, max);
+
+			natural1 = new(int1.ToString());
+
+			Assert.AreEqual(Math.Pow(int1, 2).ToString(), Natural.SecondPower(natural1).ToString());
+		}
+
+		Assert.ThrowsException<NotImplementedException>(() => Natural.SecondPower("0"));
+	}
+
+	[TestMethod]
+	public void PowerMethod()
+	{
+		Random rnd = new();
+		int int1, int2;
+		Natural natural1, natural2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(1, 15);
+			int2 = rnd.Next(1, 10);
+
+			natural1 = new(int1.ToString());
+			natural2 = new(int2.ToString());
+
+			Assert.AreEqual(Math.Pow(int1, int2).ToString(), Natural.Power(natural1, natural2).ToString());
+		}
+
+		Assert.ThrowsException<NotImplementedException>(() => Natural.Power("0", "0"));
 	}
 }

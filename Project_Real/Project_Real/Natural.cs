@@ -97,7 +97,7 @@ public readonly struct Natural
 	public static Natural Add(Natural n1, Natural n2, bool carry = false)
 	{
 		if (n1.Length < n2.Length)
-			(n2, n1) = (n1, n2);
+			(n1, n2) = (n2, n1);
 
 		Digit[] result = new Digit[n1.Length];
 
@@ -112,7 +112,7 @@ public readonly struct Natural
 		bool swap = GreaterThan(n2, n1);
 
 		if (swap)
-			(n2, n1) = (n1, n2);
+			(n1, n2) = (n2, n1);
 
 		Digit[] result = new Digit[n1.Length];
 
@@ -124,6 +124,17 @@ public readonly struct Natural
 
 	public static Natural Multiply(Natural n1, Natural n2)
 	{
+		if (GreaterThan(n2, n1))
+			(n1, n2) = (n2, n1);
+
+		if (n2.Length == 1)
+		{
+			if (Digit.Equals(n2[0], Digit.ZERO))
+				return new Natural();
+			if (Digit.Equals(n2[0], '1'))
+				return n1;
+		}
+
 		Natural result = new();
 		Digit[] temp;
 		Digit overflowD, digit;
@@ -160,7 +171,10 @@ public readonly struct Natural
 			throw new DivideByZeroException();
 		else if (n1.Length < n2.Length)
 			return (new Natural(), n1);
+		else if (n2.Length == 1 && Digit.Equals(n2[0], '1'))
+			return (n1, new Natural());
 
+		int tempLength;
 		Natural temp = new();
 		Digit one = new('1');
 		Digit[] remainder = n1.Digits;
@@ -170,6 +184,7 @@ public readonly struct Natural
 		while (i >= 0)
 		{
 			temp = new Natural(remainder.Skip(i).ToArray());
+			tempLength = temp.Length;
 
 			while (!GreaterThan(n2, temp))
 			{
@@ -178,6 +193,7 @@ public readonly struct Natural
 			}
 
 			Array.Copy(temp.Digits, 0, remainder, i, temp.Length);
+			Array.Fill(remainder, Digit.ZERO, i + temp.Length, tempLength - temp.Length);
 
 			if (temp.IsZero)
 				while (--i >= 0 && Digit.Equals(remainder[i], Digit.ZERO)) { }
