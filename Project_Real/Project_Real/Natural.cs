@@ -47,12 +47,8 @@ public readonly struct Natural
 		if (digits.Length < 1)
 			throw new ArgumentException();
 
-		int i = 0;
-
-		while (i < digits.Length && Digit.Equals(digits[^(i + 1)], Digit.ZERO)) { ++i; }
-
-		IsZero = i == digits.Length;
-		Digits = IsZero ? [Digit.ZERO] : digits[..(digits.Length - i)];
+		Digits = Digit.TrimEnd(digits);
+		IsZero = Digits.Length == 1 && Equals(Digits[0], Digit.ZERO);
 	}
 
 	#endregion
@@ -210,7 +206,7 @@ public readonly struct Natural
 		(Natural whole, Natural remainder) = Divide(n2, two);
 
 		if (!remainder.IsZero)
-			result = Multiply(result, lastPowerCalculated);
+			result = lastPowerCalculated;
 
 		while (!whole.IsZero)
 		{

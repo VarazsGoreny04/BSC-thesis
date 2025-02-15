@@ -17,7 +17,12 @@ public class DigitTest
 		[true, true, true, false],  	// 7
 		[false, false, false, true],	// 8
 		[true, false, false, true], 	// 9
-		//[false, true, false, true]	// 10
+		[false, true, false, true], 	// 10
+		[true, true, false, true],  	// 11
+		[false, false, true, true], 	// 12
+		[true, false, true, true],  	// 13
+		[false, true, true, true],  	// 14
+		[true, true, true, true],   	// 15
 	];
 
 	private static char ToChar(int num)
@@ -37,15 +42,11 @@ public class DigitTest
 	}
 
 	[TestMethod]
-	public void BadCharConstructor()
-	{
-		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(ToChar(-1)); });
-		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(Convert.ToChar('9' + 1)); });
-	}
-
-	[TestMethod]
 	public void CharConstructor()
 	{
+		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(ToChar(-1)); });
+		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(ToChar(10)); });
+
 		for (int i = 0; i < 10; ++i)
 		{
 			Digit digit = new(ToChar(i));
@@ -53,6 +54,19 @@ public class DigitTest
 			for (int j = 0; j < Digit.LENGTH; ++j)
 				Assert.AreEqual(binary[i][j], digit[j]);
 		}
+	}
+
+	[TestMethod]
+	public void ArrayConstructor()
+	{
+		int i = 0;
+
+		for (; i < 10; ++i)
+			Assert.AreEqual(binary[i], (new Digit(binary[i])).Bits);
+
+		for (; i < binary.Length; ++i)
+			Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(binary[i]); });
+
 	}
 
 	[TestMethod]
@@ -64,6 +78,62 @@ public class DigitTest
 
 			Assert.AreEqual(ToChar(i).ToString(), digit.ToString());
 		}
+	}
+
+	[TestMethod]
+	public void CreateArrayMethod()
+	{
+		for (int i = -9; i < 10; i++)
+			Assert.AreEqual((i < 1 ? 0 : i), Digit.CreateArray(i).Length);
+
+		for (int i = 0; i < 10; ++i)
+		{
+			Digit digit = new(ToChar(i));
+
+			foreach (Digit element in Digit.CreateArray(10, digit))
+				Assert.AreEqual(digit, element);
+		}
+	}
+
+	[TestMethod]
+	public void TrimEndMethod()
+	{
+		Random rnd = new();
+		Digit[] array = new Digit[25];
+		int valuableLength = rnd.Next(1, 21);
+
+		for (int i = 0; i < valuableLength; ++i)
+			array[i] = new Digit(ToChar(rnd.Next(1, 10)));
+
+		for (int i = valuableLength; i < 25; ++i)
+			array[i] = Digit.ZERO;
+
+		array = Digit.TrimEnd(array);
+
+		Assert.AreEqual(valuableLength, array.Length);
+		
+		foreach (Digit digit in array)
+			Assert.AreNotEqual(digit, Digit.ZERO);
+
+
+		array = Digit.CreateArray(rnd.Next(1, 10), Digit.ZERO);
+		array = Digit.TrimEnd(array);
+
+		Assert.AreEqual(1, array.Length);
+		Assert.AreEqual(Digit.ZERO, array[0]);
+
+
+		array = Digit.CreateArray(rnd.Next(1, 10), Digit.ZERO);
+		array[0] = new Digit('1');
+		array = Digit.TrimEnd(array);
+
+		Assert.AreEqual(1, array.Length);
+		Assert.AreEqual(new Digit('1'), array[0]);
+
+
+		array = Digit.TrimEnd([]);
+
+		Assert.AreEqual(0, array.Length);
 	}
 
 	[TestMethod]
@@ -84,6 +154,18 @@ public class DigitTest
 			Assert.IsFalse(Digit.Equals(charDigit, arrayDigitPlusOne));
 			Assert.IsFalse(Digit.Equals(charDigitPlusOne, arrayDigit));
 			Assert.IsFalse(Digit.Equals(arrayDigit, charDigitPlusOne));
+
+			Assert.IsTrue(charDigit.Equals(arrayDigit));
+			Assert.IsTrue(arrayDigit.Equals(charDigit));
+			Assert.IsTrue(charDigitPlusOne.Equals(arrayDigitPlusOne));
+			Assert.IsTrue(arrayDigitPlusOne.Equals(charDigitPlusOne));
+			Assert.IsFalse(arrayDigitPlusOne.Equals(charDigit));
+			Assert.IsFalse(charDigit.Equals(arrayDigitPlusOne));
+			Assert.IsFalse(charDigitPlusOne.Equals(arrayDigit));
+			Assert.IsFalse(arrayDigit.Equals(charDigitPlusOne));
+
+			Assert.IsFalse(charDigit.Equals(new object()));
+			Assert.IsFalse(arrayDigit.Equals(new object()));
 		}
 	}
 
@@ -177,7 +259,7 @@ public class DigitTest
 				b = new Digit(ToChar(j));
 
 				if (j == 0)
-					Assert.ThrowsException< DivideByZeroException> (() => { _ = Digit.Divide(a, b); });
+					Assert.ThrowsException<DivideByZeroException>(() => { _ = Digit.Divide(a, b); });
 				else
 				{
 					c1 = new Digit(ToChar(i / j));

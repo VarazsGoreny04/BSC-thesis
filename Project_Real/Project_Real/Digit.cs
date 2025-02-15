@@ -53,18 +53,7 @@ public readonly struct Digit
 
 	public Digit(bool[] bitArray)
 	{
-		if (bitArray.Length != LENGTH)
-			throw new UnmatchingArrayLengthException();
-
-		short number = 0;
-
-		for (short i = 0; i < LENGTH; ++i)
-		{
-			if (bitArray[i])
-				number += (short)Math.Pow(2d, i);
-		}
-
-		Bits = (number < 10) ? bitArray : throw new ValueOutOfRangeException();
+		Bits = BitGreaterThan(TEN, bitArray) ? bitArray : throw new ValueOutOfRangeException();
 	}
 
 	#endregion
@@ -225,9 +214,9 @@ public readonly struct Digit
 	{
 		int i = 0;
 
-		while (Equals(digits[^(++i)], ZERO) && i < digits.Length) { }
+		while (++i < digits.Length && Equals(digits[^i], ZERO)) { }
 
-		return digits[..(digits.Length - i + 1)];
+		return i == 1 ? digits : digits[..^(i - 1)];
 	}
 
 	public static bool Equals(Digit d1, Digit d2)
