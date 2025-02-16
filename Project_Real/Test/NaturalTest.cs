@@ -6,19 +6,20 @@ namespace Test;
 public class NaturalTest
 {
 	[TestMethod]
-	public void EmptyConstructor()
+	public void ZeroConstructor()
 	{
-		Natural zeroDigit = new([Digit.ZERO]);
-
 		Natural empty = new();
-		Natural zeroString = new("0");
-		Natural zeroZeroString = new("00");
-		Natural zeroZeroDigit = new([Digit.ZERO, Digit.ZERO]);
 
-		Assert.AreEqual(zeroDigit, empty);
-		Assert.AreEqual(zeroDigit, zeroString);
-		Assert.AreEqual(zeroDigit, zeroZeroString);
-		Assert.AreEqual(zeroDigit, zeroZeroDigit);
+		Natural[] zeros =
+		[
+			new("0"),
+			new("00"),
+			new([Digit.ZERO]),
+			new([Digit.ZERO, Digit.ZERO])
+		];
+
+		foreach (Natural zero in zeros)
+			Assert.AreEqual(empty, zero);
 	}
 
 	[TestMethod]
@@ -31,7 +32,7 @@ public class NaturalTest
 		string characters;
 		Natural number;
 
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < 1_000; ++i)
 		{
 			characters = i.ToString();
 			number = new(characters);
@@ -44,6 +45,10 @@ public class NaturalTest
 	[TestMethod]
 	public void DigitConstructor()
 	{
+		Digit[] nullArray = null!;
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullArray); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural([]); });
+
 		char[] characters;
 		Digit[] digits;
 		Natural number;
@@ -54,27 +59,27 @@ public class NaturalTest
 
 			digits = new Digit[characters.Length];
 			for (int j = 0; j < characters.Length; ++j)
-				digits[j] = new Digit(characters[j]);
+				digits[^(j + 1)] = new Digit(characters[j]);
 
-			number = new(i.ToString());
+			number = new(digits);
 
 			for (int j = 0; j < characters.Length; ++j)
-				Assert.AreEqual(digits[j], number.Digits[^(j + 1)]);
+				Assert.AreEqual(characters[j].ToString(), number.Digits[^(j + 1)].ToString());
 		}
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		string integer;
+		string characters;
 		Natural number;
 
 		for (int i = 0; i < 1_000; ++i)
 		{
-			integer = i.ToString();
-			number = new(integer);
+			characters = i.ToString();
+			number = new(characters);
 
-			Assert.AreEqual(integer, number.ToString());
+			Assert.AreEqual(characters, number.ToString());
 		}
 	}
 

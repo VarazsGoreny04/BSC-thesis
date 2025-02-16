@@ -31,7 +31,7 @@ public class DigitTest
 	}
 
 	[TestMethod]
-	public void EmptyConstructor()
+	public void ZeroConstructor()
 	{
 		Digit digit = new();
 
