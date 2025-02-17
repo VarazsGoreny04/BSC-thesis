@@ -28,9 +28,12 @@ public readonly struct Integer
 
 	public Integer(string number)
 	{
+		if (number is null || number.Length < 1)
+			throw new ArgumentException();
+
 		int start = 0;
 
-		if (number.Length > 1 && !(number[0] >= '0' && number[0] <= '9'))
+		if (!(number[0] >= '0' && number[0] <= '9'))
 		{
 			Sign = number[0] switch
 			{
@@ -74,12 +77,12 @@ public readonly struct Integer
 		if (i1.Sign != i2.Sign)
 			return i1.Sign;
 		else
-			return Natural.GreaterThan(i1.Value, i2.Value);
+			return i1.Sign == Natural.GreaterThan(i1.Value, i2.Value);
 	}
 
 	public static Integer Add(Integer i1, Integer i2)
 	{
-		if (i1.Sign && i2.Sign)
+		if (i1.Sign == i2.Sign)
 			return new Integer(i1.Sign, Natural.Add(i1.Value, i2.Value));
 		else
 		{
@@ -106,6 +109,19 @@ public readonly struct Integer
 	{
 		(Natural whole, Natural remainder) = Natural.Divide(i1.Value, i2.Value);
 		return (new Integer(i1.Sign == i2.Sign, whole), new Integer(i1.Sign, remainder));
+	}
+
+	public static Integer SecondPower(Integer i)
+	{
+		return i.IsZero ? throw new NotImplementedException() : Multiply(i, i);
+	}
+
+	public static Integer Power(Integer i1, Integer i2)
+	{
+		if (!i2.Sign)
+			throw new NotImplementedException();
+
+		return new(i1.Sign || Digit.Equals(Digit.Divide(i1[0], '2').Remainder, Digit.ZERO), Natural.Power(i1.Value, i2.Value));
 	}
 
 	public override readonly bool Equals(object? obj)

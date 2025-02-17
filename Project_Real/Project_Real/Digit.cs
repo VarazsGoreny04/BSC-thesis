@@ -234,7 +234,7 @@ public readonly struct Digit
 		(carry, bool[] result) = BitAdd(d1.Bits, d2.Bits, carry);
 
 		if (carry || !BitGreaterThan(TEN, result))
-			return (true, new Digit(BitAdd(result, TwosComplement(TEN)).Bits));
+			return (true, new Digit(BitAdd(result, [false, true, true, false]).Bits));
 		else
 			return (false, new Digit(result));
 	}

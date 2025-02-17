@@ -44,7 +44,7 @@ public readonly struct Natural
 
 	public Natural(Digit[] digits)
 	{
-		if (digits.Length < 1)
+		if (digits is null || digits.Length < 1)
 			throw new ArgumentException();
 
 		Digits = Digit.TrimEnd(digits);
@@ -122,7 +122,7 @@ public readonly struct Natural
 		return (swap, new Natural(result));
 	}
 
-	public static Natural Multiply(Natural n1, Natural n2)
+	public static Natural Multiply(Natural n1, Natural n2) // TODO csere, ha a második nagyobb
 	{
 		if (GreaterThan(n2, n1))
 			(n1, n2) = (n2, n1);
@@ -231,6 +231,23 @@ public readonly struct Natural
 
 			if (!remainder.IsZero)
 				result = Multiply(result, lastPowerCalculated);
+		}
+
+		return result;
+	}
+
+	public static Natural Log(Natural n1, Natural n2)
+	{
+		if (n1.IsZero || n2.IsZero)
+			throw new NotImplementedException();
+
+		Natural result = "0";
+		Natural one = "1";
+
+		while (!GreaterThan(n2, n1))
+		{
+			n1 = Divide(n1, n2).Whole;
+			result = Add(result, one);
 		}
 
 		return result;
