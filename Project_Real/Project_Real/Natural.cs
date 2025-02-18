@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using static Project_Real.Digit;
+
+namespace Project_Real;
 
 public readonly struct Natural
 {
@@ -38,8 +40,15 @@ public readonly struct Natural
 
 		Digits = new Digit[number.Length];
 
-		for (int i = 0; i < Length; ++i)
-			Digits[i] = new Digit(number[^(i + 1)]);
+		try
+		{
+			for (int i = 0; i < Length; ++i)
+				Digits[i] = new Digit(number[^(i + 1)]);
+		}
+		catch (ValueOutOfRangeException)
+		{
+			throw new ArgumentException();
+		}
 	}
 
 	public Natural(Digit[] digits)

@@ -36,6 +36,18 @@ public class IntegerTest
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer(""); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer("+"); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer("-"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("a123"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("123a"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("12a3"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+a123"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+123a"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+12a3"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-a123"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-123a"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-12a3"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("ba123"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("b123a"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("b12a3"); });
 
 		string characters;
 		Integer number;
@@ -221,7 +233,7 @@ public class IntegerTest
 	public void AddMethod()
 	{
 		Random rnd = new();
-		int int1, int2, sum;
+		int int1, int2, done;
 		int halfOfMax = (int.MaxValue / 2);
 		Integer integer1, integer2;
 
@@ -233,9 +245,9 @@ public class IntegerTest
 			integer1 = new(int1.ToString());
 			integer2 = new(int2.ToString());
 
-			sum = int1 + int2;
+			done = int1 + int2;
 
-			Assert.AreEqual((sum < 0 ? sum.ToString() : '+' + sum.ToString()), Integer.Add(integer1, integer2).ToString());
+			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Add(integer1, integer2).ToString());
 		}
 	}
 
@@ -243,7 +255,7 @@ public class IntegerTest
 	public void SubstractMethod()
 	{
 		Random rnd = new();
-		int int1, int2, sum;
+		int int1, int2, done;
 		int halfOfMax = (int.MaxValue / 2);
 		Integer integer1, integer2;
 
@@ -255,9 +267,9 @@ public class IntegerTest
 			integer1 = new(int1.ToString());
 			integer2 = new(int2.ToString());
 
-			sum = int1 - int2;
+			done = int1 - int2;
 
-			Assert.AreEqual((sum < 0 ? sum.ToString() : '+' + sum.ToString()), Integer.Substract(integer1, integer2).ToString());
+			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Substract(integer1, integer2).ToString());
 		}
 	}
 
@@ -266,7 +278,7 @@ public class IntegerTest
 	{
 		Random rnd = new();
 		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1, int2, sum;
+		int int1, int2, done;
 		Integer integer1, integer2;
 
 		for (int i = 0; i < 100; ++i)
@@ -277,9 +289,88 @@ public class IntegerTest
 			integer1 = new(int1.ToString());
 			integer2 = new(int2.ToString());
 
-			sum = int1 * int2;
+			done = int1 * int2;
 
-			Assert.AreEqual((sum < 0 ? sum.ToString() : '+' + sum.ToString()), Integer.Multiply(integer1, integer2).ToString());
+			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Multiply(integer1, integer2).ToString());
 		}
+	}
+
+	[TestMethod]
+	public void DivideMethod()
+	{
+		Random rnd = new();
+		int max = (int)Math.Sqrt(int.MaxValue);
+		int int1, int2, done1, done2;
+		Integer integer1, integer2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(int.MaxValue) - max;
+			int2 = rnd.Next(int.MaxValue) - max;
+
+			integer1 = new(int1.ToString());
+			integer2 = new(int2.ToString());
+
+			done1 = int1 / int2;
+			done2 = int1 % int2;
+
+			(Integer whole, Integer remainder) = Integer.Divide(integer1, integer2);
+
+			Assert.AreEqual((done1 < 0 ? done1.ToString() : '+' + done1.ToString()), whole.ToString());
+			Assert.AreEqual((done2 < 0 ? done2.ToString() : '+' + done2.ToString()), remainder.ToString());
+		}
+
+		Assert.AreEqual("0", Integer.Divide("0", "1").Whole);
+		Assert.AreEqual("0", Integer.Divide("0", "-1").Whole);
+		Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide("1", "0"));
+		Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide("-1", "0"));
+	}
+
+	[TestMethod]
+	public void SecondPowerMethod()
+	{
+		Random rnd = new();
+		int max = (int)Math.Sqrt(int.MaxValue);
+		int int1;
+		Integer integer1;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(max) - max;
+
+			integer1 = new(int1.ToString());
+
+			Assert.AreEqual('+' + Math.Pow(int1, 2).ToString(), Integer.SecondPower(integer1).ToString());
+		}
+
+		Assert.ThrowsException<NotImplementedException>(() => Integer.SecondPower("0"));
+		Assert.ThrowsException<NotImplementedException>(() => Integer.SecondPower("-0"));
+	}
+
+	[TestMethod]
+	public void PowerMethod()
+	{
+		Random rnd = new();
+		int int1, int2;
+		long done;
+		Integer integer1, integer2;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			int1 = rnd.Next(1, 15);
+			int2 = rnd.Next(1, 10);
+
+			integer1 = new(int1.ToString());
+			integer2 = new(int2.ToString());
+
+			done = (long)Math.Pow(int1, int2);
+
+			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Power(integer1, integer2).ToString());
+		}
+
+		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("0", "0"));
+		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("-0", "-0"));
+		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("0", "-0"));
+		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("-0", "0"));
 	}
 }

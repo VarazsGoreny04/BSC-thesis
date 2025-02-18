@@ -28,6 +28,9 @@ public class NaturalTest
 		string nullString = null!;
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullString); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(""); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("a123"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("123a"); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("12a3"); });
 
 		string characters;
 		Natural number;
