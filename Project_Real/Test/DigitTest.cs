@@ -35,7 +35,7 @@ public class DigitTest
 	{
 		Digit digit = new();
 
-		for (int j = 0; j < Digit.LENGTH; ++j)
+		for (int j = Digit.LENGTH - 1; j >= 0; --j)
 			Assert.AreEqual(binary[0][j], digit[j]);
 
 		Assert.AreEqual(Digit.ZERO, digit);
@@ -51,7 +51,7 @@ public class DigitTest
 		{
 			Digit digit = new(ToChar(i));
 
-			for (int j = 0; j < Digit.LENGTH; ++j)
+			for (int j = Digit.LENGTH - 1; j >= 0; --j)
 				Assert.AreEqual(binary[i][j], digit[j]);
 		}
 	}
@@ -102,7 +102,7 @@ public class DigitTest
 		Digit[] array = new Digit[25];
 		int valuableLength = rnd.Next(1, 21);
 
-		for (int i = 0; i < valuableLength; ++i)
+		for (int i = valuableLength - 1; i >= 0; --i)
 			array[i] = new Digit(ToChar(rnd.Next(1, 10)));
 
 		for (int i = valuableLength; i < 25; ++i)

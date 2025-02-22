@@ -16,13 +16,14 @@ public readonly struct Positive
 
 	#region Properties
 
-	public readonly bool IsZero => Value.IsZero;
 	public static char Separator { get => separator; set => separator = value; }
 	public static int FractionCalculatonLength
 	{
 		get { return fractionCalculatonLength; }
 		set { fractionCalculatonLength = (value >= 0) ? value : throw new ArgumentException(); }
 	}
+
+	public readonly bool IsZero => Value.IsZero;
 	public readonly Digit this[Index i] => Value.Digits[i];
 	public readonly Digit[] Digits => Value.Digits;
 
@@ -40,7 +41,7 @@ public readonly struct Positive
 
 	public Positive(string number) // Ezen még dolgozni kell
 	{
-		if (number.Length < 1 || !(number[0] >= '0' && number[0] <= '9'))
+		if (number is null || number.Length < 1 || !(number[0] >= '0' && number[0] <= '9'))
 			throw new ArgumentException();
 
 		number = number.TrimStart('0');
@@ -62,19 +63,28 @@ public readonly struct Positive
 		WholeLength = Length - FractionLength;
 	}
 
-	public Positive(Natural value, int fractionLength)
+	public Positive(Natural value, int fractionLength) // Hibás
 	{
-		if (fractionLength < 0 || (value.IsZero && fractionLength != 0))
+		if (fractionLength < 0)
 			throw new ArgumentException();
+		else if (value.IsZero)
+		{
+			Value = value;
+			Length = 1;
+			WholeLength = 1;
+			FractionLength = 0;
+		}
+		else
+		{
+			int i = 0;
 
-		int i = 0;
+			while (i < Math.Min(fractionLength, value.Length) && Digit.Equals(value[i], Digit.ZERO)) { ++i; }
 
-		while (i < Math.Min(fractionLength, value.Length) && Digit.Equals(value[i], Digit.ZERO)) { ++i; }
-
-		Value = new Natural(value.Digits[i..]);
-		FractionLength = fractionLength - i;
-		Length = FractionLength < Value.Length ? Value.Length : FractionLength + 1;
-		WholeLength = Length - FractionLength;
+			Value = new Natural(value.Digits[i..]);
+			FractionLength = fractionLength - i;
+			Length = Math.Max(Value.Length, FractionLength + 1);
+			WholeLength = Length - FractionLength;
+		}
 	}
 
 	#endregion
@@ -182,6 +192,49 @@ public readonly struct Positive
 
 		return (new Positive(whole, (whole.IsZero ? 0 : fractionCalculatonLength)),
 				new Positive(remainder, (remainder.IsZero ? 0 : p2.FractionLength + denominatorSlicingLength)));
+	}
+
+	public static Positive SecondPower(Positive p)
+	{
+		return p.IsZero ? throw new NotImplementedException() : Multiply(p, p);
+	}
+
+	public static Positive Power(Positive i1, Positive i2)
+	{
+		if (i2.FractionLength != 0)
+			throw new NotImplementedException();
+
+		return new(Natural.Power(i1.Value, i2.Value), i1.FractionLength);
+	}
+
+	public static Positive Log(Positive p)
+	{
+		if (p.IsZero)
+			throw new NotImplementedException();
+
+		bool oddRound = false;
+		Positive k = "2";
+		Positive iterationLimit = new(fractionCalculatonLength.ToString());
+
+		Positive one = "1";
+		Positive xMinusOne = Substract(p, one).Value;
+		Positive numToMultiplyWith = Multiply(xMinusOne, xMinusOne);
+
+		Positive result = xMinusOne;
+
+		while (GreaterThan(iterationLimit, k))
+		{
+			result = oddRound switch
+			{
+				false => Substract(result, Divide(xMinusOne, k).Value).Value,
+				_ => Add(result, Divide(xMinusOne, k).Value)
+			};
+
+			oddRound = !oddRound;
+			k = Add(k, one);
+		}
+
+		return xMinusOne;
 	}
 
 	public override readonly bool Equals(object? obj)

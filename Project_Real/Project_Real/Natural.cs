@@ -23,7 +23,7 @@ public readonly struct Natural
 	public Natural()
 	{
 		IsZero = true;
-		Digits = [Digit.ZERO];
+		Digits = [ZERO];
 	}
 
 	public Natural(string number)
@@ -57,7 +57,7 @@ public readonly struct Natural
 			throw new ArgumentException();
 
 		Digits = Digit.TrimEnd(digits);
-		IsZero = Digits.Length == 1 && Equals(Digits[0], Digit.ZERO);
+		IsZero = Digits.Length == 1 && Equals(Digits[0], ZERO);
 	}
 
 	#endregion
@@ -111,7 +111,7 @@ public readonly struct Natural
 		Digit[] result = new Digit[n1.Length];
 
 		for (int i = 0; i < n1.Length; ++i)
-			(carry, result[i]) = Digit.Add(n1[i], (i < n2.Length ? n2[i] : Digit.ZERO), carry);
+			(carry, result[i]) = Digit.Add(n1[i], (i < n2.Length ? n2[i] : ZERO), carry);
 
 		return carry ? new Natural([.. result, '1']) : new Natural(result);
 	}
@@ -126,19 +126,19 @@ public readonly struct Natural
 		Digit[] result = new Digit[n1.Length];
 
 		for (int i = 0; i < Math.Max(n1.Length, n2.Length); ++i)
-			(carry, result[i]) = Digit.Substract((i < n1.Length ? n1[i] : Digit.ZERO), (i < n2.Length ? n2[i] : Digit.ZERO), carry);
+			(carry, result[i]) = Digit.Substract((i < n1.Length ? n1[i] : ZERO), (i < n2.Length ? n2[i] : ZERO), carry);
 
 		return (swap, new Natural(result));
 	}
 
-	public static Natural Multiply(Natural n1, Natural n2) // TODO csere, ha a második nagyobb
+	public static Natural Multiply(Natural n1, Natural n2)
 	{
 		if (GreaterThan(n2, n1))
 			(n1, n2) = (n2, n1);
 
 		if (n2.Length == 1)
 		{
-			if (Digit.Equals(n2[0], Digit.ZERO))
+			if (Digit.Equals(n2[0], ZERO))
 				return new Natural();
 			if (Digit.Equals(n2[0], '1'))
 				return n1;
@@ -152,11 +152,11 @@ public readonly struct Natural
 
 		for (int n2i = 0; n2i < n2.Length; ++n2i)
 		{
-			if (Digit.Equals(n2[n2i], Digit.ZERO))
+			if (Digit.Equals(n2[n2i], ZERO))
 				continue;
 
 			temp = new Digit[n1.Length + n2i + 1];
-			Array.Fill(temp, Digit.ZERO, 0, n2i + 1);
+			Array.Fill(temp, ZERO, 0, n2i + 1);
 
 			addedIndex = n2i;
 
@@ -165,7 +165,7 @@ public readonly struct Natural
 				(overflowD, digit) = Digit.Multiply(n1[n1i], n2[n2i]);
 				(overflowB, temp[addedIndex]) = Digit.Add(temp[addedIndex], digit);
 				++addedIndex;
-				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
+				temp[addedIndex] = Digit.Add(overflowD, ZERO, overflowB).Digit;
 			}
 
 			result = Add(result, new Natural(temp));
@@ -187,7 +187,7 @@ public readonly struct Natural
 		Natural temp = new();
 		Digit one = new('1');
 		Digit[] remainder = n1.Digits;
-		Digit[] result = Digit.CreateArray(n1.Length - n2.Length + 1);
+		Digit[] result = CreateArray(n1.Length - n2.Length + 1);
 
 		int i = n1.Length - n2.Length;
 		while (i >= 0)
@@ -202,10 +202,10 @@ public readonly struct Natural
 			}
 
 			Array.Copy(temp.Digits, 0, remainder, i, temp.Length);
-			Array.Fill(remainder, Digit.ZERO, i + temp.Length, tempLength - temp.Length);
+			Array.Fill(remainder, ZERO, i + temp.Length, tempLength - temp.Length);
 
 			if (temp.IsZero)
-				while (--i >= 0 && Digit.Equals(remainder[i], Digit.ZERO)) { }
+				while (--i >= 0 && Digit.Equals(remainder[i], ZERO)) { }
 			else
 				--i;
 		}

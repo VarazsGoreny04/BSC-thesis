@@ -40,7 +40,7 @@ public class NaturalTest
 			characters = i.ToString();
 			number = new(characters);
 
-			for (int j = 0; j < characters.Length; ++j)
+			for (int j = characters.Length - 1; j >= 0; --j)
 				Assert.AreEqual(characters[j], number.Digits[^(j + 1)]);
 		}
 	}
@@ -61,12 +61,12 @@ public class NaturalTest
 			characters = [.. i.ToString()];
 
 			digits = new Digit[characters.Length];
-			for (int j = 0; j < characters.Length; ++j)
+			for (int j = characters.Length - 1; j >= 0; --j)
 				digits[^(j + 1)] = new Digit(characters[j]);
 
 			number = new(digits);
 
-			for (int j = 0; j < characters.Length; ++j)
+			for (int j = characters.Length - 1; j >= 0; --j)
 				Assert.AreEqual(characters[j].ToString(), number.Digits[^(j + 1)].ToString());
 		}
 	}
@@ -126,7 +126,7 @@ public class NaturalTest
 			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
 
 			digits = new Digit[characters.Length];
-			for (int j = 0; j < characters.Length; ++j)
+			for (int j = characters.Length - 1; j >= 0; --j)
 				digits[j] = new Digit(characters[^(j + 1)]);
 
 			numberDigits = new(digits);
@@ -167,11 +167,11 @@ public class NaturalTest
 			characters2 = int2.ToString();
 
 			digits1 = new Digit[characters1.Length];
-			for (int j = 0; j < characters1.Length; ++j)
+			for (int j = characters1.Length - 1; j >= 0; --j)
 				digits1[j] = new Digit(characters1[^(j + 1)]);
 
 			digits2 = new Digit[characters2.Length];
-			for (int j = 0; j < characters2.Length; ++j)
+			for (int j = characters2.Length - 1; j >= 0; --j)
 				digits2[j] = new Digit(characters2[^(j + 1)]);
 
 			numberCharacters1 = new(characters1);

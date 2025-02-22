@@ -5,6 +5,8 @@ namespace Test;
 [TestClass]
 public class IntegerTest
 {
+	private static string Format(bool sign, string number) => (Integer.WriteSign && sign ? '+' + number.ToString() : number.ToString());
+
 	[TestMethod]
 	public void ZeroConstructor()
 	{
@@ -141,7 +143,7 @@ public class IntegerTest
 			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
 
 			digits = new Digit[characters.Length];
-			for (int j = 0; j < characters.Length; ++j)
+			for (int j = characters.Length - 1; j >= 0; --j)
 				digits[j] = new Digit(characters[^(j + 1)]);
 
 			numberDigits = new(digits);
@@ -191,11 +193,11 @@ public class IntegerTest
 			characters2 = int2.ToString();
 
 			digits1 = new Digit[characters1.Length];
-			for (int j = 0; j < characters1.Length; ++j)
+			for (int j = characters1.Length - 1; j >= 0; --j)
 				digits1[j] = new Digit(characters1[^(j + 1)]);
 
 			digits2 = new Digit[characters2.Length];
-			for (int j = 0; j < characters2.Length; ++j)
+			for (int j = characters2.Length - 1; j >= 0; --j)
 				digits2[j] = new Digit(characters2[^(j + 1)]);
 
 			numberCharacters1 = new(characters1);
@@ -247,7 +249,7 @@ public class IntegerTest
 
 			done = int1 + int2;
 
-			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Add(integer1, integer2).ToString());
+			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Add(integer1, integer2).ToString());
 		}
 	}
 
@@ -269,7 +271,7 @@ public class IntegerTest
 
 			done = int1 - int2;
 
-			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Substract(integer1, integer2).ToString());
+			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Substract(integer1, integer2).ToString());
 		}
 	}
 
@@ -291,7 +293,7 @@ public class IntegerTest
 
 			done = int1 * int2;
 
-			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Multiply(integer1, integer2).ToString());
+			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Multiply(integer1, integer2).ToString());
 		}
 	}
 
@@ -299,14 +301,13 @@ public class IntegerTest
 	public void DivideMethod()
 	{
 		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
 		int int1, int2, done1, done2;
 		Integer integer1, integer2;
 
 		for (int i = 0; i < 100; ++i)
 		{
-			int1 = rnd.Next(int.MaxValue) - max;
-			int2 = rnd.Next(int.MaxValue) - max;
+			int1 = rnd.Next(int.MaxValue);
+			int2 = rnd.Next(1, int.MaxValue);
 
 			integer1 = new(int1.ToString());
 			integer2 = new(int2.ToString());
@@ -316,8 +317,8 @@ public class IntegerTest
 
 			(Integer whole, Integer remainder) = Integer.Divide(integer1, integer2);
 
-			Assert.AreEqual((done1 < 0 ? done1.ToString() : '+' + done1.ToString()), whole.ToString());
-			Assert.AreEqual((done2 < 0 ? done2.ToString() : '+' + done2.ToString()), remainder.ToString());
+			Assert.AreEqual(Format(done1 >= 0, done1.ToString()), whole.ToString());
+			Assert.AreEqual(Format(done2 >= 0, done2.ToString()), remainder.ToString());
 		}
 
 		Assert.AreEqual("0", Integer.Divide("0", "1").Whole);
@@ -340,7 +341,7 @@ public class IntegerTest
 
 			integer1 = new(int1.ToString());
 
-			Assert.AreEqual('+' + Math.Pow(int1, 2).ToString(), Integer.SecondPower(integer1).ToString());
+			Assert.AreEqual(Format(true, Math.Pow(int1, 2).ToString()), Integer.SecondPower(integer1).ToString());
 		}
 
 		Assert.ThrowsException<NotImplementedException>(() => Integer.SecondPower("0"));
@@ -365,7 +366,7 @@ public class IntegerTest
 
 			done = (long)Math.Pow(int1, int2);
 
-			Assert.AreEqual((done < 0 ? done.ToString() : '+' + done.ToString()), Integer.Power(integer1, integer2).ToString());
+			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Power(integer1, integer2).ToString());
 		}
 
 		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("0", "0"));
