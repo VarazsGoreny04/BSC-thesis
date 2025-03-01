@@ -39,14 +39,14 @@ public readonly struct Positive
 		FractionLength = 0;
 	}
 
-	public Positive(string number) // Ezen még dolgozni kell
+	public Positive(string number)
 	{
-		if (number is null || number.Length < 1 || !(number[0] >= '0' && number[0] <= '9'))
+		if (number is null || number.Length < 1 || number[0] == separator)
 			throw new ArgumentException();
 
 		number = number.TrimStart('0');
 
-		if (number.Length < 1 || !(number[0] >= '0' && number[0] <= '9'))
+		if (number.Length < 1 || number[0] == separator)
 			number = '0' + number;
 
 		FractionLength = number.IndexOf(separator);
@@ -165,12 +165,13 @@ public readonly struct Positive
 		int maxFractionLength = Math.Max(p1.FractionLength, p2.FractionLength);
 		Digit[] splicing = Digit.CreateArray(Math.Abs(p1.FractionLength - p2.FractionLength));
 
-		if (p1.FractionLength < p2.FractionLength)
-			p1 = new Positive(new Natural([.. splicing, .. p1.Digits]), maxFractionLength);
-		else
-			p2 = new Positive(new Natural([.. splicing, .. p2.Digits]), maxFractionLength);
+		bool swap;
+		Natural result;
 
-		(bool swap, Natural result) = Natural.Substract(p1.Value, p2.Value);
+		if (p1.FractionLength < p2.FractionLength)
+			(swap, result) = Natural.Substract(new Natural([.. splicing, .. p1.Digits]), p2.Value);
+		else
+			(swap, result) = Natural.Substract(p1.Value, new Natural([.. splicing, .. p2.Digits]));
 
 		return (swap, TrimStart(new Positive(result, maxFractionLength)));
 	}
@@ -204,37 +205,14 @@ public readonly struct Positive
 		if (i2.FractionLength != 0)
 			throw new NotImplementedException();
 
-		return new(Natural.Power(i1.Value, i2.Value), i1.FractionLength);
+		return new(Natural.Power(i1.Value, i2.Value), i1.FractionLength * Convert.ToInt32(i2.ToString()));
 	}
 
-	public static Positive Log(Positive p)
+	public static Positive SquareRoot(Positive value)
 	{
-		if (p.IsZero)
-			throw new NotImplementedException();
-
-		bool oddRound = false;
-		Positive k = "2";
-		Positive iterationLimit = new(fractionCalculatonLength.ToString());
-
-		Positive one = "1";
-		Positive xMinusOne = Substract(p, one).Value;
-		Positive numToMultiplyWith = Multiply(xMinusOne, xMinusOne);
-
-		Positive result = xMinusOne;
-
-		while (GreaterThan(iterationLimit, k))
-		{
-			result = oddRound switch
-			{
-				false => Substract(result, Divide(xMinusOne, k).Value).Value,
-				_ => Add(result, Divide(xMinusOne, k).Value)
-			};
-
-			oddRound = !oddRound;
-			k = Add(k, one);
-		}
-
-		return xMinusOne;
+		Digit[] padding = Digit.CreateArray(((fractionCalculatonLength * 2 - value.FractionLength) * 2 + 1) / 2);
+		Natural valueWithPadding = new([.. padding, .. value.Digits]);
+		return new Positive(Natural.SquareRoot(valueWithPadding).Whole, (value.FractionLength + padding.Length) / 2);
 	}
 
 	public override readonly bool Equals(object? obj)
@@ -263,5 +241,8 @@ public readonly struct Positive
 	public static Positive operator *(Positive f1, Positive f2) => Multiply(f1, f2);
 	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
 	public static Positive operator %(Positive f1, Positive f2) => new(Natural.Divide(f1.Value, f2.Value).Remainder, 0);
+	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
+	public static Positive operator ~(Positive f) => SquareRoot(f);
+
 	#endregion
 }
