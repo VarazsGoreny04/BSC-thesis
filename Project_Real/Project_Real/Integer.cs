@@ -4,12 +4,16 @@ public readonly struct Integer
 {
 	#region Fields
 
+	private static bool writeSign = true;
+
 	public readonly bool Sign;
 	public readonly Natural Value;
 
 	#endregion
 
 	#region Properties
+
+	public static bool WriteSign { get => writeSign; set => writeSign = value; }
 
 	public readonly bool IsZero => Value.IsZero;
 	public readonly int Length => Value.Length;
@@ -64,7 +68,7 @@ public readonly struct Integer
 
 	public override string ToString()
 	{
-		return $"{(Sign ? '+' : '-')}{Value}"; 
+		return writeSign ? $"{(Sign ? '+' : '-')}{Value}" : Value.ToString(); 
 	}
 
 	public static bool Equals(Integer i1, Integer i2)
@@ -124,6 +128,15 @@ public readonly struct Integer
 		return new(i1.Sign || Digit.Equals(Digit.Divide(i1[0], '2').Remainder, Digit.ZERO), Natural.Power(i1.Value, i2.Value));
 	}
 
+	public static (Integer Whole, Integer Remainder) SquareRoot(Integer i)
+	{
+		if (!i.Sign)
+			throw new NotImplementedException();
+
+		(Natural whole, Natural remainder) = Natural.SquareRoot(i.Value);
+		return (new Integer(true, whole), new Integer(true, remainder));
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Integer integer && Equals(this, integer);
@@ -150,6 +163,8 @@ public readonly struct Integer
 	public static Integer operator *(Integer f1, Integer f2) => Multiply(f1, f2);
 	public static Integer operator /(Integer f1, Integer f2) => Divide(f1, f2).Whole;
 	public static Integer operator %(Integer f1, Integer f2) => Divide(f1, f2).Remainder;
+	public static Integer operator ^(Integer f1, Integer f2) => Power(f1, f2);
+	public static Integer operator ~(Integer f) => SquareRoot(f).Whole;
 
 	#endregion
 }

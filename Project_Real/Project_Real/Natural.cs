@@ -1,10 +1,10 @@
-﻿using static Project_Real.Digit;
-
-namespace Project_Real;
+﻿namespace Project_Real;
 
 public readonly struct Natural
 {
 	#region Fields
+
+	private readonly int length;
 
 	public readonly bool IsZero;
 	public readonly Digit[] Digits;
@@ -13,7 +13,7 @@ public readonly struct Natural
 
 	#region Properties
 
-	public readonly int Length => Digits.Length;
+	public readonly int Length => length;
 	public readonly Digit this[Index i] => Digits[i];
 
 	#endregion
@@ -23,7 +23,8 @@ public readonly struct Natural
 	public Natural()
 	{
 		IsZero = true;
-		Digits = [ZERO];
+		Digits = [Digit.ZERO];
+		length = 1;
 	}
 
 	public Natural(string number)
@@ -39,13 +40,14 @@ public readonly struct Natural
 			number = "0";
 
 		Digits = new Digit[number.Length];
+		length = Digits.Length;
 
 		try
 		{
 			for (int i = 0; i < Length; ++i)
 				Digits[i] = new Digit(number[^(i + 1)]);
 		}
-		catch (ValueOutOfRangeException)
+		catch (Digit.ValueOutOfRangeException)
 		{
 			throw new ArgumentException();
 		}
@@ -57,7 +59,8 @@ public readonly struct Natural
 			throw new ArgumentException();
 
 		Digits = Digit.TrimEnd(digits);
-		IsZero = Digits.Length == 1 && Equals(Digits[0], ZERO);
+		IsZero = Digits.Length == 1 && Equals(Digits[0], Digit.ZERO);
+		length = Digits.Length;
 	}
 
 	#endregion
@@ -111,7 +114,7 @@ public readonly struct Natural
 		Digit[] result = new Digit[n1.Length];
 
 		for (int i = 0; i < n1.Length; ++i)
-			(carry, result[i]) = Digit.Add(n1[i], (i < n2.Length ? n2[i] : ZERO), carry);
+			(carry, result[i]) = Digit.Add(n1[i], (i < n2.Length ? n2[i] : Digit.ZERO), carry);
 
 		return carry ? new Natural([.. result, '1']) : new Natural(result);
 	}
@@ -126,7 +129,7 @@ public readonly struct Natural
 		Digit[] result = new Digit[n1.Length];
 
 		for (int i = 0; i < Math.Max(n1.Length, n2.Length); ++i)
-			(carry, result[i]) = Digit.Substract((i < n1.Length ? n1[i] : ZERO), (i < n2.Length ? n2[i] : ZERO), carry);
+			(carry, result[i]) = Digit.Substract((i < n1.Length ? n1[i] : Digit.ZERO), (i < n2.Length ? n2[i] : Digit.ZERO), carry);
 
 		return (swap, new Natural(result));
 	}
@@ -138,7 +141,7 @@ public readonly struct Natural
 
 		if (n2.Length == 1)
 		{
-			if (Digit.Equals(n2[0], ZERO))
+			if (Digit.Equals(n2[0], Digit.ZERO))
 				return new Natural();
 			if (Digit.Equals(n2[0], '1'))
 				return n1;
@@ -152,11 +155,11 @@ public readonly struct Natural
 
 		for (int n2i = 0; n2i < n2.Length; ++n2i)
 		{
-			if (Digit.Equals(n2[n2i], ZERO))
+			if (Digit.Equals(n2[n2i], Digit.ZERO))
 				continue;
 
 			temp = new Digit[n1.Length + n2i + 1];
-			Array.Fill(temp, ZERO, 0, n2i + 1);
+			Array.Fill(temp, Digit.ZERO, 0, n2i + 1);
 
 			addedIndex = n2i;
 
@@ -165,7 +168,7 @@ public readonly struct Natural
 				(overflowD, digit) = Digit.Multiply(n1[n1i], n2[n2i]);
 				(overflowB, temp[addedIndex]) = Digit.Add(temp[addedIndex], digit);
 				++addedIndex;
-				temp[addedIndex] = Digit.Add(overflowD, ZERO, overflowB).Digit;
+				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
 			}
 
 			result = Add(result, new Natural(temp));
@@ -187,7 +190,7 @@ public readonly struct Natural
 		Natural temp = new();
 		Digit one = new('1');
 		Digit[] remainder = n1.Digits;
-		Digit[] result = CreateArray(n1.Length - n2.Length + 1);
+		Digit[] result = Digit.CreateArray(n1.Length - n2.Length + 1);
 
 		int i = n1.Length - n2.Length;
 		while (i >= 0)
@@ -202,10 +205,10 @@ public readonly struct Natural
 			}
 
 			Array.Copy(temp.Digits, 0, remainder, i, temp.Length);
-			Array.Fill(remainder, ZERO, i + temp.Length, tempLength - temp.Length);
+			Array.Fill(remainder, Digit.ZERO, i + temp.Length, tempLength - temp.Length);
 
 			if (temp.IsZero)
-				while (--i >= 0 && Digit.Equals(remainder[i], ZERO)) { }
+				while (--i >= 0 && Digit.Equals(remainder[i], Digit.ZERO)) { }
 			else
 				--i;
 		}
@@ -221,11 +224,13 @@ public readonly struct Natural
 	public static Natural Power(Natural n1, Natural n2)
 	{
 		Natural result = new([new Digit('1')]);
+		Natural two = new([new Digit('2')]);
 
 		if (n2.IsZero)
 			return n1.IsZero ? throw new NotImplementedException() : result;
+		else if (Equals(n2, two))
+			return SecondPower(n1);
 
-		Natural two = new([new Digit('2')]);
 		Natural lastPowerCalculated = n1;
 
 		(Natural whole, Natural remainder) = Divide(n2, two);
@@ -245,21 +250,41 @@ public readonly struct Natural
 		return result;
 	}
 
-	public static Natural Log(Natural n1, Natural n2)
+	public static (Natural Whole, Natural Remainder) SquareRoot(Natural value)
 	{
-		if (n1.IsZero || n2.IsZero)
-			throw new NotImplementedException();
+		if (value.IsZero)
+			return (value, value);
 
-		Natural result = "0";
-		Natural one = "1";
+		Digit one = new('1');
+		Natural two = new([new Digit('2')]);
+		
+		Natural rootTimesTwo, test;
+		Natural remainder = new();
+		Natural root = new();
+		Digit xTry;
+		Digit[] result = new Digit[(value.length + 1) / 2];
 
-		while (!GreaterThan(n2, n1))
+		for (int i = result.Length - 1; i >= 0; --i)
 		{
-			n1 = Divide(n1, n2).Whole;
-			result = Add(result, one);
+			remainder = new([value.Digits[i * 2], ((i * 2) + 1 < value.Digits.Length ? value.Digits[(i * 2) + 1] : Digit.ZERO), .. remainder.Digits]);
+
+			rootTimesTwo = Multiply(root, two);
+			xTry = new();
+			int j = 0;
+
+			do
+			{
+				xTry += one;
+				test = Multiply(new([xTry, .. rootTimesTwo.Digits]), new([xTry]));
+			} while (++j < 10 && test <= remainder);
+
+			result[i] = Digit.Substract(xTry, one).Digit;
+
+			remainder -= Multiply(new([result[i], .. rootTimesTwo.Digits]), new([result[i]]));
+			root = new Natural([result[i], .. root.Digits]);
 		}
 
-		return result;
+		return (new Natural(result), remainder);
 	}
 
 	public override readonly bool Equals(object? obj)
@@ -289,6 +314,7 @@ public readonly struct Natural
 	public static Natural operator /(Natural f1, Natural f2) => Divide(f1, f2).Whole;
 	public static Natural operator %(Natural f1, Natural f2) => Divide(f1, f2).Remainder;
 	public static Natural operator ^(Natural f1, Natural f2) => Power(f1, f2);
+	public static Natural operator ~(Natural f) => SquareRoot(f).Whole;
 
 	#endregion
 }
