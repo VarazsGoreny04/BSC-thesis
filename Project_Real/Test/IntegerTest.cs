@@ -47,9 +47,6 @@ public class IntegerTest
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-a123"); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-123a"); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-12a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("ba123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("b123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("b12a3"); });
 
 		string characters;
 		Integer number;

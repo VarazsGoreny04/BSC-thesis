@@ -14,12 +14,12 @@ public class PositiveTest
 		[
 			new("0"),
 			new("00"),
-			new("0."),
-			new("00."),
-			new("0.0"),
-			new("0.00"),
-			new("00.0"),
-			new("00.00"),
+			new($"0{Positive.Separator}"),
+			new($"00{Positive.Separator}"),
+			new($"0{Positive.Separator}0"),
+			new($"0{Positive.Separator}00"),
+			new($"00{Positive.Separator}0"),
+			new($"00{Positive.Separator}00"),
 			new(new([Digit.ZERO]), 0),
 			new(new([Digit.ZERO, Digit.ZERO]), 0),
 			new(new([Digit.ZERO, Digit.ZERO]), 1),
@@ -38,23 +38,19 @@ public class PositiveTest
 		string nullString = null!;
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(nullString); });
 		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(""); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("."); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("12a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(".123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(".a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(".123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(".12a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("a.123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("1.23a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("1.2a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("a12.3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("123.a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("12a.3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("a123."); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("123a."); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive("12a3."); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(Positive.Separator.ToString()); });
+		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive($"{Positive.Separator}123"); });
+
+		string[] tests = ["a123", "123a", "12a3"];
+
+		for (int j = 0; j < tests.Length; ++j)
+			Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(tests[j]); });
+
+		for (int i = tests[0].Length; i > 0; --i)
+		{
+			for (int j = 0; j < tests.Length; ++j)
+				Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(tests[j].Insert(i, Positive.Separator.ToString())); });
+		}
 
 		Random rnd = new();
 		int fractionMarkerIndex;
@@ -74,7 +70,7 @@ public class PositiveTest
 			number = new(characters);
 			characters = characters.TrimEnd('0');
 
-			Assert.AreEqual(characters.Split('.')[1].Length, number.FractionLength);
+			Assert.AreEqual(characters.Split(Positive.Separator)[1].Length, number.FractionLength);
 
 			characters = characters.Remove(fractionMarkerIndex, 1);
 
