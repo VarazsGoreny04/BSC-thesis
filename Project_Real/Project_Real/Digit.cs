@@ -157,14 +157,14 @@ public readonly struct Digit
 			throw new DivideByZeroException();
 
 		bool[] minuend, suprahend, difference;
-		bool[] denumeratorEnd = b2.Take(trueIndex + 1).ToArray();
-		short lenDiff = (short)(b1.Length - denumeratorEnd.Length);
+		bool[] denominatorEnd = b2.Take(trueIndex + 1).ToArray();
+		short lenDiff = (short)(b1.Length - denominatorEnd.Length);
 		bool[] whole = new bool[lenDiff + 1];
 
 		for (short i = lenDiff; i >= 0; --i)
 		{
 			minuend = b1[i..];
-			suprahend = [.. denumeratorEnd, .. new bool[lenDiff - i]];
+			suprahend = [.. denominatorEnd, .. new bool[lenDiff - i]];
 
 			if (!BitGreaterThan(suprahend, minuend))
 			{
