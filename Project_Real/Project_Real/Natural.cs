@@ -293,6 +293,84 @@ public readonly struct Natural
 		return (root, remainder);
 	}
 
+	public static (Natural Whole, Natural Remainder) Root(Natural value, Natural n)
+	{
+		Digit one = new('1');
+
+		if (n < "3")
+		{
+			return n.ToString() switch
+			{
+				"0" => (new([one]), new()),
+				"1" => (value, new()),
+				_ => SquareRoot(value)
+			};
+		}
+
+		int nInt = Convert.ToUInt16(n.ToString());
+		Digit[] digits = [.. value.Digits, .. Digit.CreateArray((nInt - (value.Digits.Length % nInt)) % nInt)];
+
+		Digit xTry;
+		Natural test, previousTest, kNatural, nMinusKN, binomial;
+		Natural nFactorial = Factorial(n);
+		Natural remainder = new();
+		Natural root = new();
+
+		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
+		{
+			remainder = new Natural([.. digits[i..(i + nInt)], .. remainder.Digits]);
+
+			xTry = Digit.ZERO;
+			test = new();
+
+			if (!remainder.IsZero)
+			{
+				byte j = 0;
+				do
+				{
+					xTry += one;
+					previousTest = test;
+					test = new();
+
+					for (int k = nInt - 1; k >= 0; --k)
+					{
+
+						kNatural = k.ToString();
+						nMinusKN = n - kNatural;
+						binomial = nFactorial / (Factorial(kNatural) * Factorial(nMinusKN));
+
+						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).Digits]);
+					}
+				} while (++j < 10 && test <= remainder);
+
+				xTry -= one;
+				remainder -= previousTest;
+			}
+
+			root = new Natural([xTry, .. root.Digits]);
+		}
+
+		return (root, remainder);
+	}
+
+	public static Natural Factorial(Natural n)
+	{
+		Natural one = "1";
+
+		if (n.IsZero || Equals(n, one))
+			return one;
+
+		Natural result = n;
+
+		while (!Equals(n, one))
+		{
+			n -= one;
+			result *= n;
+		}
+
+		return result;
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Natural natural && Equals(this, natural);
