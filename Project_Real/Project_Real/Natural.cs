@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using System.Collections.Immutable;
+
+namespace Project_Real;
 
 public readonly struct Natural
 {
@@ -7,7 +9,7 @@ public readonly struct Natural
 	private readonly int length;
 
 	public readonly bool IsZero;
-	public readonly Digit[] Digits;
+	public readonly ImmutableArray<Digit> Digits;
 
 	#endregion
 
@@ -22,9 +24,9 @@ public readonly struct Natural
 
 	public Natural()
 	{
-		IsZero = true;
-		Digits = [Digit.ZERO];
 		length = 1;
+		Digits = [Digit.ZERO];
+		IsZero = true;
 	}
 
 	public Natural(string number)
@@ -39,18 +41,20 @@ public readonly struct Natural
 		if (IsZero)
 			number = "0";
 
-		Digits = new Digit[number.Length];
-		length = Digits.Length;
+		length = number.Length;
+		Digit[] digits = new Digit[length];
 
 		try
 		{
-			for (int i = 0; i < Length; ++i)
-				Digits[i] = new Digit(number[^(i + 1)]);
+			for (int i = 0; i < length; ++i)
+				digits[i] = new Digit(number[^(i + 1)]);
 		}
 		catch (Digit.ValueOutOfRangeException)
 		{
 			throw new ArgumentException();
 		}
+
+		Digits = ImmutableArray.Create(digits);
 	}
 
 	public Natural(Digit[] digits)
@@ -58,9 +62,9 @@ public readonly struct Natural
 		if (digits is null || digits.Length < 1)
 			throw new ArgumentException();
 
-		Digits = Digit.TrimEnd(digits);
-		IsZero = Digits.Length == 1 && Equals(Digits[0], Digit.ZERO);
+		Digits = ImmutableArray.Create(Digit.TrimEnd(digits));
 		length = Digits.Length;
+		IsZero = length == 1 && Equals(Digits[0], Digit.ZERO);
 	}
 
 	#endregion
@@ -71,15 +75,15 @@ public readonly struct Natural
 	{
 		string number = string.Empty;
 
-		for (int i = 1; i <= Digits.Length; ++i)
-			number += Digits[^i];
+		for (int i = Digits.Length - 1; i >= 0; --i)
+			number += Digits[i];
 
 		return number;
 	}
 
 	public static Natural TrimEnd(Natural n)
 	{
-		return new Natural(Digit.TrimEnd(n.Digits));
+		return new Natural(Digit.TrimEnd([.. n.Digits]));
 	}
 
 	public static bool Equals(Natural n1, Natural n2)
@@ -87,11 +91,11 @@ public readonly struct Natural
 		if (n1.Length != n2.Length)
 			return false;
 
-		int i = 0;
+		int i = n1.Length;
 
-		while (++i < n1.Length && Digit.Equals(n1[^i], n2[^i])) { }
+		while (--i > 0 && Digit.Equals(n1[i], n2[i])) { }
 
-		return i == n1.Length && Digit.Equals(n1[^i], n2[^i]);
+		return i == 0 && Digit.Equals(n1[0], n2[0]);
 	}
 
 	public static bool GreaterThan(Natural n1, Natural n2)
@@ -99,11 +103,11 @@ public readonly struct Natural
 		if (n1.Length != n2.Length)
 			return n1.Length > n2.Length;
 
-		int i = 0;
+		int i = n1.Length;
 
-		while (++i < n1.Length && Digit.Equals(n1[^i], n2[^i])) { }
+		while (--i > 0 && Digit.Equals(n1[i], n2[i])) { }
 
-		return Digit.GreaterThan(n1[^i], n2[^i]);
+		return Digit.GreaterThan(n1[i], n2[i]);
 	}
 
 	public static Natural Add(Natural n1, Natural n2, bool carry = false)
@@ -139,13 +143,10 @@ public readonly struct Natural
 		if (GreaterThan(n2, n1))
 			(n1, n2) = (n2, n1);
 
-		if (n2.Length == 1)
-		{
-			if (Digit.Equals(n2[0], Digit.ZERO))
-				return new Natural();
-			if (Digit.Equals(n2[0], '1'))
-				return n1;
-		}
+		if (n2.IsZero)
+			return new Natural();
+		else if (Equals(n2, "1"))
+			return n1;
 
 		Natural result = new();
 		Digit[] temp;
@@ -189,7 +190,7 @@ public readonly struct Natural
 		int tempLength;
 		Natural temp = new();
 		Digit one = new('1');
-		Digit[] remainder = n1.Digits;
+		Digit[] remainder = [.. n1.Digits];
 		Digit[] result = Digit.CreateArray(n1.Length - n2.Length + 1);
 
 		int i = n1.Length - n2.Length;
@@ -204,7 +205,7 @@ public readonly struct Natural
 				result[i] = Digit.Add(result[i], one).Digit;
 			}
 
-			Array.Copy(temp.Digits, 0, remainder, i, temp.Length);
+			Array.Copy(temp.Digits.ToArray(), 0, remainder, i, temp.Length);
 			Array.Fill(remainder, Digit.ZERO, i + temp.Length, tempLength - temp.Length);
 
 			if (temp.IsZero)
@@ -218,7 +219,7 @@ public readonly struct Natural
 
 	public static Natural SecondPower(Natural n)
 	{
-		return n.IsZero ? throw new NotImplementedException() : Multiply(n, n);
+		return Multiply(n, n);
 	}
 
 	public static Natural Power(Natural n1, Natural n2)
@@ -227,9 +228,11 @@ public readonly struct Natural
 		Natural two = new([new Digit('2')]);
 
 		if (n2.IsZero)
-			return n1.IsZero ? throw new NotImplementedException() : result;
+			return /*n1.IsZero ? throw new NotImplementedException() :*/ result;
+		else if (Equals(n2, result))
+			return n1;
 		else if (Equals(n2, two))
-			return SecondPower(n1);
+			return Multiply(n1, n1);
 
 		Natural lastPowerCalculated = n1;
 
@@ -250,41 +253,44 @@ public readonly struct Natural
 		return result;
 	}
 
-	public static (Natural Whole, Natural Remainder) SquareRoot(Natural value)
+	public static (Natural Whole, Natural Remainder) SquareRoot(Natural n)
 	{
-		if (value.IsZero)
-			return (value, value);
+		if (n.IsZero || Equals(n, new("1")))
+			return (n, new());
 
 		Digit one = new('1');
-		Natural two = new([new Digit('2')]);
-		
+
 		Natural rootTimesTwo, test;
 		Natural remainder = new();
 		Natural root = new();
 		Digit xTry;
-		Digit[] result = new Digit[(value.length + 1) / 2];
 
-		for (int i = result.Length - 1; i >= 0; --i)
+		for (int i = ((n.length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
 		{
-			remainder = new([value.Digits[i * 2], ((i * 2) + 1 < value.Digits.Length ? value.Digits[(i * 2) + 1] : Digit.ZERO), .. remainder.Digits]);
+			remainder = new([n[i], (i + 1 < n.Digits.Length ? n[i + 1] : Digit.ZERO), .. remainder.Digits]);
 
-			rootTimesTwo = Multiply(root, two);
-			xTry = new();
-			int j = 0;
+			xTry = Digit.ZERO;
 
-			do
+			if (!remainder.IsZero)
 			{
-				xTry += one;
-				test = Multiply(new([xTry, .. rootTimesTwo.Digits]), new([xTry]));
-			} while (++j < 10 && test <= remainder);
+				rootTimesTwo = Add(root, root);
 
-			result[i] = Digit.Substract(xTry, one).Digit;
+				byte j = 0;
+				do
+				{
+					xTry += one;
+					test = Multiply(new([xTry, .. rootTimesTwo.Digits]), new([xTry]));
+				} while (++j < 10 && test <= remainder);
 
-			remainder -= Multiply(new([result[i], .. rootTimesTwo.Digits]), new([result[i]]));
-			root = new Natural([result[i], .. root.Digits]);
+				xTry = Digit.Substract(xTry, one).Digit;
+
+				remainder -= Multiply(new([xTry, .. rootTimesTwo.Digits]), new([xTry]));
+			}
+
+			root = new Natural([xTry, .. root.Digits]);
 		}
 
-		return (new Natural(result), remainder);
+		return (root, remainder);
 	}
 
 	public override readonly bool Equals(object? obj)
@@ -315,6 +321,7 @@ public readonly struct Natural
 	public static Natural operator %(Natural f1, Natural f2) => Divide(f1, f2).Remainder;
 	public static Natural operator ^(Natural f1, Natural f2) => Power(f1, f2);
 	public static Natural operator ~(Natural f) => SquareRoot(f).Whole;
+	public static Natural operator |(Natural f1, Natural f2) => Root(f2, f1).Whole;
 
 	#endregion
 }

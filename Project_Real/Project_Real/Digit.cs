@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using System.Collections.Immutable;
+
+namespace Project_Real;
 
 public readonly struct Digit
 {
@@ -15,9 +17,9 @@ public readonly struct Digit
 	public const short LENGTH = 4;
 	public static readonly Digit ZERO = new();
 
-	public readonly bool[] Bits;
+	public readonly ImmutableArray<bool> Bits;
 
-	private static readonly bool[] TEN = [false, true, false, true];
+	private static readonly ImmutableArray<bool> TEN = [false, true, false, true];
 
 	#endregion
 
@@ -31,7 +33,7 @@ public readonly struct Digit
 
 	public Digit()
 	{
-		Bits = new bool[LENGTH];
+		Bits = ImmutableArray.Create(new bool[LENGTH]);
 	}
 
 	public Digit(char character)
@@ -41,17 +43,25 @@ public readonly struct Digit
 		if (number < 0 || number > 9)
 			throw new ValueOutOfRangeException();
 
-		Bits = new bool[LENGTH];
+		bool[] bits = new bool[LENGTH];
 		short pow = 0;
 
 		do
 		{
-			Bits[pow++] = number % 2 == 1;
+			bits[pow++] = number % 2 == 1;
 			number /= 2;
 		} while (number > 0);
+
+		Bits = ImmutableArray.Create(bits);
+	}
+	public Digit(bool[] bitArray)
+	{
+		ImmutableArray<bool> immutableBitArray = ImmutableArray.Create(bitArray);
+
+		Bits = BitGreaterThan(TEN, immutableBitArray) ? immutableBitArray : throw new ValueOutOfRangeException();
 	}
 
-	public Digit(bool[] bitArray)
+	public Digit(ImmutableArray<bool> bitArray)
 	{
 		Bits = BitGreaterThan(TEN, bitArray) ? bitArray : throw new ValueOutOfRangeException();
 	}
@@ -60,7 +70,7 @@ public readonly struct Digit
 
 	#region Private methods
 
-	private static bool BitEquals(bool[] b1, bool[] b2)
+	private static bool BitEquals(ImmutableArray<bool> b1, ImmutableArray<bool> b2)
 	{
 		if (b1.Length != b2.Length)
 			throw new UnmatchingArrayLengthException();
@@ -71,7 +81,7 @@ public readonly struct Digit
 		return i == b1.Length && b1[^i] == b2[^i];
 	}
 
-	private static bool BitGreaterThan(bool[] b1, bool[] b2)
+	private static bool BitGreaterThan(ImmutableArray<bool> b1, ImmutableArray<bool> b2)
 	{
 		if (b1.Length != b2.Length)
 			throw new UnmatchingArrayLengthException();
@@ -82,17 +92,17 @@ public readonly struct Digit
 		return b1[^i] && !b2[^i];
 	}
 
-	private static bool[] TwosComplement(bool[] b)
+	private static ImmutableArray<bool> TwosComplement(ImmutableArray<bool> b)
 	{
 		bool[] result = new bool[b.Length];
 
 		for (short i = 0; i < b.Length; ++i)
 			result[i] = !b[i];
 
-		return BitAdd(result, new bool[b.Length], true).Bits;
+		return BitAdd(ImmutableArray.Create(result), ImmutableArray.Create(new bool[b.Length]), true).Bits;
 	}
 
-	private static (bool OverFlow, bool[] Bits) BitAdd(bool[] b1, bool[] b2, bool carry = false)
+	private static (bool OverFlow, ImmutableArray<bool> Bits) BitAdd(ImmutableArray<bool> b1, ImmutableArray<bool> b2, bool carry = false)
 	{
 		if (b1.Length != b2.Length)
 			throw new UnmatchingArrayLengthException();
@@ -117,10 +127,10 @@ public readonly struct Digit
 			}
 		}
 
-		return (carry, result);
+		return (carry, ImmutableArray.Create(result));
 	}
 
-	private static bool[] BitSubstract(bool[] b1, bool[] b2)
+	private static ImmutableArray<bool> BitSubstract(ImmutableArray<bool> b1, ImmutableArray<bool> b2)
 	{
 		if (BitGreaterThan(b2, b1))
 			throw new SecondValueGreaterException();
@@ -128,9 +138,9 @@ public readonly struct Digit
 		return BitAdd(b1, TwosComplement(b2)).Bits;
 	}
 
-	private static bool[] BitMultiply(bool[] b1, bool[] b2)
+	private static ImmutableArray<bool> BitMultiply(ImmutableArray<bool> b1, ImmutableArray<bool> b2)
 	{
-		bool[] temp;
+		ImmutableArray<bool> temp;
 		bool[] result = new bool[b1.Length + b2.Length - 1];
 		int resultCutLength = result.Length - b1.Length;
 
@@ -138,16 +148,16 @@ public readonly struct Digit
 		{
 			if (b2[^(i + 1)])
 			{
-				temp = BitAdd(result[resultCutLength..], [.. b1, .. new bool[i]]).Bits;
-				Array.Copy(temp, 0, result, resultCutLength, temp.Length);
+				temp = BitAdd(ImmutableArray.Create(result[resultCutLength..]), ImmutableArray.Create([.. b1, .. new bool[i]])).Bits;
+				Array.Copy(temp.ToArray(), 0, result, resultCutLength, temp.Length);
 			}
 			--resultCutLength;
 		}
 
-		return result;
+		return ImmutableArray.Create(result);
 	}
 
-	private static (bool[] Whole, bool[] Remainder) BitDivide(bool[] b1, bool[] b2)
+	private static (ImmutableArray<bool> Whole, ImmutableArray<bool> Remainder) BitDivide(ImmutableArray<bool> b1, ImmutableArray<bool> b2)
 	{
 		short trueIndex = (short)b2.Length;
 
@@ -156,42 +166,48 @@ public readonly struct Digit
 		if (trueIndex < 0)
 			throw new DivideByZeroException();
 
-		bool[] minuend, suprahend, difference;
+		ImmutableArray<bool> minuend, suprahend, difference;
 		bool[] denominatorEnd = b2.Take(trueIndex + 1).ToArray();
 		short lenDiff = (short)(b1.Length - denominatorEnd.Length);
 		bool[] whole = new bool[lenDiff + 1];
+		bool[] remainder = [.. b1];
 
 		for (short i = lenDiff; i >= 0; --i)
 		{
-			minuend = b1[i..];
+			minuend = ImmutableArray.Create(remainder[i..]);
 			suprahend = [.. denominatorEnd, .. new bool[lenDiff - i]];
 
 			if (!BitGreaterThan(suprahend, minuend))
 			{
 				difference = BitAdd(minuend, TwosComplement(suprahend)).Bits;
-				Array.Copy(difference, 0, b1, i, difference.Length);
+				Array.Copy(difference.ToArray(), 0, remainder, i, difference.Length);
 				whole[i] = true;
 			}
 		}
 
-		return (whole, b1);
+		return (ImmutableArray.Create(whole), ImmutableArray.Create(remainder));
 	}
 
 	#endregion
 
 	#region Public methods
 
-	public override readonly string ToString()
+	public override string ToString()
 	{
-		short number = 0;
+		return ToChar(this).ToString();
+	}
 
-		for (short i = 0; i < LENGTH; ++i)
+	public static char ToChar(Digit d)
+	{
+		char number = '0';
+
+		for (byte i = 0; i < LENGTH; ++i)
 		{
-			if (Bits[i])
-				number += (short)Math.Pow(2d, i);
+			if (d.Bits[i])
+				number += (char)Math.Pow(2d, i);
 		}
 
-		return number.ToString();
+		return number;
 	}
 
 	public static Digit[] CreateArray(int length)
@@ -231,7 +247,7 @@ public readonly struct Digit
 
 	public static (bool OverFlow, Digit Digit) Add(Digit d1, Digit d2, bool carry = false)
 	{
-		(carry, bool[] result) = BitAdd(d1.Bits, d2.Bits, carry);
+		(carry, ImmutableArray<bool> result) = BitAdd(d1.Bits, d2.Bits, carry);
 
 		if (carry || !BitGreaterThan(TEN, result))
 			return (true, new Digit(BitAdd(result, [false, true, true, false]).Bits));
@@ -241,7 +257,7 @@ public readonly struct Digit
 
 	public static (bool Borrow, Digit Digit) Substract(Digit d1, Digit d2, bool carry = false)
 	{
-		bool[] d2PlusCarry = carry ? BitAdd(d2.Bits, new bool[d2.Bits.Length], carry).Bits : d2.Bits;
+		ImmutableArray<bool> d2PlusCarry = carry ? BitAdd(d2.Bits, ImmutableArray.Create(new bool[d2.Bits.Length]), carry).Bits : d2.Bits;
 
 		if (!BitGreaterThan(d2PlusCarry, d1.Bits))
 			return (false, new Digit(BitSubstract(d1.Bits, d2PlusCarry)));
@@ -251,16 +267,16 @@ public readonly struct Digit
 
 	public static (Digit OverFlow, Digit Digit) Multiply(Digit d1, Digit d2)
 	{
-		(bool[] whole, bool[] remainder) = BitDivide(BitMultiply(d1.Bits, d2.Bits), TEN);
+		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(BitMultiply(d1.Bits, d2.Bits), TEN);
 
-		return (new Digit([.. whole, .. new bool[LENGTH - whole.Length]]), new Digit(remainder.Take(LENGTH).ToArray()));
+		return (new Digit(ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]])), new Digit(remainder.Take(LENGTH).ToArray()));
 	}
 
 	public static (Digit Whole, Digit Remainder) Divide(Digit d1, Digit d2)
 	{
-		(bool[] whole, bool[] remainder) = BitDivide(d1.Bits, d2.Bits);
+		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(d1.Bits, d2.Bits);
 
-		return (new Digit([.. whole, .. new bool[LENGTH - whole.Length]]), new Digit(remainder));
+		return (new Digit(ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]])), new Digit(remainder));
 	}
 
 	public override bool Equals(object? obj)

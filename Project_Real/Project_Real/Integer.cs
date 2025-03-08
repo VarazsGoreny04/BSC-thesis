@@ -18,7 +18,7 @@ public readonly struct Integer
 	public readonly bool IsZero => Value.IsZero;
 	public readonly int Length => Value.Length;
 	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly Digit[] Digits => Value.Digits;
+	public readonly Digit[] Digits => [.. Value.Digits];
 
 	#endregion
 

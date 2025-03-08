@@ -25,7 +25,7 @@ public readonly struct Positive
 
 	public readonly bool IsZero => Value.IsZero;
 	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly Digit[] Digits => Value.Digits;
+	public readonly Digit[] Digits => [.. Value.Digits];
 
 	#endregion
 
@@ -80,7 +80,7 @@ public readonly struct Positive
 
 			while (i < Math.Min(fractionLength, value.Length) && Digit.Equals(value[i], Digit.ZERO)) { ++i; }
 
-			Value = new Natural(value.Digits[i..]);
+			Value = new Natural(value.Digits.ToArray()[i..]);
 			FractionLength = fractionLength - i;
 			Length = Math.Max(Value.Length, FractionLength + 1);
 			WholeLength = Length - FractionLength;
@@ -240,9 +240,10 @@ public readonly struct Positive
 	public static Positive operator -(Positive f1, Positive f2) => Substract(f1, f2).Value;
 	public static Positive operator *(Positive f1, Positive f2) => Multiply(f1, f2);
 	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
-	public static Positive operator %(Positive f1, Positive f2) => new(Natural.Divide(f1.Value, f2.Value).Remainder, 0);
+	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2).Remainder;
 	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
 	public static Positive operator ~(Positive f) => SquareRoot(f);
+	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
 
 	#endregion
 }

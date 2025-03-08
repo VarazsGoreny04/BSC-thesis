@@ -9,6 +9,7 @@ public class NaturalTest
 	public void ZeroConstructor()
 	{
 		Natural empty = new();
+		Assert.IsTrue(empty.IsZero);
 
 		Natural[] zeros =
 		[
@@ -19,7 +20,10 @@ public class NaturalTest
 		];
 
 		foreach (Natural zero in zeros)
+		{
+			Assert.IsTrue(zero.IsZero);
 			Assert.AreEqual(empty, zero);
+		}
 	}
 
 	[TestMethod]
@@ -149,7 +153,7 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void GreaterThanMethod()
+	public void GreaterThanMethod() // NEM JO! TESZTELJEN UTOLSO KARAKTERT IS
 	{
 		Random rnd = new();
 		bool expected;
@@ -287,8 +291,6 @@ public class NaturalTest
 
 			Assert.AreEqual(Math.Pow(int1, 2).ToString(), Natural.SecondPower(natural1).ToString());
 		}
-
-		Assert.ThrowsException<NotImplementedException>(() => Natural.SecondPower("0"));
 	}
 
 	[TestMethod]
@@ -309,6 +311,6 @@ public class NaturalTest
 			Assert.AreEqual(Math.Pow(int1, int2).ToString(), Natural.Power(natural1, natural2).ToString());
 		}
 
-		Assert.ThrowsException<NotImplementedException>(() => Natural.Power("0", "0"));
+		Assert.AreEqual("1", Natural.Power("0", "0").ToString());
 	}
 }

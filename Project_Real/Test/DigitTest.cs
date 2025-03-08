@@ -1,11 +1,12 @@
 ﻿using Project_Real;
+using System.Collections.Immutable;
 
 namespace Test;
 
 [TestClass]
 public class DigitTest
 {
-	private readonly bool[][] binary =
+	private readonly ImmutableArray<bool>[] binary =
 	[
 		[false, false, false, false],	// 0
 		[true, false, false, false],	// 1

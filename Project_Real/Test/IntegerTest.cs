@@ -366,9 +366,9 @@ public class IntegerTest
 			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Power(integer1, integer2).ToString());
 		}
 
-		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("0", "0"));
-		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("-0", "-0"));
-		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("0", "-0"));
-		Assert.ThrowsException<NotImplementedException>(() => Integer.Power("-0", "0"));
+		Assert.AreEqual(Format(true, "1"), Integer.Power("0", "0").ToString());
+		Assert.AreEqual(Format(true, "1"), Integer.Power("-0", "-0").ToString());
+		Assert.AreEqual(Format(true, "1"), Integer.Power("0", "-0").ToString());
+		Assert.AreEqual(Format(true, "1"), Integer.Power("-0", "0").ToString());
 	}
 }
