@@ -215,6 +215,17 @@ public readonly struct Positive
 		return new Positive(Natural.SquareRoot(valueWithPadding).Whole, (value.FractionLength + padding.Length) / 2);
 	}
 
+	public static Positive Root(Positive value, Positive n)
+	{
+		if (n.FractionLength != 0)
+			throw new NotImplementedException();
+
+		int nInt = Convert.ToUInt16(n.ToString());
+		Digit[] padding = Digit.CreateArray(((fractionCalculatonLength * nInt - value.FractionLength) * nInt + (nInt - 1)) / nInt);
+		Natural valueWithPadding = new([.. padding, .. value.Digits]);
+		return new Positive(Natural.Root(valueWithPadding, new Natural(n.Digits)).Whole, (value.FractionLength + padding.Length) / nInt);
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Positive positive && Equals(this, positive);
@@ -243,7 +254,7 @@ public readonly struct Positive
 	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2).Remainder;
 	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
 	public static Positive operator ~(Positive f) => SquareRoot(f);
-	//public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
+	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
 
 	#endregion
 }

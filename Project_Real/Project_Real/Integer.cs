@@ -137,6 +137,15 @@ public readonly struct Integer
 		return (new Integer(true, whole), new Integer(true, remainder));
 	}
 
+	public static (Integer Whole, Integer Remainder) Root(Integer i1, Integer i2)
+	{
+		if (!i2.Sign || i1.Sign != Equals(Digit.Divide(i2[0], '2').Remainder, Digit.ZERO))
+			throw new NotImplementedException();
+
+		(Natural whole, Natural remainder) = Natural.Root(i1.Value, i2.Value);
+		return (new Integer(i1.Sign, whole), new Integer(i1.Sign, remainder));
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Integer integer && Equals(this, integer);
@@ -165,6 +174,7 @@ public readonly struct Integer
 	public static Integer operator %(Integer f1, Integer f2) => Divide(f1, f2).Remainder;
 	public static Integer operator ^(Integer f1, Integer f2) => Power(f1, f2);
 	public static Integer operator ~(Integer f) => SquareRoot(f).Whole;
+	public static Integer operator |(Integer f1, Integer f2) => Root(f2, f1).Whole;
 
 	#endregion
 }
