@@ -243,7 +243,7 @@ public readonly struct Positive
 	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2).Remainder;
 	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
 	public static Positive operator ~(Positive f) => SquareRoot(f);
-	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
+	//public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
 
 	#endregion
 }
