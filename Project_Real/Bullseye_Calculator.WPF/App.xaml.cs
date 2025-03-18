@@ -8,7 +8,7 @@ namespace Bullseye_Calculator;
 public partial class App : Application
 {
 	private MainWindow _menu = null!;
-	private DispatcherTimer _timer = null!;
+	//private DispatcherTimer _timer = null!;
 
 	public App()
 	{

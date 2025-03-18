@@ -151,11 +151,6 @@ public class Program
 
 		//Natural.Divide("25", "2");
 
-		//Console.WriteLine(Natural.Power("6", "2"));
-		//Console.WriteLine(Natural.Power("10", "100"));
-		Console.WriteLine(Natural.Power("645", "219"));
-		Console.WriteLine(Math.Pow(645, 219));
-
 		//var p8 = Positive.Divide(new Positive("927"), new Positive("0.000"));
 
 		//Console.WriteLine(Positive.Add(new Positive("6."), new Positive("1.3")));
@@ -164,7 +159,7 @@ public class Program
 		/*Console.WriteLine(Positive.Divide(new Positive("6."), new Positive("1.6")));
 		Console.WriteLine(Positive.Divide(new Positive("3."), new Positive("0.6")));
 		Console.WriteLine(Positive.Divide(new Positive("68.5"), new Positive("1.6")));*/
-		
+
 		/*var p1 = Positive.GetWhole(Positive.Divide(new Positive("2368.5456"), new Positive("12.67")).Value);
 		var p2 = Positive.Divide(new Positive("23.68"), new Positive("2368.0000"));
 		var p3 = Positive.Divide(new Positive("1423.927"), new Positive("2368.456"));
@@ -186,6 +181,37 @@ public class Program
 		MatrixToString(p2.Item1);
 		Console.Write(p3.Item2);
 		MatrixToString(p3.Item1);*/
+
+		//Console.WriteLine(Natural.Power("6", "2"));
+		//Console.WriteLine(Natural.Power("10", "100"));
+		//Console.WriteLine(Natural.Power("645", "219"));
+		//Console.WriteLine(Math.Pow(645, 219));
+
+		//Console.WriteLine(Natural.SquareRoot("1522756"));
+		/*Console.WriteLine(Natural.SquareRoot("1522756"));
+		Console.WriteLine(Natural.SquareRoot("23189675626"));
+		Console.WriteLine(Positive.SquareRoot("152.2756"));
+		Console.WriteLine(Positive.SquareRoot("1522.756"));
+		Console.WriteLine(Positive.SquareRoot("2318785.835536"));*/
+		//Console.WriteLine(Positive.SquareRoot("100.0"));              // 10
+		//Console.WriteLine(Positive.SquareRoot("4192"));               // 64.745656224954581890369881235962
+		/*Console.WriteLine(Positive.Root("1522.756", "2"));              // 39.0225063264778009568663463383
+		Console.WriteLine(Natural.Root("1522756000000000", "2"));       // 39.0225063264778009568663463383
+		Console.WriteLine(Positive.Root("2318785.835536", "2"));
+		Console.WriteLine(Positive.Root("1522.756", "4"));
+		Console.WriteLine(Natural.Root("1522756000", "3"));
+		Console.WriteLine(Positive.Root("3530945043.777457217", "3"));
+		Console.WriteLine(Natural.Root("3530945043777457217", "3"));*/
+		//Console.WriteLine(Natural.Root("4192000000000", "3"));
+		//Console.WriteLine(Positive.Root("4192000000000", "3"));
+
+
+		/*Positive n = "3";
+
+		Positive res = Positive.Log(n);
+
+		Console.WriteLine(res);*/
+		//Console.WriteLine(Positive.Power("10", res));
 	}
 
 	public static void MatrixToString<T>(T[] a)

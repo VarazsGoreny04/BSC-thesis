@@ -6,67 +6,87 @@
 		xmlns:local="clr-namespace:Bullseye_Calculator.View"
 		mc:Ignorable="d"
 		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260"> <!-- Icon="/Icon/icon.ico"> -->
-	<Grid Background="Gray">
+	<Grid Background="#232323">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="40" />
-			<RowDefinition Height="40" />
-			<RowDefinition Height="40" />
-			<RowDefinition Height="40" />
-			<RowDefinition Height="40" />
-			<RowDefinition Height="40" />
+			<RowDefinition Height="3*" />
+			<RowDefinition />
+			<RowDefinition Height="6*" />
 		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
+
+		<Label Grid.Row="0"/>
 
 
-		<ItemsControl Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Center" VerticalAlignment="Center">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<UniformGrid Rows="4" />
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			
-		</ItemsControl>
-		<Button Grid.Row="6" Grid.Column="2" Content="0" />
-		<Button Grid.Row="5" Grid.Column="1" Content="1" />
-		<Button Grid.Row="5" Grid.Column="2" Content="2" />
-		<Button Grid.Row="5" Grid.Column="3" Content="3" />
-		<Button Grid.Row="4" Grid.Column="1" Content="4" />
-		<Button Grid.Row="4" Grid.Column="2" Content="5" />
-		<Button Grid.Row="4" Grid.Column="3" Content="6" />
-		<Button Grid.Row="3" Grid.Column="1" Content="7" />
-		<Button Grid.Row="3" Grid.Column="2" Content="8" />
-		<Button Grid.Row="3" Grid.Column="3" Content="9" />
+		<Grid Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="4*" />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 
-		<Button Grid.Row="1" Grid.Column="5" Content="%" />
-		<Button Grid.Row="2" Grid.Column="5" Content="/" />
-		<Button Grid.Row="3" Grid.Column="5" Content="×" />
-		<Button Grid.Row="4" Grid.Column="5" Content="–" />
-		<Button Grid.Row="5" Grid.Column="5" Content="+" />
-		<Button Grid.Row="6" Grid.Column="5" Content="=" />
+			<Expander Grid.Column="0" x:Name="History" Header="Steps" ExpandDirection="Up" />
+			<Button Grid.Column="1" Content="[ ]" />
+			<Button Grid.Column="2" Content="I" />
+			<Button Grid.Column="3" Content="∫" />
+		</Grid>
 
-		<Button Grid.Row="6" Grid.Column="1" Content="␣" />
-		<Button Grid.Row="6" Grid.Column="3" Content="." />
-		<Button Grid.Row="1" Grid.Column="1" Content="(" />
-		<Button Grid.Row="1" Grid.Column="2" Content=")" />
+		<ListView Grid.Row="2" Style="{Binding Source={StaticResource ExpandableList}}" />
 
-		<Button Grid.Row="1" Grid.Column="0" Content="x²" />
-		<Button Grid.Row="2" Grid.Column="0" Content="xⁿ" />
-		<Button Grid.Row="3" Grid.Column="0" Content="!x" />
-		<Button Grid.Row="4" Grid.Column="0" Content="√x" />
-		<Button Grid.Row="5" Grid.Column="0" Content="ⁿ√x" />
-		<Button Grid.Row="6" Grid.Column="0" Content="|x|" />
+		<Grid Grid.Row="2">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 
-		<Button Grid.Row="2" Grid.Column="1" Content="π" />
-		<Button Grid.Row="2" Grid.Column="2" Content="e" />
+			<Button Grid.Row="5" Grid.Column="2" Content="0" />
+			<Button Grid.Row="4" Grid.Column="1" Content="1" />
+			<Button Grid.Row="4" Grid.Column="2" Content="2" />
+			<Button Grid.Row="4" Grid.Column="3" Content="3" />
+			<Button Grid.Row="3" Grid.Column="1" Content="4" />
+			<Button Grid.Row="3" Grid.Column="2" Content="5" />
+			<Button Grid.Row="3" Grid.Column="3" Content="6" />
+			<Button Grid.Row="2" Grid.Column="1" Content="7" />
+			<Button Grid.Row="2" Grid.Column="2" Content="8" />
+			<Button Grid.Row="2" Grid.Column="3" Content="9" />
+
+			<Button Grid.Row="0" Grid.Column="5" Content="%" />
+			<Button Grid.Row="1" Grid.Column="5" Content="/" />
+			<Button Grid.Row="2" Grid.Column="5" Content="×" />
+			<Button Grid.Row="3" Grid.Column="5" Content="–" />
+			<Button Grid.Row="4" Grid.Column="5" Content="+" />
+			<Button Grid.Row="5" Grid.Column="5" Content="=" />
+
+			<Button Grid.Row="5" Grid.Column="1" Content="␣" />
+			<Button Grid.Row="5" Grid.Column="3" Content="." />
+			<Button Grid.Row="0" Grid.Column="1" Content="(" />
+			<Button Grid.Row="0" Grid.Column="2" Content=")" />
+
+			<Button Grid.Row="0" Grid.Column="0" Content="x²" />
+			<Button Grid.Row="1" Grid.Column="0" Content="xⁿ" />
+			<Button Grid.Row="2" Grid.Column="0" Content="!x" />
+			<Button Grid.Row="3" Grid.Column="0" Content="√x" />
+			<Button Grid.Row="4" Grid.Column="0" Content="ⁿ√x" />
+			<Button Grid.Row="5" Grid.Column="0" Content="|x|" />
+
+			<Button Grid.Row="1" Grid.Column="1" Content="π" />
+			<Button Grid.Row="1" Grid.Column="2" Content="e" />
 		
-		<Button Grid.Row="1" Grid.Column="3" Content="C/CE" />
-		<Button Grid.Row="2" Grid.Column="3" Content="⇦" />
+			<Button Grid.Row="0" Grid.Column="3" Content="C/CE" />
+			<Button Grid.Row="1" Grid.Column="3" Content="⇦" />
+		</Grid>
 	</Grid>
 </Window>

@@ -6,6 +6,9 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Resources/ButtonStyle.xaml" />
+				<ResourceDictionary Source="/Resources/LabelStyle.xaml" />
+				<ResourceDictionary Source="/Resources/ExpanderStyle.xaml" />
+				<ResourceDictionary Source="/Resources/ListViewStyle.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
