@@ -296,13 +296,14 @@ public readonly struct Natural
 	public static (Natural Whole, Natural Remainder) Root(Natural value, Natural n)
 	{
 		Digit one = new('1');
+		Natural remainder = new();
 
 		if (n < "3")
 		{
 			return n.ToString() switch
 			{
-				"0" => (new([one]), new()),
-				"1" => (value, new()),
+				"0" => (new([one]), remainder),
+				"1" => (value, remainder),
 				_ => SquareRoot(value)
 			};
 		}
@@ -313,7 +314,6 @@ public readonly struct Natural
 		Digit xTry;
 		Natural test, previousTest, kNatural, nMinusKN, binomial;
 		Natural nFactorial = Factorial(n);
-		Natural remainder = new();
 		Natural root = new();
 
 		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
@@ -366,6 +366,23 @@ public readonly struct Natural
 		{
 			n -= one;
 			result *= n;
+		}
+
+		return result;
+	}
+
+	public static Natural Log(Natural n1, Natural n2)
+	{
+		if (n1.IsZero || n2.IsZero)
+			throw new NotImplementedException();
+
+		Natural one = new([new Digit('1')]);
+		Natural result = new();
+
+		while (!GreaterThan(n2, n1))
+		{
+			n1 = Divide(n1, n2).Whole;
+			result = Add(result, one);
 		}
 
 		return result;
