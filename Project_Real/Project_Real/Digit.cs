@@ -12,10 +12,24 @@ public readonly struct Digit
 
 	#endregion
 
-	#region Fields
+	#region Constants
 
 	public const short LENGTH = 4;
+
 	public static readonly Digit ZERO = new();
+	public static readonly Digit ONE = new('1');
+	public static readonly Digit TWO = new('2');
+	public static readonly Digit THREE = new('3');
+	public static readonly Digit FOUR = new('4');
+	public static readonly Digit FIVE = new('5');
+	public static readonly Digit SIX = new('6');
+	public static readonly Digit SEVEN = new('7');
+	public static readonly Digit EIGHT = new('8');
+	public static readonly Digit NINE = new('9');
+
+	#endregion
+
+	#region Fields
 
 	public readonly ImmutableArray<bool> Bits;
 
@@ -230,7 +244,7 @@ public readonly struct Digit
 	{
 		int i = 0;
 
-		while (++i < digits.Length && Equals(digits[^i], ZERO)) { }
+		while (++i < digits.Length && digits[^i] == ZERO) { }
 
 		return i == 1 ? digits : digits[..^(i - 1)];
 	}
@@ -281,7 +295,7 @@ public readonly struct Digit
 
 	public override bool Equals(object? obj)
 	{
-		return obj is Digit digit && Equals(this, digit);
+		return obj is Digit digit && this == digit;
 	}
 
 	public override int GetHashCode()

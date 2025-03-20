@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using System.Collections.Immutable;
+
+namespace Project_Real;
 
 public readonly struct Integer
 {
@@ -18,7 +20,7 @@ public readonly struct Integer
 	public readonly bool IsZero => Value.IsZero;
 	public readonly int Length => Value.Length;
 	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly Digit[] Digits => [.. Value.Digits];
+	public readonly ImmutableArray<Digit> Digits => Value.Digits;
 
 	#endregion
 
@@ -73,21 +75,18 @@ public readonly struct Integer
 
 	public static bool Equals(Integer i1, Integer i2)
 	{
-		return i1.Sign == i2.Sign && Natural.Equals(i1.Value, i2.Value);
+		return i1.Sign == i2.Sign && i1.Value == i2.Value;
 	}
 
 	public static bool GreaterThan(Integer i1, Integer i2)
 	{
-		if (i1.Sign != i2.Sign)
-			return i1.Sign;
-		else
-			return i1.Sign == Natural.GreaterThan(i1.Value, i2.Value);
+		return i1.Sign != i2.Sign ? i1.Sign : i1.Sign == (i1.Value > i2.Value);
 	}
 
 	public static Integer Add(Integer i1, Integer i2)
 	{
 		if (i1.Sign == i2.Sign)
-			return new Integer(i1.Sign, Natural.Add(i1.Value, i2.Value));
+			return new Integer(i1.Sign, i1.Value + i2.Value);
 		else
 		{
 			if (i2.Sign)
@@ -101,12 +100,12 @@ public readonly struct Integer
 
 	public static Integer Substract(Integer i1, Integer i2)
 	{
-		return Add(i1, new Integer(!i2.Sign, i2.Value));
+		return i1 + new Integer(!i2.Sign, i2.Value);
 	}
 
 	public static Integer Multiply(Integer i1, Integer i2)
 	{
-		return new Integer(i1.Sign == i2.Sign, Natural.Multiply(i1.Value, i2.Value));
+		return new Integer(i1.Sign == i2.Sign, i1.Value * i2.Value);
 	}
 
 	public static (Integer Whole, Integer Remainder) Divide(Integer i1, Integer i2)
@@ -117,7 +116,7 @@ public readonly struct Integer
 
 	public static Integer SecondPower(Integer i)
 	{
-		return i.IsZero ? throw new NotImplementedException() : Multiply(i, i);
+		return i * i;
 	}
 
 	public static Integer Power(Integer i1, Integer i2)
@@ -125,7 +124,7 @@ public readonly struct Integer
 		if (!i2.Sign)
 			throw new NotImplementedException();
 
-		return new(i1.Sign || Digit.Equals(Digit.Divide(i1[0], '2').Remainder, Digit.ZERO), Natural.Power(i1.Value, i2.Value));
+		return new Integer(i1.Sign || i1[0] % Digit.TWO == Digit.ZERO, i1.Value ^ i2.Value);
 	}
 
 	public static (Integer Whole, Integer Remainder) SquareRoot(Integer i)
@@ -139,7 +138,7 @@ public readonly struct Integer
 
 	public static (Integer Whole, Integer Remainder) Root(Integer i1, Integer i2)
 	{
-		if (!i2.Sign || i1.Sign != Equals(Digit.Divide(i2[0], '2').Remainder, Digit.ZERO))
+		if (!i2.Sign || i1.Sign != (i2[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
 		(Natural whole, Natural remainder) = Natural.Root(i1.Value, i2.Value);
@@ -148,7 +147,7 @@ public readonly struct Integer
 
 	public override readonly bool Equals(object? obj)
 	{
-		return obj is Integer integer && Equals(this, integer);
+		return obj is Integer integer && this == integer;
 	}
 
 	public override int GetHashCode()

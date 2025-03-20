@@ -1,22 +1,27 @@
-﻿namespace Project_Real;
+﻿using System.Collections.Immutable;
+
+namespace Project_Real;
 
 public readonly struct Writable
 {
 	#region Fields
 
-	public readonly bool Sign;
-	public readonly Positive Value;
+	private readonly bool sign;
+	private readonly Positive value;
 
 	#endregion
 
 	#region Properties
 
-	public readonly bool IsZero => Value.IsZero;
-	public readonly int Length => Value.Length;
-	public readonly int WholeLength => Value.WholeLength;
-	public readonly int FractionLength => Value.FractionLength;
-	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly Digit[] Digits => Value.Digits;
+	public readonly bool IsZero => value.IsZero;
+	public readonly int Length => value.Length;
+	public readonly int WholeLength => value.WholeLength;
+	public readonly int FractionLength => value.FractionLength;
+	public readonly Digit this[Index i] => value.Digits[i];
+	public readonly ImmutableArray<Digit> Digits => value.Digits;
+
+	public readonly bool Sign => sign;
+	public readonly Positive Value => value;
 
 	#endregion
 
@@ -24,8 +29,8 @@ public readonly struct Writable
 
 	public Writable()
 	{
-		Sign = true;
-		Value = new Positive();
+		sign = true;
+		value = new Positive();
 	}
 
 	public Writable(string number)
@@ -34,7 +39,7 @@ public readonly struct Writable
 
 		if (number.Length > 1 && !(number[0] >= '0' && number[0] <= '9'))
 		{
-			Sign = number[0] switch
+			sign = number[0] switch
 			{
 				'+' => true,
 				'-' => false,
@@ -44,17 +49,17 @@ public readonly struct Writable
 			start = 1;
 		}
 		else
-			Sign = true;
+			sign = true;
 
-		Value = new Positive(number[start..]);
+		value = new Positive(number[start..]);
 
-		Sign |= IsZero;
+		sign |= IsZero;
 	}
 
 	public Writable(bool sign, Positive value)
 	{
-		Value = value;
-		Sign = sign || IsZero;
+		this.value = value;
+		this.sign = sign || IsZero;
 	}
 
 	#endregion
@@ -63,32 +68,32 @@ public readonly struct Writable
 
 	public override string ToString()
 	{
-		return Integer.WriteSign ? $"{(Sign ? '+' : '-')}{Value}" : Value.ToString();
+		return Integer.WriteSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
 	}
 
 	public static bool Equals(Writable w1, Writable w2)
 	{
-		return w1.Sign == w2.Sign && Positive.Equals(w1.Value, w2.Value);
+		return w1.sign == w2.sign && w1.value == w2.value;
 	}
 
 	public static bool GreaterThan(Writable w1, Writable w2)
 	{
-		if (w1.Sign != w2.Sign)
-			return w1.Sign;
+		if (w1.sign != w2.sign)
+			return w1.sign;
 		else
-			return Positive.GreaterThan(w1.Value, w2.Value);
+			return w1.value > w2.value;
 	}
 
 	public static Writable Add(Writable w1, Writable w2)
 	{
-		if (w1.Sign && w2.Sign)
-			return new Writable(w1.Sign, Positive.Add(w1.Value, w2.Value));
+		if (w1.sign && w2.sign)
+			return new Writable(w1.sign, w1.value + w2.value);
 		else
 		{
-			if (w2.Sign)
+			if (w2.sign)
 				(w1, w2) = (w2, w1);
 
-			(bool swap, Positive value) = Positive.Substract(w1.Value, w2.Value);
+			(bool swap, Positive value) = Positive.Substract(w1.value, w2.value);
 
 			return new Writable(!swap, value);
 		}
@@ -96,52 +101,53 @@ public readonly struct Writable
 
 	public static Writable Substract(Writable w1, Writable w2)
 	{
-		return Add(w1, new Writable(!w2.Sign, w2.Value));
+		return w1 + new Writable(!w2.sign, w2.value);
 	}
 
 	public static Writable Multiply(Writable w1, Writable w2)
 	{
-		return new Writable(w1.Sign == w2.Sign, Positive.Multiply(w1.Value, w2.Value));
+		return new Writable(w1.sign == w2.sign, w1.value * w2.value);
 	}
 
 	public static (Writable Value, Writable Remainder) Divide(Writable w1, Writable w2)
 	{
-		(Positive whole, Positive remainder) = Positive.Divide(w1.Value, w2.Value);
-		return (new Writable(w1.Sign == w2.Sign, whole), new Writable(w1.Sign, remainder));
+		(Positive whole, Positive remainder) = Positive.Divide(w1.value, w2.value);
+
+		return (new Writable(w1.sign == w2.sign, whole), new Writable(w1.sign, remainder));
 	}
 
 	public static Writable SecondPower(Writable w)
 	{
-		return w.IsZero ? throw new NotImplementedException() : Multiply(w, w);
+		return w * w;
 	}
 
 	public static Writable Power(Writable w1, Writable w2)
 	{
-		if (!w2.Sign)
+		if (!w2.sign)
 			throw new NotImplementedException();
 
-		return new(w1.Sign || Digit.Equals(Digit.Divide(w1[0], '2').Remainder, Digit.ZERO), Positive.Power(w1.Value, w2.Value));
+		return new Writable(w1.sign || w1[0] % Digit.TWO == Digit.ZERO, w1.value ^ w2.value);
 	}
 
 	public static Writable SquareRoot(Writable w)
 	{
-		if (!w.Sign)
+		if (!w.sign)
 			throw new NotImplementedException();
 
-		return new Writable(true, Positive.SquareRoot(w.Value));
+		return new Writable(true, ~w.value);
 	}
 
 	public static Writable Root(Writable w1, Writable w2)
 	{
-		if (w2.FractionLength != 0 || !w2.Sign || w1.Sign != Equals(Digit.Divide(w2[0], '2').Remainder, Digit.ZERO))
+		if (w2.FractionLength != 0 || !w2.sign || w1.sign != (w2[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
-		return new Writable(w1.Sign, Positive.Root(w1.Value, w2.Value));
+		return new Writable(w1.sign, w2.value | w1.value);
 	}
 
 	public override readonly bool Equals(object? obj)
 	{
-		return obj is Writable writable && Equals(this, writable);
+		return obj is Writable writable && this == writable;
 	}
 
 	public override int GetHashCode()
