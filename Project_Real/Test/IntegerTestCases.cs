@@ -1,0 +1,221 @@
+﻿using System.Collections.Immutable;
+
+namespace Test;
+
+public static class IntegerTestCases
+{
+	public static readonly
+		ImmutableArray<(
+		string Number1,
+		string Number2,
+		bool Equal,
+		bool Greater,
+		string Add,
+		string Sub,
+		string Mul,
+		string DivWhole,
+		string DivRemain,
+		string Pow,
+		string RootWhole,
+		string RootRemain
+		)> List =
+	[
+		/*Zero*/
+		(
+			Number1: "+0",
+			Number2: "+0",
+			Equal: true,
+			Greater: false,
+			Add: "+0",
+			Sub: "+0",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+0",
+			Number2: "-0",
+			Equal: true,
+			Greater: false,
+			Add: "+0",
+			Sub: "+0",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "ERROR",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-0",
+			Number2: "+0",
+			Equal: true,
+			Greater: false,
+			Add: "+0",
+			Sub: "+0",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-0",
+			Number2: "-0",
+			Equal: true,
+			Greater: false,
+			Add: "+0",
+			Sub: "+0",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "ERROR",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+0",
+			Number2: "+1",
+			Equal: false,
+			Greater: false,
+			Add: "+1",
+			Sub: "-1",
+			Mul: "+0",
+			DivWhole: "+0",
+			DivRemain: "+0",
+			Pow: "+0",
+			RootWhole: "+0",
+			RootRemain: ""
+		),
+		(
+			Number1: "+0",
+			Number2: "-1",
+			Equal: false,
+			Greater: true,
+			Add: "-1",
+			Sub: "+1",
+			Mul: "+0",
+			DivWhole: "+0",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "+0",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-0",
+			Number2: "+1",
+			Equal: false,
+			Greater: false,
+			Add: "+1",
+			Sub: "-1",
+			Mul: "+0",
+			DivWhole: "+0",
+			DivRemain: "+0",
+			Pow: "+0",
+			RootWhole: "+0",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-0",
+			Number2: "-1",
+			Equal: false,
+			Greater: true,
+			Add: "-1",
+			Sub: "+1",
+			Mul: "+0",
+			DivWhole: "+0",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "+0",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+1",
+			Number2: "+0",
+			Equal: false,
+			Greater: true,
+			Add: "+1",
+			Sub: "+1",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-1",
+			Number2: "+0",
+			Equal: false,
+			Greater: false,
+			Add: "-1",
+			Sub: "-1",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+999999999999999999999",
+			Number2: "+1",
+			Equal: false,
+			Greater: true,
+			Add: "1000000000000000000000",
+			Sub: "999999999999999999998",
+			Mul: "999999999999999999999",
+			DivWhole: "999999999999999999999",
+			DivRemain: "0",
+			Pow: "BIG",
+			RootWhole: "BIG",
+			RootRemain: ""
+		),
+		(
+			Number1: "+999999999999999999999",
+			Number2: "-1",
+			Equal: false,
+			Greater: true,
+			Add: "999999999999999999998",
+			Sub: "1000000000000000000000",
+			Mul: "-999999999999999999999",
+			DivWhole: "-999999999999999999999",
+			DivRemain: "0",
+			Pow: "BIG",
+			RootWhole: "BIG",
+			RootRemain: ""
+		),
+		(
+			Number1: "-999999999999999999999",
+			Number2: "+1",
+			Equal: false,
+			Greater: false,
+			Add: "-999999999999999999998",
+			Sub: "-1000000000000000000000",
+			Mul: "-999999999999999999999",
+			DivWhole: "-999999999999999999999",
+			DivRemain: "0",
+			Pow: "BIG",
+			RootWhole: "ERROR",
+			RootRemain: ""
+		),
+		(
+			Number1: "-999999999999999999999",
+			Number2: "-1",
+			Equal: false,
+			Greater: false,
+			Add: "-1000000000000000000000",
+			Sub: "-999999999999999999998",
+			Mul: "999999999999999999999",
+			DivWhole: "999999999999999999999",
+			DivRemain: "0",
+			Pow: "BIG",
+			RootWhole: "ERROR",
+			RootRemain: ""
+		)
+	];
+}
