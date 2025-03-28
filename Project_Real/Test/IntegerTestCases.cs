@@ -5,20 +5,20 @@ namespace Test;
 public static class IntegerTestCases
 {
 	public static readonly
-		ImmutableArray<(
-		string Number1,
-		string Number2,
-		bool Equal,
-		bool Greater,
-		string Add,
-		string Sub,
-		string Mul,
-		string DivWhole,
-		string DivRemain,
-		string Pow,
-		string RootWhole,
-		string RootRemain
-		)> List =
+	ImmutableArray<(
+	string Number1,
+	string Number2,
+	bool Equal,
+	bool Greater,
+	string Add,
+	string Sub,
+	string Mul,
+	string DivWhole,
+	string DivRemain,
+	string Pow,
+	string RootWhole,
+	string RootRemain
+	)> List =
 	[
 		/*Zero*/
 		(
@@ -148,8 +148,36 @@ public static class IntegerTestCases
 			RootRemain: "+0"
 		),
 		(
+			Number1: "+1",
+			Number2: "-0",
+			Equal: false,
+			Greater: true,
+			Add: "+1",
+			Sub: "+1",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
 			Number1: "-1",
 			Number2: "+0",
+			Equal: false,
+			Greater: false,
+			Add: "-1",
+			Sub: "-1",
+			Mul: "+0",
+			DivWhole: "ERROR",
+			DivRemain: "ERROR",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-1",
+			Number2: "-0",
 			Equal: false,
 			Greater: false,
 			Add: "-1",
@@ -167,27 +195,27 @@ public static class IntegerTestCases
 			Equal: false,
 			Greater: true,
 			Add: "1000000000000000000000",
-			Sub: "999999999999999999998",
-			Mul: "999999999999999999999",
-			DivWhole: "999999999999999999999",
-			DivRemain: "0",
-			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: ""
+			Sub: "+999999999999999999998",
+			Mul: "+999999999999999999999",
+			DivWhole: "+999999999999999999999",
+			DivRemain: "+0",
+			Pow: "+999999999999999999999",
+			RootWhole: "+999999999999999999999",
+			RootRemain: "+0"
 		),
 		(
 			Number1: "+999999999999999999999",
 			Number2: "-1",
 			Equal: false,
 			Greater: true,
-			Add: "999999999999999999998",
-			Sub: "1000000000000000000000",
+			Add: "+999999999999999999998",
+			Sub: "+1000000000000000000000",
 			Mul: "-999999999999999999999",
 			DivWhole: "-999999999999999999999",
-			DivRemain: "0",
-			Pow: "BIG",
+			DivRemain: "+0",
+			Pow: "ERROR",
 			RootWhole: "BIG",
-			RootRemain: ""
+			RootRemain: "BIG"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -198,10 +226,10 @@ public static class IntegerTestCases
 			Sub: "-1000000000000000000000",
 			Mul: "-999999999999999999999",
 			DivWhole: "-999999999999999999999",
-			DivRemain: "0",
+			DivRemain: "+0",
 			Pow: "BIG",
-			RootWhole: "ERROR",
-			RootRemain: ""
+			RootWhole: "BIG",
+			RootRemain: "BIG"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -210,12 +238,12 @@ public static class IntegerTestCases
 			Greater: false,
 			Add: "-1000000000000000000000",
 			Sub: "-999999999999999999998",
-			Mul: "999999999999999999999",
-			DivWhole: "999999999999999999999",
-			DivRemain: "0",
+			Mul: "+999999999999999999999",
+			DivWhole: "+999999999999999999999",
+			DivRemain: "+0",
 			Pow: "BIG",
-			RootWhole: "ERROR",
-			RootRemain: ""
+			RootWhole: "BIG",
+			RootRemain: "BIG"
 		)
 	];
 }

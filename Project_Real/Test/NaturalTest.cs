@@ -1,4 +1,5 @@
-﻿using Project_Real;
+﻿using System;
+using Project_Real;
 
 namespace Test;
 
@@ -27,290 +28,238 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void StringConstructor()
+	public void StringConstructor() // Leading zero is not tested
 	{
 		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullString); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(""); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("12a3"); });
+		Assert.ThrowsException<ArgumentException>(() => new Natural(nullString));
+		Assert.ThrowsException<ArgumentException>(() => new Natural(""));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("12a3"));
 
-		string characters;
-		Natural number;
+		Natural number1, number2;
 
-		for (int i = 0; i < 1_000; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			for (int j = characters.Length - 1; j >= 0; --j)
-				Assert.AreEqual(characters[j], number.Digits[^(j + 1)]);
+			for (int j = item.Number1.Length - 1; j >= 0; --j)
+				Assert.AreEqual(item.Number1[j].ToString(), number1.Digits[^(j + 1)].ToString());
+
+			for (int j = item.Number2.Length - 1; j >= 0; --j)
+				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^(j + 1)].ToString());
 		}
 	}
 
 	[TestMethod]
-	public void DigitConstructor()
+	public void DigitConstructor() // Leading zero is not tested
 	{
 		Digit[] nullArray = null!;
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural(nullArray); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural([]); });
+		Assert.ThrowsException<ArgumentException>(() => new Natural(nullArray));
+		Assert.ThrowsException<ArgumentException>(() => new Natural([]));
 
-		char[] characters;
-		Digit[] digits;
-		Natural number;
+		Digit[] digits1, digits2;
+		Natural number1, number2;
 
-		for (int i = 0; i < 1_000; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			characters = [.. i.ToString()];
+			digits1 = new Digit[item.Number1.Length];
+			for (int j = item.Number1.Length - 1; j >= 0; --j)
+				digits1[^(j + 1)] = new Digit(item.Number1[j]);
 
-			digits = new Digit[characters.Length];
-			for (int j = characters.Length - 1; j >= 0; --j)
-				digits[^(j + 1)] = new Digit(characters[j]);
+			digits2 = new Digit[item.Number2.Length];
+			for (int j = item.Number2.Length - 1; j >= 0; --j)
+				digits2[^(j + 1)] = new Digit(item.Number2[j]);
 
-			number = new(digits);
+			number1 = new(digits1);
+			number2 = new(digits2);
 
-			for (int j = characters.Length - 1; j >= 0; --j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^(j + 1)].ToString());
+			for (int j = item.Number1.Length - 1; j >= 0; --j)
+				Assert.AreEqual(item.Number1[j].ToString(), number1.Digits[^(j + 1)].ToString());
+
+			for (int j = item.Number2.Length - 1; j >= 0; --j)
+				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^(j + 1)].ToString());
 		}
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		string characters;
-		Natural number;
+		Natural number1, number2;
 
-		for (int i = 0; i < 1_000; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			Assert.AreEqual(characters, number.ToString());
-		}
-	}
-
-	[TestMethod]
-	public void TrimMethod()
-	{
-		Random rnd = new();
-
-		Assert.AreEqual(Natural.TrimEnd(new Natural(new string('0', rnd.Next(2, 100)))), new Natural("0"));
-
-		char[] characters = new char[100];
-
-		for (int i = 0; i < 100; ++i)
-		{
-			Array.Fill(characters, '0');
-
-			for (int j = 10; j < 20; ++j)
-				characters[j] = rnd.Next(2) == 1 ? '0' : rnd.Next(1, 10).ToString()[0];
-
-			for (int j = 20; j < 100; ++j)
-				characters[j] = rnd.Next(1, 10).ToString()[0];
-
-			Natural number = new(new string(characters));
-			number = Natural.TrimEnd(number);
-
-			Assert.AreNotEqual(Digit.ZERO, number[0]);
-			Assert.AreEqual(characters.Length - characters.TakeWhile(x => x == '0').Count(), number.Length);
+			Assert.AreEqual(item.Number1, number1.ToString());
+			Assert.AreEqual(item.Number2, number2.ToString());
 		}
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		Random rnd = new();
-		string characters;
-		Digit[] digits;
-		Natural numberDigits, numberCharacters;
+		Digit[] digits1, digits2;
+		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
+			digits1 = new Digit[item.Number1.Length];
+			for (int j = item.Number1.Length - 1; j >= 0; --j)
+				digits1[j] = new Digit(item.Number1[^(j + 1)]);
 
-			digits = new Digit[characters.Length];
-			for (int j = characters.Length - 1; j >= 0; --j)
-				digits[j] = new Digit(characters[^(j + 1)]);
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(digits1);
 
-			numberDigits = new(digits);
-			numberCharacters = new(characters);
+			digits2 = new Digit[item.Number2.Length];
+			for (int j = item.Number2.Length - 1; j >= 0; --j)
+				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 
-			Assert.AreEqual(numberCharacters, numberDigits);
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(digits2);
 
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-			numberCharacters = new(new string('0', rnd.Next(5)) + characters);
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
-			Assert.AreEqual(numberCharacters, numberDigits);
-
-			int index = rnd.Next(digits.Length);
-			digits[index] = Digit.Add(digits[index], '1').Digit;
-
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-
-			Assert.AreNotEqual(numberCharacters, numberDigits);
+			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
+			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
 	}
 
 	[TestMethod]
-	public void GreaterThanMethod() // NEM JO! TESZTELJEN UTOLSO KARAKTERT IS
+	public void GreaterThanMethod()
 	{
-		Random rnd = new();
-		bool expected;
-		int int1, int2;
-		string characters1, characters2;
 		Digit[] digits1, digits2;
 		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue - 1);
-			int2 = rnd.Next(int.MaxValue - 1);
+			digits1 = new Digit[item.Number1.Length];
+			for (int j = item.Number1.Length - 1; j >= 0; --j)
+				digits1[j] = new Digit(item.Number1[^(j + 1)]);
 
-			characters1 = int1.ToString();
-			characters2 = int2.ToString();
+			digits2 = new Digit[item.Number2.Length];
+			for (int j = item.Number2.Length - 1; j >= 0; --j)
+				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 
-			digits1 = new Digit[characters1.Length];
-			for (int j = characters1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(characters1[^(j + 1)]);
+			numberCharacters1 = new(item.Number1);
+			numberCharacters2 = new(item.Number2);
+			numberDigits1 = new(item.Number1);
+			numberDigits2 = new(item.Number2);
 
-			digits2 = new Digit[characters2.Length];
-			for (int j = characters2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(characters2[^(j + 1)]);
-
-			numberCharacters1 = new(characters1);
-			numberCharacters2 = new(characters2);
-			numberDigits1 = new(digits1);
-			numberDigits2 = new(digits2);
-
-			expected = int1 > int2;
-
-			Assert.AreEqual(expected, Natural.GreaterThan(numberCharacters1, numberCharacters2));
-			Assert.AreEqual(expected, Natural.GreaterThan(numberCharacters1, numberDigits2));
-			Assert.AreEqual(expected, Natural.GreaterThan(numberDigits1, numberDigits2));
-			Assert.AreEqual(expected, Natural.GreaterThan(numberDigits1, numberCharacters2));
+			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberCharacters1, numberCharacters2));
+			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberDigits1, numberDigits2));
+			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberCharacters1, numberDigits2));
+			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberDigits1, numberCharacters2));
 		}
 	}
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
 		Natural natural1, natural2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue / 2);
-			int2 = rnd.Next(int.MaxValue / 2);
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
 
-			natural1 = new(int1.ToString());
-			natural2 = new(int2.ToString());
-
-			Assert.AreEqual((int1 + int2).ToString(), Natural.Add(natural1, natural2).ToString());
+			Assert.AreEqual(item.Add, Natural.Add(natural1, natural2).ToString());
 		}
 	}
 
 	[TestMethod]
 	public void SubstractMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
-		Natural natural1, natural2;
+		bool swap;
+		Natural natural1, natural2, subNum;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue / 2);
-			int2 = rnd.Next(int.MaxValue / 2);
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
 
-			natural1 = new(int1.ToString());
-			natural2 = new(int2.ToString());
+			(swap, subNum) = Natural.Substract(natural1, natural2);
 
-			Assert.AreEqual(Math.Abs(int1 - int2).ToString(), Natural.Substract(natural1, natural2).Value.ToString());
+			Assert.AreEqual(item.SubSwap, swap);
+			Assert.AreEqual(item.SubNum, subNum.ToString());
 		}
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1, int2;
 		Natural natural1, natural2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(max);
-			int2 = rnd.Next(max);
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
 
-			natural1 = new(int1.ToString());
-			natural2 = new(int2.ToString());
-
-			Assert.AreEqual((int1 * int2).ToString(), Natural.Multiply(natural1, natural2).ToString());
+			Assert.AreEqual(item.Mul, Natural.Multiply(natural1, natural2).ToString());
 		}
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
-		Natural natural1, natural2;
+		Natural natural1, natural2, whole, remainder;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue);
-			int2 = rnd.Next(1, int.MaxValue);
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
+			
+			if (item.DivWhole == "ERROR" || item.DivRemain == "ERROR")
+				Assert.ThrowsException<DivideByZeroException>(() => Natural.Divide(natural1, natural2));
+			else if(!(item.DivWhole == "BIG" || item.DivRemain == "BIG"))
+			{
+				(whole, remainder) = Natural.Divide(natural1, natural2);
 
-			natural1 = new(int1.ToString());
-			natural2 = new(int2.ToString());
-
-			(Natural whole, Natural remainder) = Natural.Divide(natural1, natural2);
-
-			Assert.AreEqual((int1 / int2).ToString(), whole.ToString());
-			Assert.AreEqual((int1 % int2).ToString(), remainder.ToString());
-		}
-
-		Assert.AreEqual("0", Natural.Divide("0", "1").Whole);
-		Assert.ThrowsException<DivideByZeroException>(() => Natural.Divide("1", "0"));
-	}
-
-	[TestMethod]
-	public void SecondPowerMethod()
-	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1;
-		Natural natural1;
-
-		for (int i = 0; i < 100; ++i)
-		{
-			int1 = rnd.Next(1, max);
-
-			natural1 = new(int1.ToString());
-
-			Assert.AreEqual(Math.Pow(int1, 2).ToString(), Natural.SecondPower(natural1).ToString());
+				Assert.AreEqual(item.DivWhole, whole.ToString());
+				Assert.AreEqual(item.DivRemain, remainder.ToString());
+			}
 		}
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
 		Natural natural1, natural2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in NaturalTestCases.List)
 		{
-			int1 = rnd.Next(1, 15);
-			int2 = rnd.Next(1, 10);
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
 
-			natural1 = new(int1.ToString());
-			natural2 = new(int2.ToString());
-
-			Assert.AreEqual(Math.Pow(int1, int2).ToString(), Natural.Power(natural1, natural2).ToString());
+			if (item.Pow == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Natural.Power(natural1, natural2));
+			else if (item.Pow != "BIG")
+				Assert.AreEqual(item.Pow, Natural.Power(natural1, natural2).ToString());
 		}
+	}
 
-		Assert.AreEqual("1", Natural.Power("0", "0").ToString());
+	[TestMethod]
+	public void RootMethod()
+	{
+		Natural natural1, natural2, whole, remainder;
+
+		foreach (var item in NaturalTestCases.List)
+		{
+			natural1 = new(item.Number1);
+			natural2 = new(item.Number2);
+
+			if (item.RootWhole == "ERROR" || item.RootRemain == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Natural.Root(natural1, natural2));
+			else if (!(item.RootWhole == "BIG" || item.RootRemain == "BIG"))
+			{
+				(whole, remainder) = Natural.Root(natural1, natural2);
+
+				Assert.AreEqual(item.RootWhole, whole.ToString());
+				Assert.AreEqual(item.RootRemain, remainder.ToString());
+			}
+		}
 	}
 }

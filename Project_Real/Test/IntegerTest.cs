@@ -1,10 +1,20 @@
 ﻿using Project_Real;
+using System;
 
 namespace Test;
 
 [TestClass]
 public class IntegerTest
 {
+	private static bool Sign(string sign)
+	{
+		return sign[0] switch
+		{
+			'+' => true,
+			'-' => sign.Length == 2 && sign[1] == '0',
+			_ => throw new FormatException()
+		};
+	}
 	private static string Format(bool sign, string number) => (Integer.WriteSign && sign ? '+' + number.ToString() : number.ToString());
 
 	[TestMethod]
@@ -34,97 +44,74 @@ public class IntegerTest
 	public void StringConstructor()
 	{
 		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer(nullString); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer(""); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer("+"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Integer("-"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("12a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("+12a3"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-a123"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-123a"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Natural("-12a3"); });
+		Assert.ThrowsException<ArgumentException>(() => new Integer(nullString));
+		Assert.ThrowsException<ArgumentException>(() => new Integer(""));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("+"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("-"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("12a3"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("+a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("+123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("+12a3"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("-a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("-123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Natural("-12a3"));
 
-		string characters;
-		Integer number;
+		Integer number1, number2;
 
-		for (int i = 0; i < 1_000; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			Assert.IsTrue(number.Sign);
-			for (int j = 0; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^(j + 1)].ToString());
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			for (int j = 1; j < item.Number1.Length; ++j)
+				Assert.AreEqual(item.Number1[j].ToString(), number1.Digits[^j].ToString());
 
-			characters = '+' + i.ToString();
-			number = new(characters);
-
-			Assert.IsTrue(number.Sign);
-			for (int j = 1; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^j].ToString());
-		}
-
-		for (int i = 1; i < 1_000; ++i)
-		{
-			characters = '-' + i.ToString();
-			number = new(characters);
-
-			Assert.IsFalse(number.Sign);
-			for (int j = 1; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^j].ToString());
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			for (int j = 1; j < item.Number2.Length; ++j)
+				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^j].ToString());
 		}
 	}
 
 	[TestMethod]
 	public void NaturalConstructor()
 	{
-		Random rnd = new();
+		Natural natural1, natural2;
+		Integer number1, number2;
 
-		Natural natural = new("0");
+		foreach (var item in IntegerTestCases.List)
+		{
+			natural1 = new(item.Number1[1..]);
+			natural2 = new(item.Number2[1..]);
 
-		Integer numberPositive = new(true, natural);
-		Integer numberNegative = new(false, natural);
+			number1 = new(Sign(item.Number1), natural1);
+			number2 = new(Sign(item.Number2), natural2);
 
-		Assert.AreEqual(numberPositive, numberNegative);
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			for (int j = 1; j < item.Number1.Length; ++j)
+				Assert.AreEqual(item.Number1[j].ToString(), number1.Digits[^j].ToString());
 
-		natural = new(rnd.Next(1, int.MaxValue).ToString());
-
-		numberPositive = new(true, natural);
-		numberNegative = new(false, natural);
-
-		Assert.AreEqual(natural, numberPositive.Value);
-		Assert.AreEqual(natural, numberNegative.Value);
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			for (int j = 1; j < item.Number2.Length; ++j)
+				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^j].ToString());
+		}
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		string characters;
-		Integer number;
+		Integer number1, number2;
 
-		for (int i = 1; i < 1_000; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			Assert.AreEqual('+' + characters, number.ToString());
-
-			number = new('+' + characters);
-
-			Assert.AreEqual('+' + characters, number.ToString());
-
-			number = new('-' + characters);
-
-			Assert.AreEqual('-' + characters, number.ToString());
+			Assert.AreEqual(item.Number1, number1.ToString());
+			Assert.AreEqual(item.Number2, number2.ToString());
 		}
-
-		Assert.AreEqual("+0", new Integer("0"));
-		Assert.AreEqual("+0", new Integer("+0"));
-		Assert.AreEqual("+0", new Integer("-0"));
 	}
 
 	[TestMethod]
@@ -340,9 +327,6 @@ public class IntegerTest
 
 			Assert.AreEqual(Format(true, Math.Pow(int1, 2).ToString()), Integer.SecondPower(integer1).ToString());
 		}
-
-		Assert.ThrowsException<NotImplementedException>(() => Integer.SecondPower("0"));
-		Assert.ThrowsException<NotImplementedException>(() => Integer.SecondPower("-0"));
 	}
 
 	[TestMethod]

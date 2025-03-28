@@ -1,4 +1,5 @@
 ﻿using Project_Real;
+using System;
 using System.Collections.Immutable;
 
 namespace Test;
@@ -125,11 +126,11 @@ public class DigitTest
 
 
 		array = Digit.CreateArray(rnd.Next(1, 10), Digit.ZERO);
-		array[0] = new Digit('1');
+		array[0] = Digit.ONE;
 		array = Digit.TrimEnd(array);
 
 		Assert.AreEqual(1, array.Length);
-		Assert.AreEqual(new Digit('1'), array[0]);
+		Assert.AreEqual(Digit.ONE, array[0]);
 
 
 		array = Digit.TrimEnd([]);
@@ -224,7 +225,10 @@ public class DigitTest
 				b = new Digit(ToChar(j));
 				c = new Digit(ToChar((i - j + 10) % 10));
 
-				Assert.AreEqual(c, Digit.Substract(a, b).Digit);
+				(bool borrow, Digit digit) = Digit.Substract(a, b);
+
+				Assert.AreEqual(((i - j + 10) / 10) == 0, borrow);
+				Assert.AreEqual(c, digit);
 			}
 		}
 	}
@@ -242,7 +246,10 @@ public class DigitTest
 				b = new Digit(ToChar(j));
 				c = new Digit(ToChar((i * j) % 10));
 
-				Assert.AreEqual(c, Digit.Multiply(a, b).Digit);
+				(Digit overflow, Digit digit) = Digit.Multiply(a, b);
+
+				Assert.AreEqual(new Digit(ToChar((i * j) / 10)), overflow);
+				Assert.AreEqual(c, digit);
 			}
 		}
 	}
@@ -266,8 +273,10 @@ public class DigitTest
 					c1 = new Digit(ToChar(i / j));
 					c2 = new Digit(ToChar(i % j));
 
-					Assert.AreEqual(c1, Digit.Divide(a, b).Whole);
-					Assert.AreEqual(c2, Digit.Divide(a, b).Remainder);
+					(Digit whole, Digit remainder) = Digit.Divide(a, b);
+
+					Assert.AreEqual(c1, whole);
+					Assert.AreEqual(c2, remainder);
 				}
 			}
 		}
