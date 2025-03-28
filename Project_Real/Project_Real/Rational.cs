@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using System;
+
+namespace Project_Real;
 
 public readonly struct Rational
 {

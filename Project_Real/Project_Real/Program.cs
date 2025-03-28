@@ -1,4 +1,6 @@
-﻿namespace Project_Real;
+﻿using System;
+
+namespace Project_Real;
 
 public class Program
 {
@@ -203,7 +205,10 @@ public class Program
 		Console.WriteLine(Positive.Root("3530945043.777457217", "3"));
 		Console.WriteLine(Natural.Root("3530945043777457217", "3"));*/
 		//Console.WriteLine(Natural.Root("4192000000000", "3"));
-		//Console.WriteLine(Positive.Root("4192000000000", "3"));
+		Console.WriteLine(Natural.Root("18446744073709551615", "2"));
+		/*Console.WriteLine(Positive.Root("4192000000000", "3"));
+		Console.WriteLine(Math.Pow(4192000000000.0, 1.0/3.0));
+		Console.WriteLine(4192000000000.0 - Math.Pow(Math.Pow(4192000000000.0, 1.0/3.0), 3.0));*/
 
 
 		/*Positive n = "3";

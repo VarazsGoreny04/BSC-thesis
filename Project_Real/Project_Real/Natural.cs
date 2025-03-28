@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Project_Real;
 
@@ -80,11 +82,6 @@ public readonly struct Natural
 			number += digits[i];
 
 		return number;
-	}
-
-	public static Natural TrimEnd(Natural n) // Biztos kell?
-	{
-		return new Natural(Digit.TrimEnd([.. n.digits]));
 	}
 
 	public static bool Equals(Natural n1, Natural n2)
@@ -258,6 +255,7 @@ public readonly struct Natural
 		if (n.isZero || n == new Natural([Digit.ONE]))
 			return (n, new Natural());
 
+		Natural two = new([Digit.TWO]);
 		Natural rootTimesTwo, test;
 		Natural remainder = new();
 		Natural root = new();
@@ -271,14 +269,14 @@ public readonly struct Natural
 
 			if (!remainder.isZero)
 			{
-				rootTimesTwo = root * root;
+				rootTimesTwo = root * two;
 
 				byte j = 10;
 				do
 				{
 					xTry -= Digit.ONE;
 					test = new Natural([xTry, .. rootTimesTwo.digits]) * new Natural([xTry]);
-				} while (--j > 0 && test >= remainder);
+				} while (--j > 0 && test > remainder);
 
 				remainder -= test;
 			}
@@ -293,6 +291,9 @@ public readonly struct Natural
 	{
 		Natural remainder = new();
 
+		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
+			return (value, remainder);
+
 		if (n < new Natural([Digit.THREE]))
 		{
 			return Digit.ToChar(n[0]) switch
@@ -302,12 +303,14 @@ public readonly struct Natural
 				_ => SquareRoot(value)
 			};
 		}
+		/*else if (n.Length > 2)
+			throw new NotImplementedException();*/
 
-		int nInt = Convert.ToUInt16(n.ToString());
+		ushort nInt = Convert.ToUInt16(n.ToString());
 		Digit[] digits = [.. value.digits, .. Digit.CreateArray((nInt - (value.digits.Length % nInt)) % nInt)];
 
 		Digit xTry;
-		Natural test, previousTest, kNatural, nMinusKN, binomial;
+		Natural test, kNatural, nMinusKN, binomial;
 		Natural nFactorial = Factorial(n);
 		Natural root = new();
 
@@ -316,15 +319,13 @@ public readonly struct Natural
 			remainder = new Natural([.. digits[i..(i + nInt)], .. remainder.digits]);
 
 			xTry = Digit.ZERO;
-			test = new();
 
 			if (!remainder.isZero)
 			{
 				byte j = 0;
 				do
 				{
-					xTry += Digit.ONE;
-					previousTest = test;
+					xTry -= Digit.ONE;
 					test = new();
 
 					for (int k = nInt - 1; k >= 0; --k)
@@ -336,10 +337,9 @@ public readonly struct Natural
 
 						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
 					}
-				} while (++j < 10 && test <= remainder);
+				} while (++j < 10 && test > remainder);
 
-				xTry -= Digit.ONE;
-				remainder -= previousTest;
+				remainder -= test;
 			}
 
 			root = new Natural([xTry, .. root.digits]);
@@ -376,7 +376,7 @@ public readonly struct Natural
 
 		while (n2 <= n1)
 		{
-			n1 = n1 / n2;
+			n1 /= n2;
 			result += one;
 		}
 

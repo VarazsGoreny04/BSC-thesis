@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Project_Real;
 
@@ -259,7 +261,7 @@ public readonly struct Digit
 		return BitGreaterThan(d1.Bits, d2.Bits);
 	}
 
-	public static (bool OverFlow, Digit Digit) Add(Digit d1, Digit d2, bool carry = false)
+	public static (bool Overflow, Digit Digit) Add(Digit d1, Digit d2, bool carry = false)
 	{
 		(carry, ImmutableArray<bool> result) = BitAdd(d1.Bits, d2.Bits, carry);
 
@@ -279,7 +281,7 @@ public readonly struct Digit
 			return (true, new Digit(BitSubstract(TEN, BitSubstract(d2PlusCarry, d1.Bits))));
 	}
 
-	public static (Digit OverFlow, Digit Digit) Multiply(Digit d1, Digit d2)
+	public static (Digit Overflow, Digit Digit) Multiply(Digit d1, Digit d2)
 	{
 		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(BitMultiply(d1.Bits, d2.Bits), TEN);
 
