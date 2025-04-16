@@ -32,8 +32,8 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "+0",
@@ -45,9 +45,9 @@ public static class IntegerTestCases
 			Mul: "+0",
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
-			Pow: "ERROR",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			Pow: "+1",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -60,8 +60,8 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -73,9 +73,9 @@ public static class IntegerTestCases
 			Mul: "+0",
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
-			Pow: "ERROR",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			Pow: "+1",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "+0",
@@ -89,7 +89,7 @@ public static class IntegerTestCases
 			DivRemain: "+0",
 			Pow: "+0",
 			RootWhole: "+0",
-			RootRemain: ""
+			RootRemain: "+0"
 		),
 		(
 			Number1: "+0",
@@ -102,8 +102,8 @@ public static class IntegerTestCases
 			DivWhole: "+0",
 			DivRemain: "+0",
 			Pow: "ERROR",
-			RootWhole: "+0",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -130,8 +130,8 @@ public static class IntegerTestCases
 			DivWhole: "+0",
 			DivRemain: "+0",
 			Pow: "ERROR",
-			RootWhole: "+0",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -144,8 +144,8 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -158,8 +158,8 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -172,8 +172,8 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -186,15 +186,15 @@ public static class IntegerTestCases
 			DivWhole: "ERROR",
 			DivRemain: "ERROR",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "+999999999999999999999",
 			Number2: "+1",
 			Equal: false,
 			Greater: true,
-			Add: "1000000000000000000000",
+			Add: "+1000000000000000000000",
 			Sub: "+999999999999999999998",
 			Mul: "+999999999999999999999",
 			DivWhole: "+999999999999999999999",
@@ -214,8 +214,8 @@ public static class IntegerTestCases
 			DivWhole: "-999999999999999999999",
 			DivRemain: "+0",
 			Pow: "ERROR",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -228,8 +228,8 @@ public static class IntegerTestCases
 			DivWhole: "-999999999999999999999",
 			DivRemain: "+0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			RootWhole: "-999999999999999999999",
+			RootRemain: "+0"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -241,9 +241,233 @@ public static class IntegerTestCases
 			Mul: "+999999999999999999999",
 			DivWhole: "+999999999999999999999",
 			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "+1",
+			Number2: "+999999999999999999999",
+			Equal: false,
+			Greater: false,
+			Add: "+1000000000000000000000",
+			Sub: "-999999999999999999998",
+			Mul: "+999999999999999999999",
+			DivWhole: "+0",
+			DivRemain: "+1",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+1",
+			Number2: "-999999999999999999999",
+			Equal: false,
+			Greater: true,
+			Add: "-999999999999999999998",
+			Sub: "+1000000000000000000000",
+			Mul: "-999999999999999999999",
+			DivWhole: "+0",
+			DivRemain: "+1",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "-1",
+			Number2: "+999999999999999999999",
+			Equal: false,
+			Greater: false,
+			Add: "+999999999999999999998",
+			Sub: "-1000000000000000000000",
+			Mul: "-999999999999999999999",
+			DivWhole: "+0",
+			DivRemain: "-1",
+			Pow: "-1",
+			RootWhole: "-1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-1",
+			Number2: "-999999999999999999999",
+			Equal: false,
+			Greater: true,
+			Add: "-1000000000000000000000",
+			Sub: "+999999999999999999998",
+			Mul: "+999999999999999999999",
+			DivWhole: "+0",
+			DivRemain: "-1",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "+123456789",
+			Number2: "+123456789",
+			Equal: true,
+			Greater: false,
+			Add: "+246913578",
+			Sub: "+0",
+			Mul: "+15241578750190521",
+			DivWhole: "+1",
+			DivRemain: "+0",
 			Pow: "BIG",
 			RootWhole: "BIG",
 			RootRemain: "BIG"
-		)
+		),
+		(
+			Number1: "+123456789",
+			Number2: "-123456789",
+			Equal: false,
+			Greater: true,
+			Add: "+0",
+			Sub: "+246913578",
+			Mul: "-15241578750190521",
+			DivWhole: "-1",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "-123456789",
+			Number2: "+123456789",
+			Equal: false,
+			Greater: false,
+			Add: "+0",
+			Sub: "-246913578",
+			Mul: "-15241578750190521",
+			DivWhole: "-1",
+			DivRemain: "+0",
+			Pow: "BIG",
+			RootWhole: "BIG",
+			RootRemain: "BIG"
+		),
+		(
+			Number1: "-123456789",
+			Number2: "-123456789",
+			Equal: true,
+			Greater: false,
+			Add: "-246913578",
+			Sub: "+0",
+			Mul: "+15241578750190521",
+			DivWhole: "+1",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "+1",
+			Number2: "+2",
+			Equal: false,
+			Greater: false,
+			Add: "+3",
+			Sub: "-1",
+			Mul: "+2",
+			DivWhole: "+0",
+			DivRemain: "+1",
+			Pow: "+1",
+			RootWhole: "+1",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+1",
+			Number2: "-2",
+			Equal: false,
+			Greater: true,
+			Add: "-1",
+			Sub: "+3",
+			Mul: "-2",
+			DivWhole: "+0",
+			DivRemain: "+1",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "-1",
+			Number2: "+2",
+			Equal: false,
+			Greater: false,
+			Add: "+1",
+			Sub: "-3",
+			Mul: "-2",
+			DivWhole: "+0",
+			DivRemain: "-1",
+			Pow: "+1",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "-1",
+			Number2: "-2",
+			Equal: false,
+			Greater: true,
+			Add: "-3",
+			Sub: "+1",
+			Mul: "+2",
+			DivWhole: "+0",
+			DivRemain: "-1",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
+		(
+			Number1: "+2",
+			Number2: "+1",
+			Equal: false,
+			Greater: true,
+			Add: "+3",
+			Sub: "+1",
+			Mul: "+2",
+			DivWhole: "+2",
+			DivRemain: "+0",
+			Pow: "+2",
+			RootWhole: "+2",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "+2",
+			Number2: "-1",
+			Equal: false,
+			Greater: true,
+			Add: "+1",
+			Sub: "+3",
+			Mul: "-2",
+			DivWhole: "-2",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain : "ERROR"
+		),
+		(
+			Number1: "-2",
+			Number2: "+1",
+			Equal: false,
+			Greater: false,
+			Add: "-1",
+			Sub: "-3",
+			Mul: "-2",
+			DivWhole: "-2",
+			DivRemain: "+0",
+			Pow: "-2",
+			RootWhole: "-2",
+			RootRemain: "+0"
+		),
+		(
+			Number1: "-2",
+			Number2: "-1",
+			Equal: false,
+			Greater: false,
+			Add: "-3",
+			Sub: "-1",
+			Mul: "+2",
+			DivWhole: "+2",
+			DivRemain: "+0",
+			Pow: "ERROR",
+			RootWhole: "ERROR",
+			RootRemain: "ERROR"
+		),
 	];
 }

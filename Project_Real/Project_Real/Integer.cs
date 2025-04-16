@@ -81,7 +81,7 @@ public readonly struct Integer
 
 	public static bool GreaterThan(Integer i1, Integer i2)
 	{
-		return i1.Sign != i2.Sign ? i1.Sign : i1.Sign == (i1.Value > i2.Value);
+		return i1.Sign != i2.Sign ? i1.Sign : (i1.Sign ? i1.Value > i2.Value : i1.Value < i2.Value);
 	}
 
 	public static Integer Add(Integer i1, Integer i2)
@@ -125,7 +125,7 @@ public readonly struct Integer
 		if (!i2.Sign)
 			throw new NotImplementedException();
 
-		return new Integer(i1.Sign || i1[0] % Digit.TWO == Digit.ZERO, i1.Value ^ i2.Value);
+		return new Integer(i1.Sign || i2[0] % Digit.TWO == Digit.ZERO, i1.Value ^ i2.Value);
 	}
 
 	public static (Integer Whole, Integer Remainder) SquareRoot(Integer i)
@@ -139,7 +139,7 @@ public readonly struct Integer
 
 	public static (Integer Whole, Integer Remainder) Root(Integer i1, Integer i2)
 	{
-		if (!i2.Sign || i1.Sign != (i2[0] % Digit.TWO == Digit.ZERO))
+		if (!i2.Sign || !i1.Sign && (i2[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
 		(Natural whole, Natural remainder) = Natural.Root(i1.Value, i2.Value);

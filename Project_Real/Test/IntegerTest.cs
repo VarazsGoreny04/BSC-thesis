@@ -15,7 +15,6 @@ public class IntegerTest
 			_ => throw new FormatException()
 		};
 	}
-	private static string Format(bool sign, string number) => (Integer.WriteSign && sign ? '+' + number.ToString() : number.ToString());
 
 	[TestMethod]
 	public void ZeroConstructor()
@@ -102,6 +101,9 @@ public class IntegerTest
 	[TestMethod]
 	public void ToStringMethod()
 	{
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer number1, number2;
 
 		foreach (var item in IntegerTestCases.List)
@@ -109,250 +111,215 @@ public class IntegerTest
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
 
-			Assert.AreEqual(item.Number1, number1.ToString());
-			Assert.AreEqual(item.Number2, number2.ToString());
+			Assert.AreEqual(item.Number1 == "-0" ? "+0" : item.Number1, number1.ToString());
+			Assert.AreEqual(item.Number2 == "-0" ? "+0" : item.Number2, number2.ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		Random rnd = new();
-		string characters;
-		Digit[] digits;
-		Natural numberDigits, numberCharacters;
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
 
-		for (int i = 0; i < 100; ++i)
+		Digit[] digits1, digits2;
+		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		foreach (var item in IntegerTestCases.List)
 		{
-			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
+			digits1 = new Digit[item.Number1.Length - 1];
+			for (int j = item.Number1.Length - 2; j >= 0; --j)
+				digits1[j] = new Digit(item.Number1[^(j + 1)]);
 
-			digits = new Digit[characters.Length];
-			for (int j = characters.Length - 1; j >= 0; --j)
-				digits[j] = new Digit(characters[^(j + 1)]);
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Natural(digits1));
 
-			numberDigits = new(digits);
-			numberCharacters = new(characters);
+			digits2 = new Digit[item.Number2.Length- 1];
+			for (int j = item.Number2.Length - 2; j >= 0; --j)
+				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 
-			Assert.AreEqual(new Integer(true, numberCharacters), new Integer(true, numberDigits));
-			Assert.AreEqual(new Integer(false, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(true, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(false, numberCharacters), new Integer(true, numberDigits));
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Natural(digits2));
 
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-			numberCharacters = new(new string('0', rnd.Next(5)) + characters);
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
-			Assert.AreEqual(new Integer(true, numberCharacters), new Integer(true, numberDigits));
-			Assert.AreEqual(new Integer(false, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(true, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(false, numberCharacters), new Integer(true, numberDigits));
-
-			int index = rnd.Next(digits.Length);
-			digits[index] = Digit.Add(digits[index], '1').Digit;
-
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-
-			Assert.AreNotEqual(new Integer(true, numberCharacters), new Integer(true, numberDigits));
-			Assert.AreNotEqual(new Integer(false, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(true, numberCharacters), new Integer(false, numberDigits));
-			Assert.AreNotEqual(new Integer(false, numberCharacters), new Integer(true, numberDigits));
+			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
+			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		Random rnd = new();
-		bool expected;
-		int int1, int2;
-		string characters1, characters2;
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Digit[] digits1, digits2;
-		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(1, int.MaxValue - 1);
-			int2 = rnd.Next(1, int.MaxValue - 1);
+			digits1 = new Digit[item.Number1.Length - 1];
+			for (int j = item.Number1.Length - 2; j >= 0; --j)
+				digits1[j] = new Digit(item.Number1[^(j + 1)]);
 
-			characters1 = int1.ToString();
-			characters2 = int2.ToString();
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Natural(digits1));
 
-			digits1 = new Digit[characters1.Length];
-			for (int j = characters1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(characters1[^(j + 1)]);
+			digits2 = new Digit[item.Number2.Length - 1];
+			for (int j = item.Number2.Length - 2; j >= 0; --j)
+				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 
-			digits2 = new Digit[characters2.Length];
-			for (int j = characters2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(characters2[^(j + 1)]);
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Natural(digits2));
 
-			numberCharacters1 = new(characters1);
-			numberCharacters2 = new(characters2);
-			numberDigits1 = new(digits1);
-			numberDigits2 = new(digits2);
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
-			expected = int1 > int2;
-
-			Assert.AreEqual(expected, Integer.GreaterThan(new(true, numberCharacters1), new(true, numberCharacters2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(true, numberCharacters1), new(true, numberDigits2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(true, numberDigits1), new(true, numberDigits2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(true, numberDigits1), new(true, numberCharacters2)));
-
-			expected = -int1 > -int2;
-
-			Assert.AreEqual(expected, Integer.GreaterThan(new(false, numberCharacters1), new(false, numberCharacters2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(false, numberCharacters1), new(false, numberDigits2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(false, numberDigits1), new(false, numberDigits2)));
-			Assert.AreEqual(expected, Integer.GreaterThan(new(false, numberDigits1), new(false, numberCharacters2)));
-
-			Assert.AreEqual(true, Integer.GreaterThan(new(true, numberCharacters1), new(false, numberCharacters2)));
-			Assert.AreEqual(true, Integer.GreaterThan(new(true, numberCharacters1), new(false, numberDigits2)));
-			Assert.AreEqual(true, Integer.GreaterThan(new(true, numberDigits1), new(false, numberDigits2)));
-			Assert.AreEqual(true, Integer.GreaterThan(new(true, numberDigits1), new(false, numberCharacters2)));
-
-			Assert.AreEqual(false, Integer.GreaterThan(new(false, numberCharacters1), new(true, numberCharacters2)));
-			Assert.AreEqual(false, Integer.GreaterThan(new(false, numberCharacters1), new(true, numberDigits2)));
-			Assert.AreEqual(false, Integer.GreaterThan(new(false, numberDigits1), new(true, numberDigits2)));
-			Assert.AreEqual(false, Integer.GreaterThan(new(false, numberDigits1), new(true, numberCharacters2)));
+			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberCharacters1, numberCharacters2));
+			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberDigits1, numberDigits2));
+			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberCharacters1, numberDigits2));
+			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberDigits1, numberCharacters2));
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done;
-		int halfOfMax = (int.MaxValue / 2);
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer integer1, integer2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue) - halfOfMax;
-			int2 = rnd.Next(int.MaxValue) - halfOfMax;
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
 
-			integer1 = new(int1.ToString());
-			integer2 = new(int2.ToString());
-
-			done = int1 + int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Add(integer1, integer2).ToString());
+			Assert.AreEqual(item.Add, Integer.Add(integer1, integer2).ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void SubstractMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done;
-		int halfOfMax = (int.MaxValue / 2);
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer integer1, integer2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue) - halfOfMax;
-			int2 = rnd.Next(int.MaxValue) - halfOfMax;
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
 
-			integer1 = new(int1.ToString());
-			integer2 = new(int2.ToString());
-
-			done = int1 - int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Substract(integer1, integer2).ToString());
+			Assert.AreEqual(item.Sub, Integer.Substract(integer1, integer2).ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1, int2, done;
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer integer1, integer2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(max * 2) - max;
-			int2 = rnd.Next(max * 2) - max;
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
 
-			integer1 = new(int1.ToString());
-			integer2 = new(int2.ToString());
-
-			done = int1 * int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Multiply(integer1, integer2).ToString());
+			Assert.AreEqual(item.Mul, Integer.Multiply(integer1, integer2).ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done1, done2;
-		Integer integer1, integer2;
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
 
-		for (int i = 0; i < 100; ++i)
+		Integer integer1, integer2, whole, remainder;
+
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue);
-			int2 = rnd.Next(1, int.MaxValue);
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
 
-			integer1 = new(int1.ToString());
-			integer2 = new(int2.ToString());
+			if (item.DivWhole == "ERROR" || item.DivRemain == "ERROR")
+				Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide(integer1, integer2));
+			else if (!(item.DivWhole == "BIG" || item.DivRemain == "BIG"))
+			{
+				(whole, remainder) = Integer.Divide(integer1, integer2);
 
-			done1 = int1 / int2;
-			done2 = int1 % int2;
-
-			(Integer whole, Integer remainder) = Integer.Divide(integer1, integer2);
-
-			Assert.AreEqual(Format(done1 >= 0, done1.ToString()), whole.ToString());
-			Assert.AreEqual(Format(done2 >= 0, done2.ToString()), remainder.ToString());
+				Assert.AreEqual(item.DivWhole, whole.ToString());
+				Assert.AreEqual(item.DivRemain, remainder.ToString());
+			}
 		}
 
-		Assert.AreEqual("0", Integer.Divide("0", "1").Whole);
-		Assert.AreEqual("0", Integer.Divide("0", "-1").Whole);
-		Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide("1", "0"));
-		Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide("-1", "0"));
-	}
-
-	[TestMethod]
-	public void SecondPowerMethod()
-	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1;
-		Integer integer1;
-
-		for (int i = 0; i < 100; ++i)
-		{
-			int1 = rnd.Next(max) - max;
-
-			integer1 = new(int1.ToString());
-
-			Assert.AreEqual(Format(true, Math.Pow(int1, 2).ToString()), Integer.SecondPower(integer1).ToString());
-		}
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
-		long done;
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer integer1, integer2;
 
-		for (int i = 0; i < 100; ++i)
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(1, 15);
-			int2 = rnd.Next(1, 10);
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
 
-			integer1 = new(int1.ToString());
-			integer2 = new(int2.ToString());
-
-			done = (long)Math.Pow(int1, int2);
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Integer.Power(integer1, integer2).ToString());
+			if (item.Pow == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Integer.Power(integer1, integer2));
+			else if (item.Pow != "BIG")
+				Assert.AreEqual(item.Pow, Integer.Power(integer1, integer2).ToString());
 		}
 
-		Assert.AreEqual(Format(true, "1"), Integer.Power("0", "0").ToString());
-		Assert.AreEqual(Format(true, "1"), Integer.Power("-0", "-0").ToString());
-		Assert.AreEqual(Format(true, "1"), Integer.Power("0", "-0").ToString());
-		Assert.AreEqual(Format(true, "1"), Integer.Power("-0", "0").ToString());
+		Integer.WriteSign = writeSign;
+	}
+
+	[TestMethod]
+	public void RootMethod()
+	{
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
+		Integer integer1, integer2, whole, remainder;
+
+		foreach (var item in IntegerTestCases.List)
+		{
+			integer1 = new(item.Number1);
+			integer2 = new(item.Number2);
+
+			if (item.RootWhole == "ERROR" || item.RootRemain == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Integer.Root(integer1, integer2));
+			else if (!(item.RootWhole == "BIG" || item.RootRemain == "BIG"))
+			{
+				(whole, remainder) = Integer.Root(integer1, integer2);
+
+				Assert.AreEqual(item.RootWhole, whole.ToString());
+				Assert.AreEqual(item.RootRemain, remainder.ToString());
+			}
+		}
+
+		Integer.WriteSign = writeSign;
 	}
 }
