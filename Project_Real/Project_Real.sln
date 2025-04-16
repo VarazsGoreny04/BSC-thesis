@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project_Real", "Project_Rea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{5A92210A-3999-496E-996E-A02177707F23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bullseye_Calculator.WPF", "Bullseye_Calculator.WPF\Bullseye_Calculator.WPF.csproj", "{F7B49D79-944F-45E5-81BC-0A2DA825B178}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bullseye_Calculator", "Bullseye_Calculator\Bullseye_Calculator.csproj", "{B88CF51D-E077-4720-B5CE-F0587A710229}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{5A92210A-3999-496E-996E-A02177707F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A92210A-3999-496E-996E-A02177707F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A92210A-3999-496E-996E-A02177707F23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B49D79-944F-45E5-81BC-0A2DA825B178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B49D79-944F-45E5-81BC-0A2DA825B178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B49D79-944F-45E5-81BC-0A2DA825B178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B49D79-944F-45E5-81BC-0A2DA825B178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88CF51D-E077-4720-B5CE-F0587A710229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88CF51D-E077-4720-B5CE-F0587A710229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88CF51D-E077-4720-B5CE-F0587A710229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88CF51D-E077-4720-B5CE-F0587A710229}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

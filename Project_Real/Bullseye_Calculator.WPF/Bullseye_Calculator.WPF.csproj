@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Resources\ListViewStyle.xaml">
       <SubType>Designer</SubType>
     </Page>

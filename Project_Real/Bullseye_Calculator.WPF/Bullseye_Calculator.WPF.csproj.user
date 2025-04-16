@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Resources\DarkButtonStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Resources\ListViewStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -16,7 +19,7 @@
     <Page Update="Resources\LabelStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\ButtonStyle.xaml">
+    <Page Update="Resources\LightButtonStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\MainWindow.xaml">
