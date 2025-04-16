@@ -8,29 +8,37 @@ public readonly struct Positive
 	#region Fields
 
 	private static char separator = '.';
-	private static int fractionCalculatonLength = 100;
+	private static int fractionCalculatonLength = 10;
 
 	private readonly int length;
 	private readonly int wholeLength;
 	private readonly int fractionLength;
-	private readonly Natural Value;
+	private readonly Natural value;
 
 	#endregion
 
 	#region Properties
 
-	public static char Separator { get => separator; set => separator = value; }
+	public static char Separator
+	{
+		get => separator;
+		set
+		{
+			separator = value < '0' || value > '9' ? value : throw new Exception();
+		}
+	}
 	public static int FractionCalculatonLength
 	{
-		get { return fractionCalculatonLength; }
-		set { fractionCalculatonLength = (value >= 0) ? value : throw new ArgumentException(); }
+		get => fractionCalculatonLength;
+		set => fractionCalculatonLength = (value >= 0) ? value : throw new ArgumentException();
 	}
+
 	public readonly int Length => length;
 	public readonly int WholeLength => wholeLength;
 	public readonly int FractionLength => fractionLength;
-	public readonly bool IsZero => Value.IsZero;
-	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly ImmutableArray<Digit> Digits => Value.Digits;
+	public readonly bool IsZero => value.IsZero;
+	public readonly Digit this[Index i] => value.Digits[i];
+	public readonly ImmutableArray<Digit> Digits => value.Digits;
 
 	#endregion
 
@@ -38,7 +46,7 @@ public readonly struct Positive
 
 	public Positive()
 	{
-		Value = new Natural();
+		value = new Natural();
 		length = 1;
 		wholeLength = 1;
 		fractionLength = 0;
@@ -62,19 +70,20 @@ public readonly struct Positive
 			number = number.Remove(fractionLength, 1);
 		}
 
-		Value = new Natural(number);
+		value = new Natural(number);
 		length = number.Length;
 		fractionLength = fractionLength == -1 ? 0 : number.Length - fractionLength;
 		wholeLength = length - fractionLength;
 	}
 
-	public Positive(Natural value, int fractionLength) // Hibás
+	public Positive(Natural value, int fractionLength)
 	{
 		if (fractionLength < 0)
 			throw new ArgumentException();
-		else if (value.IsZero)
+
+		if (value.IsZero)
 		{
-			Value = value;
+			this.value = value;
 			length = 1;
 			wholeLength = 1;
 			this.fractionLength = 0;
@@ -85,9 +94,9 @@ public readonly struct Positive
 
 			while (i < Math.Min(fractionLength, value.Length) && value[i] == Digit.ZERO) { ++i; }
 
-			Value = new Natural([.. value.Digits[i..]]);
+			this.value = new Natural([.. value.Digits[i..]]);
 			this.fractionLength = fractionLength - i;
-			length = Math.Max(Value.Length, this.fractionLength + 1);
+			length = Math.Max(this.value.Length, this.fractionLength + 1);
 			wholeLength = length - this.fractionLength;
 		}
 	}
@@ -96,7 +105,7 @@ public readonly struct Positive
 
 	#region Private methods
 
-	public static Positive TrimStart(Positive p) // Biztos kell?
+	public static Positive TrimStart(Positive p)
 	{
 		int i = 0;
 
@@ -105,21 +114,16 @@ public readonly struct Positive
 		return i > 0 ? new Positive(new Natural([.. p.Digits[i..]]), p.fractionLength - i) : p;
 	}
 
-	/*private static Positive Splicing(Positive p, int length)
-	{
-		return new Positive(new Natural([.. Digit.CreateArray(length), .. p.Digits]), p.length + length);
-	}*/
-
 	#endregion
 
 	#region Public methods
 
 	public override string ToString()
 	{
-		return (fractionLength == 0) ? Value.ToString() :
+		return (fractionLength == 0) ? value.ToString() :
 				(
-					(fractionLength < Digits.Length) ? Value.ToString() :
-					new string('0', length - Digits.Length) + Value.ToString()
+					(fractionLength < Digits.Length) ? value.ToString() :
+					new string('0', length - Digits.Length) + value.ToString()
 				).Insert(wholeLength, separator.ToString());
 	}
 
@@ -135,24 +139,24 @@ public readonly struct Positive
 
 	public static bool Equals(Positive p1, Positive p2)
 	{
-		return p1.length == p2.length && p1.fractionLength == p2.fractionLength && p1.Value == p2.Value;
+		return p1.length == p2.length && p1.fractionLength == p2.fractionLength && p1.value == p2.value;
 	}
 
 	public static bool GreaterThan(Positive p1, Positive p2)
 	{
 		if (p1.wholeLength != p2.wholeLength)
-			return p1.length > p2.length;
+			return p1.wholeLength > p2.wholeLength;
 
 		if (p1.fractionLength == p2.fractionLength)
-			return p1.Value > p2.Value;
+			return p1.value > p2.value;
 		else
 		{
 			Digit[] splicing = Digit.CreateArray(Math.Max(p1.fractionLength, p2.fractionLength));
 
 			if (p1.fractionLength < p2.fractionLength)
-				return new Natural([.. splicing, .. p1.Digits]) > p2.Value;
+				return new Natural([.. splicing, .. p1.Digits]) > p2.value;
 			else
-				return p1.Value > new Natural([.. splicing, .. p2.Digits]);
+				return p1.value > new Natural([.. splicing, .. p2.Digits]);
 		}
 	}
 
@@ -163,7 +167,7 @@ public readonly struct Positive
 		if (difference < 0)
 			(p1, p2) = (p2, p1);
 
-		Positive result = new(p1.Value + new Natural([.. p2.Digits, .. Digit.CreateArray(Math.Abs(difference))]), p1.fractionLength);
+		Positive result = new(p1.value + new Natural([.. Digit.CreateArray(Math.Abs(difference)), .. p2.Digits]), p1.fractionLength);
 
 		return TrimStart(result);
 	}
@@ -177,16 +181,16 @@ public readonly struct Positive
 		Natural result;
 
 		if (p1.fractionLength < p2.fractionLength)
-			(swap, result) = Natural.Substract(new Natural([.. splicing, .. p1.Digits]), p2.Value);
+			(swap, result) = Natural.Substract(new Natural([.. splicing, .. p1.Digits]), p2.value);
 		else
-			(swap, result) = Natural.Substract(p1.Value, new Natural([.. splicing, .. p2.Digits]));
+			(swap, result) = Natural.Substract(p1.value, new Natural([.. splicing, .. p2.Digits]));
 
 		return (swap, TrimStart(new Positive(result, maxFractionLength)));
 	}
 
 	public static Positive Multiply(Positive p1, Positive p2)
 	{
-		return new Positive(Natural.Multiply(p1.Value, p2.Value), p1.fractionLength + p2.fractionLength);
+		return new Positive(Natural.Multiply(p1.value, p2.value), p1.fractionLength + p2.fractionLength);
 	}
 
 	public static (Positive Value, Positive Remainder) Divide(Positive p1, Positive p2)
@@ -199,13 +203,12 @@ public readonly struct Positive
 
 		(Natural whole, Natural remainder) = Natural.Divide(numerator, denominator);
 
-		return (new Positive(whole, (whole.IsZero ? 0 : fractionCalculatonLength)),
-				new Positive(remainder, (remainder.IsZero ? 0 : p2.fractionLength + denominatorSlicingLength)));
+		return (new Positive(whole, fractionCalculatonLength), new Positive(remainder, fractionCalculatonLength + numeratorSlicingLength + p1.FractionLength));
 	}
 
 	public static Positive SecondPower(Positive p)
 	{
-		return p.IsZero ? throw new NotImplementedException() : p * p;
+		return p * p;
 	}
 
 	public static Positive Power(Positive i1, Positive i2)
@@ -213,24 +216,29 @@ public readonly struct Positive
 		if (i2.fractionLength != 0)
 			throw new NotImplementedException();
 
-		return new(i1.Value ^ i2.Value, i1.fractionLength * Convert.ToInt32(i2.ToString()));
+		return new(i1.value ^ i2.value, i1.fractionLength * Convert.ToInt32(i2.ToString()));
 	}
 
-	public static Positive SquareRoot(Positive value)
+	public static (Positive Whole, Positive Remainder) SquareRoot(Positive value)
 	{
-		Digit[] padding = Digit.CreateArray(((fractionCalculatonLength * 2 - value.fractionLength) * 2 + 1) / 2);
-
-		return new Positive(~(new Natural([.. padding, .. value.Digits])), (value.fractionLength + padding.Length) / 2);
+		Digit[] splicing = Digit.CreateArray(((fractionCalculatonLength * 2 - value.fractionLength) * 2 + 1) / 2);
+		(Natural whole, Natural remainder) = Natural.SquareRoot(new Natural([.. splicing, .. value.Digits]));
+		int fractionLength = (value.fractionLength + splicing.Length) / 2;
+		
+		return (new Positive(whole, fractionLength), new Positive(remainder, fractionLength * 2));
 	}
 
-	public static Positive Root(Positive value, Positive n)
+	public static (Positive Whole, Positive Remainder) Root(Positive value, Positive n)
 	{
-		if (n.fractionLength != 0)
+		if (n.fractionLength != 0 || n.IsZero)
 			throw new NotImplementedException();
 
 		int nInt = Convert.ToUInt16(n.ToString());
-		Digit[] padding = Digit.CreateArray(((fractionCalculatonLength * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt);
-		return new Positive(new Natural([.. n.Digits]) | new Natural([.. padding, .. value.Digits]), (value.fractionLength + padding.Length) / nInt);
+		Digit[] splicing = Digit.CreateArray(((fractionCalculatonLength * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt);
+		(Natural whole, Natural remainder) = Natural.Root(new Natural([.. splicing, .. value.Digits]), new Natural([.. n.Digits]));
+		int fractionLength = (value.fractionLength + splicing.Length) / nInt;
+
+		return (new Positive(whole, fractionLength), new Positive(remainder, fractionLength * nInt));
 	}
 
 	public override readonly bool Equals(object? obj)
@@ -260,8 +268,8 @@ public readonly struct Positive
 	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
 	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2).Remainder;
 	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
-	public static Positive operator ~(Positive f) => SquareRoot(f);
-	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1);
+	public static Positive operator ~(Positive f) => SquareRoot(f).Whole;
+	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1).Whole;
 
 	#endregion
 }
