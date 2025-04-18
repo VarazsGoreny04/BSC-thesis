@@ -1,5 +1,5 @@
-﻿using System;
-using Project_Real;
+﻿using Project_Real;
+using System;
 
 namespace Test;
 
@@ -140,14 +140,18 @@ public class NaturalTest
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
 				digits1[j] = new Digit(item.Number1[^(j + 1)]);
 
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(item.Number1);
+
 			digits2 = new Digit[item.Number2.Length];
 			for (int j = item.Number2.Length - 1; j >= 0; --j)
 				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 
-			numberCharacters1 = new(item.Number1);
 			numberCharacters2 = new(item.Number2);
-			numberDigits1 = new(item.Number1);
 			numberDigits2 = new(item.Number2);
+
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
 			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberCharacters1, numberCharacters2));
 			Assert.AreEqual(item.Greater, Natural.GreaterThan(numberDigits1, numberDigits2));
@@ -211,15 +215,15 @@ public class NaturalTest
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
-			
-			if (item.DivWhole == "ERROR" || item.DivRemain == "ERROR")
+
+			if (item.Div == "ERROR")
 				Assert.ThrowsException<DivideByZeroException>(() => Natural.Divide(natural1, natural2));
-			else if(!(item.DivWhole == "BIG" || item.DivRemain == "BIG"))
+			else if (item.Div != "BIG")
 			{
 				(whole, remainder) = Natural.Divide(natural1, natural2);
 
-				Assert.AreEqual(item.DivWhole, whole.ToString());
-				Assert.AreEqual(item.DivRemain, remainder.ToString());
+				Assert.AreEqual(item.Div, whole.ToString());
+				Assert.AreEqual((new Natural(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
 	}
@@ -251,14 +255,14 @@ public class NaturalTest
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
 
-			if (item.RootWhole == "ERROR" || item.RootRemain == "ERROR")
+			if (item.Root == "ERROR")
 				Assert.ThrowsException<NotImplementedException>(() => Natural.Root(natural1, natural2));
-			else if (!(item.RootWhole == "BIG" || item.RootRemain == "BIG"))
+			else if (item.Root != "BIG")
 			{
 				(whole, remainder) = Natural.Root(natural1, natural2);
 
-				Assert.AreEqual(item.RootWhole, whole.ToString());
-				Assert.AreEqual(item.RootRemain, remainder.ToString());
+				Assert.AreEqual(item.Root, whole.ToString());
+				Assert.AreEqual((new Natural(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 	}

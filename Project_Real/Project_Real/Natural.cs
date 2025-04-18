@@ -291,20 +291,18 @@ public readonly struct Natural
 	{
 		Natural remainder = new();
 
-		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
-			return (value, remainder);
-
 		if (n < new Natural([Digit.THREE]))
 		{
 			return Digit.ToChar(n[0]) switch
 			{
-				'0' => (new Natural([Digit.ONE]), remainder),
+				'0' => throw new NotImplementedException(),
 				'1' => (value, remainder),
 				_ => SquareRoot(value)
 			};
 		}
-		/*else if (n.Length > 2)
-			throw new NotImplementedException();*/
+
+		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
+			return (value, remainder);
 
 		ushort nInt = Convert.ToUInt16(n.ToString());
 		Digit[] digits = [.. value.digits, .. Digit.CreateArray((nInt - (value.digits.Length % nInt)) % nInt)];

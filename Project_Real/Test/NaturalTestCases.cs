@@ -14,11 +14,9 @@ public static class NaturalTestCases
 	bool SubSwap,
 	string SubNum,
 	string Mul,
-	string DivWhole,
-	string DivRemain,
+	string Div,
 	string Pow,
-	string RootWhole,
-	string RootRemain
+	string Root
 	)> List =
 	[
 		/*Zero*/
@@ -31,11 +29,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "0",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 		(
 			Number1: "0",
@@ -46,11 +42,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "1",
 			Mul: "0",
-			DivWhole: "0",
-			DivRemain: "0",
+			Div: "0",
 			Pow: "0",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "0"
 		),
 		(
 			Number1: "1",
@@ -61,11 +55,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "1",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 		(
 			Number1: "0",
@@ -76,11 +68,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "999999",
 			Mul: "0",
-			DivWhole: "0",
-			DivRemain: "0",
+			Div: "0",
 			Pow: "0",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "0"
 		),
 		(
 			Number1: "999999",
@@ -91,11 +81,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 		(
 			Number1: "0",
@@ -106,11 +94,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "1000000000000",
 			Mul: "0",
-			DivWhole: "0",
-			DivRemain: "0",
+			Div: "0",
 			Pow: "0",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "0"
 		),
 		(
 			Number1: "1000000000000",
@@ -121,11 +107,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "1000000000000",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 		(
 			Number1: "0",
@@ -136,11 +120,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "12345678901234567890",
 			Mul: "0",
-			DivWhole: "0",
-			DivRemain: "0",
+			Div: "0",
 			Pow: "0",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "0"
 		),
 		(
 			Number1: "12345678901234567890",
@@ -151,11 +133,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "12345678901234567890",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 		(
 			Number1: "0",
@@ -166,11 +146,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "999999999999999999999999999",
 			Mul: "0",
-			DivWhole: "0",
-			DivRemain: "0",
+			Div: "0",
 			Pow: "0",
-			RootWhole: "0",
-			RootRemain: "0"
+			Root: "0"
 		),
 		(
 			Number1: "999999999999999999999999999",
@@ -181,11 +159,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999999999999",
 			Mul: "0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "ERROR"
 		),
 
 		/*Big and small*/
@@ -198,11 +174,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "987654321987654321864197532",
 			Mul: "121932631234567900234567900112635269",
-			DivWhole: "0",
-			DivRemain: "123456789",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "987654321987654321987654321",
@@ -213,11 +187,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "987654321987654321864197532",
 			Mul: "121932631234567900234567900112635269",
-			DivWhole: "8000000080900000744",
-			DivRemain: "35803305",
+			Div: "8000000080900000744",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "1000000000000000000000000000",
@@ -228,11 +200,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999999999999",
 			Mul: "1000000000000000000000000000",
-			DivWhole: "1000000000000000000000000000",
-			DivRemain: "0",
+			Div: "1000000000000000000000000000",
 			Pow: "1000000000000000000000000000",
-			RootWhole: "1000000000000000000000000000",
-			RootRemain: "0"
+			Root: "1000000000000000000000000000"
 		),
 		(
 			Number1: "1",
@@ -243,11 +213,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "999999999999999999999999999",
 			Mul: "1000000000000000000000000000",
-			DivWhole: "0",
-			DivRemain: "1",
+			Div: "0",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "1"
 		),
 		(
 			Number1: "3333333333333333333333",
@@ -258,11 +226,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "3333333332777777777778",
 			Mul: "1851851851849999999999814814814815",
-			DivWhole: "6000000000",
-			DivRemain: "3333333333",
+			Div: "6000000000",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "555555555555",
@@ -273,11 +239,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "3333333332777777777778",
 			Mul: "1851851851849999999999814814814815",
-			DivWhole: "0",
-			DivRemain: "555555555555",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "18446744073709551615",
@@ -288,11 +252,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "18446744073709551613",
 			Mul: "36893488147419103230",
-			DivWhole: "9223372036854775807",
-			DivRemain: "1",
+			Div: "9223372036854775807",
 			Pow: "340282366920938463426481119284349108225",
-			RootWhole: "4294967295",
-			RootRemain: "8589934590"
+			Root: "4294967295"
 		),
 		(
 			Number1: "2",
@@ -303,11 +265,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "18446744073709551613",
 			Mul: "36893488147419103230",
-			DivWhole: "0",
-			DivRemain: "2",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "18446744073709551616",
@@ -318,11 +278,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "18446744073709551614",
 			Mul: "36893488147419103232",
-			DivWhole: "9223372036854775808",
-			DivRemain: "0",
+			Div: "9223372036854775808",
 			Pow: "340282366920938463463374607431768211456",
-			RootWhole: "4294967296",
-			RootRemain: "0"
+			Root: "4294967296"
 		),
 		(
 			Number1: "999999999999999999999",
@@ -333,11 +291,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999997",
 			Mul: "1999999999999999999998",
-			DivWhole: "499999999999999999999",
-			DivRemain: "1",
+			Div: "499999999999999999999",
 			Pow: "999999999999999999998000000000000000000001",
-			RootWhole: "31622776601",
-			RootRemain: "43246886798"
+			Root: "31622776601"
 		),
 		(
 			Number1: "999999999999999999999",
@@ -348,11 +304,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999994",
 			Mul: "4999999999999999999995",
-			DivWhole: "199999999999999999999",
-			DivRemain: "4",
+			Div: "199999999999999999999",
 			Pow: "999999999999999999995000000000000000000009999999999999999999990000000000000000000004999999999999999999999",
-			RootWhole: "15848",
-			RootRemain: "293967766031532031"
+			Root: "15848"
 		),
 		(
 			Number1: "999999999999999999999",
@@ -363,11 +317,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999990",
 			Mul: "8999999999999999999991",
-			DivWhole: "111111111111111111111",
-			DivRemain: "0",
+			Div: "111111111111111111111",
 			Pow: "999999999999999999991000000000000000000035999999999999999999916000000000000000000125999999999999999999874000000000000000000083999999999999999999964000000000000000000008999999999999999999999",
-			RootWhole: "215",
-			RootRemain: "18373804810853515624"
+			Root: "215"
 		),
 		(
 			Number1: "1000000000000000000000",
@@ -378,11 +330,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999998",
 			Mul: "2000000000000000000000",
-			DivWhole: "500000000000000000000",
-			DivRemain: "0",
+			Div: "500000000000000000000",
 			Pow: "1000000000000000000000000000000000000000000",
-			RootWhole: "31622776601",
-			RootRemain: "43246886799"
+			Root: "31622776601"
 		),
 
 		/*Dancing on the edge*/
@@ -395,11 +345,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "9998",
 			Mul: "9999",
-			DivWhole: "9999",
-			DivRemain: "0",
+			Div: "9999",
 			Pow: "9999",
-			RootWhole: "9999",
-			RootRemain: "0"
+			Root: "9999"
 		),
 		(
 			Number1: "1",
@@ -410,11 +358,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "9998",
 			Mul: "9999",
-			DivWhole: "0",
-			DivRemain: "1",
+			Div: "0",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "1"
 		),
 		(
 			Number1: "999999999999",
@@ -425,11 +371,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999998",
 			Mul: "999999999999",
-			DivWhole: "999999999999",
-			DivRemain: "0",
+			Div: "999999999999",
 			Pow: "999999999999",
-			RootWhole: "999999999999",
-			RootRemain: "0"
+			Root: "999999999999"
 		),
 		(
 			Number1: "1",
@@ -440,11 +384,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "999999999998",
 			Mul: "999999999999",
-			DivWhole: "0",
-			DivRemain: "1",
+			Div: "0",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "1"
 		),
 		(
 			Number1: "999999999999999999999999999",
@@ -455,11 +397,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999999999999998",
 			Mul: "999999999999999999999999999",
-			DivWhole: "999999999999999999999999999",
-			DivRemain: "0",
+			Div: "999999999999999999999999999",
 			Pow: "999999999999999999999999999",
-			RootWhole: "999999999999999999999999999",
-			RootRemain: "0"
+			Root: "999999999999999999999999999"
 		),
 		(
 			Number1: "1",
@@ -470,11 +410,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "999999999999999999999999998",
 			Mul: "999999999999999999999999999",
-			DivWhole: "0",
-			DivRemain: "1",
+			Div: "0",
 			Pow: "1",
-			RootWhole: "1",
-			RootRemain: "0"
+			Root: "1"
 		),
 
 		/*Repitition*/
@@ -487,10 +425,10 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "0",
 			Mul: "1234321",
-			DivWhole: "1",
+			Div: "1",
 			DivRemain: "0",
 			Pow: "614213677620841231318558872403334094191059602818228212589751194698317611572942856379753025734375108019330836900739786906490081990431082175890972912103376055996807088803026220224904190225973815345709824495169145103158466990300245979397155793773953238880262175229624144165684304374472301848804526047178040113084590528342238004709578339671113020300343661143237973230568779510246848415736829223854838238502418040675412216360578172737794164888700819598005375051611621351626728008906241663927945969919320270437716892278482276857051169382491019332949980948400990703166277590842544043865103326037437621595913564342833771667390603999216987988594849389612456835216114969601190502612063194665919420703594913644427710744621507427929519703630366056421069320620820898583836324342894627268637224689554435778532210218339733736787416114353697080359272839895268701983612759707360597802048482040354947935210615764393322412072777285536344529438772049102787913917715836910807411554701022917318306710662389061037342640510716451949425109792241919324811782946872729639218094660368047554608132657926073004660295553959712588396829321864332328684049364832503188945288182561550753605330726722328638542930291034806507738871025982820875729369609939126065579811809347500454461172954692718257985228007466534613874186387594700839327059787221616727382854614451215608333663711684868918696959501230096339042465630650728320218812527851089314120181664469563527098406698937779858354334886900994603200732628027953210631837274669088841929324117785809549388886418149352368190594513135751105671413532274096022046374248869477131610246588369494983737989138180182995604958145077812462410709980439806079527094347197367640662855174664377349842181820787662827644026687734984416351073832825983065487618790637790740082743384554485363490047817084443089560990550638393775337653709235585274269224434963619625667861065892920484914914574268750972275416254599767815083112679326319103504536901309266007195990891357585232303889264036872857004142000617685261256723404309799096709451893688514213978894390507821707261982910759615867040892854689429632908327021960534819694753216140447188230798790226733977376996751825641291685308767421843339391982046085175602766067144202619546214006165950190929391091121067739049094567066652498851791248587267878277568977342221168898283781277473990190565448209629856777732545294603204127325972996776935363235343440349158246872482413426843422894059752020731354476335322756423721338063937757766602684638177454108192274607323934627205770736640540136258888303677170549074110508223866652851704583735291731344808979579495707394951933116831398305462020259480995901554069315560256428910902009231828319378033352353884968936419623351748682863949292620492937234890675180987772011646922000692813632504436399291546310498472081579759389761585912024831753817126583907823167845631075745706520732650027423619459894632484726330450774326269486560276445933085982584166108456847649149348498256661165036468371810792515485140176716946193766054838138576557646304999996830077821778473577467053865850455855971199516012603280869717731148097023450294453875321736703780814598014214821895196067429965835118507716548634006291432332781482946988439499496452464347574527858759677852929786900897323924391208395902756597817631008994802752495590886907935573962902257945742454753304612688266071499409635761845587764462387312374183852372445899764268711",
-			RootWhole: "BIG",
+			Root: "BIG",
 			RootRemain: "BIG"
 		),*/
 		(
@@ -502,11 +440,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "0",
 			Mul: "12345679012320987654321",
-			DivWhole: "1",
-			DivRemain: "0",
+			Div: "1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "222222222222",
@@ -517,11 +453,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "0",
 			Mul: "49382716049283950617284",
-			DivWhole: "1",
-			DivRemain: "0",
+			Div: "1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "333333333333",
@@ -532,11 +466,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "333333333333",
 			Mul: "222222222221777777777778",
-			DivWhole: "0",
-			DivRemain: "333333333333",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "444444444444",
@@ -547,11 +479,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "444444444444",
 			Mul: "395061728394271604938272",
-			DivWhole: "0",
-			DivRemain: "444444444444",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "999999999999",
@@ -562,11 +492,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "222222222222",
 			Mul: "777777777776222222222223",
-			DivWhole: "1",
-			DivRemain: "222222222222",
+			Div: "1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "121212121212",
@@ -577,11 +505,9 @@ public static class NaturalTestCases
 			SubSwap: true,
 			SubNum: "222222222222",
 			Mul: "41628405264685644322008",
-			DivWhole: "0",
-			DivRemain: "121212121212",
+			Div: "0",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "787878787878",
@@ -592,11 +518,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "222222222222",
 			Mul: "445668809304281603917968",
-			DivWhole: "1",
-			DivRemain: "222222222222",
+			Div: "1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "909090909090",
@@ -607,11 +531,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "808080808080",
 			Mul: "91827364554453627180900",
-			DivWhole: "9",
-			DivRemain: "0",
+			Div: "9",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "505050505050",
@@ -622,11 +544,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "252525252525",
 			Mul: "127538006325630037751250",
-			DivWhole: "2",
-			DivRemain: "0",
+			Div: "2",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 
 		/*Prime numbers*/
@@ -639,11 +559,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "7",
 			Mul: "30",
-			DivWhole: "3",
-			DivRemain: "1",
+			Div: "3",
 			Pow: "1000",
-			RootWhole: "2",
-			RootRemain: "2"
+			Root: "2"
 		),
 		(
 			Number1: "10",
@@ -654,11 +572,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "3",
 			Mul: "70",
-			DivWhole: "1",
-			DivRemain: "3",
+			Div: "1",
 			Pow: "10000000",
-			RootWhole: "1",
-			RootRemain: "9"
+			Root: "1"
 		),
 		(
 			Number1: "100",
@@ -669,11 +585,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "97",
 			Mul: "300",
-			DivWhole: "33",
-			DivRemain: "1",
+			Div: "33",
 			Pow: "1000000",
-			RootWhole: "4",
-			RootRemain: "36"
+			Root: "4"
 		),
 		(
 			Number1: "100",
@@ -684,11 +598,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "93",
 			Mul: "700",
-			DivWhole: "14",
-			DivRemain: "2",
+			Div: "14",
 			Pow: "100000000000000",
-			RootWhole: "1",
-			RootRemain: "99"
+			Root: "1"
 		),
 		(
 			Number1: "1522756",
@@ -699,11 +611,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "1522754",
 			Mul: "3045512",
-			DivWhole: "761378",
-			DivRemain: "0",
+			Div: "761378",
 			Pow: "2318785835536",
-			RootWhole: "1234",
-			RootRemain: "0"
+			Root: "1234"
 		),
 		(
 			Number1: "1522756",
@@ -714,11 +624,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "1522753",
 			Mul: "4568268",
-			DivWhole: "507585",
-			DivRemain: "1",
+			Div: "507585",
 			Pow: "3530945043777457216",
-			RootWhole: "115",
-			RootRemain: "1881"
+			Root: "115"
 		),
 		(
 			Number1: "4192000000000",
@@ -729,11 +637,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "4191999999997",
 			Mul: "12576000000000",
-			DivWhole: "1397333333333",
-			DivRemain: "1",
+			Div: "1397333333333",
 			Pow: "73665445888000000000000000000000000000",
-			RootWhole: "16124",
-			RootRemain: "28045376"
+			Root: "16124"
 		),
 		(
 			Number1: "4192000000000",
@@ -744,11 +650,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "4191999999996",
 			Mul: "16768000000000",
-			DivWhole: "1048000000000",
-			DivRemain: "0",
+			Div: "1048000000000",
 			Pow: "308805549162496000000000000000000000000000000000000",
-			RootWhole: "1430",
-			RootRemain: "10383990000"
+			Root: "1430"
 		),
 		(
 			Number1: "999999999999999999",
@@ -759,11 +663,9 @@ public static class NaturalTestCases
 			SubSwap: false,
 			SubNum: "999999999999999994",
 			Mul: "4999999999999999995",
-			DivWhole: "199999999999999999",
-			DivRemain: "4",
+			Div: "199999999999999999",
 			Pow: "999999999999999995000000000000000009999999999999999990000000000000000004999999999999999999",
-			RootWhole: "3981",
-			RootRemain: "90054836056098"
+			Root: "3981"
 		)
 	];
 }
