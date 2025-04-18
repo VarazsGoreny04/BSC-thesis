@@ -13,11 +13,9 @@ public static class IntegerTestCases
 	string Add,
 	string Sub,
 	string Mul,
-	string DivWhole,
-	string DivRemain,
+	string Div,
 	string Pow,
-	string RootWhole,
-	string RootRemain
+	string Root
 	)> List =
 	[
 		/*Zero*/
@@ -29,11 +27,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "+0",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+0",
@@ -43,11 +39,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "+0",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -57,11 +51,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "+0",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -71,11 +63,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "+0",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+0",
@@ -85,11 +75,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "-1",
 			Mul: "+0",
-			DivWhole: "+0",
-			DivRemain: "+0",
+			Div: "+0",
 			Pow: "+0",
-			RootWhole: "+0",
-			RootRemain: "+0"
+			Root: "+0"
 		),
 		(
 			Number1: "+0",
@@ -99,11 +87,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "+1",
 			Mul: "+0",
-			DivWhole: "+0",
-			DivRemain: "+0",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-0",
@@ -113,11 +99,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "-1",
 			Mul: "+0",
-			DivWhole: "+0",
-			DivRemain: "+0",
+			Div: "+0",
 			Pow: "+0",
-			RootWhole: "+0",
-			RootRemain: "+0"
+			Root: "+0"
 		),
 		(
 			Number1: "-0",
@@ -127,11 +111,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "+1",
 			Mul: "+0",
-			DivWhole: "+0",
-			DivRemain: "+0",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -141,11 +123,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "+1",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -155,11 +135,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "+1",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -169,11 +147,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "-1",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -183,11 +159,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "-1",
 			Mul: "+0",
-			DivWhole: "ERROR",
-			DivRemain: "ERROR",
+			Div: "ERROR",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+999999999999999999999",
@@ -197,11 +171,9 @@ public static class IntegerTestCases
 			Add: "+1000000000000000000000",
 			Sub: "+999999999999999999998",
 			Mul: "+999999999999999999999",
-			DivWhole: "+999999999999999999999",
-			DivRemain: "+0",
+			Div: "+999999999999999999999",
 			Pow: "+999999999999999999999",
-			RootWhole: "+999999999999999999999",
-			RootRemain: "+0"
+			Root: "+999999999999999999999"
 		),
 		(
 			Number1: "+999999999999999999999",
@@ -211,11 +183,9 @@ public static class IntegerTestCases
 			Add: "+999999999999999999998",
 			Sub: "+1000000000000000000000",
 			Mul: "-999999999999999999999",
-			DivWhole: "-999999999999999999999",
-			DivRemain: "+0",
+			Div: "-999999999999999999999",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -225,11 +195,9 @@ public static class IntegerTestCases
 			Add: "-999999999999999999998",
 			Sub: "-1000000000000000000000",
 			Mul: "-999999999999999999999",
-			DivWhole: "-999999999999999999999",
-			DivRemain: "+0",
+			Div: "-999999999999999999999",
 			Pow: "BIG",
-			RootWhole: "-999999999999999999999",
-			RootRemain: "+0"
+			Root: "-999999999999999999999"
 		),
 		(
 			Number1: "-999999999999999999999",
@@ -239,11 +207,9 @@ public static class IntegerTestCases
 			Add: "-1000000000000000000000",
 			Sub: "-999999999999999999998",
 			Mul: "+999999999999999999999",
-			DivWhole: "+999999999999999999999",
-			DivRemain: "+0",
+			Div: "+999999999999999999999",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -253,11 +219,9 @@ public static class IntegerTestCases
 			Add: "+1000000000000000000000",
 			Sub: "-999999999999999999998",
 			Mul: "+999999999999999999999",
-			DivWhole: "+0",
-			DivRemain: "+1",
+			Div: "+0",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			Root: "+1"
 		),
 		(
 			Number1: "+1",
@@ -267,11 +231,9 @@ public static class IntegerTestCases
 			Add: "-999999999999999999998",
 			Sub: "+1000000000000000000000",
 			Mul: "-999999999999999999999",
-			DivWhole: "+0",
-			DivRemain: "+1",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -281,11 +243,9 @@ public static class IntegerTestCases
 			Add: "+999999999999999999998",
 			Sub: "-1000000000000000000000",
 			Mul: "-999999999999999999999",
-			DivWhole: "+0",
-			DivRemain: "-1",
+			Div: "+0",
 			Pow: "-1",
-			RootWhole: "-1",
-			RootRemain: "+0"
+			Root: "-1"
 		),
 		(
 			Number1: "-1",
@@ -295,11 +255,9 @@ public static class IntegerTestCases
 			Add: "-1000000000000000000000",
 			Sub: "+999999999999999999998",
 			Mul: "+999999999999999999999",
-			DivWhole: "+0",
-			DivRemain: "-1",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+123456789",
@@ -309,11 +267,9 @@ public static class IntegerTestCases
 			Add: "+246913578",
 			Sub: "+0",
 			Mul: "+15241578750190521",
-			DivWhole: "+1",
-			DivRemain: "+0",
+			Div: "+1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "+123456789",
@@ -323,11 +279,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "+246913578",
 			Mul: "-15241578750190521",
-			DivWhole: "-1",
-			DivRemain: "+0",
+			Div: "-1",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-123456789",
@@ -337,11 +291,9 @@ public static class IntegerTestCases
 			Add: "+0",
 			Sub: "-246913578",
 			Mul: "-15241578750190521",
-			DivWhole: "-1",
-			DivRemain: "+0",
+			Div: "-1",
 			Pow: "BIG",
-			RootWhole: "BIG",
-			RootRemain: "BIG"
+			Root: "BIG"
 		),
 		(
 			Number1: "-123456789",
@@ -351,11 +303,9 @@ public static class IntegerTestCases
 			Add: "-246913578",
 			Sub: "+0",
 			Mul: "+15241578750190521",
-			DivWhole: "+1",
-			DivRemain: "+0",
+			Div: "+1",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+1",
@@ -365,11 +315,9 @@ public static class IntegerTestCases
 			Add: "+3",
 			Sub: "-1",
 			Mul: "+2",
-			DivWhole: "+0",
-			DivRemain: "+1",
+			Div: "+0",
 			Pow: "+1",
-			RootWhole: "+1",
-			RootRemain: "+0"
+			Root: "+1"
 		),
 		(
 			Number1: "+1",
@@ -379,11 +327,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "+3",
 			Mul: "-2",
-			DivWhole: "+0",
-			DivRemain: "+1",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -393,11 +339,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "-3",
 			Mul: "-2",
-			DivWhole: "+0",
-			DivRemain: "-1",
+			Div: "+0",
 			Pow: "+1",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-1",
@@ -407,11 +351,9 @@ public static class IntegerTestCases
 			Add: "-3",
 			Sub: "+1",
 			Mul: "+2",
-			DivWhole: "+0",
-			DivRemain: "-1",
+			Div: "+0",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "+2",
@@ -421,11 +363,9 @@ public static class IntegerTestCases
 			Add: "+3",
 			Sub: "+1",
 			Mul: "+2",
-			DivWhole: "+2",
-			DivRemain: "+0",
+			Div: "+2",
 			Pow: "+2",
-			RootWhole: "+2",
-			RootRemain: "+0"
+			Root: "+2"
 		),
 		(
 			Number1: "+2",
@@ -435,11 +375,9 @@ public static class IntegerTestCases
 			Add: "+1",
 			Sub: "+3",
 			Mul: "-2",
-			DivWhole: "-2",
-			DivRemain: "+0",
+			Div: "-2",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain : "ERROR"
+			Root: "ERROR"
 		),
 		(
 			Number1: "-2",
@@ -449,11 +387,9 @@ public static class IntegerTestCases
 			Add: "-1",
 			Sub: "-3",
 			Mul: "-2",
-			DivWhole: "-2",
-			DivRemain: "+0",
+			Div: "-2",
 			Pow: "-2",
-			RootWhole: "-2",
-			RootRemain: "+0"
+			Root: "-2"
 		),
 		(
 			Number1: "-2",
@@ -463,11 +399,9 @@ public static class IntegerTestCases
 			Add: "-3",
 			Sub: "-1",
 			Mul: "+2",
-			DivWhole: "+2",
-			DivRemain: "+0",
+			Div: "+2",
 			Pow: "ERROR",
-			RootWhole: "ERROR",
-			RootRemain: "ERROR"
+			Root: "ERROR"
 		),
 	];
 }

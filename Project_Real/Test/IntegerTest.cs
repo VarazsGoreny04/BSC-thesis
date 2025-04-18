@@ -19,6 +19,9 @@ public class IntegerTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Integer empty = new();
 
 		Integer[] zeros =
@@ -37,25 +40,30 @@ public class IntegerTest
 
 		foreach (Integer zero in zeros)
 			Assert.AreEqual(empty, zero);
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void StringConstructor()
 	{
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		string nullString = null!;
 		Assert.ThrowsException<ArgumentException>(() => new Integer(nullString));
 		Assert.ThrowsException<ArgumentException>(() => new Integer(""));
 		Assert.ThrowsException<ArgumentException>(() => new Integer("+"));
 		Assert.ThrowsException<ArgumentException>(() => new Integer("-"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("a123"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("123a"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("12a3"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("+a123"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("+123a"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("+12a3"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("-a123"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("-123a"));
-		Assert.ThrowsException<ArgumentException>(() => new Natural("-12a3"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("12a3"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("+a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("+123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("+12a3"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("-a123"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("-123a"));
+		Assert.ThrowsException<ArgumentException>(() => new Integer("-12a3"));
 
 		Integer number1, number2;
 
@@ -65,25 +73,28 @@ public class IntegerTest
 			number2 = new(item.Number2);
 
 			Assert.AreEqual(Sign(item.Number1), number1.Sign);
-			for (int j = 1; j < item.Number1.Length; ++j)
-				Assert.AreEqual(item.Number1[j].ToString(), number1.Digits[^j].ToString());
+			Assert.AreEqual((new Natural(item.Number1.Replace("+", "").Replace("-", ""))).ToString(), number1.Value.ToString());
 
 			Assert.AreEqual(Sign(item.Number2), number2.Sign);
-			for (int j = 1; j < item.Number2.Length; ++j)
-				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^j].ToString());
+			Assert.AreEqual((new Natural(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void NaturalConstructor()
 	{
+		bool writeSign = Integer.WriteSign;
+		Integer.WriteSign = true;
+
 		Natural natural1, natural2;
 		Integer number1, number2;
 
 		foreach (var item in IntegerTestCases.List)
 		{
-			natural1 = new(item.Number1[1..]);
-			natural2 = new(item.Number2[1..]);
+			natural1 = new(item.Number1.Replace("+", "").Replace("-", ""));
+			natural2 = new(item.Number2.Replace("+", "").Replace("-", ""));
 
 			number1 = new(Sign(item.Number1), natural1);
 			number2 = new(Sign(item.Number2), natural2);
@@ -96,6 +107,8 @@ public class IntegerTest
 			for (int j = 1; j < item.Number2.Length; ++j)
 				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^j].ToString());
 		}
+
+		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
@@ -260,14 +273,14 @@ public class IntegerTest
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
 
-			if (item.DivWhole == "ERROR" || item.DivRemain == "ERROR")
+			if (item.Div == "ERROR")
 				Assert.ThrowsException<DivideByZeroException>(() => Integer.Divide(integer1, integer2));
-			else if (!(item.DivWhole == "BIG" || item.DivRemain == "BIG"))
+			else if (item.Div != "BIG")
 			{
 				(whole, remainder) = Integer.Divide(integer1, integer2);
 
-				Assert.AreEqual(item.DivWhole, whole.ToString());
-				Assert.AreEqual(item.DivRemain, remainder.ToString());
+				Assert.AreEqual(item.Div, whole.ToString());
+				Assert.AreEqual((new Integer(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
 
@@ -309,14 +322,14 @@ public class IntegerTest
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
 
-			if (item.RootWhole == "ERROR" || item.RootRemain == "ERROR")
+			if (item.Root == "ERROR")
 				Assert.ThrowsException<NotImplementedException>(() => Integer.Root(integer1, integer2));
-			else if (!(item.RootWhole == "BIG" || item.RootRemain == "BIG"))
+			else if (item.Root != "BIG")
 			{
 				(whole, remainder) = Integer.Root(integer1, integer2);
 
-				Assert.AreEqual(item.RootWhole, whole.ToString());
-				Assert.AreEqual(item.RootRemain, remainder.ToString());
+				Assert.AreEqual(item.Root, whole.ToString());
+				Assert.AreEqual((new Integer(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 
