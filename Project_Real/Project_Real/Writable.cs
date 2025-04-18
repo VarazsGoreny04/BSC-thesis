@@ -14,6 +14,10 @@ public readonly struct Writable
 
 	#region Properties
 
+	public static bool WriteSign { get => Integer.WriteSign; set => Integer.WriteSign = value; }
+	public static char Separator { get => Positive.Separator; set => Positive.Separator = value; }
+	public static int FractionCalculatonLength { get => Positive.FractionCalculatonLength; set => Positive.FractionCalculatonLength = value; }
+
 	public readonly bool IsZero => value.IsZero;
 	public readonly int Length => value.Length;
 	public readonly int WholeLength => value.WholeLength;
@@ -36,9 +40,12 @@ public readonly struct Writable
 
 	public Writable(string number)
 	{
+		if (number is null || number.Length < 1)
+			throw new ArgumentException();
+
 		int start = 0;
 
-		if (number.Length > 1 && !(number[0] >= '0' && number[0] <= '9'))
+		if (!(number[0] >= '0' && number[0] <= '9'))
 		{
 			sign = number[0] switch
 			{
@@ -79,10 +86,7 @@ public readonly struct Writable
 
 	public static bool GreaterThan(Writable w1, Writable w2)
 	{
-		if (w1.sign != w2.sign)
-			return w1.sign;
-		else
-			return w1.value > w2.value;
+		return w1.Sign != w2.Sign ? w1.Sign : (w1.Sign ? w1.Value > w2.Value : w1.Value < w2.Value);
 	}
 
 	public static Writable Add(Writable w1, Writable w2)
@@ -138,12 +142,13 @@ public readonly struct Writable
 		return new Writable(true, ~w.value);
 	}
 
-	public static Writable Root(Writable w1, Writable w2)
+	public static (Writable Whole, Writable Remainder) Root(Writable w1, Writable w2)
 	{
-		if (w2.FractionLength != 0 || !w2.sign || w1.sign != (w2[0] % Digit.TWO == Digit.ZERO))
+		if (w2.FractionLength != 0 || !w2.sign || (!w1.sign && w2[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
-		return new Writable(w1.sign, w2.value | w1.value);
+		(Positive whole, Positive remainder) = Positive.Root(w1.Value, w2.Value);
+		return (new Writable(w1.Sign, whole), new Writable(w1.Sign, remainder));
 	}
 
 	public override readonly bool Equals(object? obj)
@@ -174,7 +179,7 @@ public readonly struct Writable
 	public static Writable operator %(Writable f1, Writable f2) => Divide(f1, f2).Remainder;
 	public static Writable operator ^(Writable f1, Writable f2) => Power(f1, f2);
 	public static Writable operator ~(Writable f) => SquareRoot(f);
-	public static Writable operator |(Writable f1, Writable f2) => Root(f2, f1);
+	public static Writable operator |(Writable f1, Writable f2) => Root(f2, f1).Whole;
 
 	#endregion
 }

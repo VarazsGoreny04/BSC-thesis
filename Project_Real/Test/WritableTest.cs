@@ -1,35 +1,49 @@
-﻿/*using Project_Real;
+﻿using Project_Real;
+using System;
 
 namespace Test;
 
 [TestClass]
 public class WritableTest
 {
-	private static string Format(bool sign, string number) => (Integer.WriteSign && sign ? '+' + number.ToString() : number.ToString());
+	private static bool Sign(string sign)
+	{
+		return sign[0] switch
+		{
+			'+' => true,
+			'-' => sign.Length == 2 && sign[1] == '0',
+			_ => throw new FormatException()
+		};
+	}
 
 	[TestMethod]
 	public void ZeroConstructor()
 	{
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
+
 		Writable empty = new();
 
 		Writable[] zeros =
 		[
 			new("0"),
 			new("00"),
-			new($"0{Positive.Separator}"),
-			new($"00{Positive.Separator}"),
-			new($"0{Positive.Separator}0"),
-			new($"0{Positive.Separator}00"),
-			new($"00{Positive.Separator}0"),
-			new($"00{Positive.Separator}00"),
+			new($"0."),
+			new($"00."),
+			new($"0.0"),
+			new($"0.00"),
+			new($"00.0"),
+			new($"00.00"),
 			new("+0"),
 			new("+00"),
-			new($"+0{Positive.Separator}"),
-			new($"+00{Positive.Separator}"),
-			new($"+0{Positive.Separator}0"),
-			new($"+0{Positive.Separator}00"),
-			new($"+00{Positive.Separator}0"),
-			new($"+00{Positive.Separator}00"),
+			new($"+0."),
+			new($"+00."),
+			new($"+0.0"),
+			new($"+0.00"),
+			new($"+00.0"),
+			new($"+00.00"),
 			new(true, new(new([Digit.ZERO]), 0)),
 			new(true, new(new([Digit.ZERO, Digit.ZERO]), 0)),
 			new(true, new(new([Digit.ZERO, Digit.ZERO]), 1)),
@@ -38,12 +52,12 @@ public class WritableTest
 			new(true, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2)),
 			new("-0"),
 			new("-00"),
-			new($"-0{Positive.Separator}"),
-			new($"-00{Positive.Separator}"),
-			new($"-0{Positive.Separator}0"),
-			new($"-0{Positive.Separator}00"),
-			new($"-00{Positive.Separator}0"),
-			new($"-00{Positive.Separator}00"),
+			new($"-0."),
+			new($"-00."),
+			new($"-0.0"),
+			new($"-0.00"),
+			new($"-00.0"),
+			new($"-00.00"),
 			new(false, new(new([Digit.ZERO]), 0)),
 			new(false, new(new([Digit.ZERO, Digit.ZERO]), 0)),
 			new(false, new(new([Digit.ZERO, Digit.ZERO]), 1)),
@@ -54,351 +68,340 @@ public class WritableTest
 
 		foreach (Writable zero in zeros)
 			Assert.AreEqual(empty, zero);
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void StringConstructor()
 	{
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
+
 		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Writable(nullString); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Writable(""); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Writable("+"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Writable("-"); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(Positive.Separator.ToString()); });
-		Assert.ThrowsException<ArgumentException>(() => { _ = new Positive($"{Positive.Separator}123"); });
+		Assert.ThrowsException<ArgumentException>(() => new Writable(nullString));
+		Assert.ThrowsException<ArgumentException>(() => new Writable(""));
+		Assert.ThrowsException<ArgumentException>(() => new Writable("+"));
+		Assert.ThrowsException<ArgumentException>(() => new Writable("-"));
+		Assert.ThrowsException<ArgumentException>(() => new Writable("."));
+		Assert.ThrowsException<ArgumentException>(() => new Writable("+."));
+		Assert.ThrowsException<ArgumentException>(() => new Writable("-."));
+		Assert.ThrowsException<ArgumentException>(() => new Writable($".123"));
+		Assert.ThrowsException<ArgumentException>(() => new Writable($"+.123"));
+		Assert.ThrowsException<ArgumentException>(() => new Writable($"-.123"));
 
 		string[] tests = ["a123", "123a", "12a3"];
 
 		for (int j = 0; j < tests.Length; ++j)
-			Assert.ThrowsException<ArgumentException>(() => { _ = new Writable(tests[j]); });
+			Assert.ThrowsException<ArgumentException>(() => new Writable(tests[j]));
 
 		for (int i = tests[0].Length; i > 0; --i)
 		{
 			for (int j = 0; j < tests.Length; ++j)
-				Assert.ThrowsException<ArgumentException>(() => { _ = new Writable(tests[j].Insert(i, Positive.Separator.ToString())); });
+				Assert.ThrowsException<ArgumentException>(() => new Writable(tests[j].Insert(i, ".")));
 		}
 
-		string characters;
-		Writable number;
+		Writable number1, number2;
 
-		for (int i = 0; i < 1_000; ++i)
+		foreach (var item in WritableTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			Assert.IsTrue(number.Sign);
-			for (int j = 0; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^(j + 1)].ToString());
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			Assert.AreEqual((new Positive(item.Number1.Replace("+", "").Replace("-", ""))).ToString(), number1.Value.ToString());
 
-			characters = '+' + i.ToString();
-			number = new(characters);
-
-			Assert.IsTrue(number.Sign);
-			for (int j = 1; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^j].ToString());
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
 		}
 
-		for (int i = 1; i < 1_000; ++i)
-		{
-			characters = '-' + i.ToString();
-			number = new(characters);
-
-			Assert.IsFalse(number.Sign);
-			for (int j = 1; j < characters.Length; ++j)
-				Assert.AreEqual(characters[j].ToString(), number.Digits[^j].ToString());
-		}
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
-	public void NaturalConstructor()
+	public void PositiveConstructor()
 	{
-		Random rnd = new();
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		Natural natural = new("0");
+		Positive positive1, positive2;
+		Writable number1, number2;
 
-		Writable numberPositive = new(true, natural);
-		Writable numberNegative = new(false, natural);
+		foreach (var item in WritableTestCases.List)
+		{
+			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
+			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
 
-		Assert.AreEqual(numberPositive, numberNegative);
+			number1 = new(Sign(item.Number1), positive1);
+			number2 = new(Sign(item.Number2), positive2);
 
-		natural = new(rnd.Next(1, int.MaxValue).ToString());
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			Assert.AreEqual((new Positive(item.Number1.Replace("+", "").Replace("-", ""))).ToString(), number1.Value.ToString());
 
-		numberPositive = new(true, natural);
-		numberNegative = new(false, natural);
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
+		}
 
-		Assert.AreEqual(natural, numberPositive.Value);
-		Assert.AreEqual(natural, numberNegative.Value);
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		string characters;
-		Writable number;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 1; i < 1_000; ++i)
+		Positive positive1, positive2;
+		Writable number1, number2;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			characters = i.ToString();
-			number = new(characters);
+			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
+			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
 
-			Assert.AreEqual('+' + characters, number.ToString());
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
 
-			number = new('+' + characters);
-
-			Assert.AreEqual('+' + characters, number.ToString());
-
-			number = new('-' + characters);
-
-			Assert.AreEqual('-' + characters, number.ToString());
+			Assert.AreEqual(positive1.IsZero ? "+0" : $"{(Sign(item.Number1) ? '+' : '-')}{positive1}", number1.ToString());
+			Assert.AreEqual(positive2.IsZero ? "+0" : $"{(Sign(item.Number2) ? '+' : '-')}{positive2}", number2.ToString());
 		}
 
-		Assert.AreEqual("+0", new Writable("0"));
-		Assert.AreEqual("+0", new Writable("+0"));
-		Assert.AreEqual("+0", new Writable("-0"));
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		Random rnd = new();
-		string characters;
-		Digit[] digits;
-		Natural numberDigits, numberCharacters;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		foreach (var item in IntegerTestCases.List)
 		{
-			characters = rnd.Next(int.MaxValue).ToString() + rnd.Next(int.MaxValue).ToString();
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
 
-			digits = new Digit[characters.Length];
-			for (int j = characters.Length - 1; j >= 0; --j)
-				digits[j] = new Digit(characters[^(j + 1)]);
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Positive(item.Number2.Replace("+", "").Replace("-", "")));
 
-			numberDigits = new(digits);
-			numberCharacters = new(characters);
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
-			Assert.AreEqual(new Writable(true, numberCharacters), new Writable(true, numberDigits));
-			Assert.AreEqual(new Writable(false, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(true, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(false, numberCharacters), new Writable(true, numberDigits));
-
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-			numberCharacters = new(new string('0', rnd.Next(5)) + characters);
-
-			Assert.AreEqual(new Writable(true, numberCharacters), new Writable(true, numberDigits));
-			Assert.AreEqual(new Writable(false, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(true, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(false, numberCharacters), new Writable(true, numberDigits));
-
-			int index = rnd.Next(digits.Length);
-			digits[index] = Digit.Add(digits[index], '1').Digit;
-
-			numberDigits = new([.. digits, Digit.ZERO, Digit.ZERO]);
-
-			Assert.AreNotEqual(new Writable(true, numberCharacters), new Writable(true, numberDigits));
-			Assert.AreNotEqual(new Writable(false, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(true, numberCharacters), new Writable(false, numberDigits));
-			Assert.AreNotEqual(new Writable(false, numberCharacters), new Writable(true, numberDigits));
+			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
+			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		Random rnd = new();
-		bool expected;
-		int int1, int2;
-		string characters1, characters2;
-		Digit[] digits1, digits2;
-		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		foreach (var item in IntegerTestCases.List)
 		{
-			int1 = rnd.Next(1, int.MaxValue - 1);
-			int2 = rnd.Next(1, int.MaxValue - 1);
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
 
-			characters1 = int1.ToString();
-			characters2 = int2.ToString();
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Positive(item.Number2.Replace("+", "").Replace("-", "")));
 
-			digits1 = new Digit[characters1.Length];
-			for (int j = characters1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(characters1[^(j + 1)]);
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
 
-			digits2 = new Digit[characters2.Length];
-			for (int j = characters2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(characters2[^(j + 1)]);
-
-			numberCharacters1 = new(characters1);
-			numberCharacters2 = new(characters2);
-			numberDigits1 = new(digits1);
-			numberDigits2 = new(digits2);
-
-			expected = int1 > int2;
-
-			Assert.AreEqual(expected, Writable.GreaterThan(new(true, numberCharacters1), new(true, numberCharacters2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(true, numberCharacters1), new(true, numberDigits2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(true, numberDigits1), new(true, numberDigits2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(true, numberDigits1), new(true, numberCharacters2)));
-
-			expected = -int1 > -int2;
-
-			Assert.AreEqual(expected, Writable.GreaterThan(new(false, numberCharacters1), new(false, numberCharacters2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(false, numberCharacters1), new(false, numberDigits2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(false, numberDigits1), new(false, numberDigits2)));
-			Assert.AreEqual(expected, Writable.GreaterThan(new(false, numberDigits1), new(false, numberCharacters2)));
-
-			Assert.AreEqual(true, Writable.GreaterThan(new(true, numberCharacters1), new(false, numberCharacters2)));
-			Assert.AreEqual(true, Writable.GreaterThan(new(true, numberCharacters1), new(false, numberDigits2)));
-			Assert.AreEqual(true, Writable.GreaterThan(new(true, numberDigits1), new(false, numberDigits2)));
-			Assert.AreEqual(true, Writable.GreaterThan(new(true, numberDigits1), new(false, numberCharacters2)));
-
-			Assert.AreEqual(false, Writable.GreaterThan(new(false, numberCharacters1), new(true, numberCharacters2)));
-			Assert.AreEqual(false, Writable.GreaterThan(new(false, numberCharacters1), new(true, numberDigits2)));
-			Assert.AreEqual(false, Writable.GreaterThan(new(false, numberDigits1), new(true, numberDigits2)));
-			Assert.AreEqual(false, Writable.GreaterThan(new(false, numberDigits1), new(true, numberCharacters2)));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberCharacters1, numberCharacters2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberDigits1, numberDigits2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberCharacters1, numberDigits2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberDigits1, numberCharacters2));
 		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
+
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done;
-		int halfOfMax = (int.MaxValue / 2);
-		Writable Writable1, Writable2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable writable1, writable2;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue) - halfOfMax;
-			int2 = rnd.Next(int.MaxValue) - halfOfMax;
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			Writable1 = new(int1.ToString());
-			Writable2 = new(int2.ToString());
-
-			done = int1 + int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Writable.Add(Writable1, Writable2).ToString());
+			Assert.AreEqual(item.Add, Writable.Add(writable1, writable2).ToString());
 		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void SubstractMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done;
-		int halfOfMax = (int.MaxValue / 2);
-		Writable Writable1, Writable2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable writable1, writable2;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue) - halfOfMax;
-			int2 = rnd.Next(int.MaxValue) - halfOfMax;
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			Writable1 = new(int1.ToString());
-			Writable2 = new(int2.ToString());
-
-			done = int1 - int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Writable.Substract(Writable1, Writable2).ToString());
+			Assert.AreEqual(item.Sub, Writable.Substract(writable1, writable2).ToString());
 		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1, int2, done;
-		Writable Writable1, Writable2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable writable1, writable2;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			int1 = rnd.Next(max * 2) - max;
-			int2 = rnd.Next(max * 2) - max;
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			Writable1 = new(int1.ToString());
-			Writable2 = new(int2.ToString());
-
-			done = int1 * int2;
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Writable.Multiply(Writable1, Writable2).ToString());
+			Assert.AreEqual(item.Mul, Writable.Multiply(writable1, writable2).ToString());
 		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		Random rnd = new();
-		int int1, int2, done1, done2;
-		Writable Writable1, Writable2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
+		int fractionCalculatonLength = Writable.FractionCalculatonLength;
+		Writable.FractionCalculatonLength = 10;
 
-		for (int i = 0; i < 100; ++i)
+		string[] tokens;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			int1 = rnd.Next(int.MaxValue);
-			int2 = rnd.Next(1, int.MaxValue);
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			Writable1 = new(int1.ToString());
-			Writable2 = new(int2.ToString());
+			if (item.Div == "ERROR")
+				Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide(writable1, writable2));
+			else if (item.Div != "BIG")
+			{
+				tokens = item.Div.Split('.', StringSplitOptions.RemoveEmptyEntries);
+				(whole, remainder) = Writable.Divide(writable1, writable2);
 
-			done1 = int1 / int2;
-			done2 = int1 % int2;
-
-			(Writable whole, Writable remainder) = Writable.Divide(Writable1, Writable2);
-
-			Assert.AreEqual(Format(done1 >= 0, done1.ToString()), whole.ToString());
-			Assert.AreEqual(Format(done2 >= 0, done2.ToString()), remainder.ToString());
+				Assert.AreEqual(new Writable(tokens[0] +
+					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(),
+					whole.ToString());
+				Assert.AreEqual((new Writable(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
+			}
 		}
 
-		Assert.AreEqual("0", Writable.Divide("0", "1").Whole);
-		Assert.AreEqual("0", Writable.Divide("0", "-1").Whole);
-		Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide("1", "0"));
-		Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide("-1", "0"));
-	}
-
-	[TestMethod]
-	public void SecondPowerMethod()
-	{
-		Random rnd = new();
-		int max = (int)Math.Sqrt(int.MaxValue);
-		int int1;
-		Writable Writable1;
-
-		for (int i = 0; i < 100; ++i)
-		{
-			int1 = rnd.Next(max) - max;
-
-			Writable1 = new(int1.ToString());
-
-			Assert.AreEqual(Format(true, Math.Pow(int1, 2).ToString()), Writable.SecondPower(Writable1).ToString());
-		}
-
-		Assert.ThrowsException<NotImplementedException>(() => Writable.SecondPower("0"));
-		Assert.ThrowsException<NotImplementedException>(() => Writable.SecondPower("-0"));
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
+		Writable.FractionCalculatonLength = fractionCalculatonLength;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		Random rnd = new();
-		int int1, int2;
-		long done;
-		Writable Writable1, Writable2;
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
 
-		for (int i = 0; i < 100; ++i)
+		Writable writable1, writable2;
+
+		foreach (var item in WritableTestCases.List)
 		{
-			int1 = rnd.Next(1, 15);
-			int2 = rnd.Next(1, 10);
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			Writable1 = new(int1.ToString());
-			Writable2 = new(int2.ToString());
-
-			done = (long)Math.Pow(int1, int2);
-
-			Assert.AreEqual(Format(done >= 0, done.ToString()), Writable.Power(Writable1, Writable2).ToString());
+			if (item.Pow == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Writable.Power(writable1, writable2));
+			else if (item.Pow != "BIG")
+				Assert.AreEqual(item.Pow, Writable.Power(writable1, writable2).ToString());
 		}
 
-		Assert.ThrowsException<NotImplementedException>(() => Writable.Power("0", "0"));
-		Assert.ThrowsException<NotImplementedException>(() => Writable.Power("-0", "-0"));
-		Assert.ThrowsException<NotImplementedException>(() => Writable.Power("0", "-0"));
-		Assert.ThrowsException<NotImplementedException>(() => Writable.Power("-0", "0"));
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
 	}
-}*/
+
+	[TestMethod]
+	public void RootMethod()
+	{
+		bool writeSign = Writable.WriteSign;
+		Writable.WriteSign = true;
+		char separator = Writable.Separator;
+		Writable.Separator = '.';
+		int fractionCalculatonLength = Writable.FractionCalculatonLength;
+		Writable.FractionCalculatonLength = 10;
+
+		string[] tokens;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (var item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			if (item.Root == "ERROR")
+				Assert.ThrowsException<NotImplementedException>(() => Writable.Root(writable1, writable2));
+			else if (item.Root != "BIG")
+			{
+				tokens = item.Root.Split('.', StringSplitOptions.RemoveEmptyEntries);
+				(whole, remainder) = Writable.Root(writable1, writable2);
+
+				Assert.AreEqual(new Writable(tokens[0] +
+					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(), 
+					whole.ToString());
+				Assert.AreEqual((new Writable(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
+			}
+		}
+
+		Writable.WriteSign = writeSign;
+		Writable.Separator = separator;
+		Writable.FractionCalculatonLength = fractionCalculatonLength;
+	}
+}
