@@ -47,7 +47,7 @@ public readonly struct Rational
 		{
 			1 => (new Writable(parts[0]), null),
 			2 => (new Writable(parts[0]), new Container(new Writable(parts[1]))),
-			_ => throw new FormatException()
+			_ => throw new ArgumentException()
 		};
 	}
 
@@ -148,6 +148,30 @@ public readonly struct Rational
 		return r1 * Reciprocal(r2);
 	}
 
+	public static Rational SecondPower(Rational r)
+	{
+		return r * r;
+	}
+
+	public static Rational Power(Rational r1, Rational r2)
+	{
+		(Writable numerator1, Writable numerator2, Container? denominator) = CommonDenominator(r1, r2);
+
+		return new Rational(numerator1 ^ numerator2, denominator);
+	}
+
+	public static Rational SquareRoot(Rational r)
+	{
+		return new Rational(~r.Numerator, r.Denominator);
+	}
+
+	public static Rational Root(Rational r1, Rational r2)
+	{
+		(Writable numerator1, Writable numerator2, Container? denominator) = CommonDenominator(r1, r2);
+
+		return new Rational(numerator2 | numerator1, denominator);
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Rational real && this == real;
@@ -173,8 +197,10 @@ public readonly struct Rational
 	public static Rational operator -(Rational f1, Rational f2) => Substract(f1, f2);
 	public static Rational operator *(Rational f1, Rational f2) => Multiply(f1, f2);
 	public static Rational operator /(Rational f1, Rational f2) => Divide(f1, f2);
-	//public static Real operator %(Real f1, Real f2) => Divide(f1, f2);
-	//public static Real operator ^(Real f1, Real f2) => Power(f1, f2);
+	//public static Rational operator %(Rational f1, Rational f2) => Divide(f1, f2).Remainder;
+	public static Rational operator ^(Rational f1, Rational f2) => Power(f1, f2);
+	public static Rational operator ~(Rational f) => SquareRoot(f);
+	public static Rational operator |(Rational f1, Rational f2) => Root(f2, f1);
 
 	#endregion
 }

@@ -57,7 +57,7 @@ public class PositiveTest
 		for (int i = tests[0].Length; i > 0; --i)
 		{
 			for (int j = 0; j < tests.Length; ++j)
-				Assert.ThrowsException<ArgumentException>(() => { _ = new Positive(tests[j].Insert(i, ".")); });
+				Assert.ThrowsException<ArgumentException>(() => new Positive(tests[j].Insert(i, ".")));
 		}
 
 		string characters1, characters2;
@@ -332,6 +332,8 @@ public class PositiveTest
 	{
 		char separator = Positive.Separator;
 		Positive.Separator = '.';
+		int fractionCalculatonLength = Writable.FractionCalculatonLength;
+		Writable.FractionCalculatonLength = 10;
 
 		string[] tokens;
 		Positive positive1, positive2, whole, remainder;
@@ -356,6 +358,7 @@ public class PositiveTest
 		}
 
 		Positive.Separator = separator;
+		Positive.FractionCalculatonLength = fractionCalculatonLength;
 	}
 
 	[TestMethod]
