@@ -76,7 +76,7 @@ public readonly struct Writable
 
 	public override string ToString()
 	{
-		return Integer.WriteSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
+		return $"{(WriteSign || !sign ? (sign ? '+' : '-') : "")}{value}";
 	}
 
 	public static bool Equals(Writable w1, Writable w2)
@@ -91,7 +91,7 @@ public readonly struct Writable
 
 	public static Writable Add(Writable w1, Writable w2)
 	{
-		if (w1.sign && w2.sign)
+		if (w1.sign == w2.sign)
 			return new Writable(w1.sign, w1.value + w2.value);
 		else
 		{
@@ -114,9 +114,9 @@ public readonly struct Writable
 		return new Writable(w1.sign == w2.sign, w1.value * w2.value);
 	}
 
-	public static (Writable Value, Writable Remainder) Divide(Writable w1, Writable w2)
+	public static (Writable Value, Writable Remainder) Divide(Writable w1, Writable w2, int? fractionCalculatonLength = null)
 	{
-		(Positive whole, Positive remainder) = Positive.Divide(w1.value, w2.value);
+		(Positive whole, Positive remainder) = Positive.Divide(w1.value, w2.value, fractionCalculatonLength);
 
 		return (new Writable(w1.sign == w2.sign, whole), new Writable(w1.sign, remainder));
 	}
@@ -131,23 +131,26 @@ public readonly struct Writable
 		if (!w2.sign)
 			throw new NotImplementedException();
 
-		return new Writable(w1.sign || w1[0] % Digit.TWO == Digit.ZERO, w1.value ^ w2.value);
+		return new(w1.sign || w2[0] % Digit.TWO == Digit.ZERO, w1.value ^ w2.value);
 	}
 
-	public static Writable SquareRoot(Writable w)
+	public static (Writable Value, Writable Remainder) SquareRoot(Writable w, int? fractionCalculatonLength = null)
 	{
 		if (!w.sign)
 			throw new NotImplementedException();
 
-		return new Writable(true, ~w.value);
+		(Positive whole, Positive remainder) = Positive.SquareRoot(w.value, fractionCalculatonLength);
+
+		return (new Writable(true, whole), new Writable(true, remainder));
 	}
 
-	public static (Writable Whole, Writable Remainder) Root(Writable w1, Writable w2)
+	public static (Writable Value, Writable Remainder) Root(Writable w1, Writable w2, int? fractionCalculatonLength = null)
 	{
-		if (w2.FractionLength != 0 || !w2.sign || (!w1.sign && w2[0] % Digit.TWO == Digit.ZERO))
+		if (!w2.sign || (!w1.sign && w2[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
-		(Positive whole, Positive remainder) = Positive.Root(w1.Value, w2.Value);
+		(Positive whole, Positive remainder) = Positive.Root(w1.Value, w2.Value, fractionCalculatonLength);
+
 		return (new Writable(w1.Sign, whole), new Writable(w1.Sign, remainder));
 	}
 
@@ -172,14 +175,15 @@ public readonly struct Writable
 	public static bool operator <(Writable f1, Writable f2) => GreaterThan(f2, f1);
 	public static bool operator >=(Writable f1, Writable f2) => !GreaterThan(f2, f1);
 	public static bool operator <=(Writable f1, Writable f2) => !GreaterThan(f1, f2);
+	public static Writable operator -(Writable f) => new(!f.Sign, f.Value);
 	public static Writable operator +(Writable f1, Writable f2) => Add(f1, f2);
 	public static Writable operator -(Writable f1, Writable f2) => Substract(f1, f2);
 	public static Writable operator *(Writable f1, Writable f2) => Multiply(f1, f2);
 	public static Writable operator /(Writable f1, Writable f2) => Divide(f1, f2).Value;
-	public static Writable operator %(Writable f1, Writable f2) => Divide(f1, f2).Remainder;
+	public static Writable operator %(Writable f1, Writable f2) => Divide(f1, f2, 0).Remainder;
 	public static Writable operator ^(Writable f1, Writable f2) => Power(f1, f2);
-	public static Writable operator ~(Writable f) => SquareRoot(f);
-	public static Writable operator |(Writable f1, Writable f2) => Root(f2, f1).Whole;
+	public static Writable operator ~(Writable f) => SquareRoot(f).Value;
+	public static Writable operator |(Writable f1, Writable f2) => Root(f2, f1).Value;
 
 	#endregion
 }
