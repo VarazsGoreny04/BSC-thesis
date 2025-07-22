@@ -70,6 +70,7 @@ public readonly struct Digit
 
 		Bits = ImmutableArray.Create(bits);
 	}
+
 	public Digit(bool[] bitArray)
 	{
 		ImmutableArray<bool> immutableBitArray = ImmutableArray.Create(bitArray);

@@ -7,7 +7,7 @@ public readonly struct Integer
 {
 	#region Fields
 
-	private static bool writeSign = true;
+	private static bool writeSign = false;
 
 	public readonly bool Sign;
 	public readonly Natural Value;
@@ -101,7 +101,7 @@ public readonly struct Integer
 
 	public static Integer Substract(Integer i1, Integer i2)
 	{
-		return i1 + new Integer(!i2.Sign, i2.Value);
+		return i1 + (-i2);
 	}
 
 	public static Integer Multiply(Integer i1, Integer i2)
@@ -132,7 +132,7 @@ public readonly struct Integer
 	{
 		if (!i.Sign)
 			throw new NotImplementedException();
-
+		 
 		(Natural whole, Natural remainder) = Natural.SquareRoot(i.Value);
 		return (new Integer(true, whole), new Integer(true, remainder));
 	}
@@ -167,6 +167,7 @@ public readonly struct Integer
 	public static bool operator <(Integer f1, Integer f2) => GreaterThan(f2, f1);
 	public static bool operator >=(Integer f1, Integer f2) => !GreaterThan(f2, f1);
 	public static bool operator <=(Integer f1, Integer f2) => !GreaterThan(f1, f2);
+	public static Integer operator -(Integer f) => new(!f.Sign, f.Value);
 	public static Integer operator +(Integer f1, Integer f2) => Add(f1, f2);
 	public static Integer operator -(Integer f1, Integer f2) => Substract(f1, f2);
 	public static Integer operator *(Integer f1, Integer f2) => Multiply(f1, f2);

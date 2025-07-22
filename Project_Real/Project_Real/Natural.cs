@@ -252,7 +252,7 @@ public readonly struct Natural
 
 	public static (Natural Whole, Natural Remainder) SquareRoot(Natural n)
 	{
-		if (n.isZero || n == new Natural([Digit.ONE]))
+		if (n.isZero || n.Length == 1 && n[0] == Digit.ONE)
 			return (n, new Natural());
 
 		Natural two = new([Digit.TWO]);
@@ -301,7 +301,7 @@ public readonly struct Natural
 			};
 		}
 
-		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
+		if (value.isZero || (value.Length == 1 && value[0] == Digit.ONE))
 			return (value, remainder);
 
 		ushort nInt = Convert.ToUInt16(n.ToString());
