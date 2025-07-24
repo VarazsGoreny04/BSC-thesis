@@ -37,6 +37,7 @@ public readonly struct Positive
 	public readonly int WholeLength => wholeLength;
 	public readonly int FractionLength => fractionLength;
 	public readonly bool IsZero => value.IsZero;
+	public Natural Value => value;
 	public readonly Digit this[Index i] => value.Digits[i];
 	public readonly ImmutableArray<Digit> Digits => value.Digits;
 
@@ -193,17 +194,19 @@ public readonly struct Positive
 		return new Positive(Natural.Multiply(p1.value, p2.value), p1.fractionLength + p2.fractionLength);
 	}
 
-	public static (Positive Value, Positive Remainder) Divide(Positive p1, Positive p2)
+	public static (Positive Value, Positive Remainder) Divide(Positive p1, Positive p2, int? fractionCalculatonLength = null)
 	{
+		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
+
 		int denominatorSlicingLength = (p1.fractionLength > p2.fractionLength) ? p1.fractionLength - p2.fractionLength : 0;
 		int numeratorSlicingLength = (p2.fractionLength > p1.fractionLength) ? p2.fractionLength - p1.fractionLength : 0;
 
 		Natural denominator = new([.. Digit.CreateArray(denominatorSlicingLength), .. p2.Digits]);
-		Natural numerator = new([.. Digit.CreateArray(numeratorSlicingLength + fractionCalculatonLength), .. p1.Digits]);
+		Natural numerator = new([.. Digit.CreateArray(numeratorSlicingLength + fCL), .. p1.Digits]);
 
 		(Natural whole, Natural remainder) = Natural.Divide(numerator, denominator);
 
-		return (new Positive(whole, fractionCalculatonLength), new Positive(remainder, fractionCalculatonLength + numeratorSlicingLength + p1.FractionLength));
+		return (new Positive(whole, fCL), new Positive(remainder, fCL + numeratorSlicingLength + p1.FractionLength));
 	}
 
 	public static Positive SecondPower(Positive p)
@@ -219,22 +222,176 @@ public readonly struct Positive
 		return new(i1.value ^ i2.value, i1.fractionLength * Convert.ToInt32(i2.ToString()));
 	}
 
-	public static (Positive Whole, Positive Remainder) SquareRoot(Positive value)
+	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculatonLength = null)
 	{
-		Digit[] splicing = Digit.CreateArray(((fractionCalculatonLength * 2 - value.fractionLength) * 2 + 1) / 2);
-		(Natural whole, Natural remainder) = Natural.SquareRoot(new Natural([.. splicing, .. value.Digits]));
-		int fractionLength = (value.fractionLength + splicing.Length) / 2;
-		
-		return (new Positive(whole, fractionLength), new Positive(remainder, fractionLength * 2));
+		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
+
+		if (fCL < 0)
+			throw new ArgumentOutOfRangeException();
+
+		if (value.value.IsZero || value == new Positive(new([Digit.ONE]), 0))
+			return (value, new Positive());
+
+		int splicingLength = (fCL * 2 - value.fractionLength + 1) / 2;
+
+		Natural two = new([Digit.TWO]);
+		Natural rootTimesTwo, test;
+		Natural remainder = new();
+		Natural root = new();
+		Digit xTry;
+
+		for (int i = ((value.Length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
+		{
+			remainder = new([value.value[i], (i + 1 < value.Digits.Length ? value.value[i + 1] : Digit.ZERO), .. remainder.Digits]);
+
+			xTry = Digit.ZERO;
+
+			if (!remainder.IsZero)
+			{
+				rootTimesTwo = root * two;
+
+				byte j = 10;
+				do
+				{
+					xTry -= Digit.ONE;
+					test = new Natural([xTry, .. rootTimesTwo.Digits]) * new Natural([xTry]);
+				} while (--j > 0 && test > remainder);
+
+				remainder -= test;
+			}
+
+			root = new Natural([xTry, .. root.Digits]);
+		}
+
+		for (int i = splicingLength; i > 0; --i)
+		{
+			remainder = new([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
+
+			xTry = Digit.ZERO;
+
+			if (!remainder.IsZero)
+			{
+				rootTimesTwo = root * two;
+
+				byte j = 10;
+				do
+				{
+					xTry -= Digit.ONE;
+					test = new Natural([xTry, .. rootTimesTwo.Digits]) * new Natural([xTry]);
+				} while (--j > 0 && test > remainder);
+
+				remainder -= test;
+			}
+
+			root = new Natural([xTry, .. root.Digits]);
+		}
+
+		return (new Positive(root, fCL), new Positive(remainder, fCL + splicingLength));
 	}
 
-	public static (Positive Whole, Positive Remainder) Root(Positive value, Positive n)
+	public static (Positive Value, Positive Remainder) Root(Positive value, Positive n, int? fractionCalculatonLength = null)
 	{
 		if (n.fractionLength != 0 || n.IsZero)
 			throw new NotImplementedException();
 
+		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
+
+		if (fCL < 0)
+			throw new ArgumentOutOfRangeException();
+
+		/*Natural remainder = new();
+
+		if (n.value < new Natural([Digit.THREE]))
+		{
+			return Digit.ToChar(n[0]) switch
+			{
+				'0' => throw new NotImplementedException(),
+				'1' => (value, new Positive(remainder, 0)),
+				_ => SquareRoot(value)
+			};
+		}
+
+		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
+			return (value, new Positive(remainder, 0));
+
+		ushort nInt = Convert.ToUInt16(n.ToString());
+		int splicingLength = ((fCL * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt;
+		int fractionLength = (value.fractionLength + splicingLength) / nInt;
+
+		Digit[] digits = [.. value.Digits, .. Digit.CreateArray((nInt - ((value.Digits.Length + splicingLength) % nInt)) % nInt)];
+
+		Digit xTry;
+		Natural test, kNatural, nMinusKN, binomial;
+		Natural nFactorial = Natural.Factorial(n.value);
+		Natural root = new();
+
+		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
+		{
+			remainder = new Natural([.. digits[i..(i + nInt)], .. remainder.Digits]);
+
+			xTry = Digit.ZERO;
+
+			if (!remainder.IsZero)
+			{
+				byte j = 0;
+				do
+				{
+					xTry -= Digit.ONE;
+					test = new();
+
+					for (int k = nInt - 1; k >= 0; --k)
+					{
+
+						kNatural = k.ToString();
+						nMinusKN = n - kNatural;
+						binomial = nFactorial / (Natural.Factorial(kNatural) * Natural.Factorial(nMinusKN));
+
+						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
+					}
+				} while (++j < 10 && test > remainder);
+
+				remainder -= test;
+			}
+
+			root = new Natural([xTry, .. root.digits]);
+		}
+
+		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
+		{
+			remainder = new Natural([.. Digit.CreateArray(nInt), .. remainder.Digits]);
+
+			xTry = Digit.ZERO;
+
+			if (!remainder.IsZero)
+			{
+				byte j = 0;
+				do
+				{
+					xTry -= Digit.ONE;
+					test = new();
+
+					for (int k = nInt - 1; k >= 0; --k)
+					{
+
+						kNatural = k.ToString();
+						nMinusKN = n - kNatural;
+						binomial = nFactorial / (Natural.Factorial(kNatural) * Natural.Factorial(nMinusKN));
+
+						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
+					}
+				} while (++j < 10 && test > remainder);
+
+				remainder -= test;
+			}
+
+			root = new Natural([xTry, .. root.digits]);
+		}
+
+		return (new Positive(root, , remainder);*/
+
+
 		int nInt = Convert.ToUInt16(n.ToString());
-		Digit[] splicing = Digit.CreateArray(((fractionCalculatonLength * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt);
+		Digit[] splicing = Digit.CreateArray(((fCL * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt);
 		(Natural whole, Natural remainder) = Natural.Root(new Natural([.. splicing, .. value.Digits]), new Natural([.. n.Digits]));
 		int fractionLength = (value.fractionLength + splicing.Length) / nInt;
 
@@ -266,10 +423,10 @@ public readonly struct Positive
 	public static Positive operator -(Positive f1, Positive f2) => Substract(f1, f2).Value;
 	public static Positive operator *(Positive f1, Positive f2) => Multiply(f1, f2);
 	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
-	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2).Remainder;
+	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2, 0).Remainder;
 	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
-	public static Positive operator ~(Positive f) => SquareRoot(f).Whole;
-	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1).Whole;
+	public static Positive operator ~(Positive f) => SquareRoot(f).Value;
+	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1).Value;
 
 	#endregion
 }
