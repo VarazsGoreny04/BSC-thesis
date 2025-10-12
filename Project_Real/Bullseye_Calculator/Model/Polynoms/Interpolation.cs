@@ -1,5 +1,4 @@
-﻿using System;
-using Bullseye_Calculator.Model.EuclideanSpace;
+﻿using Bullseye_Calculator.Model.EuclideanSpace;
 using Project_Real;
 
 namespace Bullseye_Calculator.Model.Polynoms;

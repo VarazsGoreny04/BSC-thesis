@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bullseye_Calculator.Persistence;
+﻿namespace Bullseye_Calculator.Persistence;
 
 public class FileReader : IDataAccess
 {

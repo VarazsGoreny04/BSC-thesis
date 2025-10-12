@@ -1,6 +1,4 @@
 ﻿using Project_Real;
-using System;
-using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model.Standard;
 

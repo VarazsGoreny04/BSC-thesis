@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bullseye_Calculator.Model.Standard;
+﻿namespace Bullseye_Calculator.Model.Standard;
 
 public abstract class Operator(int parameter) : Function(parameter)
 {
