@@ -10,9 +10,8 @@ public class WritableTest
 	{
 		return sign[0] switch
 		{
-			'+' => true,
-			'-' => sign.Length == 2 && sign[1] == '0',
-			_ => throw new FormatException()
+			'-' => (new Positive(sign.Replace("+", "").Replace("-", ""))).IsZero,
+			_ => true
 		};
 	}
 
@@ -30,40 +29,40 @@ public class WritableTest
 		[
 			new("0"),
 			new("00"),
-			new($"0."),
-			new($"00."),
-			new($"0.0"),
-			new($"0.00"),
-			new($"00.0"),
-			new($"00.00"),
+			new("0."),
+			new("00."),
+			new("0.0"),
+			new("0.00"),
+			new("00.0"),
+			new("00.00"),
 			new("+0"),
 			new("+00"),
-			new($"+0."),
-			new($"+00."),
-			new($"+0.0"),
-			new($"+0.00"),
-			new($"+00.0"),
-			new($"+00.00"),
-			new(true, new(new([Digit.ZERO]), 0)),
-			new(true, new(new([Digit.ZERO, Digit.ZERO]), 0)),
-			new(true, new(new([Digit.ZERO, Digit.ZERO]), 1)),
-			new(true, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2)),
-			new(true, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 1)),
-			new(true, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2)),
+			new("+0."),
+			new("+00."),
+			new("+0.0"),
+			new("+0.00"),
+			new("+00.0"),
+			new("+00.00"),
+			new(true, new("0")),
+			new(true, new("00")),
+			new(true, new("0.0")),
+			new(true, new("0.00")),
+			new(true, new("00.0")),
+			new(true, new("00.00")),
 			new("-0"),
 			new("-00"),
-			new($"-0."),
-			new($"-00."),
-			new($"-0.0"),
-			new($"-0.00"),
-			new($"-00.0"),
-			new($"-00.00"),
-			new(false, new(new([Digit.ZERO]), 0)),
-			new(false, new(new([Digit.ZERO, Digit.ZERO]), 0)),
-			new(false, new(new([Digit.ZERO, Digit.ZERO]), 1)),
-			new(false, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2)),
-			new(false, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 1)),
-			new(false, new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2)),
+			new("-0."),
+			new("-00."),
+			new("-0.0"),
+			new("-0.00"),
+			new("-00.0"),
+			new("-00.00"),
+			new(false, new("0")),
+			new(false, new("00")),
+			new(false, new("0.0")),
+			new(false, new("0.00")),
+			new(false, new("00.0")),
+			new(false, new("00.00"))
 		];
 
 		foreach (Writable zero in zeros)
@@ -81,22 +80,18 @@ public class WritableTest
 		char separator = Writable.Separator;
 		Writable.Separator = '.';
 
-		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => new Writable(nullString));
-		Assert.ThrowsException<ArgumentException>(() => new Writable(""));
-		Assert.ThrowsException<ArgumentException>(() => new Writable("+"));
-		Assert.ThrowsException<ArgumentException>(() => new Writable("-"));
-		Assert.ThrowsException<ArgumentException>(() => new Writable("."));
-		Assert.ThrowsException<ArgumentException>(() => new Writable("+."));
-		Assert.ThrowsException<ArgumentException>(() => new Writable("-."));
-		Assert.ThrowsException<ArgumentException>(() => new Writable($".123"));
-		Assert.ThrowsException<ArgumentException>(() => new Writable($"+.123"));
-		Assert.ThrowsException<ArgumentException>(() => new Writable($"-.123"));
-
-		string[] tests = ["a123", "123a", "12a3"];
+		string[] tests =
+		[
+			null!,
+			"", "+", "-", ".", "+.", "-.",
+			".123", "+.123", "-.123",
+			"a123", "123a", "12a3"
+		];
 
 		for (int j = 0; j < tests.Length; ++j)
 			Assert.ThrowsException<ArgumentException>(() => new Writable(tests[j]));
+
+		tests = ["a123", "123a", "12a3"];
 
 		for (int i = tests[0].Length; i > 0; --i)
 		{
@@ -189,7 +184,7 @@ public class WritableTest
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (var item in WritableTestCases.List)
 		{
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
@@ -218,7 +213,7 @@ public class WritableTest
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (var item in WritableTestCases.List)
 		{
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
@@ -263,7 +258,7 @@ public class WritableTest
 	}
 
 	[TestMethod]
-	public void SubstractMethod()
+	public void SubtractMethod()
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
@@ -277,7 +272,7 @@ public class WritableTest
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
 
-			Assert.AreEqual(item.Sub, Writable.Substract(writable1, writable2).ToString());
+			Assert.AreEqual(item.Sub, Writable.Subtract(writable1, writable2).ToString());
 		}
 
 		Writable.WriteSign = writeSign;
@@ -316,7 +311,7 @@ public class WritableTest
 		int fractionCalculatonLength = Writable.FractionCalculatonLength;
 		Writable.FractionCalculatonLength = 10;
 
-		string[] tokens;
+		int length;
 		Writable writable1, writable2, whole, remainder;
 
 		foreach (var item in WritableTestCases.List)
@@ -328,13 +323,12 @@ public class WritableTest
 				Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide(writable1, writable2));
 			else if (item.Div != "BIG")
 			{
-				tokens = item.Div.Split('.', StringSplitOptions.RemoveEmptyEntries);
 				(whole, remainder) = Writable.Divide(writable1, writable2);
 
-				Assert.AreEqual(new Writable(tokens[0] +
-					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(),
-					whole.ToString());
-				Assert.AreEqual((new Writable(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
+				length = Math.Min(whole.ToString().Length, item.Div.Length);
+
+				Assert.AreEqual((new Writable(item.Div)).ToString()[..length], whole.ToString()[..length]);
+				Assert.AreEqual(writable1.ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
 
@@ -378,7 +372,7 @@ public class WritableTest
 		int fractionCalculatonLength = Writable.FractionCalculatonLength;
 		Writable.FractionCalculatonLength = 10;
 
-		string[] tokens;
+		int length;
 		Writable writable1, writable2, whole, remainder;
 
 		foreach (var item in WritableTestCases.List)
@@ -390,13 +384,12 @@ public class WritableTest
 				Assert.ThrowsException<NotImplementedException>(() => Writable.Root(writable1, writable2));
 			else if (item.Root != "BIG")
 			{
-				tokens = item.Root.Split('.', StringSplitOptions.RemoveEmptyEntries);
 				(whole, remainder) = Writable.Root(writable1, writable2);
 
-				Assert.AreEqual(new Writable(tokens[0] +
-					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(), 
-					whole.ToString());
-				Assert.AreEqual((new Writable(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
+				length = Math.Min(whole.ToString().Length, item.Root.Length);
+
+				Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
+				Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 

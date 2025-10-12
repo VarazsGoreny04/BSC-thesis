@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Diagnostics; 
 
 namespace Project_Real;
 
@@ -247,8 +247,6 @@ public class Program
 
 		Console.WriteLine(res);*/
 		//Console.WriteLine(Positive.Power("10", res));
-
-		int[,] a = { { 1, 2 }, { 3, 4 } };
 	}
 
 	public static void MatrixToString<T>(T[] a)

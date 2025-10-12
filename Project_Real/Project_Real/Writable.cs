@@ -98,13 +98,13 @@ public readonly struct Writable
 			if (w2.sign)
 				(w1, w2) = (w2, w1);
 
-			(bool swap, Positive value) = Positive.Substract(w1.value, w2.value);
+			(bool swap, Positive value) = Positive.Subtract(w1.value, w2.value);
 
 			return new Writable(!swap, value);
 		}
 	}
 
-	public static Writable Substract(Writable w1, Writable w2)
+	public static Writable Subtract(Writable w1, Writable w2)
 	{
 		return w1 + new Writable(!w2.sign, w2.value);
 	}
@@ -177,7 +177,7 @@ public readonly struct Writable
 	public static bool operator <=(Writable f1, Writable f2) => !GreaterThan(f1, f2);
 	public static Writable operator -(Writable f) => new(!f.Sign, f.Value);
 	public static Writable operator +(Writable f1, Writable f2) => Add(f1, f2);
-	public static Writable operator -(Writable f1, Writable f2) => Substract(f1, f2);
+	public static Writable operator -(Writable f1, Writable f2) => Subtract(f1, f2);
 	public static Writable operator *(Writable f1, Writable f2) => Multiply(f1, f2);
 	public static Writable operator /(Writable f1, Writable f2) => Divide(f1, f2).Value;
 	public static Writable operator %(Writable f1, Writable f2) => Divide(f1, f2, 0).Remainder;

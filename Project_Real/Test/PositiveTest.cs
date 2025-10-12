@@ -1,5 +1,5 @@
-﻿using Project_Real;
-using System;
+﻿using System;
+using Project_Real;
 
 namespace Test;
 
@@ -24,12 +24,12 @@ public class PositiveTest
 			new("0.00"),
 			new("00.0"),
 			new("00.00"),
-			new(new([Digit.ZERO]), 0),
-			new(new([Digit.ZERO, Digit.ZERO]), 0),
-			new(new([Digit.ZERO, Digit.ZERO]), 1),
-			new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2),
-			new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO]), 1),
-			new(new([Digit.ZERO, Digit.ZERO, Digit.ZERO, Digit.ZERO]), 2),
+			new(new("0"), 0),
+			new(new("00"), 0),
+			new(new("00"), 1),
+			new(new("000"), 2),
+			new(new("000"), 1),
+			new(new("0000"), 2),
 		];
 
 		foreach (Positive zero in zeros)
@@ -115,8 +115,12 @@ public class PositiveTest
 
 		foreach (var item in PositiveTestCases.List)
 		{
-			characters1 = item.Number1.Contains('.') ? item.Number1.TrimEnd('0') : item.Number1;
-			characters2 = item.Number2.Contains('.') ? item.Number2.TrimEnd('0') : item.Number2;
+			characters1 = item.Number1.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters1.Length == 0 || characters1[0] == '.')
+				characters1 = $"0{characters1}";
+			characters2 = item.Number2.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters2.Length == 0 || characters2[0] == '.')
+				characters2 = $"0{characters2}";
 
 			temp = characters1.IndexOf('.');
 			fractionLength1 = temp < 0 ? 0 : characters1.Length - (temp + 1);
@@ -164,15 +168,23 @@ public class PositiveTest
 		char separator = Positive.Separator;
 		Positive.Separator = '.';
 
+		string characters1, characters2;
 		Positive number1, number2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (var item in PositiveTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
 
-			Assert.AreEqual(item.Number1, number1.ToString());
-			Assert.AreEqual(item.Number2, number2.ToString());
+			characters1 = item.Number1.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters1.Length == 0 || characters1[0] == '.')
+				characters1 = $"0{characters1}";
+			characters2 = item.Number2.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters2.Length == 0 || characters2[0] == '.')
+				characters2 = $"0{characters2}";
+
+			Assert.AreEqual(characters1, number1.ToString());
+			Assert.AreEqual(characters2, number2.ToString());
 		}
 
 		Positive.Separator = separator;
@@ -188,8 +200,12 @@ public class PositiveTest
 
 		foreach (var item in PositiveTestCases.List)
 		{
-			characters1 = item.Number1.Contains('.') ? item.Number1.TrimEnd('0') : item.Number1;
-			characters2 = item.Number2.Contains('.') ? item.Number2.TrimEnd('0') : item.Number2;
+			characters1 = item.Number1.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters1.Length == 0 || characters1[0] == '.')
+				characters1 = $"0{characters1}";
+			characters2 = item.Number2.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters2.Length == 0 || characters2[0] == '.')
+				characters2 = $"0{characters2}";
 
 			temp = characters1.IndexOf('.');
 			fractionLength1 = temp < 0 ? 0 : characters1.Length - (temp + 1);
@@ -231,8 +247,12 @@ public class PositiveTest
 
 		foreach (var item in PositiveTestCases.List)
 		{
-			characters1 = item.Number1.Contains('.') ? item.Number1.TrimEnd('0') : item.Number1;
-			characters2 = item.Number2.Contains('.') ? item.Number2.TrimEnd('0') : item.Number2;
+			characters1 = item.Number1.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters1.Length == 0 || characters1[0] == '.')
+				characters1 = $"0{characters1}";
+			characters2 = item.Number2.TrimStart('0').TrimEnd('0').TrimEnd('.');
+			if (characters2.Length == 0 || characters2[0] == '.')
+				characters2 = $"0{characters2}";
 
 			temp = characters1.IndexOf('.');
 			fractionLength1 = temp < 0 ? 0 : characters1.Length - (temp + 1);
@@ -286,7 +306,7 @@ public class PositiveTest
 	}
 
 	[TestMethod]
-	public void SubstractMethod()
+	public void SubtractMethod()
 	{
 		char separator = Positive.Separator;
 		Positive.Separator = '.';
@@ -299,7 +319,7 @@ public class PositiveTest
 			positive1 = new(item.Number1);
 			positive2 = new(item.Number2);
 
-			(swap, subNum) = Positive.Substract(positive1, positive2);
+			(swap, subNum) = Positive.Subtract(positive1, positive2);
 
 			Assert.AreEqual(item.SubSwap, swap);
 			Assert.AreEqual(item.SubNum, subNum.ToString());
@@ -332,10 +352,8 @@ public class PositiveTest
 	{
 		char separator = Positive.Separator;
 		Positive.Separator = '.';
-		int fractionCalculatonLength = Writable.FractionCalculatonLength;
-		Writable.FractionCalculatonLength = 10;
 
-		string[] tokens;
+		int length;
 		Positive positive1, positive2, whole, remainder;
 
 		foreach (var item in PositiveTestCases.List)
@@ -347,18 +365,16 @@ public class PositiveTest
 				Assert.ThrowsException<DivideByZeroException>(() => Positive.Divide(positive1, positive2));
 			else if (item.Div != "BIG")
 			{
-				tokens = item.Div.Split('.', StringSplitOptions.RemoveEmptyEntries);
 				(whole, remainder) = Positive.Divide(positive1, positive2);
 
-				Assert.AreEqual(new Positive(tokens[0] +
-					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(),
-					whole.ToString());
-				Assert.AreEqual((new Positive(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
+				length = Math.Min(whole.ToString().Length, item.Div.Length);
+
+				Assert.AreEqual(item.Div[..length], whole.ToString()[..length]);
+				Assert.AreEqual(positive1.ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
 
 		Positive.Separator = separator;
-		Positive.FractionCalculatonLength = fractionCalculatonLength;
 	}
 
 	[TestMethod]
@@ -391,7 +407,7 @@ public class PositiveTest
 		int fractionCalculatonLength = Positive.FractionCalculatonLength;
 		Positive.FractionCalculatonLength = 10;
 
-		string[] tokens;
+		int length;
 		Positive positive1, positive2, whole, remainder;
 
 		foreach (var item in PositiveTestCases.List)
@@ -403,13 +419,12 @@ public class PositiveTest
 				Assert.ThrowsException<NotImplementedException>(() => Positive.Root(positive1, positive2));
 			else if (item.Root != "BIG")
 			{
-				tokens = item.Root.Split('.', StringSplitOptions.RemoveEmptyEntries);
 				(whole, remainder) = Positive.Root(positive1, positive2);
 
-				Assert.AreEqual(new Positive(tokens[0] +
-					(tokens.Length == 2 ? $".{ [.. tokens[1][..Math.Min(tokens[1].Length, whole.FractionLength)]]}" : "")).ToString(),
-					whole.ToString());
-				Assert.AreEqual((new Positive(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
+				length = Math.Min(whole.ToString().Length, item.Root.Length);
+
+				Assert.AreEqual(item.Root[..length], whole.ToString()[..length]);
+				Assert.AreEqual(positive1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 

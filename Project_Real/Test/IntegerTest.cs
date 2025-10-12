@@ -1,5 +1,5 @@
-﻿using Project_Real;
-using System;
+﻿using System;
+using Project_Real;
 
 namespace Test;
 
@@ -10,9 +10,8 @@ public class IntegerTest
 	{
 		return sign[0] switch
 		{
-			'+' => true,
 			'-' => sign.Length == 2 && sign[1] == '0',
-			_ => throw new FormatException()
+			_ => true
 		};
 	}
 
@@ -223,7 +222,7 @@ public class IntegerTest
 	}
 
 	[TestMethod]
-	public void SubstractMethod()
+	public void SubtractMethod()
 	{
 		bool writeSign = Integer.WriteSign;
 		Integer.WriteSign = true;
@@ -235,7 +234,7 @@ public class IntegerTest
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
 
-			Assert.AreEqual(item.Sub, Integer.Substract(integer1, integer2).ToString());
+			Assert.AreEqual(item.Sub, Integer.Subtract(integer1, integer2).ToString());
 		}
 
 		Integer.WriteSign = writeSign;

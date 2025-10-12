@@ -1,5 +1,5 @@
-﻿using Project_Real;
-using System;
+﻿using System;
+using Project_Real;
 using System.Collections.Immutable;
 
 namespace Test;
@@ -213,7 +213,7 @@ public class DigitTest
 	}
 
 	[TestMethod]
-	public void SubstractMethod()
+	public void SubtractMethod()
 	{
 		Digit a, b, c;
 
@@ -225,7 +225,7 @@ public class DigitTest
 				b = new Digit(ToChar(j));
 				c = new Digit(ToChar((i - j + 10) % 10));
 
-				(bool borrow, Digit digit) = Digit.Substract(a, b);
+				(bool borrow, Digit digit) = Digit.Subtract(a, b);
 
 				Assert.AreEqual(((i - j + 10) / 10) == 0, borrow);
 				Assert.AreEqual(c, digit);

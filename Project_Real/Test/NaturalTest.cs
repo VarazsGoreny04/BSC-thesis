@@ -1,5 +1,5 @@
-﻿using Project_Real;
-using System;
+﻿using System;
+using Project_Real;
 
 namespace Test;
 
@@ -175,7 +175,7 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void SubstractMethod()
+	public void SubtractMethod()
 	{
 		bool swap;
 		Natural natural1, natural2, subNum;
@@ -185,7 +185,7 @@ public class NaturalTest
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
 
-			(swap, subNum) = Natural.Substract(natural1, natural2);
+			(swap, subNum) = Natural.Subtract(natural1, natural2);
 
 			Assert.AreEqual(item.SubSwap, swap);
 			Assert.AreEqual(item.SubNum, subNum.ToString());

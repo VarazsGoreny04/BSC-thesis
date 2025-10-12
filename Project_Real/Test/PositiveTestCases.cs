@@ -181,6 +181,19 @@ public static class PositiveTestCases
 			Root: "0.43737068749201621607283403411560400315281112121905670094156241834452444"
 		),
 		(
+			Number1: "152.2756",
+			Number2: "2",
+			Equal: false,
+			Greater: true,
+			Add: "154.2756",
+			SubSwap: false,
+			SubNum: "150.2756",
+			Mul: "304.5512",
+			Div: "76.1378",
+			Pow: "23187.85835536",
+			Root: "12.34"
+		),
+		(
 			Number1: "1.2",
 			Number2: "2.1",
 			Equal: false,

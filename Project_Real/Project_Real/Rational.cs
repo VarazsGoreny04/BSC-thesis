@@ -6,19 +6,25 @@ public readonly struct Rational
 {
 	#region Fields
 
+	private static bool fractionFormat = true;
+
 	private readonly Writable numerator;
-	private readonly Writable? denominator;
+	private readonly Positive? denominator;
 
 	#endregion
 
 	#region Properties
 
+	public static bool FractionFormat { get => fractionFormat; set => fractionFormat = value; }
 	public static bool WriteSign { get => Writable.WriteSign; set => Writable.WriteSign = value; }
 	public static char Separator { get => Writable.Separator; set => Writable.Separator = value; }
 	public static int FractionCalculatonLength { get => Writable.FractionCalculatonLength; set => Writable.FractionCalculatonLength = value; }
 
-	public Writable Numerator => numerator;
-	public Writable? Denominator => denominator;
+	public bool IsZero => numerator.IsZero;
+	public bool Sign => numerator.Sign;
+	public Positive Numerator => numerator.Value;
+
+	public Positive? Denominator => denominator;
 
 	#endregion
 
@@ -32,69 +38,132 @@ public readonly struct Rational
 
 	public Rational(string number)
 	{
-		string[] parts;
-
-		try
-		{
-			parts = number.Split('/');
-		}
-		catch (Exception)
-		{
+		if (number is null)
 			throw new ArgumentException();
-		}
 
-		(numerator, denominator) = parts.Length switch
+		string[] parts = number.Split('/');
+
+		if (parts.Length == 1)
+			(numerator, denominator) = (new Writable(parts[0]), null);
+		else if (parts.Length == 2)
 		{
-			1 => (new Writable(parts[0]), null as Writable?),
-			2 => (new Writable(parts[0]), new Writable(parts[1])),
-			_ => throw new ArgumentException()
-		};
+			(Writable numerator, Writable denominator) temp = (new(parts[0]), new(parts[1]));
+
+			if (temp.denominator.IsZero)
+				throw new ArgumentException();
+
+			(numerator, denominator) = EuclideanAlgorithm(new Writable(temp.numerator.Sign == temp.denominator.Sign, 
+				temp.numerator.Value), temp.denominator.Value);
+		}
+		else
+			throw new ArgumentException();
 	}
 
-	public Rational(Writable numerator, Writable denominator)
+	public Rational(Writable numerator)
 	{
 		this.numerator = numerator;
-		this.denominator = denominator;
+		this.denominator = null;
 	}
 
-	private Rational(Writable numerator, Writable? denominator = null)
+	public Rational(Writable numerator, Writable? denominator)
+	{
+		if (denominator is Writable w)
+		{
+			if (w.IsZero)
+				throw new ArgumentException();
+
+			(this.numerator, this.denominator) = EuclideanAlgorithm(new Writable(numerator.Sign == w.Sign, numerator.Value), w.Value);
+		}
+		else
+		{
+			this.numerator = numerator;
+			this.denominator = null;
+		}
+	}
+
+	public Rational(Writable numerator, Positive? denominator)
 	{
 		this.numerator = numerator;
-		this.denominator = denominator;
+
+		if (denominator is Positive p)
+		{
+			if (p.IsZero)
+				throw new ArgumentException();
+
+			(this.numerator, this.denominator) = EuclideanAlgorithm(numerator, p);
+		}
+		else
+		{
+			this.numerator = numerator;
+			this.denominator = null;
+		}
+	}
+
+	public Rational(bool sign, Positive numerator)
+	{
+		this.numerator = new Writable(sign, numerator);
+		this.denominator = null;
+	}
+
+	public Rational(bool sign, Positive numerator, Positive? denominator)
+	{
+		if (denominator is Positive p)
+		{
+			if (p.IsZero)
+				throw new ArgumentException();
+
+			(this.numerator, this.denominator) = EuclideanAlgorithm(new Writable(sign, numerator), p);
+		}
+		else
+		{
+			this.numerator = new Writable(sign, numerator);
+			this.denominator = null;
+		}
 	}
 
 	#endregion
 
 	#region Private methods
 
-	private static (Writable Numerator1, Writable Numerator2, Writable? Denominator) CommonDenominator(Rational r1, Rational r2)
+	private static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational r1, Rational r2)
 	{
-		Writable r1Numerator = r2.denominator is null ? r1.numerator : r1.numerator * r2.denominator.Value;
-		Writable r2Numerator = r1.denominator is null ? r2.numerator : r2.numerator * r1.denominator.Value;
-		Writable? denominator = r1.Denominator is null ? r2.Denominator :
+		Writable r1Numerator = r2.denominator is null ? r1.numerator : new(r1.numerator.Sign, r1.numerator.Value * r2.denominator.Value);
+		Writable r2Numerator = r1.denominator is null ? r2.numerator : new(r2.numerator.Sign, r2.numerator.Value * r1.denominator.Value);
+		Positive? denominator = r1.Denominator is null ? r2.Denominator :
 			(r2.Denominator is null ? r1.Denominator : r1.Denominator.Value * r2.Denominator.Value);
 
 		return (r1Numerator, r2Numerator, denominator);
 	}
 
-	private static Rational GreatestCommonDivisor(Writable numerator, Writable? denominator)
+	private static Rational GreatestCommonDivisor(Writable numerator, Positive? denominator)
 	{
-		if (denominator is null)
-			return new Rational(numerator, denominator);
+		(Writable n, Positive? d) = EuclideanAlgorithm(numerator, denominator);
 
-		Natural a = numerator.Value.Value;
-		Natural b = denominator.Value.Value.Value;
-		Natural temp;
+		return new Rational(n, d);
+	}
 
-		while (!b.IsZero)
+	private static (Writable Numerator, Positive? Denominator) EuclideanAlgorithm(Writable numerator, Positive? denominator)
+	{
+		if (denominator is Positive d)
 		{
-			temp = b;
-			b = a % b;
-			a = temp;
-		}
+			Natural a = numerator.Value.Value;
+			Natural b = d.Value;
+			Natural temp;
 
-		return new Rational(new Writable(numerator.Sign, new(numerator.Value.Value / a, numerator.FractionLength)),
-			new Writable(denominator.Value.Sign, new(denominator.Value.Value.Value / a, denominator.Value.FractionLength)));
+			while (!b.IsZero)
+			{
+				temp = b;
+				b = a % b;
+				a = temp;
+			}
+
+			Positive resultDenominator = new(d.Value / a, Math.Max(d.FractionLength - numerator.FractionLength, 0));
+
+			return (new Writable(numerator.Sign, new(numerator.Value.Value / a, Math.Max(numerator.FractionLength - d.FractionLength, 0))), 
+				resultDenominator == "1" ? null as Positive? : resultDenominator);
+		}
+		else
+			return (numerator, null);
 	}
 
 	#endregion
@@ -103,19 +172,12 @@ public readonly struct Rational
 
 	public override string ToString()
 	{
-		return ToFractionString(this);
+		return fractionFormat ? ToFractionString(this) : ToWritableString(this);
 	}
 
 	public static string ToFractionString(Rational r)
 	{
-		if (r.denominator is Writable denominator)
-		{
-			bool sign = r.numerator.Sign == denominator.Sign;
-			char character = sign ? '+' : '-';
-			return $"{(!sign || WriteSign ? character : "")}{r.numerator.Value}/{denominator.Value}";
-		}
-		else
-			return r.numerator.ToString();
+		return r.denominator is Positive denominator ? $"{r.numerator}/{denominator}" : r.numerator.ToString();
 	}
 
 	public static string ToWritableString(Rational r)
@@ -125,7 +187,10 @@ public readonly struct Rational
 
 	public static (Writable Value, Writable Remainder) GetValue(Rational r, int? fractionCalculatonLength = null)
 	{
-		return (r.denominator is null) ? (r.numerator, new Writable()) : Writable.Divide(r.numerator, r.denominator.Value, fractionCalculatonLength);
+		if (r.denominator is Positive denominator)
+			return Writable.Divide(r.numerator, new(true, denominator), fractionCalculatonLength);
+		else
+			return (r.numerator, new Writable());
 	}
 
 	public static bool Equals(Rational r1, Rational r2)
@@ -144,27 +209,26 @@ public readonly struct Rational
 
 	public static Rational Reciprocal(Rational r)
 	{
-		return r.numerator.IsZero ? throw new DivideByZeroException() :
-			new Rational((r.denominator is null ? new Writable(true, new(new([Digit.ONE]), 0)) : r.denominator.Value), r.numerator);
+		return r.IsZero ? throw new DivideByZeroException() : new Rational(r.Sign, (r.denominator is Positive p ? p : "1"), r.Numerator);
 	}
 
 	public static Rational Add(Rational r1, Rational r2)
 	{
-		(Writable numerator1, Writable numerator2, Writable? denominator) = CommonDenominator(r1, r2);
+		(Writable numerator1, Writable numerator2, Positive? denominator) = CommonDenominator(r1, r2);
 
 		return GreatestCommonDivisor(numerator1 + numerator2, denominator);
 	}
 
-	public static Rational Substract(Rational r1, Rational r2)
+	public static Rational Subtract(Rational r1, Rational r2)
 	{
-		(Writable numerator1, Writable numerator2, Writable? denominator) = CommonDenominator(r1, r2);
+		(Writable numerator1, Writable numerator2, Positive? denominator) = CommonDenominator(r1, r2);
 
 		return GreatestCommonDivisor(numerator1 - numerator2, denominator);
 	}
 
 	public static Rational Multiply(Rational r1, Rational r2)
 	{
-		Writable? denominator = r1.denominator is null ? r2.denominator :
+		Positive? denominator = r1.denominator is null ? r2.denominator :
 			(r2.denominator is null ? r1.denominator : r1.denominator * r2.denominator);
 
 		return GreatestCommonDivisor(r1.numerator * r2.numerator, denominator);
@@ -182,15 +246,15 @@ public readonly struct Rational
 
 	public static Rational Power(Rational r1, Rational r2)
 	{
-		if (r2.denominator?.Value is not null)
-			throw new Exception();
+		if (r2.denominator is not null)
+			throw new NotImplementedException();
 
-		if (r2.numerator.Sign)
+		if (r2.Sign)
 			return GreatestCommonDivisor(r1.numerator ^ r2.numerator,
-				(r1.denominator is null ? null as Writable? : r1.denominator.Value ^ r2.numerator));
+				(r1.denominator is Positive denominator ? denominator ^ r2.Numerator : r1.denominator));
 		else
-			return GreatestCommonDivisor((r1.denominator is null ? new Writable() : r1.denominator.Value ^ r2.numerator),
-				r1.numerator ^ r2.numerator);
+			return GreatestCommonDivisor(new(r1.Sign, r1.denominator is Positive denominator ? denominator ^ r2.Numerator : "1"),
+				r1.Numerator ^ r2.Numerator);
 	}
 
 	public static Rational SquareRoot(Rational r, int? fractionCalculatonLength = null)
@@ -203,17 +267,15 @@ public readonly struct Rational
 		if (r2.denominator is not null)
 			throw new NotImplementedException();
 
-		(Writable Value, Writable Remainder) numerator = Writable.Root(r1.numerator, new Writable(true, r2.numerator.Value), fractionCalculatonLength);
-		(Writable Value, Writable Remainder)? denominator = r1.denominator is null ? null :
-			Writable.Root(r1.denominator.Value, new Writable(true, r2.numerator.Value));
+		(Writable Value, Writable Remainder) numerator = Writable.Root(r1.numerator, r2.numerator, fractionCalculatonLength);
+		(Positive Value, Positive Remainder)? denominator = r1.denominator is Positive d ? Positive.Root(d, r2.Numerator) : null;
 
-		if (r2.numerator.Sign)
+		if (r2.Sign)
 			return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
 		else
 		{
-			Writable one = new(true, new(new([Digit.ONE]), 0));
-
-			return (new Rational((denominator?.Value ?? one), numerator.Value), new Rational((denominator?.Remainder ?? one), numerator.Remainder));
+			return (new Rational(true, denominator?.Value ?? "1", numerator.Value.Value),
+				new Rational(true, denominator?.Remainder ?? "1", numerator.Remainder.Value));
 		}
 	}
 
@@ -311,14 +373,14 @@ public readonly struct Rational
 			Natural temp = k * three;
 			denominator = new Integer(true, Natural.Factorial(temp) * (Natural.Factorial(k) ^ three)) * (third ^ new Integer(true, temp));
 
-			result += new Rational(new Writable(true, new(numerator, 0)), new Writable(denominator.Sign, new(denominator.Value, 0)));
+			result += new Rational(new Writable(true, new(numerator, 0)), new Positive(denominator.Value, 0));
 
 			k += one;
 		}
 
-		result *= new Rational(new Writable(true, Positive.SquareRoot("10005", fCL).Value), "4270934400");
+		result *= new Rational(true, Positive.SquareRoot("10005", fCL).Value, "4270934400");
 
-		return new Rational(result.denominator ?? new Writable(true, new(one, 0)), result.numerator);
+		return new Rational(true, result.denominator ?? new(one, 0), result.Numerator);
 	}
 
 	public static Rational PI(int? fractionCalculatonLength = null)
@@ -333,7 +395,7 @@ public readonly struct Rational
 		{
 			denominator = n * (n += one) * (n += one);
 
-			result += new Rational(new Writable(turn, new(new([Digit.FOUR]), 0)), new Writable(true, new(denominator, 0)));
+			result += new Rational(new Writable(turn, new(new([Digit.FOUR]), 0)), new Positive(denominator, 0));
 
 			turn = !turn;
 
@@ -364,7 +426,7 @@ public readonly struct Rational
 			counter += two;
 		}
 
-		return new Rational(new(true, new(numerator * numerator, 0)), new(true, new((denominator * denominator) * n, 0)));
+		return new Rational(true, new(numerator * numerator, 0), new(denominator * denominator * n, 0));
 	}
 
 	public static Rational EBinary(int? fractionCalculatonLength = null)
@@ -398,7 +460,7 @@ public readonly struct Rational
 
 		Natural n = Convert.ToString(fCL);
 
-		return "1" + new Rational(new(true, new(P("0", n), 0)), new(true, new(Q("0", n), 0)));
+		return "1" + new Rational(true, new(P("0", n), 0), new(Q("0", n), 0));
 	}
 
 	public static Rational E(int? fractionCalculatonLength = null)
@@ -408,15 +470,15 @@ public readonly struct Rational
 		if (fCL < 0)
 			throw new ArgumentOutOfRangeException();
 
-		Writable temp = "1";
-		Writable one = "1";
+		Positive temp = "1";
+		Positive one = "1";
 		Rational result = "2";
 
 		for (int i = fCL; i > 0; --i)
 		{
 			temp *= temp + one;
 
-			result += new Rational(one, temp);
+			result += new Rational(true, one, temp);
 		}
 
 		return result;
@@ -445,7 +507,7 @@ public readonly struct Rational
 	public static bool operator <=(Rational f1, Rational f2) => !GreaterThan(f1, f2);
 	public static Rational operator -(Rational f) => new(new(!f.numerator.Sign, f.numerator.Value), f.denominator);
 	public static Rational operator +(Rational f1, Rational f2) => Add(f1, f2);
-	public static Rational operator -(Rational f1, Rational f2) => Substract(f1, f2);
+	public static Rational operator -(Rational f1, Rational f2) => Subtract(f1, f2);
 	public static Rational operator *(Rational f1, Rational f2) => Multiply(f1, f2);
 	public static Rational operator /(Rational f1, Rational f2) => Divide(f1, f2);
 	public static Rational operator %(Rational f1, Rational f2) => new(GetValue(f1 / f2, 0).Remainder);

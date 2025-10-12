@@ -16,15 +16,31 @@ public readonly struct Natural
 
 	#region Properties
 
+	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
 	public int Length => length;
+
+	/// <summary>
+	/// Returns whether <see langword="this"/> is equal to 0.
+	/// </summary>
+	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
 	public bool IsZero => isZero;
+
+	/// <returns>The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
 	public ImmutableArray<Digit> Digits => digits;
-	public readonly Digit this[Index i] => digits[i];
+
+	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
+	/// <exception cref="IndexOutOfRangeException">
+	/// <paramref name="index"/> cannot be less than 0.
+	/// </exception>
+	public readonly Digit this[Index index] => digits[index];
 
 	#endregion
 
 	#region Constructors
 
+	/// <summary>
+	/// Constructs a <see cref="Natural"/> with a value of 0.
+	/// </summary>
 	public Natural()
 	{
 		length = 1;
@@ -32,6 +48,13 @@ public readonly struct Natural
 		isZero = true;
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Natural"/> by the given number <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">A <see langword="string"/> of 0 to 9 characters.</param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="number"/> is not a valid number format.
+	/// </exception>
 	public Natural(string number)
 	{
 		if (number is null || number.Length < 1)
@@ -60,6 +83,13 @@ public readonly struct Natural
 		this.digits = ImmutableArray.Create(digits);
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Natural"/> by the given <paramref name="digits"/>.
+	/// </summary>
+	/// <param name="digits">An array of <see cref="Digit"/>s, where the first index represents the lowest value.</param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="digits"/> cannot be null or empty.
+	/// </exception>
 	public Natural(Digit[] digits)
 	{
 		if (digits is null || digits.Length < 1)
@@ -74,6 +104,10 @@ public readonly struct Natural
 
 	#region Public methods
 
+	/// <summary>
+	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>A <see cref="Natural"/> number as a <see langword="string"/>.</returns>
 	public override string ToString()
 	{
 		string number = string.Empty;
@@ -84,67 +118,105 @@ public readonly struct Natural
 		return number;
 	}
 
-	public static bool Equals(Natural n1, Natural n2)
+	/// <summary>
+	/// Compares two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Natural"/> to compare.</param>
+	/// <param name="right">The second <see cref="Natural"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is equal to the value of <paramref name="right"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool Equals(Natural left, Natural right)
 	{
-		if (n1.Length != n2.Length)
+		if (left.Length != right.Length)
 			return false;
 
-		int i = n1.Length;
+		int i = left.Length;
 
-		while (--i > 0 && n1[i] == n2[i]) { }
+		while (--i > 0 && left[i] == right[i]) { }
 
-		return i == 0 && n1[0] == n2[0];
+		return i == 0 && left[0] == right[0];
 	}
 
-	public static bool GreaterThan(Natural n1, Natural n2)
+	/// <summary>
+	/// Compares two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Natural"/> to compare.</param>
+	/// <param name="right">The second <see cref="Natural"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is greater than the value of <paramref name="right"/>;
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool GreaterThan(Natural left, Natural right)
 	{
-		if (n1.Length != n2.Length)
-			return n1.Length > n2.Length;
+		if (left.Length != right.Length)
+			return left.Length > right.Length;
 
-		int i = n1.Length;
+		int i = left.Length;
 
-		while (--i > 0 && n1[i] == n2[i]) { }
+		while (--i > 0 && left[i] == right[i]) { }
 
-		return n1[i] > n2[i];
+		return left[i] > right[i];
 	}
 
-	public static Natural Add(Natural n1, Natural n2, bool carry = false)
+	/// <summary>
+	/// Adds two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Natural"/> to add.</param>
+	/// <param name="right">The second <see cref="Natural"/> to add.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Natural Add(Natural left, Natural right)
 	{
-		if (n1.Length < n2.Length)
-			(n1, n2) = (n2, n1);
+		if (left.Length < right.Length)
+			(left, right) = (right, left);
 
-		Digit[] result = new Digit[n1.Length];
+		bool carry = false;
+		Digit[] result = new Digit[left.Length];
 
-		for (int i = 0; i < n1.Length; ++i)
-			(carry, result[i]) = Digit.Add(n1[i], (i < n2.Length ? n2[i] : Digit.ZERO), carry);
+		for (int i = 0; i < left.Length; ++i)
+			(carry, result[i]) = Digit.Add(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
 
-		return carry ? new Natural([.. result, '1']) : new Natural(result);
+		return carry ? new Natural([.. result, Digit.ONE]) : new Natural(result);
 	}
 
-	public static (bool Swap, Natural Value) Substract(Natural n1, Natural n2, bool carry = false)
+	/// <summary>
+	/// Subtracts two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Natural"/> that represents the minuend.</param>
+	/// <param name="right">The <see cref="Natural"/> that represents the subtrahend.</param>
+	/// <returns>The result value and if there was a swap in a tuple.</returns>
+	public static (bool Swap, Natural Value) Subtract(Natural left, Natural right)
 	{
-		bool swap = n2 > n1;
+		bool swap = right > left;
 
 		if (swap)
-			(n1, n2) = (n2, n1);
+			(left, right) = (right, left);
 
-		Digit[] result = new Digit[n1.Length];
+		bool carry = false;
+		Digit[] result = new Digit[left.Length];
 
-		for (int i = 0; i < n1.Length; ++i)
-			(carry, result[i]) = Digit.Substract(n1[i], (i < n2.Length ? n2[i] : Digit.ZERO), carry);
+		for (int i = 0; i < left.Length; ++i)
+			(carry, result[i]) = Digit.Subtract(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
 
 		return (swap, new Natural(result));
 	}
 
-	public static Natural Multiply(Natural n1, Natural n2)
+	/// <summary>
+	/// Multiplies two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Natural"/> that represents the multiplier.</param>
+	/// <param name="right">The <see cref="Natural"/> that represents the multiplicand.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Natural Multiply(Natural left, Natural right)
 	{
-		if (n2 > n1)
-			(n1, n2) = (n2, n1);
+		if (right > left)
+			(left, right) = (right, left);
 
-		if (n2.isZero)
+		if (right.isZero)
 			return new Natural();
-		else if (n2 == "1")
-			return n1;
+		else if (right == "1")
+			return left;
 
 		Natural result = new();
 		Digit[] temp;
@@ -152,19 +224,19 @@ public readonly struct Natural
 		bool overflowB;
 		int addedIndex;
 
-		for (int n2i = 0; n2i < n2.Length; ++n2i)
+		for (int n2i = 0; n2i < right.Length; ++n2i)
 		{
-			if (n2[n2i] == Digit.ZERO)
+			if (right[n2i] == Digit.ZERO)
 				continue;
 
-			temp = new Digit[n1.Length + n2i + 1];
+			temp = new Digit[left.Length + n2i + 1];
 			Array.Fill(temp, Digit.ZERO, 0, n2i + 1);
 
 			addedIndex = n2i;
 
-			for (int n1i = 0; n1i < n1.Length; ++n1i)
+			for (int n1i = 0; n1i < left.Length; ++n1i)
 			{
-				(overflowD, digit) = Digit.Multiply(n1[n1i], n2[n2i]);
+				(overflowD, digit) = Digit.Multiply(left[n1i], right[n2i]);
 				(overflowB, temp[addedIndex]) = Digit.Add(temp[addedIndex], digit);
 				++addedIndex;
 				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
@@ -176,29 +248,38 @@ public readonly struct Natural
 		return result;
 	}
 
-	public static (Natural Whole, Natural Remainder) Divide(Natural n1, Natural n2)
+	/// <summary>
+	/// Divides two <see cref="Natural"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Natural"/> that represents the numerator.</param>
+	/// <param name="right">The <see cref="Natural"/> that represents the denominator.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="DivideByZeroException">
+	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
+	/// </exception>
+	public static (Natural Whole, Natural Remainder) Divide(Natural left, Natural right)
 	{
-		if (n2.isZero)
+		if (right.isZero)
 			throw new DivideByZeroException();
-		else if (n1.Length < n2.Length)
-			return (new Natural(), n1);
-		else if (n2.Length == 1 && n2[0] == Digit.ONE)
-			return (n1, new Natural());
+		else if (left.Length < right.Length)
+			return (new Natural(), left);
+		else if (right.Length == 1 && right[0] == Digit.ONE)
+			return (left, new Natural());
 
 		int tempLength;
 		Natural temp = new();
-		Digit[] remainder = [.. n1.digits];
-		Digit[] result = Digit.CreateArray(n1.Length - n2.Length + 1);
+		Digit[] remainder = [.. left.digits];
+		Digit[] result = Digit.CreateArray(left.Length - right.Length + 1);
 
-		int i = n1.Length - n2.Length;
+		int i = left.Length - right.Length;
 		while (i >= 0)
 		{
-			temp = new Natural(remainder.Skip(i).ToArray());
+			temp = new Natural([.. remainder.Skip(i)]);
 			tempLength = temp.Length;
 
-			while (n2 <= temp)
+			while (right <= temp)
 			{
-				temp -= n2;
+				temp -= right;
 				result[i] += Digit.ONE;
 			}
 
@@ -214,26 +295,34 @@ public readonly struct Natural
 		return (new Natural(result), temp);
 	}
 
-	public static Natural SecondPower(Natural n)
-	{
-		return n * n;
-	}
+	/// <summary>
+	/// Raises the given <paramref name="value"/> to the second power.
+	/// </summary>
+	/// <param name="value">The <see cref="Natural"/> that represents the base.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Natural SecondPower(Natural value) => value * value;
 
-	public static Natural Power(Natural n1, Natural n2)
+	/// <summary>
+	/// Raises the given base to the given power.
+	/// </summary>
+	/// <param name="left">The <see cref="Natural"/> that represents the base.</param>
+	/// <param name="right">The <see cref="Natural"/> that represents the exponent.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Natural Power(Natural left, Natural right)
 	{
 		Natural result = new([new Digit('1')]);
 		Natural two = new([new Digit('2')]);
 
-		if (n2.isZero)
-			return /*n1.IsZero ? throw new NotImplementedException() :*/ result;
-		else if (n2 == result)
-			return n1;
-		else if (n2 == two)
-			return n1 * n1;
+		if (right.isZero)
+			return /*left.IsZero ? throw new NotImplementedException() :*/ result;
+		else if (right == result)
+			return left;
+		else if (right == two)
+			return left * left;
 
-		Natural lastPowerCalculated = n1;
+		Natural lastPowerCalculated = left;
 
-		(Natural whole, Natural remainder) = Divide(n2, two);
+		(Natural whole, Natural remainder) = Divide(right, two);
 
 		if (!remainder.isZero)
 			result = lastPowerCalculated;
@@ -250,10 +339,15 @@ public readonly struct Natural
 		return result;
 	}
 
-	public static (Natural Whole, Natural Remainder) SquareRoot(Natural n)
+	/// <summary>
+	/// Raises the given radicand to the second degree.
+	/// </summary>
+	/// <param name="value">The <see cref="Natural"/> that represents the radicand.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	public static (Natural Whole, Natural Remainder) SquareRoot(Natural value)
 	{
-		if (n.isZero || n.Length == 1 && n[0] == Digit.ONE)
-			return (n, new Natural());
+		if (value.isZero || value.Length == 1 && value[0] == Digit.ONE)
+			return (value, new Natural());
 
 		Natural two = new([Digit.TWO]);
 		Natural rootTimesTwo, test;
@@ -261,9 +355,9 @@ public readonly struct Natural
 		Natural root = new();
 		Digit xTry;
 
-		for (int i = ((n.length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
+		for (int i = ((value.length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
 		{
-			remainder = new([n[i], (i + 1 < n.digits.Length ? n[i + 1] : Digit.ZERO), .. remainder.digits]);
+			remainder = new([value[i], (i + 1 < value.digits.Length ? value[i + 1] : Digit.ZERO), .. remainder.digits]);
 
 			xTry = Digit.ZERO;
 
@@ -287,29 +381,35 @@ public readonly struct Natural
 		return (root, remainder);
 	}
 
-	public static (Natural Whole, Natural Remainder) Root(Natural value, Natural n)
+	/// <summary>
+	/// Raises the given radicand to the given degree.
+	/// </summary>
+	/// <param name="left">The <see cref="Natural"/> that represents the radicand.</param>
+	/// <param name="right">The <see cref="Natural"/> that represents the degree.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	public static (Natural Whole, Natural Remainder) Root(Natural left, Natural right)
 	{
 		Natural remainder = new();
 
-		if (n < new Natural([Digit.THREE]))
+		if (right < new Natural([Digit.THREE]))
 		{
-			return Digit.ToChar(n[0]) switch
+			return Digit.ToChar(right[0]) switch
 			{
 				'0' => throw new NotImplementedException(),
-				'1' => (value, remainder),
-				_ => SquareRoot(value)
+				'1' => (left, remainder),
+				_ => SquareRoot(left)
 			};
 		}
 
-		if (value.isZero || (value.Length == 1 && value[0] == Digit.ONE))
-			return (value, remainder);
+		if (left.isZero || (left.Length == 1 && left[0] == Digit.ONE))
+			return (left, remainder);
 
-		ushort nInt = Convert.ToUInt16(n.ToString());
-		Digit[] digits = [.. value.digits, .. Digit.CreateArray((nInt - (value.digits.Length % nInt)) % nInt)];
+		ushort nInt = Convert.ToUInt16(right.ToString());
+		Digit[] digits = [.. left.digits, .. Digit.CreateArray((nInt - (left.digits.Length % nInt)) % nInt)];
 
 		Digit xTry;
 		Natural test, kNatural, nMinusKN, binomial;
-		Natural nFactorial = Factorial(n);
+		Natural nFactorial = Factorial(right);
 		Natural root = new();
 
 		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
@@ -330,7 +430,7 @@ public readonly struct Natural
 					{
 
 						kNatural = k.ToString();
-						nMinusKN = n - kNatural;
+						nMinusKN = right - kNatural;
 						binomial = nFactorial / (Factorial(kNatural) * Factorial(nMinusKN));
 
 						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
@@ -346,70 +446,80 @@ public readonly struct Natural
 		return (root, remainder);
 	}
 
-	public static Natural Factorial(Natural n)
+	/// <summary>
+	/// Calculates the factorial of the given base.
+	/// </summary>
+	/// <param name="value">The <see cref="Natural"/> that represents the base.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Natural Factorial(Natural value)
 	{
 		Natural one = new([Digit.ONE]);
 
-		if (n.isZero || n == one)
+		if (value.isZero || value == one)
 			return one;
 
-		Natural result = n;
+		Natural result = value;
 
-		while (n != one)
+		while (value != one)
 		{
-			n -= one;
-			result *= n;
+			value -= one;
+			result *= value;
 		}
 
 		return result;
 	}
 
-	public static Natural Log(Natural n1, Natural n2)
+	/*public static Natural Log(Natural left, Natural right)
 	{
-		if (n1.isZero || n2.isZero)
+		if (left.isZero || right.isZero)
 			throw new NotImplementedException();
 
 		Natural one = new([Digit.ONE]);
 		Natural result = new();
 
-		while (n2 <= n1)
+		while (right <= left)
 		{
-			n1 /= n2;
+			left /= right;
 			result += one;
 		}
 
 		return result;
-	}
+	}*/
 
-	public override readonly bool Equals(object? obj)
-	{
-		return obj is Natural natural && this == natural;
-	}
+	/// <summary>
+	/// Compares the given <see langword="object"/>? to this instance.
+	/// </summary>
+	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
+	/// <returns>
+	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Natural"/> and equal to the value of <see langword="this"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public override readonly bool Equals(object? obj) => obj is Natural natural && this == natural;
 
-	public override int GetHashCode()
-	{
-		throw new NotImplementedException();
-	}
+	/// <summary>
+	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
+	/// </summary>
+	public override int GetHashCode() => throw new NotImplementedException();
 
 	#endregion
 
 	#region Operators
 
 	public static implicit operator Natural(string num) => new(num);
-	public static bool operator ==(Natural f1, Natural f2) => Equals(f1, f2);
-	public static bool operator !=(Natural f1, Natural f2) => !Equals(f1, f2);
-	public static bool operator >(Natural f1, Natural f2) => GreaterThan(f1, f2);
-	public static bool operator <(Natural f1, Natural f2) => GreaterThan(f2, f1);
-	public static bool operator >=(Natural f1, Natural f2) => !GreaterThan(f2, f1);
-	public static bool operator <=(Natural f1, Natural f2) => !GreaterThan(f1, f2);
-	public static Natural operator +(Natural f1, Natural f2) => Add(f1, f2);
-	public static Natural operator -(Natural f1, Natural f2) => Substract(f1, f2).Value;
-	public static Natural operator *(Natural f1, Natural f2) => Multiply(f1, f2);
-	public static Natural operator /(Natural f1, Natural f2) => Divide(f1, f2).Whole;
-	public static Natural operator %(Natural f1, Natural f2) => Divide(f1, f2).Remainder;
-	public static Natural operator ^(Natural f1, Natural f2) => Power(f1, f2);
-	public static Natural operator ~(Natural f) => SquareRoot(f).Whole;
-	public static Natural operator |(Natural f1, Natural f2) => Root(f2, f1).Whole;
+	public static bool operator ==(Natural left, Natural right) => Equals(left, right);
+	public static bool operator !=(Natural left, Natural right) => !Equals(left, right);
+	public static bool operator >(Natural left, Natural right) => GreaterThan(left, right);
+	public static bool operator <(Natural left, Natural right) => GreaterThan(right, left);
+	public static bool operator >=(Natural left, Natural right) => !GreaterThan(right, left);
+	public static bool operator <=(Natural left, Natural right) => !GreaterThan(left, right);
+	public static Natural operator +(Natural left, Natural right) => Add(left, right);
+	public static Natural operator -(Natural left, Natural right) => Subtract(left, right).Value;
+	public static Natural operator *(Natural left, Natural right) => Multiply(left, right);
+	public static Natural operator /(Natural left, Natural right) => Divide(left, right).Whole;
+	public static Natural operator %(Natural left, Natural right) => Divide(left, right).Remainder;
+	public static Natural operator ^(Natural left, Natural right) => Power(left, right);
+	public static Natural operator ~(Natural value) => SquareRoot(value).Whole;
+	public static Natural operator |(Natural left, Natural right) => Root(right, left).Whole;
 
 	#endregion
 }

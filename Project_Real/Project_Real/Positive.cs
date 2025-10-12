@@ -19,32 +19,66 @@ public readonly struct Positive
 
 	#region Properties
 
+	/// <summary>
+	/// Gets or sets the character the <see cref="ToString"/> method should use as separator.
+	/// </summary>
+	/// <exception cref="ArgumentException">
+	/// <param name="value"/> cannot be a number character.
+	/// </exception>
 	public static char Separator
 	{
 		get => separator;
-		set
-		{
-			separator = value < '0' || value > '9' ? value : throw new Exception();
-		}
+		set => separator = value < '0' || value > '9' ? value : throw new ArgumentException();
 	}
+
+	/// <summary>
+	/// Gets or sets the length of calculating fractions.
+	/// </summary>
+	/// <exception cref="ArgumentException">
+	/// <param name="value"/> cannot be less than 0.
+	/// </exception>
 	public static int FractionCalculatonLength
 	{
 		get => fractionCalculatonLength;
 		set => fractionCalculatonLength = (value >= 0) ? value : throw new ArgumentException();
 	}
 
+	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Positive"/>.</returns>
 	public readonly int Length => length;
+
+	/// <returns>The number of <see cref="Digit"/>s used to represent the whole part of <see langword="this"/> <see cref="Positive"/>.</returns>
 	public readonly int WholeLength => wholeLength;
+
+	/// <returns>The number of <see cref="Digit"/>s used to represent the fraction part of <see langword="this"/> <see cref="Positive"/>.</returns>
 	public readonly int FractionLength => fractionLength;
+
+	/// <summary>
+	/// Returns whether <see langword="this"/> is equal to 0.
+	/// </summary>
+	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
 	public readonly bool IsZero => value.IsZero;
+
+	/// <returns>The <see cref="Natural"/> used to represent <see langword="this"/> <see cref="Positive"/> without indicating the decimal separator.</returns>
 	public Natural Value => value;
-	public readonly Digit this[Index i] => value.Digits[i];
+
+	/// <returns>
+	/// The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Positive"/> without indicating the decimal separator.
+	/// </returns>
 	public readonly ImmutableArray<Digit> Digits => value.Digits;
+
+	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
+	/// <exception cref="IndexOutOfRangeException">
+	/// <paramref name="index"/> cannot be less than 0.
+	/// </exception>
+	public readonly Digit this[Index i] => value.Digits[i];
 
 	#endregion
 
 	#region Constructors
 
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> with a value of 0.
+	/// </summary>
 	public Positive()
 	{
 		value = new Natural();
@@ -53,6 +87,15 @@ public readonly struct Positive
 		fractionLength = 0;
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> by the given number <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">
+	/// A <see langword="string"/> of 0 to 9 characters and maybe a <see cref="Separator"/> sign somewhere after the first digit.
+	/// </param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="number"/> is not a valid number format.
+	/// </exception>
 	public Positive(string number)
 	{
 		if (number is null || number.Length < 1 || number[0] == separator)
@@ -77,6 +120,11 @@ public readonly struct Positive
 		wholeLength = length - fractionLength;
 	}
 
+	/// <summary>
+	/// Constructs an <see cref="Positive"/> by the given <paramref name="value"/> and <paramref name="fractionLength"/>.
+	/// </summary>
+	/// <param name="value">The value of the number without a decimal separator.</param>
+	/// <param name="fractionLength">Indicates the number of fraction characters in <see langword="this"/> <see cref="Positive"/>.</param>
 	public Positive(Natural value, int fractionLength)
 	{
 		if (fractionLength < 0)
@@ -106,122 +154,173 @@ public readonly struct Positive
 
 	#region Private methods
 
-	public static Positive TrimStart(Positive p)
+	/// <summary>
+	/// Removes the heading 0 values from the given <see cref="Positive"/>.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> to trim.</param>
+	/// <returns>The trimmed <see cref="Positive"/>.</returns>
+	private static Positive TrimStart(Positive value)
 	{
 		int i = 0;
 
-		while (i < Math.Min(p.fractionLength, p.Digits.Length) && p[i] == Digit.ZERO) { ++i; }
+		while (i < Math.Min(value.fractionLength, value.Digits.Length) && value[i] == Digit.ZERO) { ++i; }
 
-		return i > 0 ? new Positive(new Natural([.. p.Digits[i..]]), p.fractionLength - i) : p;
+		return i > 0 ? new Positive(new Natural([.. value.Digits[i..]]), value.fractionLength - i) : value;
 	}
 
 	#endregion
 
 	#region Public methods
 
+	/// <summary>
+	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>A <see cref="Positive"/> number as a <see langword="string"/>.</returns>
 	public override string ToString()
 	{
 		return (fractionLength == 0) ? value.ToString() :
-				(
-					(fractionLength < Digits.Length) ? value.ToString() :
-					new string('0', length - Digits.Length) + value.ToString()
-				).Insert(wholeLength, separator.ToString());
+			(
+				(fractionLength < Digits.Length) ? value.ToString() : 
+				new string('0', length - Digits.Length) + value.ToString()
+			).Insert(wholeLength, separator.ToString());
 	}
 
-	public static Positive GetWhole(Positive p)
-	{
-		return new Positive(new Natural([.. p.Digits[(^p.wholeLength)..]]), 0);
-	}
+	/// <summary>
+	/// Returns the whole part of the given <see cref="Positive"/> instance.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> instance.</param>
+	/// <returns>The whole value.</returns>
+	public static Positive GetWhole(Positive value) => value.fractionLength >= value.Digits.Length ? new(new([.. value.Digits[(^value.wholeLength)..]]), 0) : new();
 
-	public static Positive GetFraction(Positive p)
-	{
-		return new Positive(new([.. p.Digits[..Math.Min(p.fractionLength, p.Digits.Length)]]), p.fractionLength);
-	}
+	/// <summary>
+	/// Compares two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Positive"/> to compare.</param>
+	/// <param name="right">The second <see cref="Positive"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is equal to the value of <paramref name="right"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool Equals(Positive left, Positive right) => left.length == right.length && left.fractionLength == right.fractionLength && left.value == right.value;
 
-	public static bool Equals(Positive p1, Positive p2)
+	/// <summary>
+	/// Compares two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Positive"/> to compare.</param>
+	/// <param name="right">The second <see cref="Positive"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is greater than the value of <paramref name="right"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool GreaterThan(Positive left, Positive right)
 	{
-		return p1.length == p2.length && p1.fractionLength == p2.fractionLength && p1.value == p2.value;
-	}
-
-	public static bool GreaterThan(Positive p1, Positive p2)
-	{
-		if (p1.wholeLength != p2.wholeLength)
-			return p1.wholeLength > p2.wholeLength;
-
-		if (p1.fractionLength == p2.fractionLength)
-			return p1.value > p2.value;
+		if (left.wholeLength != right.wholeLength)
+			return left.wholeLength > right.wholeLength;
+		else if (left.fractionLength == right.fractionLength)
+			return left.value > right.value;
 		else
 		{
-			Digit[] splicing = Digit.CreateArray(Math.Max(p1.fractionLength, p2.fractionLength));
+			Digit[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
 
-			if (p1.fractionLength < p2.fractionLength)
-				return new Natural([.. splicing, .. p1.Digits]) > p2.value;
-			else
-				return p1.value > new Natural([.. splicing, .. p2.Digits]);
+			return left.fractionLength < right.fractionLength ? new Natural([.. splicing, .. left.Digits]) > right.Value : 
+				left.Value > new Natural([.. splicing, .. right.Digits]);
 		}
 	}
 
-	public static Positive Add(Positive p1, Positive p2)
+	/// <summary>
+	/// Adds two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Positive"/> to add.</param>
+	/// <param name="right">The second <see cref="Positive"/> to add.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Positive Add(Positive left, Positive right)
 	{
-		int difference = p1.fractionLength - p2.fractionLength;
+		int difference = left.fractionLength - right.fractionLength;
 
 		if (difference < 0)
-			(p1, p2) = (p2, p1);
+			(left, right) = (right, left);
 
-		Positive result = new(p1.value + new Natural([.. Digit.CreateArray(Math.Abs(difference)), .. p2.Digits]), p1.fractionLength);
+		Positive result = new(left.value + new Natural([.. Digit.CreateArray(Math.Abs(difference)), .. right.Digits]), left.fractionLength);
 
 		return TrimStart(result);
 	}
 
-	public static (bool Swap, Positive Value) Substract(Positive p1, Positive p2)
+	/// <summary>
+	/// Subtracts two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Positive"/> that represents the minuend.</param>
+	/// <param name="right">The <see cref="Positive"/> that represents the subtrahend.</param>
+	/// <returns>The result value and if there was a swap in a tuple.</returns>
+	public static (bool Swap, Positive Value) Subtract(Positive left, Positive right)
 	{
-		int maxFractionLength = Math.Max(p1.fractionLength, p2.fractionLength);
-		Digit[] splicing = Digit.CreateArray(Math.Abs(p1.fractionLength - p2.fractionLength));
+		int maxFractionLength = Math.Max(left.fractionLength, right.fractionLength);
+		Digit[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
 
-		bool swap;
-		Natural result;
-
-		if (p1.fractionLength < p2.fractionLength)
-			(swap, result) = Natural.Substract(new Natural([.. splicing, .. p1.Digits]), p2.value);
-		else
-			(swap, result) = Natural.Substract(p1.value, new Natural([.. splicing, .. p2.Digits]));
+		(bool swap, Natural result) = left.fractionLength < right.fractionLength ? Natural.Subtract(new Natural([.. splicing, .. left.Digits]), right.value) :
+			Natural.Subtract(left.value, new Natural([.. splicing, .. right.Digits]));
 
 		return (swap, TrimStart(new Positive(result, maxFractionLength)));
 	}
 
-	public static Positive Multiply(Positive p1, Positive p2)
-	{
-		return new Positive(Natural.Multiply(p1.value, p2.value), p1.fractionLength + p2.fractionLength);
-	}
+	/// <summary>
+	/// Multiplies two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Positive"/> that represents the multiplier.</param>
+	/// <param name="right">The <see cref="Positive"/> that represents the multiplicand.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Positive Multiply(Positive left, Positive right) => new(Natural.Multiply(left.value, right.value), left.fractionLength + right.fractionLength);
 
-	public static (Positive Value, Positive Remainder) Divide(Positive p1, Positive p2, int? fractionCalculatonLength = null)
+	/// <summary>
+	/// Divides two <see cref="Positive"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Positive"/> that represents the numerator.</param>
+	/// <param name="right">The <see cref="Positive"/> that represents the denominator.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="DivideByZeroException">
+	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
+	/// </exception>
+	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculatonLength = null)
 	{
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
 
-		int denominatorSlicingLength = (p1.fractionLength > p2.fractionLength) ? p1.fractionLength - p2.fractionLength : 0;
-		int numeratorSlicingLength = (p2.fractionLength > p1.fractionLength) ? p2.fractionLength - p1.fractionLength : 0;
+		int denominatorSlicingLength = (left.fractionLength > right.fractionLength) ? left.fractionLength - right.fractionLength : 0;
+		int numeratorSlicingLength = (right.fractionLength > left.fractionLength) ? right.fractionLength - left.fractionLength : 0;
 
-		Natural denominator = new([.. Digit.CreateArray(denominatorSlicingLength), .. p2.Digits]);
-		Natural numerator = new([.. Digit.CreateArray(numeratorSlicingLength + fCL), .. p1.Digits]);
+		Natural denominator = new([.. Digit.CreateArray(denominatorSlicingLength), .. right.Digits]);
+		Natural numerator = new([.. Digit.CreateArray(numeratorSlicingLength + fCL), .. left.Digits]);
 
 		(Natural whole, Natural remainder) = Natural.Divide(numerator, denominator);
 
-		return (new Positive(whole, fCL), new Positive(remainder, fCL + numeratorSlicingLength + p1.FractionLength));
+		return (new Positive(whole, fCL), new Positive(remainder, fCL + numeratorSlicingLength + left.FractionLength));
 	}
 
-	public static Positive SecondPower(Positive p)
-	{
-		return p * p;
-	}
+	/// <summary>
+	/// Raises the given <paramref name="value"/> to the second power.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> that represents the base.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Positive SecondPower(Positive value) => value * value;
 
-	public static Positive Power(Positive i1, Positive i2)
+	/// <summary>
+	/// Raises the given base to the given power.
+	/// </summary>
+	/// <param name="left">The <see cref="Positive"/> that represents the base.</param>
+	/// <param name="right">The <see cref="Positive"/> that represents the exponent.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Positive Power(Positive left, Positive right)
 	{
-		if (i2.fractionLength != 0)
+		if (right.fractionLength != 0)
 			throw new NotImplementedException();
 
-		return new(i1.value ^ i2.value, i1.fractionLength * Convert.ToInt32(i2.ToString()));
+		return new(left.value ^ right.value, left.fractionLength * Convert.ToInt32(right.ToString()));
 	}
 
+	/// <summary>
+	/// Raises the given radicand to the second degree.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> that represents the radicand.</param>
+	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculatonLength = null)
 	{
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
@@ -289,9 +388,16 @@ public readonly struct Positive
 		return (new Positive(root, fCL), new Positive(remainder, fCL + splicingLength));
 	}
 
-	public static (Positive Value, Positive Remainder) Root(Positive value, Positive n, int? fractionCalculatonLength = null)
+	/// <summary>
+	/// Raises the given radicand to the given degree.
+	/// </summary>
+	/// <param name="left">The <see cref="Positive"/> that represents the radicand.</param>
+	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
+	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculatonLength = null)
 	{
-		if (n.fractionLength != 0 || n.IsZero)
+		if (right.fractionLength != 0 || right.IsZero)
 			throw new NotImplementedException();
 
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
@@ -389,24 +495,28 @@ public readonly struct Positive
 
 		return (new Positive(root, , remainder);*/
 
-
-		int nInt = Convert.ToUInt16(n.ToString());
-		Digit[] splicing = Digit.CreateArray(((fCL * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt);
-		(Natural whole, Natural remainder) = Natural.Root(new Natural([.. splicing, .. value.Digits]), new Natural([.. n.Digits]));
-		int fractionLength = (value.fractionLength + splicing.Length) / nInt;
+		int nInt = Convert.ToUInt16(right.ToString());
+		Digit[] splicing = Digit.CreateArray(((fCL * nInt - left.fractionLength) * nInt + (nInt - 1)) / nInt);
+		(Natural whole, Natural remainder) = Natural.Root(new Natural([.. splicing, .. left.Digits]), new Natural([.. right.Digits]));
+		int fractionLength = (left.fractionLength + splicing.Length) / nInt;
 
 		return (new Positive(whole, fractionLength), new Positive(remainder, fractionLength * nInt));
 	}
 
-	public override readonly bool Equals(object? obj)
-	{
-		return obj is Positive positive && this == positive;
-	}
+	/// <summary>
+	/// Compares the given <see langword="object"/>? to this instance.
+	/// </summary>
+	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
+	/// <returns>
+	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Positive"/> and equal to the value of <see langword="this"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public override readonly bool Equals(object? obj) => obj is Positive positive && this == positive;
 
-	public override int GetHashCode()
-	{
-		throw new NotImplementedException();
-	}
+	/// <summary>
+	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
+	/// </summary>
+	public override int GetHashCode() => throw new NotImplementedException();
 
 	#endregion
 
@@ -420,7 +530,7 @@ public readonly struct Positive
 	public static bool operator >=(Positive f1, Positive f2) => !GreaterThan(f2, f1);
 	public static bool operator <=(Positive f1, Positive f2) => !GreaterThan(f1, f2);
 	public static Positive operator +(Positive f1, Positive f2) => Add(f1, f2);
-	public static Positive operator -(Positive f1, Positive f2) => Substract(f1, f2).Value;
+	public static Positive operator -(Positive f1, Positive f2) => Subtract(f1, f2).Value;
 	public static Positive operator *(Positive f1, Positive f2) => Multiply(f1, f2);
 	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
 	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2, 0).Remainder;

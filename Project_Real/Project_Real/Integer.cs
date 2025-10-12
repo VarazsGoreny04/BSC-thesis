@@ -7,32 +7,67 @@ public readonly struct Integer
 {
 	#region Fields
 
-	private static bool writeSign = false;
+	private static bool writeSign = true;
 
-	public readonly bool Sign;
-	public readonly Natural Value;
+	private readonly bool sign;
+	private readonly Natural value;
 
 	#endregion
 
 	#region Properties
 
+	/// <summary>
+	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
+	/// </summary>
 	public static bool WriteSign { get => writeSign; set => writeSign = value; }
 
-	public readonly bool IsZero => Value.IsZero;
-	public readonly int Length => Value.Length;
-	public readonly Digit this[Index i] => Value.Digits[i];
-	public readonly ImmutableArray<Digit> Digits => Value.Digits;
+	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
+	public readonly int Length => value.Length;
+
+	/// <summary>
+	/// Returns whether <see langword="this"/> is equal to 0.
+	/// </summary>
+	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
+	public readonly bool IsZero => value.IsZero;
+
+	/// <summary>
+	/// The sign of <see langword="this"/> <see cref="Positive"/> represented by a boolean.
+	/// </summary>
+	/// <returns><see langword="true"/> if the sign is +; <see langword="false"/> if the sign is -.</returns>
+	public bool Sign => sign;
+
+	/// <returns>The <see cref="Natural"/> used to represent <see langword="this"/> <see cref="Integer"/> without indicating sign.</returns>
+	public Natural Value => value;
+
+	/// <returns>The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
+	public readonly ImmutableArray<Digit> Digits => value.Digits;
+
+	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
+	/// <exception cref="IndexOutOfRangeException">
+	/// <paramref name="index"/> cannot be less than 0.
+	/// </exception>
+	public readonly Digit this[Index index] => value.Digits[index];
 
 	#endregion
 
 	#region Constructors
 
+	/// <summary>
+	/// Constructs an <see cref="Integer"/> with a value of 0.
+	/// </summary>
 	public Integer()
 	{
-		Sign = true;
-		Value = new Natural();
+		sign = true;
+		value = new Natural();
 	}
 
+	/// <summary>
+	/// Constructs an <see cref="Integer"/> by the given number <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">A <see langword="string"/> of 0 to 9 characters and maybe a + or - sign at the front.</param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="number"/> is not a valid number format.
+	/// </exception>
 	public Integer(string number)
 	{
 		if (number is null || number.Length < 1)
@@ -42,7 +77,7 @@ public readonly struct Integer
 
 		if (!(number[0] >= '0' && number[0] <= '9'))
 		{
-			Sign = number[0] switch
+			sign = number[0] switch
 			{
 				'+' => true,
 				'-' => false,
@@ -52,109 +87,183 @@ public readonly struct Integer
 			start = 1;
 		}
 		else
-			Sign = true;
+			sign = true;
 
-		Value = new Natural(number[start..]);
+		value = new Natural(number[start..]);
 
-		Sign |= IsZero;
+		sign |= IsZero;
 	}
 
+	/// <summary>
+	/// Constructs an <see cref="Integer"/> by the given <paramref name="sign"/> and <paramref name="value"/>.
+	/// </summary>
+	/// <param name="sign">The sign of the number. <see langword="true"/> means +; <see langword="false"/> means -.</param>
+	/// <param name="value">The absolute value of the number.</param>
 	public Integer(bool sign, Natural value)
 	{
-		Value = value;
-		Sign = sign || IsZero;
+		this.value = value;
+		this.sign = sign || IsZero;
 	}
-	
+
 	#endregion
 
 	#region Public methods
 
-	public override string ToString()
-	{
-		return writeSign ? $"{(Sign ? '+' : '-')}{Value}" : Value.ToString(); 
-	}
+	/// <summary>
+	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
+	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
 
-	public static bool Equals(Integer i1, Integer i2)
-	{
-		return i1.Sign == i2.Sign && i1.Value == i2.Value;
-	}
+	/// <summary>
+	/// Compares two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Integer"/> to compare.</param>
+	/// <param name="right">The second <see cref="Integer"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is equal to the value of <paramref name="right"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool Equals(Integer left, Integer right) => left.sign == right.sign && left.value == right.value;
 
-	public static bool GreaterThan(Integer i1, Integer i2)
-	{
-		return i1.Sign != i2.Sign ? i1.Sign : (i1.Sign ? i1.Value > i2.Value : i1.Value < i2.Value);
-	}
+	/// <summary>
+	/// Compares two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Integer"/> to compare.</param>
+	/// <param name="right">The second <see cref="Integer"/> to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the value of <paramref name="left"/> is greater than the value of <paramref name="right"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool GreaterThan(Integer left, Integer right) => left.sign != right.sign ? left.sign : (left.sign ? left.value > right.value : left.value < right.value);
 
-	public static Integer Add(Integer i1, Integer i2)
+	/// <summary>
+	/// Adds two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The first <see cref="Integer"/> to add.</param>
+	/// <param name="right">The second <see cref="Integer"/> to add.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Integer Add(Integer left, Integer right)
 	{
-		if (i1.Sign == i2.Sign)
-			return new Integer(i1.Sign, i1.Value + i2.Value);
+		if (left.sign == right.sign)
+			return new Integer(left.sign, left.value + right.value);
 		else
 		{
-			if (i2.Sign)
-				(i1, i2) = (i2, i1);
+			if (right.sign)
+				(left, right) = (right, left);
 
-			(bool swap, Natural value) = Natural.Substract(i1.Value, i2.Value);
+			(bool swap, Natural value) = Natural.Subtract(left.value, right.value);
 
 			return new Integer(!swap, value);
 		}
 	}
 
-	public static Integer Substract(Integer i1, Integer i2)
+	/// <summary>
+	/// Subtracts two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Integer"/> that represents the minuend.</param>
+	/// <param name="right">The <see cref="Integer"/> that represents the subtrahend.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Integer Subtract(Integer left, Integer right) => left + (-right);
+
+	/// <summary>
+	/// Multiplies two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Integer"/> that represents the multiplier.</param>
+	/// <param name="right">The <see cref="Integer"/> that represents the multiplicand.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Integer Multiply(Integer left, Integer right) => new(left.sign == right.sign, left.value * right.value);
+
+	/// <summary>
+	/// Divides two <see cref="Integer"/>s.
+	/// </summary>
+	/// <param name="left">The <see cref="Integer"/> that represents the numerator.</param>
+	/// <param name="right">The <see cref="Integer"/> that represents the denominator.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="DivideByZeroException">
+	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
+	/// </exception>
+	public static (Integer Whole, Integer Remainder) Divide(Integer left, Integer right)
 	{
-		return i1 + (-i2);
+		(Natural whole, Natural remainder) = Natural.Divide(left.value, right.value);
+		return (new Integer(left.sign == right.sign, whole), new Integer(left.sign, remainder));
 	}
 
-	public static Integer Multiply(Integer i1, Integer i2)
-	{
-		return new Integer(i1.Sign == i2.Sign, i1.Value * i2.Value);
-	}
+	/// <summary>
+	/// Raises the given <paramref name="value"/> to the second power.
+	/// </summary>
+	/// <param name="value">The <see cref="Integer"/> that represents the base.</param>
+	/// <returns>The result of the calculation.</returns>
+	public static Integer SecondPower(Integer value) => value * value;
 
-	public static (Integer Whole, Integer Remainder) Divide(Integer i1, Integer i2)
+	/// <summary>
+	/// Raises the given base to the given power.
+	/// </summary>
+	/// <param name="left">The <see cref="Integer"/> that represents the base.</param>
+	/// <param name="right">The <see cref="Integer"/> that represents the exponent.</param>
+	/// <returns>The result of the calculation.</returns>
+	/// <exception cref="NotImplementedException">
+	/// <paramref name="right"/> cannot be negative.
+	/// </exception>
+	public static Integer Power(Integer left, Integer right)
 	{
-		(Natural whole, Natural remainder) = Natural.Divide(i1.Value, i2.Value);
-		return (new Integer(i1.Sign == i2.Sign, whole), new Integer(i1.Sign, remainder));
-	}
-
-	public static Integer SecondPower(Integer i)
-	{
-		return i * i;
-	}
-
-	public static Integer Power(Integer i1, Integer i2)
-	{
-		if (!i2.Sign)
+		if (!right.sign)
 			throw new NotImplementedException();
 
-		return new Integer(i1.Sign || i2[0] % Digit.TWO == Digit.ZERO, i1.Value ^ i2.Value);
+		return new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value);
 	}
 
-	public static (Integer Whole, Integer Remainder) SquareRoot(Integer i)
+	/// <summary>
+	/// Raises the given radicand to the second degree.
+	/// </summary>
+	/// <param name="value">The <see cref="Integer"/> that represents the radicand.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="NotImplementedException">
+	/// <paramref name="value"/> cannot be negative.
+	/// </exception>
+	public static (Integer Whole, Integer Remainder) SquareRoot(Integer value)
 	{
-		if (!i.Sign)
+		if (!value.sign)
 			throw new NotImplementedException();
 		 
-		(Natural whole, Natural remainder) = Natural.SquareRoot(i.Value);
+		(Natural whole, Natural remainder) = Natural.SquareRoot(value.value);
 		return (new Integer(true, whole), new Integer(true, remainder));
 	}
 
-	public static (Integer Whole, Integer Remainder) Root(Integer i1, Integer i2)
+	/// <summary>
+	/// Raises the given radicand to the given degree.
+	/// </summary>
+	/// <param name="left">The <see cref="Integer"/> that represents the radicand.</param>
+	/// <param name="right">The <see cref="Integer"/> that represents the degree.</param>
+	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="NotImplementedException">
+	/// <paramref name="right"/> being negative
+	/// -or-
+	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
+	/// </exception>
+	public static (Integer Whole, Integer Remainder) Root(Integer left, Integer right)
 	{
-		if (!i2.Sign || !i1.Sign && (i2[0] % Digit.TWO == Digit.ZERO))
+		if (!right.sign || !left.sign && (right[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
-		(Natural whole, Natural remainder) = Natural.Root(i1.Value, i2.Value);
-		return (new Integer(i1.Sign, whole), new Integer(i1.Sign, remainder));
+		(Natural whole, Natural remainder) = Natural.Root(left.value, right.value);
+		return (new Integer(left.sign, whole), new Integer(left.sign, remainder));
 	}
 
-	public override readonly bool Equals(object? obj)
-	{
-		return obj is Integer integer && this == integer;
-	}
+	/// <summary>
+	/// Compares the given <see langword="object"/>? to this instance.
+	/// </summary>
+	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
+	/// <returns>
+	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Integer"/> and equal to the value of <see langword="this"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public override readonly bool Equals(object? obj) => obj is Integer integer && this == integer;
 
-	public override int GetHashCode()
-	{
-		throw new NotImplementedException();
-	}
+	/// <summary>
+	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
+	/// </summary>
+	public override int GetHashCode() => throw new NotImplementedException();
 
 	#endregion
 
@@ -167,9 +276,9 @@ public readonly struct Integer
 	public static bool operator <(Integer f1, Integer f2) => GreaterThan(f2, f1);
 	public static bool operator >=(Integer f1, Integer f2) => !GreaterThan(f2, f1);
 	public static bool operator <=(Integer f1, Integer f2) => !GreaterThan(f1, f2);
-	public static Integer operator -(Integer f) => new(!f.Sign, f.Value);
+	public static Integer operator -(Integer f) => new(!f.sign, f.value);
 	public static Integer operator +(Integer f1, Integer f2) => Add(f1, f2);
-	public static Integer operator -(Integer f1, Integer f2) => Substract(f1, f2);
+	public static Integer operator -(Integer f1, Integer f2) => Subtract(f1, f2);
 	public static Integer operator *(Integer f1, Integer f2) => Multiply(f1, f2);
 	public static Integer operator /(Integer f1, Integer f2) => Divide(f1, f2).Whole;
 	public static Integer operator %(Integer f1, Integer f2) => Divide(f1, f2).Remainder;
