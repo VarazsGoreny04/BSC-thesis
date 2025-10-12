@@ -1,4 +1,6 @@
 ﻿namespace Project_Real;
+using System;
+using System.Linq;
 
 public struct Real_old
 {
