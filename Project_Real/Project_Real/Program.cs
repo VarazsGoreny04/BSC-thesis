@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Project_Real;
 
@@ -6,9 +7,11 @@ public class Program
 {
 	public static void Main()
 	{
-		/*CultureInfo.CurrentCulture = new CultureInfo("en-us");
+		Stopwatch timer = new();
 
-		string num = "+134.15";
+		/*CultureInfo.CurrentCulture = new CultureInfo("en-us");*/
+
+		/*string num = "+134.15";
 		Real f = num;
 
 		Console.WriteLine(Real.MAXWHOLEINT);
@@ -205,11 +208,38 @@ public class Program
 		Console.WriteLine(Positive.Root("3530945043.777457217", "3"));
 		Console.WriteLine(Natural.Root("3530945043777457217", "3"));*/
 		//Console.WriteLine(Natural.Root("4192000000000", "3"));
-		Console.WriteLine(Natural.Root("18446744073709551615", "2"));
-		/*Console.WriteLine(Positive.Root("4192000000000", "3"));
-		Console.WriteLine(Math.Pow(4192000000000.0, 1.0/3.0));
-		Console.WriteLine(4192000000000.0 - Math.Pow(Math.Pow(4192000000000.0, 1.0/3.0), 3.0));*/
+		//Console.WriteLine(Natural.Root("18446744073709551615", "2"));
+		//Console.WriteLine(Positive.Root("4192000000000", "3"));
+		//Console.WriteLine(Math.Pow(4192000000000.0, 1.0/3.0));
+		//Console.WriteLine(4192000000000.0 - Math.Pow(Math.Pow(4192000000000.0, 1.0/3.0), 3.0));
+		/*Positive.FractionCalculatonLength = 11;
+		(Positive whole, Positive remainder) = Positive.Root("124.067", "6");
+		Console.WriteLine((whole, remainder));
+		Console.WriteLine(whole ^ "6");*/
 
+		/*Rational a = "+65/3";
+		Rational b = "-3/2";*/
+
+		//Console.WriteLine(Positive.SquareRoot("10005"));
+		/*for (int i = 1; i < 10; ++i)
+		{
+			timer.Restart();
+			int a = (int)Math.Pow(2, i);
+			Positive.FractionCalculatonLength = (int)(a * 1.2);
+			Console.WriteLine($"{Rational.ToWritableString(Rational.PI_Chudnovsky(a))} - {a}");
+			timer.Stop();
+			Console.WriteLine(timer.ToString());
+		}*/
+
+		/*for (int i = 1; i < 10; ++i)
+		{
+			timer.Restart();
+			int a = (int)Math.Pow(2, i);
+			Positive.FractionCalculatonLength = (int)(a * 1.2);
+			Console.WriteLine($"{Rational.ToWritableString(Rational.EBinary(a))} - {a}");
+			timer.Stop();
+			Console.WriteLine(timer.ToString());
+		}*/
 
 		/*Positive n = "3";
 
@@ -217,6 +247,8 @@ public class Program
 
 		Console.WriteLine(res);*/
 		//Console.WriteLine(Positive.Power("10", res));
+
+		int[,] a = { { 1, 2 }, { 3, 4 } };
 	}
 
 	public static void MatrixToString<T>(T[] a)
