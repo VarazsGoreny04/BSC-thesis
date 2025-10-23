@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Project_Real;
 
+/// <summary>
+/// Represents a natural number using a <see cref="Digit"/> array.
+/// </summary>
 public readonly struct Natural
 {
 	#region Fields

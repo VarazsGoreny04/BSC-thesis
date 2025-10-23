@@ -21,12 +21,12 @@ public abstract class UnaryOperator : Operator
 
 		int depthCopy = step;
 
-		partialValues.Add(($"({Parameter?.Value}){Sign()} == {Value}", root.StepToString(ref depthCopy)));
+		partialValues.Add(($"({Parameter?.Value}){Sign()} == {Value}", root.ToStringByStep(ref depthCopy)));
 	}
 	internal override Priority Order() => Priority.UnaryOperator;
-	public override string StepToString(ref int step)
+	public override string ToStringByStep(ref int step)
 	{
-		string next = $"{Parameter.StepToString(ref step)}{Sign()}";
+		string next = $"{Parameter.ToStringByStep(ref step)}{Sign()}";
 
 		return --step <= 0 ? next : $"({Value})";
 	}

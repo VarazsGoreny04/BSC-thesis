@@ -15,11 +15,11 @@ public abstract class Term : ValueHolder
 public sealed class PI : Term
 {
 	public override Rational GetValue() => Rational.PI_Chudnovsky();
-	public override string StepToString(ref int _) => "pi";
+	public override string ToStringByStep(ref int _) => "pi";
 }
 
 public sealed class E : Term
 {
 	public override Rational GetValue() => Rational.E();
-	public override string StepToString(ref int _) => "e";
+	public override string ToStringByStep(ref int _) => "e";
 }

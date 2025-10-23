@@ -32,13 +32,13 @@ public abstract class BinaryOperator : Operator
 		int depthCopy = step;
 
 		partialValues.Add(($"{(Left is ValueHolder l ? $"({l.Value})" : "")}{Sign()}({Right?.Value}) == {Value}",
-			root.StepToString(ref depthCopy)));
+			root.ToStringByStep(ref depthCopy)));
 	}
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
-	public override string StepToString(ref int step)
+	public override string ToStringByStep(ref int step)
 	{
-		string left = $"{Left?.StepToString(ref step) ?? ""}{Sign()}";
-		string rigth = Right.StepToString(ref step);
+		string left = $"{Left?.ToStringByStep(ref step) ?? ""}{Sign()}";
+		string rigth = Right.ToStringByStep(ref step);
 
 		return --step <= 0 ? left + rigth : $"({Value})";
 	}

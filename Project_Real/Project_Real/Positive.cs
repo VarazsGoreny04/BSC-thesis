@@ -3,6 +3,9 @@ using System.Collections.Immutable;
 
 namespace Project_Real;
 
+/// <summary>
+/// Represents an unsigned number.
+/// </summary>
 public readonly struct Positive
 {
 	#region Fields

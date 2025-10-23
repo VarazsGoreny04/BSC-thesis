@@ -8,5 +8,5 @@ public sealed class Number(string token) : Term
 	public string Token => token;
 
 	public override Rational GetValue() => new(token);
-	public override string StepToString(ref int _) => token;
+	public override string ToStringByStep(ref int _) => token;
 }

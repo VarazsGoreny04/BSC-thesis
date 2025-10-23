@@ -1,12 +1,14 @@
-﻿using System;
-using Project_Real;
+﻿using Project_Real;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
-public class Matrix
+/// <summary>
+/// Contains methods for operations with matrices.
+/// </summary>
+public static class Matrix
 {
 	/// <summary>
-	/// Constructs a vector of n length with full of zeros.
+	/// Constructs a vector of <paramref name="n"/> length with full of zeros.
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <returns>The matrix with zeros.</returns>
@@ -40,7 +42,7 @@ public class Matrix
 	/// </summary>
 	/// <param name="a">The vector to scale.</param>
 	/// <param name="s">The scalar.</param>
-	/// <returns></returns>
+	/// <returns>The scaled vector.</returns>
 	public static Rational[] Scale(Rational[] a, Rational s)
 	{
 		int n = a.Length;
@@ -62,7 +64,7 @@ public class Matrix
 		Rational result = "0";
 
 		for (int i = a.Length; i >= 0; --i)
-			result += a[i] * a[i];
+			result += Rational.SecondPower(a[i]);
 
 		return Rational.SquareRoot(result);
 	}
@@ -73,6 +75,7 @@ public class Matrix
 	/// <param name="a">The first vector.</param>
 	/// <param name="b">The second vector.</param>
 	/// <returns>The inner product value.</returns>
+	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
 	public static Rational InnerProduct(Rational[] a, Rational[] b)
 	{
 		if (a.Length != b.Length)
@@ -108,19 +111,21 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Projects the vector "a" orthogonally onto vector "u".
+	/// Projects the vector <paramref name="a"/> orthogonally onto vector <paramref name="b"/>.
 	/// </summary>
 	/// <param name="a">The vector to project.</param>
 	/// <param name="b">The vector on which will be projected.</param>
 	/// <returns>The projection.</returns>
+	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
 	public static Rational[] Project(Rational[] a, Rational[] b) => Scale(a, InnerProduct(a, b) / InnerProduct(a, a));
 
 	/// <summary>
-	/// Adds vector "b" from vector "a".
+	/// Adds vector <paramref name="b"/> from vector <paramref name="a"/>.
 	/// </summary>
 	/// <param name="a">The vector to be added.</param>
 	/// <param name="b">The adding vector.</param>
 	/// <returns>The added vector.</returns>
+	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
 	public static Rational[] Add(Rational[] a, Rational[] b)
 	{
 		int n = a.Length;
@@ -137,11 +142,12 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Substracts vector "b" from vector "a".
+	/// Substracts vector <paramref name="b"/> from vector <paramref name="a"/>.
 	/// </summary>
 	/// <param name="a">The vector to be subtracted.</param>
 	/// <param name="b">The substracting vector.</param>
 	/// <returns>The substracted vector.</returns>
+	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
 	public static Rational[] Subtract(Rational[] a, Rational[] b)
 	{
 		int n = a.Length;
@@ -158,7 +164,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Constructs an n-by-m matrix full of zeros.
+	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix full of zeros.
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
@@ -177,7 +183,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Constructs an n-by-m matrix full of ones.
+	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix full of ones.
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
@@ -196,7 +202,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Constructs an n-by-m identity matrix.
+	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> identity matrix.
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
@@ -212,7 +218,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Gets the j-th column of the given matrix.
+	/// Gets the <paramref name="j"/>-th column of the given matrix.
 	/// </summary>
 	/// <param name="A">The matrix.</param>
 	/// <param name="j">The index of the column.</param>
@@ -254,7 +260,7 @@ public class Matrix
 	/// </summary>
 	/// <param name="A">The matrix to scale.</param>
 	/// <param name="s">The scalar.</param>
-	/// <returns></returns>
+	/// <returns>The scaled matrix.</returns>
 	public static Rational[,] Scale(Rational[,] A, Rational s)
 	{
 		int rowCount = A.GetLength(0);
@@ -275,7 +281,7 @@ public class Matrix
 	/// Calculates the transpose of the given matrix.
 	/// </summary>
 	/// <param name="A">The matrix to transpose.</param>
-	/// <returns>The transpose.</returns>
+	/// <returns>The transposed matrix.</returns>
 	public static Rational[,] Transpose(Rational[,] A)
 	{
 		int rowCount = A.GetLength(0);
@@ -293,7 +299,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Concats matrix B to the side of matrix A.
+	/// Concats matrix <paramref name="B"/> to the side of matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>
@@ -323,7 +329,7 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Concats matrix B to the bottom of matrix A.
+	/// Concats matrix <paramref name="B"/> to the bottom of matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>
@@ -353,11 +359,12 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Adds matrix B to matrix A.
+	/// Adds matrix <paramref name="B"/> to matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The matrix to be added.</param>
 	/// <param name="B">The adding matrix.</param>
 	/// <returns>The added matrix.</returns>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static Rational[,] Add(Rational[,] A, Rational[,] B)
 	{
 		int rowCount = A.GetLength(0);
@@ -378,11 +385,12 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Subtracts matrix B from matrix A.
+	/// Subtracts matrix <paramref name="B"/> from matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">Minuend.</param>
 	/// <param name="B">Subtrahend.</param>
 	/// <returns>The added matrix.</returns>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static Rational[,] Subtract(Rational[,] A, Rational[,] B)
 	{
 		int rowCount = A.GetLength(0);
@@ -402,13 +410,13 @@ public class Matrix
 		return result;
 	}
 
-
 	/// <summary>
-	/// Multiplies matrix A with vector B.
+	/// Multiplies matrix <paramref name="A"/> with vector <paramref name="b"/>.
 	/// </summary>
 	/// <param name="A">The matrix.</param>
 	/// <param name="b">The vector.</param>
 	/// <returns>The resulting matrix.</returns>
+	/// <exception cref="ArgumentException">The column count of the matrices in not equal to the length of the vector.</exception>
 	public static Rational[] Product(Rational[,] A, Rational[] b)
 	{
 		int rowCount = A.GetLength(0);
@@ -429,11 +437,12 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Multiplies matrix A with matrix B.
+	/// Multiplies matrix <paramref name="A"/> with matrix <paramref name="B"/>.
 	/// </summary>
 	/// <param name="A">The first matrix.</param>
 	/// <param name="B">The second matrix.</param>
 	/// <returns>The resulting matrix.</returns>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static Rational[,] Product(Rational[,] A, Rational[,] B)
 	{
 		int rowCount = A.GetLength(0);
@@ -460,7 +469,7 @@ public class Matrix
 
 	/// <summary>
 	/// Calculates the inverse of the given matrix using the 
-	/// Gauss-Jordan Method (see https://en.wikipedia.org/wiki/Gaussian_elimination).
+	/// Gauss-Jordan Method (<see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/>).
 	/// </summary>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The inverse of the given matrix.</returns>
@@ -533,85 +542,16 @@ public class Matrix
 		return C;
 	}
 
-	/*/// <summary>
-	/// Takes the square root of the given diagonal matrix.
-	/// </summary>
-	/// <param name="A">The diagonal matrix.</param>
-	/// <returns>The square root of the given matrix.</returns>
-	public static Rational[,] Sqrt(Rational[,] A)
-	{
-		int n = Math.Min(A.GetLength(0), A.GetLength(1));
-		Rational[,] B = A;
-
-		for (int i = 0; i < n; ++i)
-		{
-			if (A[i, i] <= "0")
-				throw new DivideByZeroException();
-
-			B[i, i] = ~A[i, i];
-		}
-
-		return B;
-	}*/
-
-	/// <summary>
-	/// Prints the given vector.
-	/// </summary>
-	/// <param name="a">The vector to print.</param>
-	/// <returns>The string representation of the given vector.</returns>
-	public static string ToString<T>(T[] a)
-	{
-		int length = a.Length;
-
-		if (length < 1)
-			throw new ArgumentException();
-
-		string text = $"[ {a[0]}";
-
-		for (int i = 1; i < length; ++i)
-			text += $",\t{a[i]}";
-
-		return text + " ]\n";
-	}
-
-	/// <summary>
-	/// Prints the given matrix.
-	/// </summary>
-	/// <param name="A">The matrix to print.</param>
-	/// <returns>The string representation of the given matrix.</returns>
-	public static string ToString<T>(T[,] A)
-	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
-
-		if (rowCount < 1 || colCount < 1)
-			throw new ArgumentException();
-
-		string text = "[\n";
-
-		for (int i = 0; i < rowCount; ++i)
-		{
-			text += $"\t{A[i, 0]}";
-
-			for (int j = 1; j < colCount; ++j)
-				text += $",\t{A[i, j]}";
-
-			text += ";\n";
-		}
-
-		return text + "]\n";
-	}
-
 	/// <summary>
 	/// Runs the QR algorithm to find the eigenvalues and eigenvectors 
-	/// of the given matrix (see https://en.wikipedia.org/wiki/QR_algorithm).
+	/// of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_algorithm"/>).
 	/// </summary>
 	/// <param name="A">The matrix for which eigenvalues and eigenvectors should be found.</param>
-	/// <param name="iterations">The number of iterations.</param>
 	/// <returns>
 	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. 
 	/// The eigenvectors stored as columns in the Eigenvectors matrix.
 	/// </returns>
+	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	public static Rational Determinant(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -673,7 +613,7 @@ public class Matrix
 
 	/// <summary>
 	/// Runs the QR algorithm to find the eigenvalues and eigenvectors 
-	/// of the given matrix (see https://en.wikipedia.org/wiki/QR_algorithm).
+	/// of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_algorithm"/>).
 	/// </summary>
 	/// <param name="A">The matrix for which eigenvalues and eigenvectors should be found.</param>
 	/// <param name="iterations">The number of iterations.</param>
@@ -681,6 +621,7 @@ public class Matrix
 	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. 
 	/// The eigenvectors stored as columns in the Eigenvectors matrix.
 	/// </returns>
+	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	public static (Rational[,] Eigenvalues, Rational[,] Eigenvectors) Diagonalize(Rational[,] A, int iterations)
 	{
 		int n = A.GetLength(0);
@@ -707,10 +648,11 @@ public class Matrix
 
 	/// <summary>
 	/// Calculates the inverse of the given matrix using the 
-	/// Gauss-Jordan Method (see https://en.wikipedia.org/wiki/LU_decomposition).
+	/// Gauss-Jordan Method (<see href="https://en.wikipedia.org/wiki/LU_decomposition"/>).
 	/// </summary>
 	/// <param name="A">The matrix to invert.</param>
-	/// <returns>The inverse of the given matrix.</returns>
+	/// <returns>The two parts of the decomposition: L and U.</returns>
+	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	public static (Rational[,] L, Rational[,] U) LUDecomposition(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -772,11 +714,11 @@ public class Matrix
 	}
 
 	/// <summary>
-	/// Calculates the QR decomposition of the given matrix A (see https://en.wikipedia.org/wiki/QR_decomposition). 
+	/// Calculates the QR decomposition of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_decomposition"/>). 
 	/// </summary>
 	/// <param name="A">The matrix to decompose.</param>
-	/// <param name="Q">The Q part of the decomposition.</param>
-	/// <param name="R">The R part of the decomposition.</param>
+	/// <returns>The two parts of the decomposition: Q and R.</returns>
+	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	private static (Rational[,] Q, Rational[,] R) QRDecomposition(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -813,5 +755,41 @@ public class Matrix
 		}
 
 		return (U, Product(Transpose(U), A));
+	}
+
+	/// <summary>
+	/// Prints the given vector.
+	/// </summary>
+	/// <param name="a">The vector to print.</param>
+	/// <returns>The string representation of the given vector.</returns>
+	/// <exception cref="ArgumentException">The vector</exception>
+	public static string ToString<T>(T[] a) => $"[ {string.Join(",\t", a)} ]\n";
+
+	/// <summary>
+	/// Prints the given matrix.
+	/// </summary>
+	/// <param name="A">The matrix to print.</param>
+	/// <returns>The string representation of the given matrix.</returns>
+	public static string ToString<T>(T[,] A)
+	{
+		int rowCount = A.GetLength(0);
+		int colCount = A.GetLength(1);
+
+		if (rowCount < 1 || colCount < 1)
+			return "[ ]\n";
+
+		string text = "[\n";
+
+		for (int i = 0; i < rowCount; ++i)
+		{
+			text += $"\t{A[i, 0]}";
+
+			for (int j = 1; j < colCount; ++j)
+				text += $",\t{A[i, j]}";
+
+			text += ";\n";
+		}
+
+		return text + "]\n";
 	}
 }

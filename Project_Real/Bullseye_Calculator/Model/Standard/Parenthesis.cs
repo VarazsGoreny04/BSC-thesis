@@ -8,7 +8,7 @@ public class OpeningParenthesis : Parenthesis
 		Calculator.VisitPostfix(ref functions, ref result, this);
 	}
 	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
-	public override string StepToString(ref int _) => "(";
+	public override string ToStringByStep(ref int _) => "(";
 }
 public class ClosingParenthesis : Parenthesis
 {
@@ -17,5 +17,5 @@ public class ClosingParenthesis : Parenthesis
 		Calculator.VisitPostfix(ref functions, ref result, this);
 	}
 	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
-	public override string StepToString(ref int _) => ")";
+	public override string ToStringByStep(ref int _) => ")";
 }

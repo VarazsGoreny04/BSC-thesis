@@ -3,6 +3,9 @@ using System.Collections.Immutable;
 
 namespace Project_Real;
 
+/// <summary>
+/// Represents a signed number.
+/// </summary>
 public readonly struct Writable
 {
 	#region Fields

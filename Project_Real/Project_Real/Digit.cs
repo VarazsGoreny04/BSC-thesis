@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Project_Real;
 
+/// <summary>
+/// Represents a decimal digit using the BCD format.
+/// </summary>
 public readonly struct Digit
 {
 	#region Exceptions

@@ -2,6 +2,9 @@
 
 namespace Project_Real;
 
+/// <summary>
+/// Represents a rational number.
+/// </summary>
 public readonly struct Rational
 {
 	#region Fields

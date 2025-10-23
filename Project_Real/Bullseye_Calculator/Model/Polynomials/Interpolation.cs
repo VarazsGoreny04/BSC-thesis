@@ -1,10 +1,23 @@
 ﻿using Bullseye_Calculator.Model.EuclideanSpace;
 using Project_Real;
 
-namespace Bullseye_Calculator.Model.Polynoms;
+namespace Bullseye_Calculator.Model.Polynomials;
 
+/// <summary>
+/// Contains methods for interpolation.
+/// </summary>
 public static class Interpolation
 {
+	/// <summary>
+	/// Calculates the Lagrange-polynomial that crosses each point in the <paramref name="points"/> array.
+	/// </summary>
+	/// <param name="points"></param>
+	/// <returns>The coefficients of the polynomial in an array.</returns>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="points"/> is empty
+	/// -or-
+	/// some of the <paramref name="points"/> have matching X coordinate.
+	/// </exception>
 	public static Rational[] Lagrange(Point2D[] points)
 	{
 		if (points.Length < 1)
