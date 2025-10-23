@@ -29,9 +29,7 @@ public readonly struct Natural
 	public ImmutableArray<Digit> Digits => digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException">
-	/// <paramref name="index"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
 	public readonly Digit this[Index index] => digits[index];
 
 	#endregion
@@ -49,12 +47,10 @@ public readonly struct Natural
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Natural"/> by the given number <paramref name="number"/>.
+	/// Constructs a <see cref="Natural"/> by the given <see langword="string"/> parameter.
 	/// </summary>
 	/// <param name="number">A <see langword="string"/> of 0 to 9 characters.</param>
-	/// <exception cref="ArgumentException">
-	/// <paramref name="number"/> is not a valid number format.
-	/// </exception>
+	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Natural(string number)
 	{
 		if (number is null || number.Length < 1)
@@ -87,9 +83,7 @@ public readonly struct Natural
 	/// Constructs a <see cref="Natural"/> by the given <paramref name="digits"/>.
 	/// </summary>
 	/// <param name="digits">An array of <see cref="Digit"/>s, where the first index represents the lowest value.</param>
-	/// <exception cref="ArgumentException">
-	/// <paramref name="digits"/> cannot be null or empty.
-	/// </exception>
+	/// <exception cref="ArgumentException"><paramref name="digits"/> cannot be null or empty.</exception>
 	public Natural(Digit[] digits)
 	{
 		if (digits is null || digits.Length < 1)
@@ -254,9 +248,7 @@ public readonly struct Natural
 	/// <param name="left">The <see cref="Natural"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Natural"/> that represents the denominator.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Natural Whole, Natural Remainder) Divide(Natural left, Natural right)
 	{
 		if (right.isZero)
@@ -387,6 +379,7 @@ public readonly struct Natural
 	/// <param name="left">The <see cref="Natural"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Natural"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
 	public static (Natural Whole, Natural Remainder) Root(Natural left, Natural right)
 	{
 		Natural remainder = new();
@@ -487,6 +480,26 @@ public readonly struct Natural
 	}*/
 
 	/// <summary>
+	/// Calculates the greatest common divisor of the given two <see cref="Natural"/> numbers using the Euclidean algorithm.
+	/// </summary>
+	/// <param name="a">The first number.</param>
+	/// <param name="b">The second number.</param>
+	/// <returns>The greatest common divisor.</returns>
+	public static Natural GreatestCommonDivisor(Natural a, Natural b)
+	{
+		Natural temp;
+
+		while (!b.IsZero)
+		{
+			temp = b;
+			b = a % b;
+			a = temp;
+		}
+
+		return a;
+	}
+
+	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.
 	/// </summary>
 	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
@@ -505,7 +518,7 @@ public readonly struct Natural
 
 	#region Operators
 
-	public static implicit operator Natural(string num) => new(num);
+	public static implicit operator Natural(string value) => new(value);
 	public static bool operator ==(Natural left, Natural right) => Equals(left, right);
 	public static bool operator !=(Natural left, Natural right) => !Equals(left, right);
 	public static bool operator >(Natural left, Natural right) => GreaterThan(left, right);

@@ -46,9 +46,7 @@ public readonly struct Digit
 	public readonly ImmutableArray<bool> Bits => bits;
 
 	/// <returns>The boolean at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException">
-	/// <paramref name="index"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
 	public readonly bool this[Index index] => bits[index];
 
 	#endregion
@@ -61,12 +59,10 @@ public readonly struct Digit
 	public Digit() => bits = ImmutableArray.Create(new bool[LENGTH]);
 
 	/// <summary>
-	/// Constructs a <see cref="Digit"/> by the given number <paramref name="character"/>.
+	/// Constructs a <see cref="Digit"/> by the given <paramref name="character"/>.
 	/// </summary>
 	/// <param name="character">A number character.</param>
-	/// <exception cref="ValueOutOfRangeException">
-	/// <paramref name="character"/> must be a number character.
-	/// </exception>
+	/// <exception cref="ValueOutOfRangeException"><paramref name="character"/> must be a number character.</exception>
 	public Digit(char character)
 	{
 		sbyte number = (sbyte)(character - '0');
@@ -90,12 +86,8 @@ public readonly struct Digit
 	/// Constructs a <see cref="Digit"/> by the given <paramref name="bitArray"/>.
 	/// </summary>
 	/// <param name="bitArray">The binary representation of the number, where the first index represents the lowest value.</param>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// </exception>
-	/// <paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.
-	/// <exception cref="ValueOutOfRangeException">
-	/// <paramref name="bitArray"/> cannot represent a number more than 9.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException"><paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.</exception>
+	/// <exception cref="ValueOutOfRangeException"><paramref name="bitArray"/> cannot represent a number more than 9.</exception>
 	public Digit(bool[] bitArray)
 	{
 		if (bitArray.Length != LENGTH)
@@ -110,12 +102,8 @@ public readonly struct Digit
 	/// Constructs a <see cref="Digit"/> by the given <paramref name="bitArray"/>.
 	/// </summary>
 	/// <param name="bitArray">The binary representation of the number, where the first index represents the lowest value.</param>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// <paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.
-	/// </exception>
-	/// <exception cref="ValueOutOfRangeException">
-	/// <paramref name="bitArray"/> cannot represent a number more than 9.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException"><paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.</exception>
+	/// <exception cref="ValueOutOfRangeException"><paramref name="bitArray"/> cannot represent a number more than 9.</exception>
 	public Digit(ImmutableArray<bool> bitArray)
 	{
 		if (bitArray.Length != LENGTH)
@@ -137,9 +125,7 @@ public readonly struct Digit
 	/// <see langword="true"/> if every index from <paramref name="left"/> matched the corresponding index in <paramref name="right"/>;
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException">Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.</exception>
 	private static bool BitEquals(ImmutableArray<bool> left, ImmutableArray<bool> right)
 	{
 		if (left.Length != right.Length)
@@ -160,9 +146,7 @@ public readonly struct Digit
 	/// <see langword="true"/> if the two arrays are not identical and at the rightmost difference <paramref name="left"/> is <see langword="true"/> 
 	/// and  <paramref name="right"/> is <see langword="false"/>; otherwise, <see langword="false"/>.
 	/// </returns>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException">Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.</exception>
 	private static bool BitGreaterThan(ImmutableArray<bool> left, ImmutableArray<bool> right)
 	{
 		if (left.Length != right.Length)
@@ -196,9 +180,7 @@ public readonly struct Digit
 	/// <param name="right">The second <see cref="ImmutableArray{bool}"/> struct to add.</param>
 	/// <param name="carry">The carry bit.</param>
 	/// <returns>The bits of the operation and if there was an overflow in a tuple.</returns>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException">Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.</exception>
 	private static (bool OverFlow, ImmutableArray<bool> Bits) BitAdd(ImmutableArray<bool> left, ImmutableArray<bool> right, bool carry = false)
 	{
 		if (left.Length != right.Length)
@@ -233,12 +215,8 @@ public readonly struct Digit
 	/// <param name="left">The <see cref="ImmutableArray{bool}"/> struct that represents the minuend.</param>
 	/// <param name="right">The <see cref="ImmutableArray{bool}"/> struct that represents the subtrahend.</param>
 	/// <returns>The bits of the operation.</returns>
-	/// <exception cref="UnmatchingArrayLengthException">
-	/// Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.
-	/// </exception>
-	/// <exception cref="SecondValueGreaterException">
-	/// <paramref name="left"/> cannot be bigger than <paramref name="right"/>.
-	/// </exception>
+	/// <exception cref="UnmatchingArrayLengthException">Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.</exception>
+	/// <exception cref="SecondValueGreaterException"><paramref name="left"/> cannot be bigger than <paramref name="right"/>.</exception>
 	private static ImmutableArray<bool> BitSubtract(ImmutableArray<bool> left, ImmutableArray<bool> right)
 	{
 		if (BitGreaterThan(right, left))
@@ -280,9 +258,7 @@ public readonly struct Digit
 	/// <param name="left">The <see cref="ImmutableArray{bool}"/> struct that represents the numerator.</param>
 	/// <param name="right">The <see cref="ImmutableArray{bool}"/> struct that represents the denominator.</param>
 	/// <returns>The bits of the operation in two parts: the whole and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	private static (ImmutableArray<bool> Whole, ImmutableArray<bool> Remainder) BitDivide(ImmutableArray<bool> left, ImmutableArray<bool> right)
 	{
 		sbyte trueIndex = (sbyte)right.Length;
@@ -455,9 +431,7 @@ public readonly struct Digit
 	/// <param name="left">The <see cref="Digit"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Digit"/> that represents the denominator.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Digit Whole, Digit Remainder) Divide(Digit left, Digit right)
 	{
 		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(left.bits, right.bits);
@@ -484,7 +458,7 @@ public readonly struct Digit
 
 	#region Operators
 
-	public static implicit operator Digit(char num) => new(num);
+	public static implicit operator Digit(char value) => new(value);
 	public static bool operator ==(Digit left, Digit right) => Equals(left, right);
 	public static bool operator !=(Digit left, Digit right) => !Equals(left, right);
 	public static bool operator >(Digit left, Digit right) => GreaterThan(left, right);

@@ -68,12 +68,12 @@ public class Program
 		Console.WriteLine(result.ToString());
 		Console.WriteLine(result.Value().ToString());*/
 
-		/*ValueHolder valueHolder = Calculator.Evaluate(text);
+		ValueHolder valueHolder = Calculator.Evaluate(text);
 		List<(string Calculation, string State)> evaluation = Calculator.FullEvaluation(valueHolder);
 
 		Console.WriteLine($"{valueHolder} == {valueHolder.Value}");
 		int maxLength = evaluation.Max(step => step.Calculation.Length);
-		evaluation.ForEach(step => Console.WriteLine($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}\t{step.State}"));*/
+		evaluation.ForEach(step => Console.WriteLine($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}\t{step.State}"));
 
 		/*for (int i = 1; i < 12; ++i)
 		{

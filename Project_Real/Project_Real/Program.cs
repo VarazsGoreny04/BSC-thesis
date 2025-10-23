@@ -31,19 +31,19 @@ public class Program
 		Console.WriteLine(Real.ToUInt(b));
 		Console.WriteLine("-" + Real.ToUInt(Real.BitAbs(Real.BitSubstract(c, b, false).Item2)));*/
 
-		/*Real r1 = "-5.3";
-		Real r2 = "+3.6";
-		Console.WriteLine(r2 - r1);
+		/*Real left = "-5.3";
+		Real right = "+3.6";
+		Console.WriteLine(right - left);
 		Console.WriteLine();
 
-		Real f1 = "+0.1";
-		Real f2 = "+0.2";
+		Real left = "+0.1";
+		Real right = "+0.2";
 		Real f3 = "+0.3";
 		double f4 = 0.1;
 		double f5 = 0.2;
 		double f6 = 0.3;
 		Console.WriteLine($" ({f4})  +  ({f5})  =  ({f6})  ->  ({f4})  +  ({f5})  ==  ({f4 + f5}) => {f4 + f5 == f6}");
-		Console.WriteLine($"({f1}) + ({f2}) = ({f3}) -> ({f1}) + ({f2}) == ({f1 + f2})            => {f1 + f2 == f3}");
+		Console.WriteLine($"({left}) + ({right}) = ({f3}) -> ({left}) + ({right}) == ({left + right})            => {left + right == f3}");
 
 
 		bool[] b = [false, true, false, true, false, false, false, false];
@@ -112,9 +112,9 @@ public class Program
 		Console.ReadKey();
 		Console.WriteLine(Integer.Multiply(new Integer("-35419993"), new Integer("1524315243"))); // -53,991,235,236,853,299*/
 
-		/*(Natural w, Natural r) = Natural.Divide(new Natural("132"), new Natural("4"));
+		/*(Natural w, Natural value) = Natural.Divide(new Natural("132"), new Natural("4"));
 		Console.WriteLine(w);
-		Console.WriteLine(r);*/
+		Console.WriteLine(value);*/
 
 		/*Console.WriteLine("Division:");
 		Console.WriteLine(new Integer("10") / new Integer("3"));
@@ -131,10 +131,10 @@ public class Program
 		//double f = 0.; // hiba
 		//double f = 0.; // hiba
 		//double f = 0.f; // hiba
-		double f1 = .0;
-		double f2 = 0.0;
-		Console.WriteLine(f1);
-		Console.WriteLine(f2);*/
+		double left = .0;
+		double right = 0.0;
+		Console.WriteLine(left);
+		Console.WriteLine(right);*/
 
 		//Writable w = new();
 		/*Digit a = new Digit();

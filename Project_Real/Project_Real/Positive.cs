@@ -88,14 +88,12 @@ public readonly struct Positive
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Positive"/> by the given number <paramref name="number"/>.
+	/// Constructs a <see cref="Positive"/> by the given <see langword="string"/> parameter.
 	/// </summary>
 	/// <param name="number">
 	/// A <see langword="string"/> of 0 to 9 characters and maybe a <see cref="Separator"/> sign somewhere after the first digit.
 	/// </param>
-	/// <exception cref="ArgumentException">
-	/// <paramref name="number"/> is not a valid number format.
-	/// </exception>
+	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Positive(string number)
 	{
 		if (number is null || number.Length < 1 || number[0] == separator)
@@ -275,10 +273,9 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="left">The <see cref="Positive"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the denominator.</param>
+	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculatonLength = null)
 	{
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
@@ -307,6 +304,7 @@ public readonly struct Positive
 	/// <param name="left">The <see cref="Positive"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
+	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
 	public static Positive Power(Positive left, Positive right)
 	{
 		if (right.fractionLength != 0)
@@ -324,9 +322,6 @@ public readonly struct Positive
 	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculatonLength = null)
 	{
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
-
-		if (fCL < 0)
-			throw new ArgumentOutOfRangeException();
 
 		if (value.value.IsZero || value == new Positive(new([Digit.ONE]), 0))
 			return (value, new Positive());
@@ -395,15 +390,13 @@ public readonly struct Positive
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
 	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction or 0 as it is not mathematically meaningful.</exception>
 	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculatonLength = null)
 	{
 		if (right.fractionLength != 0 || right.IsZero)
 			throw new NotImplementedException();
 
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
-
-		if (fCL < 0)
-			throw new ArgumentOutOfRangeException();
 
 		/*Natural remainder = new();
 
@@ -522,21 +515,21 @@ public readonly struct Positive
 
 	#region Operators
 
-	public static implicit operator Positive(string num) => new(num);
-	public static bool operator ==(Positive f1, Positive f2) => Equals(f1, f2);
-	public static bool operator !=(Positive f1, Positive f2) => !Equals(f1, f2);
-	public static bool operator >(Positive f1, Positive f2) => GreaterThan(f1, f2);
-	public static bool operator <(Positive f1, Positive f2) => GreaterThan(f2, f1);
-	public static bool operator >=(Positive f1, Positive f2) => !GreaterThan(f2, f1);
-	public static bool operator <=(Positive f1, Positive f2) => !GreaterThan(f1, f2);
-	public static Positive operator +(Positive f1, Positive f2) => Add(f1, f2);
-	public static Positive operator -(Positive f1, Positive f2) => Subtract(f1, f2).Value;
-	public static Positive operator *(Positive f1, Positive f2) => Multiply(f1, f2);
-	public static Positive operator /(Positive f1, Positive f2) => Divide(f1, f2).Value;
-	public static Positive operator %(Positive f1, Positive f2) => Divide(f1, f2, 0).Remainder;
-	public static Positive operator ^(Positive f1, Positive f2) => Power(f1, f2);
-	public static Positive operator ~(Positive f) => SquareRoot(f).Value;
-	public static Positive operator |(Positive f1, Positive f2) => Root(f2, f1).Value;
+	public static implicit operator Positive(string value) => new(value);
+	public static bool operator ==(Positive left, Positive right) => Equals(left, right);
+	public static bool operator !=(Positive left, Positive right) => !Equals(left, right);
+	public static bool operator >(Positive left, Positive right) => GreaterThan(left, right);
+	public static bool operator <(Positive left, Positive right) => GreaterThan(right, left);
+	public static bool operator >=(Positive left, Positive right) => !GreaterThan(right, left);
+	public static bool operator <=(Positive left, Positive right) => !GreaterThan(left, right);
+	public static Positive operator +(Positive left, Positive right) => Add(left, right);
+	public static Positive operator -(Positive left, Positive right) => Subtract(left, right).Value;
+	public static Positive operator *(Positive left, Positive right) => Multiply(left, right);
+	public static Positive operator /(Positive left, Positive right) => Divide(left, right).Value;
+	public static Positive operator %(Positive left, Positive right) => Divide(left, right, 0).Remainder;
+	public static Positive operator ^(Positive left, Positive right) => Power(left, right);
+	public static Positive operator ~(Positive value) => SquareRoot(value).Value;
+	public static Positive operator |(Positive left, Positive right) => Root(right, left).Value;
 
 	#endregion
 }

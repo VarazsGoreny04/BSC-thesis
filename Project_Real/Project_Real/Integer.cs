@@ -19,7 +19,11 @@ public readonly struct Integer
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
 	/// </summary>
-	public static bool WriteSign { get => writeSign; set => writeSign = value; }
+	public static bool WriteSign
+	{
+		get => writeSign;
+		set => writeSign = value;
+	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
 	public readonly int Length => value.Length;
@@ -43,9 +47,7 @@ public readonly struct Integer
 	public readonly ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException">
-	/// <paramref name="index"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
 	public readonly Digit this[Index index] => value.Digits[index];
 
 	#endregion
@@ -62,12 +64,10 @@ public readonly struct Integer
 	}
 
 	/// <summary>
-	/// Constructs an <see cref="Integer"/> by the given number <paramref name="number"/>.
+	/// Constructs an <see cref="Integer"/> by the given <see langword="string"/> parameter.
 	/// </summary>
 	/// <param name="number">A <see langword="string"/> of 0 to 9 characters and maybe a + or - sign at the front.</param>
-	/// <exception cref="ArgumentException">
-	/// <paramref name="number"/> is not a valid number format.
-	/// </exception>
+	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Integer(string number)
 	{
 		if (number is null || number.Length < 1)
@@ -180,9 +180,7 @@ public readonly struct Integer
 	/// <param name="left">The <see cref="Integer"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the denominator.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// <paramref name="right"/> cannot be 0, as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Integer Whole, Integer Remainder) Divide(Integer left, Integer right)
 	{
 		(Natural whole, Natural remainder) = Natural.Divide(left.value, right.value);
@@ -202,9 +200,7 @@ public readonly struct Integer
 	/// <param name="left">The <see cref="Integer"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
-	/// <exception cref="NotImplementedException">
-	/// <paramref name="right"/> cannot be negative.
-	/// </exception>
+	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
 	public static Integer Power(Integer left, Integer right)
 	{
 		if (!right.sign)
@@ -218,14 +214,12 @@ public readonly struct Integer
 	/// </summary>
 	/// <param name="value">The <see cref="Integer"/> that represents the radicand.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException">
-	/// <paramref name="value"/> cannot be negative.
-	/// </exception>
+	/// <exception cref="NotImplementedException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
 	public static (Integer Whole, Integer Remainder) SquareRoot(Integer value)
 	{
 		if (!value.sign)
 			throw new NotImplementedException();
-		 
+
 		(Natural whole, Natural remainder) = Natural.SquareRoot(value.value);
 		return (new Integer(true, whole), new Integer(true, remainder));
 	}
@@ -237,7 +231,7 @@ public readonly struct Integer
 	/// <param name="right">The <see cref="Integer"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException">
-	/// <paramref name="right"/> being negative
+	/// <paramref name="right"/> being negative or 0
 	/// -or-
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
@@ -269,22 +263,22 @@ public readonly struct Integer
 
 	#region Operators
 
-	public static implicit operator Integer(string num) => new(num);
-	public static bool operator ==(Integer f1, Integer f2) => Equals(f1, f2);
-	public static bool operator !=(Integer f1, Integer f2) => !Equals(f1, f2);
-	public static bool operator >(Integer f1, Integer f2) => GreaterThan(f1, f2);
-	public static bool operator <(Integer f1, Integer f2) => GreaterThan(f2, f1);
-	public static bool operator >=(Integer f1, Integer f2) => !GreaterThan(f2, f1);
-	public static bool operator <=(Integer f1, Integer f2) => !GreaterThan(f1, f2);
-	public static Integer operator -(Integer f) => new(!f.sign, f.value);
-	public static Integer operator +(Integer f1, Integer f2) => Add(f1, f2);
-	public static Integer operator -(Integer f1, Integer f2) => Subtract(f1, f2);
-	public static Integer operator *(Integer f1, Integer f2) => Multiply(f1, f2);
-	public static Integer operator /(Integer f1, Integer f2) => Divide(f1, f2).Whole;
-	public static Integer operator %(Integer f1, Integer f2) => Divide(f1, f2).Remainder;
-	public static Integer operator ^(Integer f1, Integer f2) => Power(f1, f2);
-	public static Integer operator ~(Integer f) => SquareRoot(f).Whole;
-	public static Integer operator |(Integer f1, Integer f2) => Root(f2, f1).Whole;
+	public static implicit operator Integer(string value) => new(value);
+	public static bool operator ==(Integer left, Integer right) => Equals(left, right);
+	public static bool operator !=(Integer left, Integer right) => !Equals(left, right);
+	public static bool operator >(Integer left, Integer right) => GreaterThan(left, right);
+	public static bool operator <(Integer left, Integer right) => GreaterThan(right, left);
+	public static bool operator >=(Integer left, Integer right) => !GreaterThan(right, left);
+	public static bool operator <=(Integer left, Integer right) => !GreaterThan(left, right);
+	public static Integer operator -(Integer value) => new(!value.sign, value.value);
+	public static Integer operator +(Integer left, Integer right) => Add(left, right);
+	public static Integer operator -(Integer left, Integer right) => Subtract(left, right);
+	public static Integer operator *(Integer left, Integer right) => Multiply(left, right);
+	public static Integer operator /(Integer left, Integer right) => Divide(left, right).Whole;
+	public static Integer operator %(Integer left, Integer right) => Divide(left, right).Remainder;
+	public static Integer operator ^(Integer left, Integer right) => Power(left, right);
+	public static Integer operator ~(Integer value) => SquareRoot(value).Whole;
+	public static Integer operator |(Integer left, Integer right) => Root(right, left).Whole;
 
 	#endregion
 }

@@ -18,8 +18,8 @@ public class RationalTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -370,7 +370,7 @@ public class RationalTest
 		foreach (Rational zero in zeros)
 			Assert.AreEqual(empty, zero);
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -378,8 +378,8 @@ public class RationalTest
 	//[TestMethod]
 	public void StringConstructor()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -436,7 +436,7 @@ public class RationalTest
 			Assert.AreEqual(positive22.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -444,8 +444,8 @@ public class RationalTest
 	//[TestMethod]
 	public void PositiveConstructor()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -483,7 +483,7 @@ public class RationalTest
 			Assert.AreEqual(positive22.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -491,8 +491,8 @@ public class RationalTest
 	//[TestMethod]
 	public void WritableConstructor()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -524,7 +524,7 @@ public class RationalTest
 			Assert.AreEqual(positive2.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -532,8 +532,8 @@ public class RationalTest
 	//[TestMethod]
 	public void ToStringMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -562,7 +562,7 @@ public class RationalTest
 			Assert.AreEqual($"{writable2}{(positive2 is Positive p2 && p2 != "1" ? $"/{p2}" : "")}", number2.ToString());
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -570,8 +570,8 @@ public class RationalTest
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -598,7 +598,7 @@ public class RationalTest
 			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -606,8 +606,8 @@ public class RationalTest
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -636,7 +636,7 @@ public class RationalTest
 			Assert.AreEqual(item.Greater, Rational.GreaterThan(numberDigits1, numberCharacters2));
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -645,8 +645,8 @@ public class RationalTest
 	[TestMethod]
 	public void AddMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -662,7 +662,7 @@ public class RationalTest
 			Assert.AreEqual(item.Add, Rational.Add(rational1, rational2));
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -670,8 +670,8 @@ public class RationalTest
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -687,7 +687,7 @@ public class RationalTest
 			Assert.AreEqual(item.Sub, Rational.Subtract(rational1, rational2));
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -695,8 +695,8 @@ public class RationalTest
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -712,7 +712,7 @@ public class RationalTest
 			Assert.AreEqual(item.Mul, Rational.Multiply(rational1, rational2));
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -720,8 +720,8 @@ public class RationalTest
 	[TestMethod]
 	public void DivideMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = false;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = false;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -751,7 +751,7 @@ public class RationalTest
 			}
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 		Rational.FractionCalculatonLength = fractionCalculatonLength;
@@ -760,8 +760,8 @@ public class RationalTest
 	[TestMethod]
 	public void PowerMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = true;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -780,7 +780,7 @@ public class RationalTest
 				Assert.AreEqual(new Rational(item.Pow), Rational.Power(rational1, rational2));
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 	}
@@ -788,8 +788,8 @@ public class RationalTest
 	[TestMethod]
 	public void RootMethod()
 	{
-		bool fractionFormat = Rational.FractionFormat;
-		Rational.FractionFormat = false;
+		bool fractionalFormat = Rational.FractionalFormat;
+		Rational.FractionalFormat = false;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
@@ -820,7 +820,7 @@ public class RationalTest
 			}
 		}
 
-		Rational.FractionFormat = fractionFormat;
+		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
 		Rational.FractionCalculatonLength = fractionCalculatonLength;
