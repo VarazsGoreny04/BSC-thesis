@@ -189,12 +189,14 @@ public readonly struct Digit
 			iLeft = left[i];
 			iRight = right[i];
 
-			if (iLeft && iRight && carry)
-				result[i] = true;
-			else if (iLeft && iRight)
-				carry = true;
-			else if ((iLeft || iRight) && carry) { }
-			else if (iLeft || iRight || carry)
+			if (iLeft && iRight)
+			{
+				if (carry)
+					result[i] = true;
+				else
+					carry = true;
+			}
+			else if (iLeft != iRight != carry)
 			{
 				result[i] = true;
 				carry = false;
@@ -211,13 +213,10 @@ public readonly struct Digit
 	/// <param name="right">The <see cref="ImmutableArray{bool}"/> struct that represents the subtrahend.</param>
 	/// <returns>The bits of the operation.</returns>
 	/// <exception cref="UnmatchingArrayLengthException">Length of <paramref name="left"/> does not match the length of <paramref name="right"/>.</exception>
-	/// <exception cref="SecondValueGreaterException"><paramref name="left"/> cannot be bigger than <paramref name="right"/>.</exception>
+	/// <exception cref="SecondValueGreaterException"><paramref name="right"/> cannot be bigger than <paramref name="left"/>.</exception>
 	private static ImmutableArray<bool> BitSubtract(ImmutableArray<bool> left, ImmutableArray<bool> right)
 	{
-		if (BitGreaterThan(right, left))
-			throw new SecondValueGreaterException();
-
-		return BitAdd(left, TwosComplement(right)).Bits;
+		return BitGreaterThan(right, left) ? throw new SecondValueGreaterException() : BitAdd(left, TwosComplement(right)).Bits;
 	}
 
 	/// <summary>
@@ -234,13 +233,14 @@ public readonly struct Digit
 		bool[] result = new bool[left.Length + right.Length - 1];
 		int resultCutLength = result.Length - left.Length;
 
-		for (sbyte i = 0; i < right.Length; ++i)
+		for (sbyte paddingLength = 0; paddingLength < right.Length; ++paddingLength)
 		{
-			if (right[^(i + 1)])
+			if (right[^(paddingLength + 1)])
 			{
-				temp = BitAdd(ImmutableArray.Create(result[resultCutLength..]), ImmutableArray.Create([.. left, .. new bool[i]])).Bits;
+				temp = BitAdd(ImmutableArray.Create(result[resultCutLength..]), ImmutableArray.Create([.. left, .. new bool[paddingLength]])).Bits;
 				Array.Copy(temp.ToArray(), 0, result, resultCutLength, temp.Length);
 			}
+
 			--resultCutLength;
 		}
 
@@ -384,10 +384,9 @@ public readonly struct Digit
 	{
 		(carry, ImmutableArray<bool> result) = BitAdd(left.bits, right.bits, carry);
 
-		if (carry || !BitGreaterThan(TEN, result))
-			return (true, new Digit(BitAdd(result, [false, true, true, false]).Bits));
-		else
-			return (false, new Digit(result));
+		bool overflow = carry || !BitGreaterThan(TEN, result);
+
+		return (overflow, (overflow ? new Digit(BitAdd(result, SIX.bits).Bits) : new Digit(result)));
 	}
 
 	/// <summary>
@@ -399,12 +398,11 @@ public readonly struct Digit
 	/// <returns>The result value and if there was a borrow in a tuple.</returns>
 	public static (bool Borrow, Digit Digit) Subtract(Digit left, Digit right, bool carry = false)
 	{
-		ImmutableArray<bool> d2PlusCarry = carry ? BitAdd(right.bits, ImmutableArray.Create(new bool[right.bits.Length]), carry).Bits : right.bits;
+		ImmutableArray<bool> rightBitsPlusCarry = carry ? BitAdd(right.bits, ImmutableArray.Create(new bool[right.bits.Length]), carry).Bits : right.bits;
 
-		if (!BitGreaterThan(d2PlusCarry, left.bits))
-			return (false, new Digit(BitSubtract(left.bits, d2PlusCarry)));
-		else
-			return (true, new Digit(BitSubtract(TEN, BitSubtract(d2PlusCarry, left.bits))));
+		bool borrow = BitGreaterThan(rightBitsPlusCarry, left.bits);
+
+		return (borrow, borrow ? new Digit(BitSubtract(TEN, BitSubtract(rightBitsPlusCarry, left.bits))) : new Digit(BitSubtract(left.bits, rightBitsPlusCarry)));
 	}
 
 	/// <summary>

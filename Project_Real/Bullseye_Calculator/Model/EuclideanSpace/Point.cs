@@ -31,6 +31,10 @@ public abstract class Point
 	/// <returns>A <see cref="Point"/> as a <see langword="string"/>.</returns>
 	public override string ToString() => $"({string.Join(", ", values)})";
 
+	public override bool Equals(object? obj) => obj is Point point && values.Length == point.values.Length && values.Zip(point.values).All(x => x.First == x.Second);
+
+	public override int GetHashCode() => throw new NotImplementedException();
+
 	#endregion
 }
 
@@ -104,6 +108,8 @@ public class Point2D : Point
 	#region Operators
 
 	public static implicit operator Point2D((Rational, Rational) tuple) => new(tuple);
+	public static bool operator ==(Point2D a, Point2D b) => a.Equals(b);
+	public static bool operator !=(Point2D a, Point2D b) => !a.Equals(b);
 	public static Point2D operator +(Point2D a, Point2D b) => Add(a, b);
 	public static Point2D operator -(Point2D a, Point2D b) => Subtract(a, b);
 
