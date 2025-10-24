@@ -130,16 +130,6 @@ public readonly struct Rational
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Rational"/> by the given <paramref name="numerator"/> with a denominator value of one.
-	/// </summary>
-	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
-	public Rational(Writable numerator)
-	{
-		this.numerator = numerator;
-		this.denominator = null;
-	}
-
-	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <paramref name="numerator"/> and <paramref name="denominator"/>.
 	/// </summary>
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
@@ -167,34 +157,7 @@ public readonly struct Rational
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public Rational(Writable numerator, Positive? denominator)
-	{
-		this.numerator = numerator;
-
-		if (denominator is Positive denominatorValue)
-		{
-			if (denominatorValue.IsZero)
-				throw new ArgumentException();
-
-			(this.numerator, this.denominator) = Simplify(numerator, denominatorValue);
-		}
-		else
-		{
-			this.numerator = numerator;
-			this.denominator = null;
-		}
-	}
-
-	/// <summary>
-	/// Constructs a <see cref="Rational"/> by the given <paramref name="sign"/> and <paramref name="numerator"/> with a denominator value of one.
-	/// </summary>
-	/// <param name="sign">The <paramref name="sign"/> of the number.</param>
-	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
-	public Rational(bool sign, Positive numerator)
-	{
-		this.numerator = new Writable(sign, numerator);
-		this.denominator = null;
-	}
+	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? new Writable(true, d) : null as Writable?)) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <paramref name="sign"/>, <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -203,21 +166,7 @@ public readonly struct Rational
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public Rational(bool sign, Positive numerator, Positive? denominator)
-	{
-		if (denominator is Positive denominatorValue)
-		{
-			if (denominatorValue.IsZero)
-				throw new ArgumentException();
-
-			(this.numerator, this.denominator) = Simplify(new Writable(sign, numerator), denominatorValue);
-		}
-		else
-		{
-			this.numerator = new Writable(sign, numerator);
-			this.denominator = null;
-		}
-	}
+	public Rational(bool sign, Positive numerator, Positive? denominator = null) : this(new Writable(sign, numerator), denominator) { }
 
 	#endregion
 

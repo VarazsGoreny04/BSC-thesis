@@ -91,14 +91,12 @@ public readonly struct Digit
 	/// <param name="bitArray">The binary representation of the number, where the first index represents the lowest value.</param>
 	/// <exception cref="UnmatchingArrayLengthException"><paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.</exception>
 	/// <exception cref="ValueOutOfRangeException"><paramref name="bitArray"/> cannot represent a number more than 9.</exception>
-	public Digit(bool[] bitArray)
+	public Digit(ImmutableArray<bool> bitArray)
 	{
 		if (bitArray.Length != LENGTH)
 			throw new UnmatchingArrayLengthException();
 
-		ImmutableArray<bool> immutableBitArray = ImmutableArray.Create(bitArray);
-
-		bits = BitGreaterThan(TEN, immutableBitArray) ? immutableBitArray : throw new ValueOutOfRangeException();
+		bits = BitGreaterThan(TEN, bitArray) ? bitArray : throw new ValueOutOfRangeException();
 	}
 
 	/// <summary>
@@ -107,13 +105,7 @@ public readonly struct Digit
 	/// <param name="bitArray">The binary representation of the number, where the first index represents the lowest value.</param>
 	/// <exception cref="UnmatchingArrayLengthException"><paramref name="bitArray"/> does not match the specified <see cref="LENGTH"/> length.</exception>
 	/// <exception cref="ValueOutOfRangeException"><paramref name="bitArray"/> cannot represent a number more than 9.</exception>
-	public Digit(ImmutableArray<bool> bitArray)
-	{
-		if (bitArray.Length != LENGTH)
-			throw new UnmatchingArrayLengthException();
-
-		bits = BitGreaterThan(TEN, bitArray) ? bitArray : throw new ValueOutOfRangeException();
-	}
+	public Digit(bool[] bitArray) : this(ImmutableArray.Create(bitArray)) { }
 
 	#endregion
 
