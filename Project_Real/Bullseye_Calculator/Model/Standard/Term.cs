@@ -14,7 +14,7 @@ public abstract class Term : ValueHolder
 
 public sealed class PI : Term
 {
-	public override Rational GetValue() => Rational.PI_Chudnovsky();
+	public override Rational GetValue() => Rational.PI();
 	public override string ToStringByStep(ref int _) => "pi";
 }
 

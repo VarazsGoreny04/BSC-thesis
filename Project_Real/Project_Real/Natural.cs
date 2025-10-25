@@ -521,7 +521,10 @@ public readonly struct Natural
 
 	#region Operators
 
+	public static implicit operator Natural(char value) => new(value.ToString());
 	public static implicit operator Natural(string value) => new(value);
+	public static implicit operator Natural(Digit value) => new([value]);
+	public static implicit operator Natural(Digit[] value) => new(value);
 	public static bool operator ==(Natural left, Natural right) => Equals(left, right);
 	public static bool operator !=(Natural left, Natural right) => !Equals(left, right);
 	public static bool operator >(Natural left, Natural right) => GreaterThan(left, right);

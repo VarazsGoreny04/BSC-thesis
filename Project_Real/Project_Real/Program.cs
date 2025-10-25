@@ -220,26 +220,41 @@ public class Program
 		/*Rational a = "+65/3";
 		Rational b = "-3/2";*/
 
-		//Console.WriteLine(Positive.SquareRoot("10005"));
-		/*for (int i = 1; i < 10; ++i)
-		{
-			timer.Restart();
-			int a = (int)Math.Pow(2, i);
-			Positive.FractionCalculatonLength = (int)(a * 1.2);
-			Console.WriteLine($"{Rational.ToWritableString(Rational.PI_Chudnovsky(a))} - {a}");
-			timer.Stop();
-			Console.WriteLine(timer.ToString());
-		}*/
+		/*timer.Restart();
+		Console.WriteLine(Positive.SquareRoot("10005", 512));
+		timer.Stop();*/
 
-		/*for (int i = 1; i < 10; ++i)
+		Console.WriteLine(timer.ToString());
+
+		//for (int i = 1; i < 8; ++i)
+		//{
+		//	timer.Restart();
+		//	int a = (int)Math.Pow(2, i);
+		//	Positive.FractionCalculatonLength = (int)(a * 1.2);
+		//	Console.WriteLine($"{Rational.ToWritableString(Rational.PI_Chudnovsky(a))} - {a}");
+		//	timer.Stop();
+		//	Console.WriteLine(timer.ToString());
+		//}
+
+		for (int i = 1; i < 8; ++i)
 		{
 			timer.Restart();
 			int a = (int)Math.Pow(2, i);
 			Positive.FractionCalculatonLength = (int)(a * 1.2);
-			Console.WriteLine($"{Rational.ToWritableString(Rational.EBinary(a))} - {a}");
+			Console.WriteLine($"{Rational.ToWritableString(Rational.PI(a))} - {a}");
 			timer.Stop();
 			Console.WriteLine(timer.ToString());
-		}*/
+		}
+
+		for (int i = 1; i < 8; ++i)
+		{
+			timer.Restart();
+			int a = (int)Math.Pow(2, i);
+			Positive.FractionCalculatonLength = (int)(a * 1.2);
+			Console.WriteLine($"{Rational.ToWritableString(Rational.E(a))} - {a}");
+			timer.Stop();
+			Console.WriteLine(timer.ToString());
+		}
 
 		/*Positive n = "3";
 

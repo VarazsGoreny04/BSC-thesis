@@ -386,7 +386,7 @@ public readonly struct Digit
 
 		bool overflow = carry || !BitGreaterThan(TEN, result);
 
-		return (overflow, (overflow ? new Digit(BitAdd(result, SIX.bits).Bits) : new Digit(result)));
+		return (overflow, (overflow ? BitAdd(result, SIX.bits).Bits : result));
 	}
 
 	/// <summary>
@@ -402,7 +402,7 @@ public readonly struct Digit
 
 		bool borrow = BitGreaterThan(rightBitsPlusCarry, left.bits);
 
-		return (borrow, borrow ? new Digit(BitSubtract(TEN, BitSubtract(rightBitsPlusCarry, left.bits))) : new Digit(BitSubtract(left.bits, rightBitsPlusCarry)));
+		return (borrow, borrow ? BitSubtract(TEN, BitSubtract(rightBitsPlusCarry, left.bits)) : BitSubtract(left.bits, rightBitsPlusCarry));
 	}
 
 	/// <summary>
@@ -415,7 +415,7 @@ public readonly struct Digit
 	{
 		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(BitMultiply(left.bits, right.bits), TEN);
 
-		return (new Digit(ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]])), new Digit(remainder.Take(LENGTH).ToArray()));
+		return (ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]]), remainder.Take(LENGTH).ToArray());
 	}
 
 	/// <summary>
@@ -429,7 +429,7 @@ public readonly struct Digit
 	{
 		(ImmutableArray<bool> whole, ImmutableArray<bool> remainder) = BitDivide(left.bits, right.bits);
 
-		return (new Digit(ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]])), new Digit(remainder));
+		return (ImmutableArray.Create([.. whole, .. new bool[LENGTH - whole.Length]]), remainder);
 	}
 
 	/// <summary>
@@ -452,6 +452,8 @@ public readonly struct Digit
 	#region Operators
 
 	public static implicit operator Digit(char value) => new(value);
+	public static implicit operator Digit(bool[] value) => new(value);
+	public static implicit operator Digit(ImmutableArray<bool> value) => new(value);
 	public static bool operator ==(Digit left, Digit right) => Equals(left, right);
 	public static bool operator !=(Digit left, Digit right) => !Equals(left, right);
 	public static bool operator >(Digit left, Digit right) => GreaterThan(left, right);

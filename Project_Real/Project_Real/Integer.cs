@@ -92,7 +92,7 @@ public readonly struct Integer
 		else
 			sign = true;
 
-		value = new Natural(number[start..]);
+		value = number[start..];
 
 		sign |= IsZero;
 	}
@@ -223,8 +223,7 @@ public readonly struct Integer
 		if (!value.sign)
 			throw new NotImplementedException();
 
-		(Natural whole, Natural remainder) = Natural.SquareRoot(value.value);
-		return (new Integer(true, whole), new Integer(true, remainder));
+		return Natural.SquareRoot(value.value);
 	}
 
 	/// <summary>
@@ -244,6 +243,7 @@ public readonly struct Integer
 			throw new NotImplementedException();
 
 		(Natural whole, Natural remainder) = Natural.Root(left.value, right.value);
+
 		return (new Integer(left.sign, whole), new Integer(left.sign, remainder));
 	}
 
@@ -267,6 +267,7 @@ public readonly struct Integer
 	#region Operators
 
 	public static implicit operator Integer(string value) => new(value);
+	public static implicit operator Integer(Natural value) => new(true, value);
 	public static bool operator ==(Integer left, Integer right) => Equals(left, right);
 	public static bool operator !=(Integer left, Integer right) => !Equals(left, right);
 	public static bool operator >(Integer left, Integer right) => GreaterThan(left, right);

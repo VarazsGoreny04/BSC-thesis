@@ -503,7 +503,7 @@ public static class Matrix
 				(B[i - 1, j], B[i, j]) = (B[i, j], B[i - 1, j]);
 		}
 
-		// Substract each row by a multiple of another row.
+		// Subtract each row by a multiple of another row.
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < n; ++j)
@@ -589,7 +589,7 @@ public static class Matrix
 			++swaps;
 		}
 
-		// Substract each row by a multiple of another row.
+		// Subtract each row by a multiple of another row.
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < n; ++j)
@@ -688,7 +688,7 @@ public static class Matrix
 				(B[i - 1, j], B[i, j]) = (B[i, j], B[i - 1, j]);
 		}
 
-		// Substract each row by a multiple of another row.
+		// Subtract each row by a multiple of another row.
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < n; ++j)

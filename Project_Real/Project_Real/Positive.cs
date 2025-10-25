@@ -14,7 +14,6 @@ public readonly struct Positive
 	private static int fractionCalculatonLength = 10;
 
 	private readonly int length;
-	private readonly int wholeLength;
 	private readonly int fractionLength;
 	private readonly Natural value;
 
@@ -50,7 +49,7 @@ public readonly struct Positive
 	public readonly int Length => length;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the whole part of <see langword="this"/> <see cref="Positive"/>.</returns>
-	public readonly int WholeLength => wholeLength;
+	public readonly int WholeLength => length - fractionLength;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the fraction part of <see langword="this"/> <see cref="Positive"/>.</returns>
 	public readonly int FractionLength => fractionLength;
@@ -86,7 +85,6 @@ public readonly struct Positive
 	{
 		value = new Natural();
 		length = 1;
-		wholeLength = 1;
 		fractionLength = 0;
 	}
 
@@ -115,10 +113,9 @@ public readonly struct Positive
 			number = number.Remove(fractionLength, 1);
 		}
 
-		value = new Natural(number);
+		value = number;
 		length = number.Length;
 		fractionLength = fractionLength == -1 ? 0 : number.Length - fractionLength;
-		wholeLength = length - fractionLength;
 	}
 
 	/// <summary>
@@ -135,7 +132,6 @@ public readonly struct Positive
 		{
 			this.value = value;
 			length = 1;
-			wholeLength = 1;
 			this.fractionLength = 0;
 		}
 		else
@@ -147,7 +143,6 @@ public readonly struct Positive
 			this.value = new Natural([.. value.Digits[i..]]);
 			this.fractionLength = fractionLength - i;
 			length = Math.Max(this.value.Length, this.fractionLength + 1);
-			wholeLength = length - this.fractionLength;
 		}
 	}
 
@@ -183,7 +178,7 @@ public readonly struct Positive
 			(
 				(fractionLength < Digits.Length) ? value.ToString() : 
 				new string('0', length - Digits.Length) + value.ToString()
-			).Insert(wholeLength, separator.ToString());
+			).Insert(WholeLength, separator.ToString());
 	}
 
 	/// <summary>
@@ -191,7 +186,10 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> instance.</param>
 	/// <returns>The whole value.</returns>
-	public static Positive GetWhole(Positive value) => value.fractionLength >= value.Digits.Length ? new(new([.. value.Digits[(^value.wholeLength)..]]), 0) : new();
+	public static Positive GetWhole(Positive value)
+	{
+		return value.fractionLength >= value.Digits.Length ? new Natural([.. value.Digits[(^value.WholeLength)..]]) : new Positive();
+	}
 
 	/// <summary>
 	/// Compares two <see cref="Positive"/>s.
@@ -215,8 +213,8 @@ public readonly struct Positive
 	/// </returns>
 	public static bool GreaterThan(Positive left, Positive right)
 	{
-		if (left.wholeLength != right.wholeLength)
-			return left.wholeLength > right.wholeLength;
+		if (left.WholeLength != right.WholeLength)
+			return left.WholeLength > right.WholeLength;
 		else if (left.fractionLength == right.fractionLength)
 			return left.value > right.value;
 		else
@@ -241,9 +239,7 @@ public readonly struct Positive
 		if (difference < 0)
 			(left, right) = (right, left);
 
-		Positive result = new(left.value + new Natural([.. Digit.CreateArray(Math.Abs(difference)), .. right.Digits]), left.fractionLength);
-
-		return TrimStart(result);
+		return TrimStart(new Positive(left.value + new Natural([.. Digit.CreateArray(Math.Abs(difference)), .. right.Digits]), left.fractionLength));
 	}
 
 	/// <summary>
@@ -326,12 +322,12 @@ public readonly struct Positive
 	{
 		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
 
-		if (value.value.IsZero || value == new Positive(new([Digit.ONE]), 0))
+		if (value.value.IsZero || value == "1")
 			return (value, new Positive());
 
 		int splicingLength = (fCL * 2 - value.fractionLength + 1) / 2;
 
-		Natural two = new([Digit.TWO]);
+		Natural two = "2";
 		Natural rootTimesTwo, test;
 		Natural remainder = new();
 		Natural root = new();
@@ -339,7 +335,7 @@ public readonly struct Positive
 
 		for (int i = ((value.Length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
 		{
-			remainder = new([value.value[i], (i + 1 < value.Digits.Length ? value.value[i + 1] : Digit.ZERO), .. remainder.Digits]);
+			remainder = new Natural([value.value[i], (i + 1 < value.Digits.Length ? value.value[i + 1] : Digit.ZERO), .. remainder.Digits]);
 
 			xTry = Digit.ZERO;
 
@@ -351,7 +347,7 @@ public readonly struct Positive
 				do
 				{
 					xTry -= Digit.ONE;
-					test = new Natural([xTry, .. rootTimesTwo.Digits]) * new Natural([xTry]);
+					test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
 				} while (--j > 0 && test > remainder);
 
 				remainder -= test;
@@ -362,7 +358,7 @@ public readonly struct Positive
 
 		for (int i = splicingLength; i > 0; --i)
 		{
-			remainder = new([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
+			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
 
 			xTry = Digit.ZERO;
 
@@ -374,7 +370,7 @@ public readonly struct Positive
 				do
 				{
 					xTry -= Digit.ONE;
-					test = new Natural([xTry, .. rootTimesTwo.Digits]) * new Natural([xTry]);
+					test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
 				} while (--j > 0 && test > remainder);
 
 				remainder -= test;
@@ -519,6 +515,7 @@ public readonly struct Positive
 	#region Operators
 
 	public static implicit operator Positive(string value) => new(value);
+	public static implicit operator Positive(Natural value) => new(value, 0);
 	public static bool operator ==(Positive left, Positive right) => Equals(left, right);
 	public static bool operator !=(Positive left, Positive right) => !Equals(left, right);
 	public static bool operator >(Positive left, Positive right) => GreaterThan(left, right);

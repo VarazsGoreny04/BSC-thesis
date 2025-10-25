@@ -123,7 +123,7 @@ public readonly struct Writable
 		else
 			sign = true;
 
-		value = new Positive(number[start..]);
+		value = number[start..];
 
 		sign |= IsZero;
 	}
@@ -257,12 +257,7 @@ public readonly struct Writable
 	/// <exception cref="NotImplementedException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
 	public static (Writable Value, Writable Remainder) SquareRoot(Writable value, int? fractionCalculatonLength = null)
 	{
-		if (!value.sign)
-			throw new NotImplementedException();
-
-		(Positive whole, Positive remainder) = Positive.SquareRoot(value.value, fractionCalculatonLength);
-
-		return (new Writable(true, whole), new Writable(true, remainder));
+		return value.sign ? Positive.SquareRoot(value.value, fractionCalculatonLength) : throw new NotImplementedException();
 	}
 
 	/// <summary>
@@ -307,6 +302,8 @@ public readonly struct Writable
 	#region Operators
 
 	public static implicit operator Writable(string value) => new(value);
+	public static implicit operator Writable(Integer value) => new(value.Sign, value.Value);
+	public static implicit operator Writable(Positive value) => new(true, value);
 	public static bool operator ==(Writable left, Writable right) => Equals(left, right);
 	public static bool operator !=(Writable left, Writable right) => !Equals(left, right);
 	public static bool operator >(Writable left, Writable right) => GreaterThan(left, right);

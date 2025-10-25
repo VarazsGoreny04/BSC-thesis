@@ -114,10 +114,10 @@ public readonly struct Rational
 		switch (parts.Length)
 		{
 			case 1:
-				(numerator, denominator) = (new Writable(parts[0]), null);
+				(numerator, denominator) = (parts[0], null);
 				break;
 			case 2:
-				(Writable numerator, Writable denominator) temp = (new(parts[0]), new(parts[1]));
+				(Writable numerator, Writable denominator) temp = (parts[0], parts[1]);
 
 				if (temp.denominator.IsZero)
 					throw new ArgumentException();
@@ -157,7 +157,7 @@ public readonly struct Rational
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? new Writable(true, d) : null as Writable?)) { }
+	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? d : null as Writable?)) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <paramref name="sign"/>, <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -362,7 +362,7 @@ public readonly struct Rational
 		if (right.Sign)
 			return new Rational(left.numerator ^ right.numerator, (left.denominator is Positive denominator ? denominator ^ right.Numerator : left.denominator));
 		else
-			return new Rational(new Writable(left.Sign, (left.denominator is Positive denominator ? denominator ^ right.Numerator : "1")), 
+			return new Rational(new Writable(left.Sign, (left.denominator is Positive denominator ? denominator ^ right.Numerator : "1")),
 				left.Numerator ^ right.Numerator);
 	}
 
@@ -407,168 +407,80 @@ public readonly struct Rational
 		}
 	}
 
-	/*public static Rational PI_ChudnovskyBinary(int? fractionCalculatonLength = null) // Chudnovsky formula
-	{
-		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
-
-		if (fCL < 0)
-			throw new ArgumentOutOfRangeException();
-
-		Natural COver24 = "10939058860032000";
-
-		Natural one = new([Digit.ONE]);
-		Natural two = new([Digit.TWO]);
-		Natural five = new([Digit.FIVE]);
-		Natural six = new([Digit.SIX]);
-
-		Natural k = "1";
-		Natural nFCL = Convert.ToString(fCL);
-		Rational a_k = new(new Writable(true, new(nFCL, 0)));
-		Rational a_sum = a_k;
-		Rational b_sum = new();
-
-		void bs(Natural a, Natural b)
-		{
-			if (b == a + "1")
-			{
-				// Directly compute P(a,a+1), Q(a,a+1) and T(a,a+1)
-				if (a == 0)
-					Pab = Qab = 1;
-				else
-				{
-					Pab = (6 * a - 5) * (2 * a - 1) * (6 * a - 1);
-
-					Qab = a * a * a * COver24;
-				}
-				Tab = Pab * (13591409 + 545140134 * a); // a(a) * p(a)
-				if (a & 1)
-					Tab = -Tab;
-			}
-			else:
-			# Recursively compute P(a,b), Q(a,b) and T(a,b)
-			# m is the midpoint of a and b
-			m = (a + b) // 2
-			# Recursively calculate P(a,m), Q(a,m) and T(a,m)
-			Pam, Qam, Tam = bs(a, m)
-			# Recursively calculate P(m,b), Q(m,b) and T(m,b)
-			Pmb, Qmb, Tmb = bs(m, b)
-			# Now combine
-			Pab = Pam * Pmb;
-
-			Qab = Qam * Qmb;
-
-			Tab = Qmb * Tam + Pam * Tmb;
-
-			return Pab, Qab, Tab;
-		}
-
-		for (int i = fCL / 100; i >= 0; --i)
-		{
-			a_k *= new Rational(new(false, new((six * k - five) * (two * k - one) * (six * k - one), 0)), new(true, new(k * k * k * COver24, 0)));
-			a_sum += a_k;
-			b_sum += new Rational(new Writable(true, new(k, 0))) * a_k;
-
-			k += "1";
-		}
-
-		return new Rational(new Writable(true, new Positive(new Natural("426880"), 0) * Positive.SquareRoot("10005", fCL).Value)) /
-			("13591409" * a_sum + "545140134" * b_sum);
-	}*/
-
 	/// <summary>
-	/// Calculates π until the given <see cref="FractionCalculatonLength"/> using the Chudnovsky-formula.
+	/// Calculates π until the given <see cref="FractionCalculatonLength"/> using the Chudnovsky-formula with binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers
 	/// - David and Gregory Chudnovsky - for developing a generalisation to Ramanujan's formula.
 	/// <para><see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/></para>
+	/// <para><see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
 	/// </remarks>
 	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
 	/// <returns></returns>
-	public static Rational PI_Chudnovsky(int? fractionCalculatonLength = null) // Chudnovsky formula
+	public static Rational PI(int? fractionCalculatonLength = null) // Chudnovsky formula
 	{
+		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
+		{
+			Natural Pab, Qab;
+			Integer Tab;
+
+			if (b == a + "1")
+			{
+				// Directly compute P(a,a+1), Q(a,a+1) and T(a,a+1)
+				if (a == "0")
+				{
+					Pab = "1";
+					Qab = "1";
+				}
+				else
+				{
+					Pab = ("6" * a - "5") * ("2" * a - "1") * ("6" * a - "1");
+					Qab = a * a * a * "10939058860032000";
+				}
+
+				Tab = Pab * ("13591409" + "545140134" * a); // a(a) * p(a)
+
+				if (a[0] % '2' == '1')
+					Tab = -Tab;
+			}
+			else
+			{
+				// Recursively compute P(a,b), Q(a,b) and T(a,b)
+				// m is the midpoint of a and b
+				Natural m = (a + b) / "2";
+
+				// Recursively calculate P(a,m), Q(a,m) T(a,m) and P(m,b), Q(m,b), T(m,b)
+				(Natural Pam, Natural Qam, Integer Tam) = BinarySplitting(a, m);
+				(Natural Pmb, Natural Qmb, Integer Tmb) = BinarySplitting(m, b);
+
+				// Now combine
+				Pab = Pam * Pmb;
+				Qab = Qam * Qmb;
+				Tab = Qmb * Tam + Pam * Tmb;
+			}
+			return (Pab, Qab, Tab);
+		}
+
 		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
 
-		Natural first = "13591409";
-		Natural second = "545140134";
-		Integer third = "-640320";
+		// how many terms to compute
+		Natural DIGITS_PER_TERM = "13";
+		Natural n = fCL.ToString() / DIGITS_PER_TERM + "1";
 
-		Natural one = new([Digit.ONE]);
-		Natural three = new([Digit.THREE]);
-		Natural six = new([Digit.SIX]);
+		// Calculate P(0,N) and Q(0,N)
+		(Natural _, Natural Q, Integer T) = BinarySplitting("0", n);
 
-		Natural k = one;
-		Natural numerator;
-		Integer denominator;
-		Rational result = new(new Writable(true, new(first, 0)));
-
-		for (int i = fCL / 13; i >= 0; --i)
-		{
-			numerator = Natural.Factorial(k * six) * (first + (second * k));
-			Natural temp = k * three;
-			denominator = new Integer(true, Natural.Factorial(temp) * (Natural.Factorial(k) ^ three)) * (third ^ new Integer(true, temp));
-
-			result += new Rational(new Writable(true, new(numerator, 0)), new Positive(denominator.Value, 0));
-
-			k += one;
-		}
-
-		result *= new Rational(true, Positive.SquareRoot("10005", fCL).Value, "4270934400");
-
-		return new Rational(true, result.denominator ?? new(one, 0), result.Numerator);
-	}
-
-	public static Rational PI(int? fractionCalculatonLength = null)
-	{
-		bool turn = true;
-		Natural one = new([Digit.ONE]);
-		Natural n = new([Digit.TWO]);
-		Natural denominator;
-		Rational result = new(new Writable(true, new(new([Digit.THREE]), 0)));
-
-		for (int i = fractionCalculatonLength ?? FractionCalculatonLength; i > 0; --i)
-		{
-			denominator = n * (n += one) * (n += one);
-
-			result += new Rational(new Writable(turn, new(new([Digit.FOUR]), 0)), new Positive(denominator, 0));
-
-			turn = !turn;
-		}
-
-		return result;
-	}
-
-	public static Rational PI_Wallis(int? fractionCalculatonLength = null)
-	{
-		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
-
-		if (fCL < 0)
-			throw new ArgumentOutOfRangeException();
-
-		Natural n = new(fCL.ToString());
-
-		Natural two = new([Digit.TWO]);
-		Natural numerator = Natural.Factorial(n) * Natural.Power(new Natural([Digit.TWO]), n);
-		Natural denominator = new([Digit.ONE]);
-		Natural counter = new([Digit.THREE]);
-
-		for (int i = fCL - 1; i > 0; --i)
-		{
-			denominator *= counter;
-
-			counter += two;
-		}
-
-		return new Rational(true, new(numerator * numerator, 0), new(denominator * denominator * n, 0));
+		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
 	}
 
 	/// <summary>
-	/// Calculates the number e until the given <see cref="FractionCalculatonLength"/>.
+	/// Calculates the number e until the given <see cref="FractionCalculatonLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
 	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
 	/// <returns></returns>
-	public static Rational EBinary(int? fractionCalculatonLength = null)
+	public static Rational E(int? fractionCalculatonLength = null)
 	{
 		static Natural P(Natural a, Natural b)
 		{
@@ -592,31 +504,11 @@ public readonly struct Rational
 			}
 		}
 
-		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
+		Natural n = Convert.ToString(fractionCalculatonLength ?? FractionCalculatonLength);
 
-		Natural n = Convert.ToString(fCL);
-
-		return "1" + new Rational(true, new(P("0", n), 0), new(Q("0", n), 0));
+		return "1" + new Rational(true, P("0", n), Q("0", n));
 	}
 
-	public static Rational E(int? fractionCalculatonLength = null)
-	{
-		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
-
-		Positive temp = "1";
-		Positive one = "1";
-		Rational result = "2";
-
-		for (int i = fCL; i > 0; --i)
-		{
-			temp *= temp + one;
-
-			result += new Rational(true, one, temp);
-		}
-
-		return result;
-	}
-	
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.
 	/// </summary>
@@ -626,7 +518,7 @@ public readonly struct Rational
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
 	public override readonly bool Equals(object? obj) => obj is Rational real && this == real;
-	
+
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
@@ -637,13 +529,14 @@ public readonly struct Rational
 	#region Operators
 
 	public static implicit operator Rational(string value) => new(value);
+	public static implicit operator Rational(Writable value) => new(value);
 	public static bool operator ==(Rational left, Rational right) => Equals(left, right);
 	public static bool operator !=(Rational left, Rational right) => !Equals(left, right);
 	public static bool operator >(Rational left, Rational right) => GreaterThan(left, right);
 	public static bool operator <(Rational left, Rational right) => GreaterThan(right, left);
 	public static bool operator >=(Rational left, Rational right) => !GreaterThan(right, left);
 	public static bool operator <=(Rational left, Rational right) => !GreaterThan(left, right);
-	public static Rational operator -(Rational value) => new(new Writable(!value.numerator.Sign, value.numerator.Value), value.denominator);
+	public static Rational operator -(Rational value) => new(!value.numerator.Sign, value.numerator.Value, value.denominator);
 	public static Rational operator +(Rational left, Rational right) => Add(left, right);
 	public static Rational operator -(Rational left, Rational right) => Subtract(left, right);
 	public static Rational operator *(Rational left, Rational right) => Multiply(left, right);
