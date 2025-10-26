@@ -396,7 +396,7 @@ public readonly struct Rational
 			throw new NotImplementedException();
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
-		(Positive Value, Positive Remainder)? denominator = left.denominator is Positive d ? Positive.Root(d, right.Numerator) : null;
+		(Positive Value, Positive Remainder)? denominator = left.denominator is Positive d ? Positive.Root(d, right.Numerator, fractionCalculationLength) : null;
 
 		if (right.Sign)
 			return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
@@ -408,7 +408,7 @@ public readonly struct Rational
 	}
 
 	/// <summary>
-	/// Calculates π until the given <see cref="fractionCalculationLength"/> using the Chudnovsky-formula with binary splitting.
+	/// Calculates π until the given <paramref name="fractionCalculationLength"/> using the Chudnovsky-formula with binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers
@@ -416,9 +416,9 @@ public readonly struct Rational
 	/// <para><see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/></para>
 	/// <para><see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
 	/// </remarks>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns></returns>
-	public static Rational PI(int? fractionCalculationLength = null) // Chudnovsky formula
+	public static Rational PI(int? fractionCalculationLength = null)
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
@@ -462,11 +462,11 @@ public readonly struct Rational
 			return (Pab, Qab, Tab);
 		}
 
-		int fCL = fractionCalculationLength ?? FractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
 
 		// how many terms to compute
 		Natural DIGITS_PER_TERM = "13";
-		Natural n = fCL.ToString() / DIGITS_PER_TERM + "1";
+		Natural n = (new Natural((uint)fCL)) / DIGITS_PER_TERM + "1";
 
 		// Calculate P(0,N) and Q(0,N)
 		(Natural _, Natural Q, Integer T) = BinarySplitting("0", n);
@@ -475,10 +475,10 @@ public readonly struct Rational
 	}
 
 	/// <summary>
-	/// Calculates the number e until the given <see cref="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the number e until the given <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns></returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
@@ -504,7 +504,7 @@ public readonly struct Rational
 			}
 		}
 
-		Natural n = Convert.ToString(fractionCalculationLength ?? fractionCalculationLength);
+		Natural n = new((uint)Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0));
 
 		return "1" + new Rational(true, P("0", n), Q("0", n));
 	}

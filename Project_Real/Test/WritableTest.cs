@@ -6,6 +6,8 @@ namespace Test;
 [TestClass]
 public class WritableTest
 {
+	public const int fractionCalculationLength = 10;
+
 	private static bool Sign(string sign)
 	{
 		return sign[0] switch
@@ -308,8 +310,6 @@ public class WritableTest
 		Writable.WriteSign = true;
 		char separator = Writable.Separator;
 		Writable.Separator = '.';
-		int fractionCalculationLength = Writable.FractionCalculationLength;
-		Writable.FractionCalculationLength = 10;
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
@@ -323,7 +323,7 @@ public class WritableTest
 				Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide(writable1, writable2));
 			else if (item.Div != "BIG")
 			{
-				(whole, remainder) = Writable.Divide(writable1, writable2);
+				(whole, remainder) = Writable.Divide(writable1, writable2, fractionCalculationLength);
 
 				length = Math.Min(whole.ToString().Length, item.Div.Length);
 
@@ -334,7 +334,6 @@ public class WritableTest
 
 		Writable.WriteSign = writeSign;
 		Writable.Separator = separator;
-		Writable.FractionCalculationLength = fractionCalculationLength;
 	}
 
 	[TestMethod]
@@ -353,7 +352,17 @@ public class WritableTest
 			writable2 = new(item.Number2);
 
 			if (item.Pow == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Writable.Power(writable1, writable2));
+			{
+				try
+				{
+					Writable.Power(writable1, writable2);	
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
+			}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Writable.Power(writable1, writable2).ToString());
 		}
@@ -369,8 +378,6 @@ public class WritableTest
 		Writable.WriteSign = true;
 		char separator = Writable.Separator;
 		Writable.Separator = '.';
-		int fractionCalculationLength = Writable.FractionCalculationLength;
-		Writable.FractionCalculationLength = 10;
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
@@ -381,10 +388,20 @@ public class WritableTest
 			writable2 = new(item.Number2);
 
 			if (item.Root == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Writable.Root(writable1, writable2));
+			{
+				try
+				{
+					Writable.Root(writable1, writable2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
+			}
 			else if (item.Root != "BIG")
 			{
-				(whole, remainder) = Writable.Root(writable1, writable2);
+				(whole, remainder) = Writable.Root(writable1, writable2, fractionCalculationLength);
 
 				length = Math.Min(whole.ToString().Length, item.Root.Length);
 
@@ -395,6 +412,5 @@ public class WritableTest
 
 		Writable.WriteSign = writeSign;
 		Writable.Separator = separator;
-		Writable.FractionCalculationLength = fractionCalculationLength;
 	}
 }

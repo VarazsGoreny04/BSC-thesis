@@ -277,10 +277,10 @@ public readonly struct Positive
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
-		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 
-		int denominatorSlicingLength = (left.fractionLength > right.fractionLength) ? left.fractionLength - right.fractionLength : 0;
-		int numeratorSlicingLength = (right.fractionLength > left.fractionLength) ? right.fractionLength - left.fractionLength : 0;
+		int denominatorSlicingLength = Math.Max(left.fractionLength - right.fractionLength, 0);
+		int numeratorSlicingLength = Math.Max(right.fractionLength - left.fractionLength, 0);
 
 		Natural denominator = new([.. Digit.CreateArray(denominatorSlicingLength), .. right.Digits]);
 		Natural numerator = new([.. Digit.CreateArray(numeratorSlicingLength + fCL), .. left.Digits]);
@@ -303,13 +303,13 @@ public readonly struct Positive
 	/// <param name="left">The <see cref="Positive"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive.
+	/// </exception>
 	public static Positive Power(Positive left, Positive right)
 	{
-		if (right.fractionLength != 0)
-			throw new NotImplementedException();
-
-		return new(left.value ^ right.value, left.fractionLength * Convert.ToInt32(right.ToString()));
+		return right.fractionLength == 0 ? 
+			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) : throw new NotSupportedException();
 	}
 
 	/// <summary>
@@ -323,7 +323,7 @@ public readonly struct Positive
 		if (value.IsZero || value == "1")
 			return (value, new Positive());
 
-		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 		int splicingLength = value.fractionLength & 1;
 		int zeroCalculationLength = (fCL * 2 - (value.fractionLength + splicingLength)) / 2;
 
@@ -346,13 +346,17 @@ public readonly struct Positive
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction or 0 as it is not mathematically meaningful.</exception>
+	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as it is not mathematically meaningful.</exception>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be a fraction or higher than 99 as it would be too computationally expensive.
+	/// </exception>
 	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
-		if (right.fractionLength != 0 || right.IsZero)
+		if (right.IsZero)
 			throw new NotImplementedException();
-
-		if (right.value < Digit.THREE)
+		if (right.fractionLength != 0)
+			throw new NotSupportedException();
+		else if (right.value < Digit.THREE)
 		{
 			return Digit.ToChar(right[0]) switch
 			{
@@ -366,12 +370,12 @@ public readonly struct Positive
 			return (left, "0");
 
 		Natural degree = right.Value;
-		ushort degreeInt = Convert.ToUInt16(degree.ToString());
+		int degreeInt = (int)Natural.ToUInt32(degree);
 		int splicingLength = degreeInt - (left.fractionLength % degreeInt);
 
 		(Natural root, Natural remainder) = Natural.Root(new([.. Digit.CreateArray(splicingLength), .. left.Digits]), degree);
 
-		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 		Natural degreeFactorial = Natural.Factorial(degree);
 
 		for (int i = (fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt; i > 0; --i)

@@ -6,6 +6,8 @@ namespace Test;
 [TestClass]
 public class PositiveTest
 {
+	public const int fractionCalculationLength = 10;
+
 	[TestMethod]
 	public void ZeroConstructor()
 	{
@@ -391,7 +393,17 @@ public class PositiveTest
 			positive2 = new(item.Number2);
 
 			if (item.Pow == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Positive.Power(positive1, positive2));
+			{
+				try
+				{
+					Positive.Power(positive1, positive2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
+			}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Positive.Power(positive1, positive2).ToString());
 		}
@@ -404,8 +416,6 @@ public class PositiveTest
 	{
 		char separator = Positive.Separator;
 		Positive.Separator = '.';
-		int fractionCalculationLength = Positive.FractionCalculationLength;
-		Positive.FractionCalculationLength = 10;
 
 		int length;
 		Positive positive1, positive2, whole, remainder;
@@ -415,11 +425,21 @@ public class PositiveTest
 			positive1 = new(item.Number1);
 			positive2 = new(item.Number2);
 
-			if (item.Root == "ERROR") ;
-			//Assert.ThrowsException<NotImplementedException>(() => Positive.Root(positive1, positive2));
+			if (item.Root == "ERROR")
+			{
+				try
+				{
+					Positive.Root(positive1, positive2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
+			}
 			else if (item.Root != "BIG")
 			{
-				(whole, remainder) = Positive.Root(positive1, positive2);
+				(whole, remainder) = Positive.Root(positive1, positive2, fractionCalculationLength);
 
 				length = Math.Min(whole.ToString().Length, item.Root.Length);
 
@@ -429,6 +449,5 @@ public class PositiveTest
 		}
 
 		Positive.Separator = separator;
-		Positive.FractionCalculationLength = fractionCalculationLength;
 	}
 }

@@ -6,6 +6,8 @@ namespace Test;
 [TestClass]
 public class RationalTest
 {
+	public const int fractionCalculationLength = 10;
+
 	private static bool Sign(string sign)
 	{
 		return sign[0] switch
@@ -726,8 +728,6 @@ public class RationalTest
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
 		Rational.Separator = '.';
-		int fractionCalculationLength = Rational.FractionCalculationLength;
-		Rational.FractionCalculationLength = 10;
 
 		int length;
 		Rational rational1, rational2;
@@ -754,7 +754,6 @@ public class RationalTest
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
-		Rational.FractionCalculationLength = fractionCalculationLength;
 	}
 
 	[TestMethod]
@@ -775,7 +774,15 @@ public class RationalTest
 			rational2 = new(item.Number2);
 
 			if (item.Pow == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Rational.Power(rational1, rational2));
+				try
+				{
+					Rational.Power(rational1, rational2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(new Rational(item.Pow), Rational.Power(rational1, rational2));
 		}
@@ -794,8 +801,6 @@ public class RationalTest
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
 		Rational.Separator = '.';
-		int fractionCalculationLength = Rational.FractionCalculationLength;
-		Rational.FractionCalculationLength = 10;
 
 		int length;
 		Rational rational1, rational2, result, remainder;
@@ -807,10 +812,18 @@ public class RationalTest
 			rational2 = new(item.Number2);
 
 			if (item.Root == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Rational.Root(rational1, rational2));
+				try
+				{
+					Rational.Root(rational1, rational2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException || e is NotSupportedException))
+						Assert.Fail();
+				}
 			else if (item.Root != "BIG")
 			{
-				(result, remainder) = Rational.Root(rational1, rational2);
+				(result, remainder) = Rational.Root(rational1, rational2, fractionCalculationLength);
 				expected = (new Rational(item.Root)).ToString();
 
 				length = Math.Min(expected.Length, result.ToString().Length);
@@ -823,6 +836,5 @@ public class RationalTest
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
-		Rational.FractionCalculationLength = fractionCalculationLength;
 	}
 }

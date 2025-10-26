@@ -83,19 +83,25 @@ public readonly struct Natural
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Natural"/> by the given <paramref name="digits"/>.
+	/// Constructs a <see cref="Natural"/> by the given <paramref name="number"/>.
 	/// </summary>
-	/// <param name="digits">An array of <see cref="Digit"/>s, where the first index represents the lowest value.</param>
-	/// <exception cref="ArgumentException"><paramref name="digits"/> cannot be null or empty.</exception>
-	public Natural(Digit[] digits)
+	/// <param name="number">An array of <see cref="Digit"/>s, where the first index represents the lowest value.</param>
+	/// <exception cref="ArgumentException"><paramref name="number"/> cannot be null or empty.</exception>
+	public Natural(Digit[] number)
 	{
-		if (digits is null || digits.Length < 1)
+		if (number is null || number.Length < 1)
 			throw new ArgumentException();
 
-		this.digits = ImmutableArray.Create(Digit.TrimEnd(digits));
-		length = this.digits.Length;
-		isZero = length == 1 && this.digits[0] == Digit.ZERO;
+		digits = ImmutableArray.Create(Digit.TrimEnd(number));
+		length = digits.Length;
+		isZero = length == 1 && digits[0] == Digit.ZERO;
 	}
+
+	/// <summary>
+	/// Constructs a <see cref="Natural"/> by the given <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">An integer value.</param>
+	internal Natural(uint number) : this(number.ToString()) { }
 
 	#endregion
 
@@ -137,21 +143,21 @@ public readonly struct Natural
 
 		if (!remainder.IsZero)
 		{
-			/*xTry = Digit.FIVE;
+			xTry = Digit.FIVE;
 			test = new();
 
-			Natural counter = degree;
-			while (!counter.IsZero)
+			Natural degDown = degree;
+			while (!degDown.IsZero)
 			{
-				counter -= Digit.ONE;
+				degDown -= Digit.ONE;
 
-				degreeMinusI = degree - counter;
-				binomial = degreeFactorial / (Factorial(counter) * Factorial(degreeMinusI));
+				degUp = degree - degDown;
+				binomial = degreeFactorial / (Factorial(degDown) * Factorial(degUp));
 
-				test += new Natural([.. Digit.CreateArray(Convert.ToInt32(counter.ToString())), .. (binomial * (root ^ counter) * (xTry ^ degreeMinusI)).Digits]);
+				test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
 			}
 
-			if (test <= remainder)*/
+			if (test <= remainder)
 				xTry = Digit.ZERO;
 
 			byte j = 0;
@@ -160,7 +166,7 @@ public readonly struct Natural
 				xTry -= Digit.ONE;
 				test = new();
 
-				Natural degDown = degree;
+				degDown = degree;
 				while (!degDown.IsZero)
 				{
 					degDown -= Digit.ONE;
@@ -168,7 +174,7 @@ public readonly struct Natural
 					degUp = degree - degDown;
 					binomial = degreeFactorial / (Factorial(degDown) * Factorial(degUp));
 
-					test += new Natural([.. Digit.CreateArray(Convert.ToInt32(degDown.ToString())), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
+					test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
 				}
 			} while (++j < 10 && test > remainder);
 
@@ -197,6 +203,14 @@ public readonly struct Natural
 
 		return number;
 	}
+
+	/// <summary>
+	/// Returns an integer that represents the given <paramref name="value"/>.
+	/// </summary>
+	/// <param name="value">The <see cref="Natural"/> to convert.</param>
+	/// <returns>A <see cref="Natural"/> number as an <see langword="uint"/>.</returns>
+	/// <exception cref="OverflowException"><paramref name="value"/> cannot be greater than than <see cref="uint.MaxValue"/>.</exception>
+	public static uint ToUInt32(Natural value) => Convert.ToUInt32(value.ToString());
 
 	/// <summary>
 	/// Compares two <see cref="Natural"/>s.
@@ -386,16 +400,28 @@ public readonly struct Natural
 	/// <param name="left">The <see cref="Natural"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Natural"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
+	/// </exception>
 	public static Natural Power(Natural left, Natural right)
 	{
 		Natural result = Digit.ONE;
 
-		if (right.isZero)
-			return /*left.IsZero ? throw new NotImplementedException() :*/ result;
-		else if (right == Digit.ONE)
+		if (right < Digit.THREE)
+		{
+			return right.ToString() switch
+			{
+				"0" => /*left.IsZero ? throw new NotImplementedException() :*/ result,
+				"1" => left,
+				_ => left * left
+			};
+		}
+
+		if (left < Digit.TWO)
 			return left;
-		else if (right == Digit.TWO)
-			return left * left;
+
+		if (right.length > 3)
+			throw new NotSupportedException();
 
 		Natural lastPowerCalculated = left;
 
@@ -423,7 +449,7 @@ public readonly struct Natural
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Natural Whole, Natural Remainder) SquareRoot(Natural value)
 	{
-		if (value.isZero || value.Length == 1 && value[0] == Digit.ONE)
+		if (value.isZero || value == Digit.ONE)
 			return (value, new Natural());
 
 		Natural remainder = new();
@@ -446,6 +472,9 @@ public readonly struct Natural
 	/// <param name="right">The <see cref="Natural"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.
+	/// </exception>
 	public static (Natural Whole, Natural Remainder) Root(Natural left, Natural right)
 	{
 		Natural remainder = new();
@@ -463,7 +492,10 @@ public readonly struct Natural
 		if (left.isZero || left == Digit.ONE)
 			return (left, remainder);
 
-		ushort degreeInt = Convert.ToUInt16(right.ToString());
+		if (right.length > 2)
+			throw new NotSupportedException();
+
+		int degreeInt = (int)ToUInt32(right);
 		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - (left.Length % degreeInt))];
 
 		Natural degreeFactorial = Factorial(right);
