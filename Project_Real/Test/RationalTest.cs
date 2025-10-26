@@ -407,7 +407,7 @@ public class RationalTest
 		Writable writable1, writable2;
 		Rational number1, number2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -457,7 +457,7 @@ public class RationalTest
 		Positive? positive12, positive22;
 		Rational number1, number2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -503,7 +503,7 @@ public class RationalTest
 		Positive? positive1, positive2;
 		Rational number1, number2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -544,7 +544,7 @@ public class RationalTest
 		Positive? positive1, positive2;
 		Rational number1, number2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -580,7 +580,7 @@ public class RationalTest
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -616,7 +616,7 @@ public class RationalTest
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			tokens1 = item.Number1.Split('/');
 			tokens2 = item.Number2.Split('/');
@@ -654,7 +654,7 @@ public class RationalTest
 
 		Rational rational1, rational2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -679,7 +679,7 @@ public class RationalTest
 
 		Rational rational1, rational2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -704,7 +704,7 @@ public class RationalTest
 
 		Rational rational1, rational2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -726,14 +726,14 @@ public class RationalTest
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
 		Rational.Separator = '.';
-		int fractionCalculatonLength = Rational.FractionCalculatonLength;
-		Rational.FractionCalculatonLength = 10;
+		int fractionCalculationLength = Rational.FractionCalculationLength;
+		Rational.FractionCalculationLength = 10;
 
 		int length;
 		Rational rational1, rational2;
 		string result, expected;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -754,7 +754,7 @@ public class RationalTest
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
-		Rational.FractionCalculatonLength = fractionCalculatonLength;
+		Rational.FractionCalculationLength = fractionCalculationLength;
 	}
 
 	[TestMethod]
@@ -769,7 +769,7 @@ public class RationalTest
 
 		Rational rational1, rational2;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -794,14 +794,14 @@ public class RationalTest
 		Rational.WriteSign = true;
 		char separator = Rational.Separator;
 		Rational.Separator = '.';
-		int fractionCalculatonLength = Rational.FractionCalculatonLength;
-		Rational.FractionCalculatonLength = 10;
+		int fractionCalculationLength = Rational.FractionCalculationLength;
+		Rational.FractionCalculationLength = 10;
 
 		int length;
 		Rational rational1, rational2, result, remainder;
 		string expected;
 
-		foreach (var item in RationalTestCases.List)
+		foreach (RationalTestCase item in RationalTestCases.List)
 		{
 			rational1 = new(item.Number1);
 			rational2 = new(item.Number2);
@@ -823,6 +823,6 @@ public class RationalTest
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 		Rational.Separator = separator;
-		Rational.FractionCalculatonLength = fractionCalculatonLength;
+		Rational.FractionCalculationLength = fractionCalculationLength;
 	}
 }

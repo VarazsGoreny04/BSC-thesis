@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace ELTE.Snake.WPF.ViewModel
+namespace Bullseye_Calculator.WPF.ViewModel
 {
 	public class DelegateCommand : ICommand
 	{

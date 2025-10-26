@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ELTE.Snake.WPF.ViewModel
+namespace Bullseye_Calculator.WPF.ViewModel
 {
 	public abstract class ViewModelBase : INotifyPropertyChanged
 	{

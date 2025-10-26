@@ -39,7 +39,7 @@ public class NaturalTest
 
 		Natural number1, number2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
@@ -62,7 +62,7 @@ public class NaturalTest
 		Digit[] digits1, digits2;
 		Natural number1, number2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			digits1 = new Digit[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
@@ -88,7 +88,7 @@ public class NaturalTest
 	{
 		Natural number1, number2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
@@ -104,7 +104,7 @@ public class NaturalTest
 		Digit[] digits1, digits2;
 		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			digits1 = new Digit[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
@@ -134,7 +134,7 @@ public class NaturalTest
 		Digit[] digits1, digits2;
 		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			digits1 = new Digit[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
@@ -165,7 +165,7 @@ public class NaturalTest
 	{
 		Natural natural1, natural2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
@@ -180,7 +180,7 @@ public class NaturalTest
 		bool swap;
 		Natural natural1, natural2, subNum;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
@@ -197,7 +197,7 @@ public class NaturalTest
 	{
 		Natural natural1, natural2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
@@ -211,7 +211,7 @@ public class NaturalTest
 	{
 		Natural natural1, natural2, whole, remainder;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
@@ -233,7 +233,7 @@ public class NaturalTest
 	{
 		Natural natural1, natural2;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);
@@ -250,7 +250,7 @@ public class NaturalTest
 	{
 		Natural natural1, natural2, whole, remainder;
 
-		foreach (var item in NaturalTestCases.List)
+		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
 			natural1 = new(item.Number1);
 			natural2 = new(item.Number2);

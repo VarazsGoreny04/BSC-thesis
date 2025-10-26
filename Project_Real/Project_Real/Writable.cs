@@ -42,10 +42,10 @@ public readonly struct Writable
 	/// <exception cref="ArgumentException">
 	/// <param name="value"/> cannot be less than 0.
 	/// </exception>
-	public static int FractionCalculatonLength
+	public static int FractionCalculationLength
 	{
-		get => Positive.FractionCalculatonLength;
-		set => Positive.FractionCalculatonLength = value;
+		get => Positive.FractionCalculationLength;
+		set => Positive.FractionCalculationLength = value;
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Writable"/>.</returns>
@@ -216,12 +216,12 @@ public readonly struct Writable
 	/// </summary>
 	/// <param name="left">The <see cref="Writable"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Writable"/> that represents the denominator.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public static (Writable Value, Writable Remainder) Divide(Writable left, Writable right, int? fractionCalculatonLength = null)
+	public static (Writable Value, Writable Remainder) Divide(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		(Positive whole, Positive remainder) = Positive.Divide(left.value, right.value, fractionCalculatonLength);
+		(Positive whole, Positive remainder) = Positive.Divide(left.value, right.value, fractionCalculationLength);
 
 		return (new Writable(left.sign == right.sign, whole), new Writable(left.sign, remainder));
 	}
@@ -252,12 +252,12 @@ public readonly struct Writable
 	/// Raises the given radicand to the second degree.
 	/// </summary>
 	/// <param name="value">The <see cref="Writable"/> that represents the radicand.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
-	public static (Writable Value, Writable Remainder) SquareRoot(Writable value, int? fractionCalculatonLength = null)
+	public static (Writable Value, Writable Remainder) SquareRoot(Writable value, int? fractionCalculationLength = null)
 	{
-		return value.sign ? Positive.SquareRoot(value.value, fractionCalculatonLength) : throw new NotImplementedException();
+		return value.sign ? Positive.SquareRoot(value.value, fractionCalculationLength) : throw new NotImplementedException();
 	}
 
 	/// <summary>
@@ -265,19 +265,19 @@ public readonly struct Writable
 	/// </summary>
 	/// <param name="left">The <see cref="Writable"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Writable"/> that represents the degree.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException">
 	/// <paramref name="right"/> being negative or 0
 	/// -or-
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
-	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculatonLength = null)
+	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
 		if (!right.sign || (!left.sign && right[0] % Digit.TWO == Digit.ZERO))
 			throw new NotImplementedException();
 
-		(Positive whole, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculatonLength);
+		(Positive whole, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
 
 		return (new Writable(left.Sign, whole), new Writable(left.Sign, remainder));
 	}

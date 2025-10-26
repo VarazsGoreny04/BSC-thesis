@@ -101,7 +101,7 @@ public class WritableTest
 
 		Writable number1, number2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
@@ -128,7 +128,7 @@ public class WritableTest
 		Positive positive1, positive2;
 		Writable number1, number2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
 			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
@@ -158,7 +158,7 @@ public class WritableTest
 		Positive positive1, positive2;
 		Writable number1, number2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
 			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
@@ -184,7 +184,7 @@ public class WritableTest
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
@@ -213,7 +213,7 @@ public class WritableTest
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
@@ -245,7 +245,7 @@ public class WritableTest
 
 		Writable writable1, writable2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -267,7 +267,7 @@ public class WritableTest
 
 		Writable writable1, writable2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -289,7 +289,7 @@ public class WritableTest
 
 		Writable writable1, writable2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -308,13 +308,13 @@ public class WritableTest
 		Writable.WriteSign = true;
 		char separator = Writable.Separator;
 		Writable.Separator = '.';
-		int fractionCalculatonLength = Writable.FractionCalculatonLength;
-		Writable.FractionCalculatonLength = 10;
+		int fractionCalculationLength = Writable.FractionCalculationLength;
+		Writable.FractionCalculationLength = 10;
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -334,7 +334,7 @@ public class WritableTest
 
 		Writable.WriteSign = writeSign;
 		Writable.Separator = separator;
-		Writable.FractionCalculatonLength = fractionCalculatonLength;
+		Writable.FractionCalculationLength = fractionCalculationLength;
 	}
 
 	[TestMethod]
@@ -347,7 +347,7 @@ public class WritableTest
 
 		Writable writable1, writable2;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -369,13 +369,13 @@ public class WritableTest
 		Writable.WriteSign = true;
 		char separator = Writable.Separator;
 		Writable.Separator = '.';
-		int fractionCalculatonLength = Writable.FractionCalculatonLength;
-		Writable.FractionCalculatonLength = 10;
+		int fractionCalculationLength = Writable.FractionCalculationLength;
+		Writable.FractionCalculationLength = 10;
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
 
-		foreach (var item in WritableTestCases.List)
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
 			writable1 = new(item.Number1);
 			writable2 = new(item.Number2);
@@ -395,6 +395,6 @@ public class WritableTest
 
 		Writable.WriteSign = writeSign;
 		Writable.Separator = separator;
-		Writable.FractionCalculatonLength = fractionCalculatonLength;
+		Writable.FractionCalculationLength = fractionCalculationLength;
 	}
 }

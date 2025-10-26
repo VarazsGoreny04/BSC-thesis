@@ -2,406 +2,413 @@
 
 namespace Test;
 
+public class IntegerTestCase(
+	string number1, string number2,
+	bool equal, bool greater,
+	string add, string sub,
+	string mul, string div,
+	string pow, string root)
+{
+	public readonly string Number1 = number1;
+	public readonly string Number2 = number2;
+	public readonly bool Equal = equal;
+	public readonly bool Greater = greater;
+	public readonly string Add = add;
+	public readonly string Sub = sub;
+	public readonly string Mul = mul;
+	public readonly string Div = div;
+	public readonly string Pow = pow;
+	public readonly string Root = root;
+}
+
 public static class IntegerTestCases
 {
-	public static readonly
-	ImmutableArray<(
-	string Number1,
-	string Number2,
-	bool Equal,
-	bool Greater,
-	string Add,
-	string Sub,
-	string Mul,
-	string Div,
-	string Pow,
-	string Root
-	)> List =
+	public static readonly ImmutableArray<IntegerTestCase> List =
 	[
 		/*Zero*/
-		(
-			Number1: "+0",
-			Number2: "+0",
-			Equal: true,
-			Greater: false,
-			Add: "+0",
-			Sub: "+0",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "+0",
+			number2: "+0",
+			equal: true,
+			greater: false,
+			add: "+0",
+			sub: "+0",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "+0",
-			Number2: "-0",
-			Equal: true,
-			Greater: false,
-			Add: "+0",
-			Sub: "+0",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "+0",
+			number2: "-0",
+			equal: true,
+			greater: false,
+			add: "+0",
+			sub: "+0",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "-0",
-			Number2: "+0",
-			Equal: true,
-			Greater: false,
-			Add: "+0",
-			Sub: "+0",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "-0",
+			number2: "+0",
+			equal: true,
+			greater: false,
+			add: "+0",
+			sub: "+0",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "-0",
-			Number2: "-0",
-			Equal: true,
-			Greater: false,
-			Add: "+0",
-			Sub: "+0",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "-0",
+			number2: "-0",
+			equal: true,
+			greater: false,
+			add: "+0",
+			sub: "+0",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "+0",
-			Number2: "+1",
-			Equal: false,
-			Greater: false,
-			Add: "+1",
-			Sub: "-1",
-			Mul: "+0",
-			Div: "+0",
-			Pow: "+0",
-			Root: "+0"
+		new(
+			number1: "+0",
+			number2: "+1",
+			equal: false,
+			greater: false,
+			add: "+1",
+			sub: "-1",
+			mul: "+0",
+			div: "+0",
+			pow: "+0",
+			root: "+0"
 		),
-		(
-			Number1: "+0",
-			Number2: "-1",
-			Equal: false,
-			Greater: true,
-			Add: "-1",
-			Sub: "+1",
-			Mul: "+0",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+0",
+			number2: "-1",
+			equal: false,
+			greater: true,
+			add: "-1",
+			sub: "+1",
+			mul: "+0",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-0",
-			Number2: "+1",
-			Equal: false,
-			Greater: false,
-			Add: "+1",
-			Sub: "-1",
-			Mul: "+0",
-			Div: "+0",
-			Pow: "+0",
-			Root: "+0"
+		new(
+			number1: "-0",
+			number2: "+1",
+			equal: false,
+			greater: false,
+			add: "+1",
+			sub: "-1",
+			mul: "+0",
+			div: "+0",
+			pow: "+0",
+			root: "+0"
 		),
-		(
-			Number1: "-0",
-			Number2: "-1",
-			Equal: false,
-			Greater: true,
-			Add: "-1",
-			Sub: "+1",
-			Mul: "+0",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-0",
+			number2: "-1",
+			equal: false,
+			greater: true,
+			add: "-1",
+			sub: "+1",
+			mul: "+0",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "+1",
-			Number2: "+0",
-			Equal: false,
-			Greater: true,
-			Add: "+1",
-			Sub: "+1",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "+1",
+			number2: "+0",
+			equal: false,
+			greater: true,
+			add: "+1",
+			sub: "+1",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "+1",
-			Number2: "-0",
-			Equal: false,
-			Greater: true,
-			Add: "+1",
-			Sub: "+1",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "+1",
+			number2: "-0",
+			equal: false,
+			greater: true,
+			add: "+1",
+			sub: "+1",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "-1",
-			Number2: "+0",
-			Equal: false,
-			Greater: false,
-			Add: "-1",
-			Sub: "-1",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "-1",
+			number2: "+0",
+			equal: false,
+			greater: false,
+			add: "-1",
+			sub: "-1",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "-1",
-			Number2: "-0",
-			Equal: false,
-			Greater: false,
-			Add: "-1",
-			Sub: "-1",
-			Mul: "+0",
-			Div: "ERROR",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "-1",
+			number2: "-0",
+			equal: false,
+			greater: false,
+			add: "-1",
+			sub: "-1",
+			mul: "+0",
+			div: "ERROR",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "+999999999999999999999",
-			Number2: "+1",
-			Equal: false,
-			Greater: true,
-			Add: "+1000000000000000000000",
-			Sub: "+999999999999999999998",
-			Mul: "+999999999999999999999",
-			Div: "+999999999999999999999",
-			Pow: "+999999999999999999999",
-			Root: "+999999999999999999999"
+		new(
+			number1: "+999999999999999999999",
+			number2: "+1",
+			equal: false,
+			greater: true,
+			add: "+1000000000000000000000",
+			sub: "+999999999999999999998",
+			mul: "+999999999999999999999",
+			div: "+999999999999999999999",
+			pow: "+999999999999999999999",
+			root: "+999999999999999999999"
 		),
-		(
-			Number1: "+999999999999999999999",
-			Number2: "-1",
-			Equal: false,
-			Greater: true,
-			Add: "+999999999999999999998",
-			Sub: "+1000000000000000000000",
-			Mul: "-999999999999999999999",
-			Div: "-999999999999999999999",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+999999999999999999999",
+			number2: "-1",
+			equal: false,
+			greater: true,
+			add: "+999999999999999999998",
+			sub: "+1000000000000000000000",
+			mul: "-999999999999999999999",
+			div: "-999999999999999999999",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-999999999999999999999",
-			Number2: "+1",
-			Equal: false,
-			Greater: false,
-			Add: "-999999999999999999998",
-			Sub: "-1000000000000000000000",
-			Mul: "-999999999999999999999",
-			Div: "-999999999999999999999",
-			Pow: "BIG",
-			Root: "-999999999999999999999"
+		new(
+			number1: "-999999999999999999999",
+			number2: "+1",
+			equal: false,
+			greater: false,
+			add: "-999999999999999999998",
+			sub: "-1000000000000000000000",
+			mul: "-999999999999999999999",
+			div: "-999999999999999999999",
+			pow: "BIG",
+			root: "-999999999999999999999"
 		),
-		(
-			Number1: "-999999999999999999999",
-			Number2: "-1",
-			Equal: false,
-			Greater: false,
-			Add: "-1000000000000000000000",
-			Sub: "-999999999999999999998",
-			Mul: "+999999999999999999999",
-			Div: "+999999999999999999999",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-999999999999999999999",
+			number2: "-1",
+			equal: false,
+			greater: false,
+			add: "-1000000000000000000000",
+			sub: "-999999999999999999998",
+			mul: "+999999999999999999999",
+			div: "+999999999999999999999",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "+1",
-			Number2: "+999999999999999999999",
-			Equal: false,
-			Greater: false,
-			Add: "+1000000000000000000000",
-			Sub: "-999999999999999999998",
-			Mul: "+999999999999999999999",
-			Div: "+0",
-			Pow: "+1",
-			Root: "+1"
+		new(
+			number1: "+1",
+			number2: "+999999999999999999999",
+			equal: false,
+			greater: false,
+			add: "+1000000000000000000000",
+			sub: "-999999999999999999998",
+			mul: "+999999999999999999999",
+			div: "+0",
+			pow: "+1",
+			root: "+1"
 		),
-		(
-			Number1: "+1",
-			Number2: "-999999999999999999999",
-			Equal: false,
-			Greater: true,
-			Add: "-999999999999999999998",
-			Sub: "+1000000000000000000000",
-			Mul: "-999999999999999999999",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+1",
+			number2: "-999999999999999999999",
+			equal: false,
+			greater: true,
+			add: "-999999999999999999998",
+			sub: "+1000000000000000000000",
+			mul: "-999999999999999999999",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-1",
-			Number2: "+999999999999999999999",
-			Equal: false,
-			Greater: false,
-			Add: "+999999999999999999998",
-			Sub: "-1000000000000000000000",
-			Mul: "-999999999999999999999",
-			Div: "+0",
-			Pow: "-1",
-			Root: "-1"
+		new(
+			number1: "-1",
+			number2: "+999999999999999999999",
+			equal: false,
+			greater: false,
+			add: "+999999999999999999998",
+			sub: "-1000000000000000000000",
+			mul: "-999999999999999999999",
+			div: "+0",
+			pow: "-1",
+			root: "-1"
 		),
-		(
-			Number1: "-1",
-			Number2: "-999999999999999999999",
-			Equal: false,
-			Greater: true,
-			Add: "-1000000000000000000000",
-			Sub: "+999999999999999999998",
-			Mul: "+999999999999999999999",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-1",
+			number2: "-999999999999999999999",
+			equal: false,
+			greater: true,
+			add: "-1000000000000000000000",
+			sub: "+999999999999999999998",
+			mul: "+999999999999999999999",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "+123456789",
-			Number2: "+123456789",
-			Equal: true,
-			Greater: false,
-			Add: "+246913578",
-			Sub: "+0",
-			Mul: "+15241578750190521",
-			Div: "+1",
-			Pow: "BIG",
-			Root: "BIG"
+		new(
+			number1: "+123456789",
+			number2: "+123456789",
+			equal: true,
+			greater: false,
+			add: "+246913578",
+			sub: "+0",
+			mul: "+15241578750190521",
+			div: "+1",
+			pow: "BIG",
+			root: "BIG"
 		),
-		(
-			Number1: "+123456789",
-			Number2: "-123456789",
-			Equal: false,
-			Greater: true,
-			Add: "+0",
-			Sub: "+246913578",
-			Mul: "-15241578750190521",
-			Div: "-1",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+123456789",
+			number2: "-123456789",
+			equal: false,
+			greater: true,
+			add: "+0",
+			sub: "+246913578",
+			mul: "-15241578750190521",
+			div: "-1",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-123456789",
-			Number2: "+123456789",
-			Equal: false,
-			Greater: false,
-			Add: "+0",
-			Sub: "-246913578",
-			Mul: "-15241578750190521",
-			Div: "-1",
-			Pow: "BIG",
-			Root: "BIG"
+		new(
+			number1: "-123456789",
+			number2: "+123456789",
+			equal: false,
+			greater: false,
+			add: "+0",
+			sub: "-246913578",
+			mul: "-15241578750190521",
+			div: "-1",
+			pow: "BIG",
+			root: "BIG"
 		),
-		(
-			Number1: "-123456789",
-			Number2: "-123456789",
-			Equal: true,
-			Greater: false,
-			Add: "-246913578",
-			Sub: "+0",
-			Mul: "+15241578750190521",
-			Div: "+1",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-123456789",
+			number2: "-123456789",
+			equal: true,
+			greater: false,
+			add: "-246913578",
+			sub: "+0",
+			mul: "+15241578750190521",
+			div: "+1",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "+1",
-			Number2: "+2",
-			Equal: false,
-			Greater: false,
-			Add: "+3",
-			Sub: "-1",
-			Mul: "+2",
-			Div: "+0",
-			Pow: "+1",
-			Root: "+1"
+		new(
+			number1: "+1",
+			number2: "+2",
+			equal: false,
+			greater: false,
+			add: "+3",
+			sub: "-1",
+			mul: "+2",
+			div: "+0",
+			pow: "+1",
+			root: "+1"
 		),
-		(
-			Number1: "+1",
-			Number2: "-2",
-			Equal: false,
-			Greater: true,
-			Add: "-1",
-			Sub: "+3",
-			Mul: "-2",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+1",
+			number2: "-2",
+			equal: false,
+			greater: true,
+			add: "-1",
+			sub: "+3",
+			mul: "-2",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-1",
-			Number2: "+2",
-			Equal: false,
-			Greater: false,
-			Add: "+1",
-			Sub: "-3",
-			Mul: "-2",
-			Div: "+0",
-			Pow: "+1",
-			Root: "ERROR"
+		new(
+			number1: "-1",
+			number2: "+2",
+			equal: false,
+			greater: false,
+			add: "+1",
+			sub: "-3",
+			mul: "-2",
+			div: "+0",
+			pow: "+1",
+			root: "ERROR"
 		),
-		(
-			Number1: "-1",
-			Number2: "-2",
-			Equal: false,
-			Greater: true,
-			Add: "-3",
-			Sub: "+1",
-			Mul: "+2",
-			Div: "+0",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-1",
+			number2: "-2",
+			equal: false,
+			greater: true,
+			add: "-3",
+			sub: "+1",
+			mul: "+2",
+			div: "+0",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "+2",
-			Number2: "+1",
-			Equal: false,
-			Greater: true,
-			Add: "+3",
-			Sub: "+1",
-			Mul: "+2",
-			Div: "+2",
-			Pow: "+2",
-			Root: "+2"
+		new(
+			number1: "+2",
+			number2: "+1",
+			equal: false,
+			greater: true,
+			add: "+3",
+			sub: "+1",
+			mul: "+2",
+			div: "+2",
+			pow: "+2",
+			root: "+2"
 		),
-		(
-			Number1: "+2",
-			Number2: "-1",
-			Equal: false,
-			Greater: true,
-			Add: "+1",
-			Sub: "+3",
-			Mul: "-2",
-			Div: "-2",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "+2",
+			number2: "-1",
+			equal: false,
+			greater: true,
+			add: "+1",
+			sub: "+3",
+			mul: "-2",
+			div: "-2",
+			pow: "ERROR",
+			root: "ERROR"
 		),
-		(
-			Number1: "-2",
-			Number2: "+1",
-			Equal: false,
-			Greater: false,
-			Add: "-1",
-			Sub: "-3",
-			Mul: "-2",
-			Div: "-2",
-			Pow: "-2",
-			Root: "-2"
+		new(
+			number1: "-2",
+			number2: "+1",
+			equal: false,
+			greater: false,
+			add: "-1",
+			sub: "-3",
+			mul: "-2",
+			div: "-2",
+			pow: "-2",
+			root: "-2"
 		),
-		(
-			Number1: "-2",
-			Number2: "-1",
-			Equal: false,
-			Greater: false,
-			Add: "-3",
-			Sub: "-1",
-			Mul: "+2",
-			Div: "+2",
-			Pow: "ERROR",
-			Root: "ERROR"
+		new(
+			number1: "-2",
+			number2: "-1",
+			equal: false,
+			greater: false,
+			add: "-3",
+			sub: "-1",
+			mul: "+2",
+			div: "+2",
+			pow: "ERROR",
+			root: "ERROR"
 		),
 	];
 }

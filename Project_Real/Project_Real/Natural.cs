@@ -99,6 +99,89 @@ public readonly struct Natural
 
 	#endregion
 
+	#region Internal methods
+
+	internal static Natural CalculateTwoRootDigits(Natural root, ref Natural remainder)
+	{
+		Digit xTry;
+		Natural test;
+
+		if (!remainder.IsZero)
+		{
+			Natural rootTimesTwo = root * Digit.TWO;
+			xTry = Digit.FIVE;
+
+			test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
+			if (test <= remainder)
+				xTry = Digit.ZERO;
+
+			byte j = 0;
+			do
+			{
+				xTry -= Digit.ONE;
+				test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
+			} while (++j < 5 && test > remainder);
+
+			remainder -= test;
+		}
+		else
+			xTry = Digit.ZERO;
+
+			return new Natural([xTry, .. root.Digits]);
+	}
+
+	internal static Natural CalculateNRootDigits(Natural root, ref Natural remainder, Natural degree, Natural degreeFactorial)
+	{
+		Digit xTry;
+		Natural test, degUp, binomial;
+
+		if (!remainder.IsZero)
+		{
+			/*xTry = Digit.FIVE;
+			test = new();
+
+			Natural counter = degree;
+			while (!counter.IsZero)
+			{
+				counter -= Digit.ONE;
+
+				degreeMinusI = degree - counter;
+				binomial = degreeFactorial / (Factorial(counter) * Factorial(degreeMinusI));
+
+				test += new Natural([.. Digit.CreateArray(Convert.ToInt32(counter.ToString())), .. (binomial * (root ^ counter) * (xTry ^ degreeMinusI)).Digits]);
+			}
+
+			if (test <= remainder)*/
+				xTry = Digit.ZERO;
+
+			byte j = 0;
+			do
+			{
+				xTry -= Digit.ONE;
+				test = new();
+
+				Natural degDown = degree;
+				while (!degDown.IsZero)
+				{
+					degDown -= Digit.ONE;
+
+					degUp = degree - degDown;
+					binomial = degreeFactorial / (Factorial(degDown) * Factorial(degUp));
+
+					test += new Natural([.. Digit.CreateArray(Convert.ToInt32(degDown.ToString())), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
+				}
+			} while (++j < 10 && test > remainder);
+
+			remainder -= test;
+		}
+		else
+			xTry = Digit.ZERO;
+
+		return new Natural([xTry, .. root.Digits]);
+	}
+
+	#endregion
+
 	#region Public methods
 
 	/// <summary>
@@ -174,7 +257,7 @@ public readonly struct Natural
 		for (int i = 0; i < left.Length; ++i)
 			(carry, result[i]) = Digit.Add(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
 
-		return carry ? new Natural([.. result, Digit.ONE]) : new Natural(result);
+		return carry ? new Natural([.. result, Digit.ONE]) : result;
 	}
 
 	/// <summary>
@@ -196,7 +279,7 @@ public readonly struct Natural
 		for (int i = 0; i < left.Length; ++i)
 			(carry, result[i]) = Digit.Subtract(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
 
-		return (swap, new Natural(result));
+		return (swap, result);
 	}
 
 	/// <summary>
@@ -239,7 +322,7 @@ public readonly struct Natural
 				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
 			}
 
-			result += new Natural(temp);
+			result += temp;
 		}
 
 		return result;
@@ -287,7 +370,7 @@ public readonly struct Natural
 				--i;
 		}
 
-		return (new Natural(result), temp);
+		return (result, temp);
 	}
 
 	/// <summary>
@@ -305,19 +388,18 @@ public readonly struct Natural
 	/// <returns>The result of the calculation.</returns>
 	public static Natural Power(Natural left, Natural right)
 	{
-		Natural result = new([new Digit('1')]);
-		Natural two = new([new Digit('2')]);
+		Natural result = Digit.ONE;
 
 		if (right.isZero)
 			return /*left.IsZero ? throw new NotImplementedException() :*/ result;
-		else if (right == result)
+		else if (right == Digit.ONE)
 			return left;
-		else if (right == two)
+		else if (right == Digit.TWO)
 			return left * left;
 
 		Natural lastPowerCalculated = left;
 
-		(Natural whole, Natural remainder) = Divide(right, two);
+		(Natural whole, Natural remainder) = Divide(right, Digit.TWO);
 
 		if (!remainder.isZero)
 			result = lastPowerCalculated;
@@ -325,7 +407,7 @@ public readonly struct Natural
 		while (!whole.isZero)
 		{
 			lastPowerCalculated *= lastPowerCalculated;
-			(whole, remainder) = Divide(whole, two);
+			(whole, remainder) = Divide(whole, Digit.TWO);
 
 			if (!remainder.isZero)
 				result *= lastPowerCalculated;
@@ -344,33 +426,14 @@ public readonly struct Natural
 		if (value.isZero || value.Length == 1 && value[0] == Digit.ONE)
 			return (value, new Natural());
 
-		Natural two = new([Digit.TWO]);
-		Natural rootTimesTwo, test;
 		Natural remainder = new();
 		Natural root = new();
-		Digit xTry;
 
-		for (int i = ((value.length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
+		for (int i = value.length - (((value.Length - 1) & 1) + 1); i >= 0; i -= 2)
 		{
-			remainder = new([value[i], (i + 1 < value.digits.Length ? value[i + 1] : Digit.ZERO), .. remainder.digits]);
+			remainder = new Natural([value[i], (i + 1 < value.Length ? value[i + 1] : Digit.ZERO), .. remainder.digits]);
 
-			xTry = Digit.ZERO;
-
-			if (!remainder.isZero)
-			{
-				rootTimesTwo = root * two;
-
-				byte j = 10;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new Natural([xTry, .. rootTimesTwo.digits]) * new Natural([xTry]);
-				} while (--j > 0 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.digits]);
+			root = CalculateTwoRootDigits(root, ref remainder);
 		}
 
 		return (root, remainder);
@@ -397,46 +460,20 @@ public readonly struct Natural
 			};
 		}
 
-		if (left.isZero || (left.Length == 1 && left[0] == Digit.ONE))
+		if (left.isZero || left == Digit.ONE)
 			return (left, remainder);
 
-		ushort nInt = Convert.ToUInt16(right.ToString());
-		Digit[] digits = [.. left.digits, .. Digit.CreateArray((nInt - (left.digits.Length % nInt)) % nInt)];
+		ushort degreeInt = Convert.ToUInt16(right.ToString());
+		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - (left.Length % degreeInt))];
 
-		Digit xTry;
-		Natural test, kNatural, nMinusKN, binomial;
-		Natural nFactorial = Factorial(right);
+		Natural degreeFactorial = Factorial(right);
 		Natural root = new();
 
-		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
+		for (int i = digits.Length - degreeInt; i >= 0; i -= degreeInt)
 		{
-			remainder = new Natural([.. digits[i..(i + nInt)], .. remainder.digits]);
+			remainder = new Natural([.. digits[i..(i + degreeInt)], .. remainder.digits]);
 
-			xTry = Digit.ZERO;
-
-			if (!remainder.isZero)
-			{
-				byte j = 0;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new();
-
-					for (int k = nInt - 1; k >= 0; --k)
-					{
-
-						kNatural = k.ToString();
-						nMinusKN = right - kNatural;
-						binomial = nFactorial / (Factorial(kNatural) * Factorial(nMinusKN));
-
-						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
-					}
-				} while (++j < 10 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.digits]);
+			root = CalculateNRootDigits(root, ref remainder, right, degreeFactorial);
 		}
 
 		return (root, remainder);
@@ -449,16 +486,14 @@ public readonly struct Natural
 	/// <returns>The result of the calculation.</returns>
 	public static Natural Factorial(Natural value)
 	{
-		Natural one = new([Digit.ONE]);
-
-		if (value.isZero || value == one)
-			return one;
+		if (value.isZero || value == Digit.ONE)
+			return Digit.ONE;
 
 		Natural result = value;
 
-		while (value != one)
+		while (value != Digit.ONE)
 		{
-			value -= one;
+			value -= Digit.ONE;
 			result *= value;
 		}
 

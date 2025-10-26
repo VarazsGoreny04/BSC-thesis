@@ -66,7 +66,7 @@ public class IntegerTest
 
 		Integer number1, number2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
@@ -90,7 +90,7 @@ public class IntegerTest
 		Natural natural1, natural2;
 		Integer number1, number2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			natural1 = new(item.Number1.Replace("+", "").Replace("-", ""));
 			natural2 = new(item.Number2.Replace("+", "").Replace("-", ""));
@@ -118,7 +118,7 @@ public class IntegerTest
 
 		Integer number1, number2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			number1 = new(item.Number1);
 			number2 = new(item.Number2);
@@ -139,7 +139,7 @@ public class IntegerTest
 		Digit[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			digits1 = new Digit[item.Number1.Length - 1];
 			for (int j = item.Number1.Length - 2; j >= 0; --j)
@@ -174,7 +174,7 @@ public class IntegerTest
 		Digit[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			digits1 = new Digit[item.Number1.Length - 1];
 			for (int j = item.Number1.Length - 2; j >= 0; --j)
@@ -210,7 +210,7 @@ public class IntegerTest
 
 		Integer integer1, integer2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
@@ -229,7 +229,7 @@ public class IntegerTest
 
 		Integer integer1, integer2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
@@ -248,7 +248,7 @@ public class IntegerTest
 
 		Integer integer1, integer2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
@@ -267,7 +267,7 @@ public class IntegerTest
 
 		Integer integer1, integer2, whole, remainder;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
@@ -294,7 +294,7 @@ public class IntegerTest
 
 		Integer integer1, integer2;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);
@@ -316,7 +316,7 @@ public class IntegerTest
 
 		Integer integer1, integer2, whole, remainder;
 
-		foreach (var item in IntegerTestCases.List)
+		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
 			integer1 = new(item.Number1);
 			integer2 = new(item.Number2);

@@ -29,7 +29,7 @@ public class Program
 
 		Console.WriteLine(Real.ToUInt(c));
 		Console.WriteLine(Real.ToUInt(b));
-		Console.WriteLine("-" + Real.ToUInt(Real.BitAbs(Real.BitSubstract(c, b, false).Item2)));*/
+		Console.WriteLine("-" + Real.ToUInt(Real.BitAbs(Real.BitSubtract(c, b, false).Item2)));*/
 
 		/*Real left = "-5.3";
 		Real right = "+3.6";
@@ -81,7 +81,7 @@ public class Program
 
 		/*Digit a = '9';
 		Digit b = '9';
-		(bool f, Digit c) = Digit.Substract(a, b);
+		(bool f, Digit c) = Digit.Subtract(a, b);
 		Console.WriteLine(c);
 		Console.WriteLine(f);*/
 
@@ -98,8 +98,8 @@ public class Program
 		Console.WriteLine(b);
 		Console.WriteLine(c);*/
 
-		/*BoolMatrixToString(Digit.BitSubstract([false, true, true, true] *//*2+4+8=14*//*, [true, true, false, false] *//*1+2=3*//*));
-		(bool a, Digit b) = Digit.Substract(new Digit('9'), new Digit('6'), true);
+		/*BoolMatrixToString(Digit.BitSubtract([false, true, true, true] *//*2+4+8=14*//*, [true, true, false, false] *//*1+2=3*//*));
+		(bool a, Digit b) = Digit.Subtract(new Digit('9'), new Digit('6'), true);
 		//(Digit a, Digit b) = Digit.Divide(new Digit('9'), new Digit('3'));
 		Console.WriteLine(a);
 		Console.WriteLine(b);*/
@@ -108,7 +108,7 @@ public class Program
 		Console.WriteLine(new Natural("00"));
 		Console.WriteLine(new Natural(""));*/
 
-		/*Console.WriteLine("Multiplicaton:");
+		/*Console.WriteLine("Multiplication:");
 		Console.ReadKey();
 		Console.WriteLine(Integer.Multiply(new Integer("-35419993"), new Integer("1524315243"))); // -53,991,235,236,853,299*/
 
@@ -159,7 +159,7 @@ public class Program
 		//var p8 = Positive.Divide(new Positive("927"), new Positive("0.000"));
 
 		//Console.WriteLine(Positive.Add(new Positive("6."), new Positive("1.3")));
-		//Console.WriteLine(Positive.Substract(new Positive("6."), new Positive("1.3")));
+		//Console.WriteLine(Positive.Subtract(new Positive("6."), new Positive("1.3")));
 		//Console.WriteLine(Positive.Multiply(new Positive("6."), new Positive("1.3")));
 		/*Console.WriteLine(Positive.Divide(new Positive("6."), new Positive("1.6")));
 		Console.WriteLine(Positive.Divide(new Positive("3."), new Positive("0.6")));
@@ -212,7 +212,7 @@ public class Program
 		//Console.WriteLine(Positive.Root("4192000000000", "3"));
 		//Console.WriteLine(Math.Pow(4192000000000.0, 1.0/3.0));
 		//Console.WriteLine(4192000000000.0 - Math.Pow(Math.Pow(4192000000000.0, 1.0/3.0), 3.0));
-		/*Positive.FractionCalculatonLength = 11;
+		/*Positive.FractionCalculationLength = 11;
 		(Positive whole, Positive remainder) = Positive.Root("124.067", "6");
 		Console.WriteLine((whole, remainder));
 		Console.WriteLine(whole ^ "6");*/
@@ -222,25 +222,24 @@ public class Program
 
 		/*timer.Restart();
 		Console.WriteLine(Positive.SquareRoot("10005", 512));
-		timer.Stop();*/
-
-		Console.WriteLine(timer.ToString());
+		timer.Stop();
+		Console.WriteLine(timer.ToString());*/
 
 		//for (int i = 1; i < 8; ++i)
 		//{
 		//	timer.Restart();
 		//	int a = (int)Math.Pow(2, i);
-		//	Positive.FractionCalculatonLength = (int)(a * 1.2);
+		//	Positive.FractionCalculationLength = (int)(a * 1.2);
 		//	Console.WriteLine($"{Rational.ToWritableString(Rational.PI_Chudnovsky(a))} - {a}");
 		//	timer.Stop();
 		//	Console.WriteLine(timer.ToString());
 		//}
 
-		for (int i = 1; i < 8; ++i)
+		/*for (int i = 1; i < 8; ++i)
 		{
 			timer.Restart();
 			int a = (int)Math.Pow(2, i);
-			Positive.FractionCalculatonLength = (int)(a * 1.2);
+			Positive.FractionCalculationLength = (int)(a * 1.2);
 			Console.WriteLine($"{Rational.ToWritableString(Rational.PI(a))} - {a}");
 			timer.Stop();
 			Console.WriteLine(timer.ToString());
@@ -250,11 +249,11 @@ public class Program
 		{
 			timer.Restart();
 			int a = (int)Math.Pow(2, i);
-			Positive.FractionCalculatonLength = (int)(a * 1.2);
+			Positive.FractionCalculationLength = (int)(a * 1.2);
 			Console.WriteLine($"{Rational.ToWritableString(Rational.E(a))} - {a}");
 			timer.Stop();
 			Console.WriteLine(timer.ToString());
-		}
+		}*/
 
 		/*Positive n = "3";
 

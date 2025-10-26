@@ -11,7 +11,7 @@ public readonly struct Positive
 	#region Fields
 
 	private static char separator = '.';
-	private static int fractionCalculatonLength = 10;
+	private static int fractionCalculationLength = 10;
 
 	private readonly int length;
 	private readonly int fractionLength;
@@ -39,10 +39,10 @@ public readonly struct Positive
 	/// <exception cref="ArgumentException">
 	/// <param name="value"/> cannot be less than 0.
 	/// </exception>
-	public static int FractionCalculatonLength
+	public static int FractionCalculationLength
 	{
-		get => fractionCalculatonLength;
-		set => fractionCalculatonLength = (value >= 0) ? value : throw new ArgumentException();
+		get => fractionCalculationLength;
+		set => fractionCalculationLength = (value >= 0) ? value : throw new ArgumentException();
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Positive"/>.</returns>
@@ -272,12 +272,12 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="left">The <see cref="Positive"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the denominator.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculatonLength = null)
+	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
-		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
+		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
 
 		int denominatorSlicingLength = (left.fractionLength > right.fractionLength) ? left.fractionLength - right.fractionLength : 0;
 		int numeratorSlicingLength = (right.fractionLength > left.fractionLength) ? right.fractionLength - left.fractionLength : 0;
@@ -316,70 +316,27 @@ public readonly struct Positive
 	/// Raises the given radicand to the second degree.
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> that represents the radicand.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculatonLength = null)
+	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculationLength = null)
 	{
-		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
-
-		if (value.value.IsZero || value == "1")
+		if (value.IsZero || value == "1")
 			return (value, new Positive());
 
-		int splicingLength = (fCL * 2 - value.fractionLength + 1) / 2;
+		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
+		int splicingLength = value.fractionLength & 1;
+		int zeroCalculationLength = (fCL * 2 - (value.fractionLength + splicingLength)) / 2;
 
-		Natural two = "2";
-		Natural rootTimesTwo, test;
-		Natural remainder = new();
-		Natural root = new();
-		Digit xTry;
+		(Natural root, Natural remainder) = Natural.SquareRoot(new Natural([.. Digit.CreateArray(splicingLength), .. value.Digits]));
 
-		for (int i = ((value.Length + 1) / 2 - 1) * 2; i >= 0; i -= 2)
-		{
-			remainder = new Natural([value.value[i], (i + 1 < value.Digits.Length ? value.value[i + 1] : Digit.ZERO), .. remainder.Digits]);
-
-			xTry = Digit.ZERO;
-
-			if (!remainder.IsZero)
-			{
-				rootTimesTwo = root * two;
-
-				byte j = 10;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
-				} while (--j > 0 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.Digits]);
-		}
-
-		for (int i = splicingLength; i > 0; --i)
+		for (int i = zeroCalculationLength; i > 0; --i)
 		{
 			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
 
-			xTry = Digit.ZERO;
-
-			if (!remainder.IsZero)
-			{
-				rootTimesTwo = root * two;
-
-				byte j = 10;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
-				} while (--j > 0 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.Digits]);
+			root = Natural.CalculateTwoRootDigits(root, ref remainder);
 		}
 
-		return (new Positive(root, fCL), new Positive(remainder, fCL + splicingLength));
+		return (new Positive(root, fCL), new Positive(remainder, fCL * 2));
 	}
 
 	/// <summary>
@@ -387,112 +344,44 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="left">The <see cref="Positive"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction or 0 as it is not mathematically meaningful.</exception>
-	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculatonLength = null)
+	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
 		if (right.fractionLength != 0 || right.IsZero)
 			throw new NotImplementedException();
 
-		int fCL = fractionCalculatonLength ?? Positive.fractionCalculatonLength;
-
-		/*Natural remainder = new();
-
-		if (n.value < new Natural([Digit.THREE]))
+		if (right.value < Digit.THREE)
 		{
-			return Digit.ToChar(n[0]) switch
+			return Digit.ToChar(right[0]) switch
 			{
 				'0' => throw new NotImplementedException(),
-				'1' => (value, new Positive(remainder, 0)),
-				_ => SquareRoot(value)
+				'1' => (left, "0"),
+				_ => SquareRoot(left)
 			};
 		}
 
-		if (value.Length == 1 && (value[0] == Digit.ZERO || value[0] == Digit.ONE))
-			return (value, new Positive(remainder, 0));
+		if (left.IsZero || left == "1")
+			return (left, "0");
 
-		ushort nInt = Convert.ToUInt16(n.ToString());
-		int splicingLength = ((fCL * nInt - value.fractionLength) * nInt + (nInt - 1)) / nInt;
-		int fractionLength = (value.fractionLength + splicingLength) / nInt;
+		Natural degree = right.Value;
+		ushort degreeInt = Convert.ToUInt16(degree.ToString());
+		int splicingLength = degreeInt - (left.fractionLength % degreeInt);
 
-		Digit[] digits = [.. value.Digits, .. Digit.CreateArray((nInt - ((value.Digits.Length + splicingLength) % nInt)) % nInt)];
+		(Natural root, Natural remainder) = Natural.Root(new([.. Digit.CreateArray(splicingLength), .. left.Digits]), degree);
 
-		Digit xTry;
-		Natural test, kNatural, nMinusKN, binomial;
-		Natural nFactorial = Natural.Factorial(n.value);
-		Natural root = new();
+		int fCL = fractionCalculationLength ?? Positive.fractionCalculationLength;
+		Natural degreeFactorial = Natural.Factorial(degree);
 
-		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
+		for (int i = (fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt; i > 0; --i)
 		{
-			remainder = new Natural([.. digits[i..(i + nInt)], .. remainder.Digits]);
+			remainder = new Natural([.. Digit.CreateArray(degreeInt), .. remainder.Digits]);
 
-			xTry = Digit.ZERO;
-
-			if (!remainder.IsZero)
-			{
-				byte j = 0;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new();
-
-					for (int k = nInt - 1; k >= 0; --k)
-					{
-
-						kNatural = k.ToString();
-						nMinusKN = n - kNatural;
-						binomial = nFactorial / (Natural.Factorial(kNatural) * Natural.Factorial(nMinusKN));
-
-						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
-					}
-				} while (++j < 10 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.digits]);
+			root = Natural.CalculateNRootDigits(root, ref remainder, degree, degreeFactorial);
 		}
 
-		for (int i = digits.Length - nInt; i >= 0; i -= nInt)
-		{
-			remainder = new Natural([.. Digit.CreateArray(nInt), .. remainder.Digits]);
-
-			xTry = Digit.ZERO;
-
-			if (!remainder.IsZero)
-			{
-				byte j = 0;
-				do
-				{
-					xTry -= Digit.ONE;
-					test = new();
-
-					for (int k = nInt - 1; k >= 0; --k)
-					{
-
-						kNatural = k.ToString();
-						nMinusKN = n - kNatural;
-						binomial = nFactorial / (Natural.Factorial(kNatural) * Natural.Factorial(nMinusKN));
-
-						test += new Natural([.. Digit.CreateArray(k), .. (binomial * (root ^ kNatural) * ((new Natural([xTry])) ^ nMinusKN)).digits]);
-					}
-				} while (++j < 10 && test > remainder);
-
-				remainder -= test;
-			}
-
-			root = new Natural([xTry, .. root.digits]);
-		}
-
-		return (new Positive(root, , remainder);*/
-
-		int nInt = Convert.ToUInt16(right.ToString());
-		Digit[] splicing = Digit.CreateArray(((fCL * nInt - left.fractionLength) * nInt + (nInt - 1)) / nInt);
-		(Natural whole, Natural remainder) = Natural.Root(new Natural([.. splicing, .. left.Digits]), new Natural([.. right.Digits]));
-		int fractionLength = (left.fractionLength + splicing.Length) / nInt;
-
-		return (new Positive(whole, fractionLength), new Positive(remainder, fractionLength * nInt));
+		return (new Positive(root, fCL), new Positive(remainder, fCL * degreeInt));
 	}
 
 	/// <summary>

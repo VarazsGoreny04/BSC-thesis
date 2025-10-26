@@ -58,10 +58,10 @@ public readonly struct Rational
 	/// <exception cref="ArgumentException">
 	/// <param name="value"/> cannot be less than 0.
 	/// </exception>
-	public static int FractionCalculatonLength
+	public static int FractionCalculationLength
 	{
-		get => Writable.FractionCalculatonLength;
-		set => Writable.FractionCalculatonLength = value;
+		get => Writable.FractionCalculationLength;
+		set => Writable.FractionCalculationLength = value;
 	}
 
 	/// <summary>
@@ -170,7 +170,7 @@ public readonly struct Rational
 
 	#endregion
 
-	#region Private methods
+	#region Internal methods
 
 	/// <summary>
 	/// Finds the lowest common denominator for the two <see cref="Rational"/> numbers.
@@ -178,7 +178,7 @@ public readonly struct Rational
 	/// <param name="first">The first <see cref="Rational"/>.</param>
 	/// <param name="second">The second <see cref="Rational"/>.</param>
 	/// <returns>The two numerator values and the common denominator in a tuple.</returns>
-	private static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational first, Rational second)
+	internal static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational first, Rational second)
 	{
 		Writable numerator1 = second.denominator is null ? first.numerator : new(first.numerator.Sign, first.numerator.Value * second.denominator.Value);
 		Writable numerator2 = first.denominator is null ? second.numerator : new(second.numerator.Sign, second.numerator.Value * first.denominator.Value);
@@ -195,7 +195,7 @@ public readonly struct Rational
 	/// <param name="numerator">The numerator of the <see cref="Rational"/>.</param>
 	/// <param name="denominator">The denominator of the <see cref="Rational"/>.</param>
 	/// <returns>The simplified numerator and denominator value in a tuple.</returns>
-	private static (Writable Numerator, Positive? Denominator) Simplify(Writable numerator, Positive? denominator)
+	internal static (Writable Numerator, Positive? Denominator) Simplify(Writable numerator, Positive? denominator)
 	{
 		if (denominator is Positive denominatorValue)
 		{
@@ -239,11 +239,11 @@ public readonly struct Rational
 	/// Gets the <see cref="Writable"/> value of the given <see cref="Rational"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/>.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	public static (Writable Value, Writable Remainder) GetValue(Rational value, int? fractionCalculatonLength = null)
+	public static (Writable Value, Writable Remainder) GetValue(Rational value, int? fractionCalculationLength = null)
 	{
-		return (value.denominator is Positive denominator) ? Writable.Divide(value.numerator, new(true, denominator), fractionCalculatonLength) :
+		return (value.denominator is Positive denominator) ? Writable.Divide(value.numerator, new(true, denominator), fractionCalculationLength) :
 			(value.numerator, new Writable());
 	}
 
@@ -370,12 +370,12 @@ public readonly struct Rational
 	/// Raises the given radicand to the second degree.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> that represents the radicand.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="value"/> being negative is not mathematically meaningful.</exception>
-	public static Rational SquareRoot(Rational value, int? fractionCalculatonLength = null)
+	public static Rational SquareRoot(Rational value, int? fractionCalculationLength = null)
 	{
-		return new Rational(Writable.SquareRoot(value.numerator, fractionCalculatonLength).Value, value.denominator);
+		return new Rational(Writable.SquareRoot(value.numerator, fractionCalculationLength).Value, value.denominator);
 	}
 
 	/// <summary>
@@ -383,19 +383,19 @@ public readonly struct Rational
 	/// </summary>
 	/// <param name="left">The <see cref="Rational"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Rational"/> that represents the degree.</param>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException">
 	/// <paramref name="right"/> being a fraction, negative or 0
 	/// -or-
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
-	public static (Rational Value, Rational Remainder) Root(Rational left, Rational right, int? fractionCalculatonLength = null)
+	public static (Rational Value, Rational Remainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
 		if (right.denominator is not null)
 			throw new NotImplementedException();
 
-		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculatonLength);
+		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
 		(Positive Value, Positive Remainder)? denominator = left.denominator is Positive d ? Positive.Root(d, right.Numerator) : null;
 
 		if (right.Sign)
@@ -408,7 +408,7 @@ public readonly struct Rational
 	}
 
 	/// <summary>
-	/// Calculates π until the given <see cref="FractionCalculatonLength"/> using the Chudnovsky-formula with binary splitting.
+	/// Calculates π until the given <see cref="fractionCalculationLength"/> using the Chudnovsky-formula with binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers
@@ -416,9 +416,9 @@ public readonly struct Rational
 	/// <para><see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/></para>
 	/// <para><see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
 	/// </remarks>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns></returns>
-	public static Rational PI(int? fractionCalculatonLength = null) // Chudnovsky formula
+	public static Rational PI(int? fractionCalculationLength = null) // Chudnovsky formula
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
@@ -462,7 +462,7 @@ public readonly struct Rational
 			return (Pab, Qab, Tab);
 		}
 
-		int fCL = fractionCalculatonLength ?? FractionCalculatonLength;
+		int fCL = fractionCalculationLength ?? FractionCalculationLength;
 
 		// how many terms to compute
 		Natural DIGITS_PER_TERM = "13";
@@ -475,12 +475,12 @@ public readonly struct Rational
 	}
 
 	/// <summary>
-	/// Calculates the number e until the given <see cref="FractionCalculatonLength"/> using binary splitting.
+	/// Calculates the number e until the given <see cref="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
-	/// <param name="fractionCalculatonLength">A local variable to override <see cref="FractionCalculatonLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
 	/// <returns></returns>
-	public static Rational E(int? fractionCalculatonLength = null)
+	public static Rational E(int? fractionCalculationLength = null)
 	{
 		static Natural P(Natural a, Natural b)
 		{
@@ -504,7 +504,7 @@ public readonly struct Rational
 			}
 		}
 
-		Natural n = Convert.ToString(fractionCalculatonLength ?? FractionCalculatonLength);
+		Natural n = Convert.ToString(fractionCalculationLength ?? fractionCalculationLength);
 
 		return "1" + new Rational(true, P("0", n), Q("0", n));
 	}

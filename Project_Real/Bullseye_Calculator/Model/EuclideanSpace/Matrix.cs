@@ -142,11 +142,11 @@ public static class Matrix
 	}
 
 	/// <summary>
-	/// Substracts vector <paramref name="b"/> from vector <paramref name="a"/>.
+	/// Subtracts vector <paramref name="b"/> from vector <paramref name="a"/>.
 	/// </summary>
 	/// <param name="a">The vector to be subtracted.</param>
-	/// <param name="b">The substracting vector.</param>
-	/// <returns>The substracted vector.</returns>
+	/// <param name="b">The subtracting vector.</param>
+	/// <returns>The subtracted vector.</returns>
 	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
 	public static Rational[] Subtract(Rational[] a, Rational[] b)
 	{
@@ -299,7 +299,7 @@ public static class Matrix
 	}
 
 	/// <summary>
-	/// Concats matrix <paramref name="B"/> to the side of matrix <paramref name="A"/>.
+	/// Concatenates matrix <paramref name="B"/> to the side of matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>
@@ -329,7 +329,7 @@ public static class Matrix
 	}
 
 	/// <summary>
-	/// Concats matrix <paramref name="B"/> to the bottom of matrix <paramref name="A"/>.
+	/// Concatenates matrix <paramref name="B"/> to the bottom of matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>

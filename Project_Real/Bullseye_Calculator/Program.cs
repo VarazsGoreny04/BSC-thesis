@@ -22,7 +22,7 @@ public class Program
 
 		for (int i = 0; i < iterations; ++i)
 		{
-			Rational.FractionCalculatonLength = 3;
+			Rational.fractionCalculationLength = 3;
 
 			Point2D[] myPoints = [
 				new("1", "3"),
@@ -34,12 +34,12 @@ public class Program
 			];
 
 			Rational[] res = Interpolation.Lagrange(myPoints);
-			Console.WriteLine(Polynom.ToString(res));
+			Console.WriteLine(Polynomial.ToString(res));
 
 			Rational.FractionFormat = false;
 
 			Rational[] points = CoordinateSystem.LinSpace("1", "6", 100);
-			//Console.WriteLine(Matrix.ToString(Polynom.EvaluateRange(res, points)));
+			//Console.WriteLine(Matrix.ToString(Polynomial.EvaluateRange(res, points)));
 
 			sw.Stop();
 			avg += sw.ElapsedTicks;
