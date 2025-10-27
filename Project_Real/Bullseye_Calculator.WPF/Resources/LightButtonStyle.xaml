@@ -1,30 +1,33 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style TargetType="Button" >
-		<!--  x:Key="LightButton"-->
-		<Setter Property="FontFamily" Value="Cambria Math" />
+	<Style TargetType="Button" x:Key="LightButton">
+		<Setter Property="FontFamily" Value="Cascadia Mono" />
 		<Setter Property="FontSize" Value="16" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 		<Setter Property="VerticalAlignment" Value="Stretch" />
 		<Setter Property="Padding" Value="2,2,2,2" />
 		<Setter Property="Margin" Value="2,2,2,2" />
-		<Setter Property="Foreground" Value="WhiteSmoke" />
 		<Setter Property="Border.CornerRadius" Value="5,5,5,5" />
 
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
 					<Border CornerRadius="5" Background="{TemplateBinding Background}">
-						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 
-		<Setter Property="Background" Value="DimGray"/>
+		<Setter Property="Foreground" Value="{StaticResource FontBrush}" />
+		<Setter Property="Background" Value="{StaticResource LightButtonBrush}" />
 		<Style.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
-				<Setter Property="Background" Value="DarkRed"/>
+				<Setter Property="Background" Value="{StaticResource ButtonHoverBrush}" />
+			</Trigger>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Foreground" Value="{StaticResource FontDisabledBrush}" />
+				<Setter Property="Background" Value="{StaticResource ButtonDisabledBrush}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

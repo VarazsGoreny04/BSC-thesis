@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Brush x:Key="BackgroundBrush">#FF232323</Brush>
+	<Brush x:Key="ScreenBrush">Black</Brush>
+
+	<Brush x:Key="LightButtonBrush">DimGray</Brush>
+	<Brush x:Key="DarkButtonBrush">#FF444444</Brush>
+	<Brush x:Key="SpecialButtonBrush">#FF502020</Brush>
+
+	<Brush x:Key="ButtonHoverBrush">DarkRed</Brush>
+	<Brush x:Key="ButtonDisabledBrush">#FF323232</Brush>
+
+	<Brush x:Key="FontBrush">WhiteSmoke</Brush>
+	<Brush x:Key="FontDisabledBrush">Gray</Brush>
+</ResourceDictionary>

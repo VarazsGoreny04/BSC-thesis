@@ -10,15 +10,15 @@ public partial class App : Application
 	private MainWindow menu = null!;
 
 	//private Calculator model;
-	private CalculatorViewModel viewModel;
+	private CalculatorViewModel viewModel = null!;
 	//private DispatcherTimer _timer = null!;
 
 	public App()
 	{
-		Startup += new StartupEventHandler(AppStartup);
+		Startup += new StartupEventHandler(AppStartUp);
 	}
 
-	public void AppStartup(object? sender, StartupEventArgs e)
+	public void AppStartUp(object? sender, StartupEventArgs e)
 	{
 		/*_model.Moving += new EventHandler<SnakeFieldEventArgs>(Moving);
 		_model.EndGame += new EventHandler<SnakeEventArgs>(ScoreAdvanced);*/

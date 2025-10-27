@@ -5,21 +5,48 @@ namespace Bullseye_Calculator.WPF.ViewModel;
 
 public class CalculatorViewModel : ViewModelBase
 {
+	private Mode currentMode;
+
 	private readonly List<string> input;
 	private readonly List<string> evaluation;
 
+	public Mode CurrentMode
+	{
+		get => currentMode;
+		set
+		{
+			currentMode = value;
+
+			OnPropertyChanged(nameof(CurrentMode));
+		}
+	}
+
 	public string Input => string.Join(string.Empty, input);
 	public List<string> Evaluation => evaluation;
+
+	public char Separator
+	{
+		get => Rational.Separator;
+		set
+		{
+			Rational.Separator = value;
+
+			OnPropertyChanged(nameof(Separator));
+		}
+	}
 
 	public DelegateCommand InputCommand { get; private set; }
 	public DelegateCommand BackSpaceCommand { get; private set; }
 	public DelegateCommand ClearCommand { get; private set; }
 	public DelegateCommand EvaluateCommand { get; private set; }
+	public DelegateCommand ChangeModeCommand { get; private set; }
 
 	public CalculatorViewModel()
 	{
 		Rational.WriteSign = false;
 		Rational.FractionalFormat = false;
+
+		CurrentMode = Mode.Standard;
 
 		input = [];
 		evaluation = [];
@@ -28,6 +55,7 @@ public class CalculatorViewModel : ViewModelBase
 		BackSpaceCommand = new DelegateCommand(_ => PopInput());
 		ClearCommand = new DelegateCommand(_ => ClearInput());
 		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
+		ChangeModeCommand = new DelegateCommand(param => CurrentMode = Enum.Parse<Mode>(param?.ToString() ?? throw new FormatException()));
 	}
 
 	public void PushInput(string text)
@@ -49,7 +77,7 @@ public class CalculatorViewModel : ViewModelBase
 	{
 		if (input.Count > 0)
 			input.Clear();
-		
+
 		OnPropertyChanged(nameof(Input));
 	}
 

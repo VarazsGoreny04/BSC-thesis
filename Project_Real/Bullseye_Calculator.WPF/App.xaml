@@ -5,9 +5,11 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Resources/BrushCollector.xaml" />
+				<ResourceDictionary Source="/Resources/LabelStyle.xaml" />
 				<ResourceDictionary Source="/Resources/LightButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/DarkButtonStyle.xaml" />
-				<ResourceDictionary Source="/Resources/LabelStyle.xaml" />
+				<ResourceDictionary Source="/Resources/SpecialButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/ExpanderStyle.xaml" />
 				<ResourceDictionary Source="/Resources/ListViewStyle.xaml" />
 			</ResourceDictionary.MergedDictionaries>

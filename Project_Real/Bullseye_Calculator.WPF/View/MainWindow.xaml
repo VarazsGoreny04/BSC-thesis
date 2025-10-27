@@ -4,9 +4,8 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:Bullseye_Calculator.WPF.View"
-		mc:Ignorable="d"
 		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260"> <!-- Icon="/Icon/icon.ico"> -->
-	<Grid Background="#232323">
+	<Grid Background="{StaticResource BackgroundBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="3*" />
 			<RowDefinition />
@@ -20,19 +19,78 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="4*" />
+				<ColumnDefinition Width="3*" />
+				<ColumnDefinition />
+				<ColumnDefinition />
 				<ColumnDefinition />
 				<ColumnDefinition />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
 			<Expander Grid.Column="0" x:Name="History" Header="Steps" ExpandDirection="Up" />
-			<Button Grid.Column="1" Content="[ ]" />
-			<Button Grid.Column="2" Content="I" />
-			<Button Grid.Column="3" Content="∫" />
+			<Button Grid.Column="1" Content="S" Command="{Binding ChangeModeCommand}" CommandParameter="Standard">
+				<Button.Style>
+					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
+						<Setter Property="IsEnabled" Value="True" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding CurrentMode}" Value="Standard">
+								<Setter Property="IsEnabled" Value="False" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+			<Button Grid.Column="2" Content="[]" Command="{Binding ChangeModeCommand}" CommandParameter="Matrix">
+				<Button.Style>
+					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
+						<Setter Property="IsEnabled" Value="True" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding CurrentMode}" Value="Matrix">
+								<Setter Property="IsEnabled" Value="False" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+			<Button Grid.Column="3" Content="I" Command="{Binding ChangeModeCommand}" CommandParameter="Interpolation">
+				<Button.Style>
+					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
+						<Setter Property="IsEnabled" Value="True" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding CurrentMode}" Value="Interpolation">
+								<Setter Property="IsEnabled" Value="False" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+			<Button Grid.Column="4" Content="∫" Command="{Binding ChangeModeCommand}" CommandParameter="Integral">
+				<Button.Style>
+					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
+						<Setter Property="IsEnabled" Value="True" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding CurrentMode}" Value="Integral">
+								<Setter Property="IsEnabled" Value="False" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
+			<Button Grid.Column="5" Content="⚙️" Command="{Binding ChangeModeCommand}" CommandParameter="Options">
+				<Button.Style>
+				<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
+					<Setter Property="IsEnabled" Value="True" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding CurrentMode}" Value="Options">
+							<Setter Property="IsEnabled" Value="False" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+				</Button.Style>
+			</Button>
 		</Grid>
 
-		<ListView Grid.Row="2" Style="{Binding Source={StaticResource ExpandableList}}" ItemsSource="{Binding Evaluation}" />
+		<ListView Grid.Row="2" Style="{StaticResource ExpandableList}" ItemsSource="{Binding Evaluation}" />
 
 		<Grid Grid.Row="2">
 			<Grid.RowDefinitions>
@@ -51,42 +109,43 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Row="5" Grid.Column="2" Content="0" Command="{Binding InputCommand}" CommandParameter="0" />
-			<Button Grid.Row="4" Grid.Column="1" Content="1" Command="{Binding InputCommand}" CommandParameter="1" />
-			<Button Grid.Row="4" Grid.Column="2" Content="2" Command="{Binding InputCommand}" CommandParameter="2" />
-			<Button Grid.Row="4" Grid.Column="3" Content="3" Command="{Binding InputCommand}" CommandParameter="3" />
-			<Button Grid.Row="3" Grid.Column="1" Content="4" Command="{Binding InputCommand}" CommandParameter="4" />
-			<Button Grid.Row="3" Grid.Column="2" Content="5" Command="{Binding InputCommand}" CommandParameter="5" />
-			<Button Grid.Row="3" Grid.Column="3" Content="6" Command="{Binding InputCommand}" CommandParameter="6" />
-			<Button Grid.Row="2" Grid.Column="1" Content="7" Command="{Binding InputCommand}" CommandParameter="7" />
-			<Button Grid.Row="2" Grid.Column="2" Content="8" Command="{Binding InputCommand}" CommandParameter="8" />
-			<Button Grid.Row="2" Grid.Column="3" Content="9" Command="{Binding InputCommand}" CommandParameter="9" />
+			<Button Grid.Row="5" Grid.Column="2" Content="0" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="0" />
+			<Button Grid.Row="4" Grid.Column="1" Content="1" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="1" />
+			<Button Grid.Row="4" Grid.Column="2" Content="2" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="2" />
+			<Button Grid.Row="4" Grid.Column="3" Content="3" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="3" />
+			<Button Grid.Row="3" Grid.Column="1" Content="4" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="4" />
+			<Button Grid.Row="3" Grid.Column="2" Content="5" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="5" />
+			<Button Grid.Row="3" Grid.Column="3" Content="6" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="6" />
+			<Button Grid.Row="2" Grid.Column="1" Content="7" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="7" />
+			<Button Grid.Row="2" Grid.Column="2" Content="8" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="8" />
+			<Button Grid.Row="2" Grid.Column="3" Content="9" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter="9" />
 
-			<Button Grid.Row="0" Grid.Column="5" Content="%" Command="{Binding InputCommand}" CommandParameter="%" />
-			<Button Grid.Row="1" Grid.Column="5" Content="/" Command="{Binding InputCommand}" CommandParameter="/" />
-			<Button Grid.Row="2" Grid.Column="5" Content="×" Command="{Binding InputCommand}" CommandParameter="*" />
-			<Button Grid.Row="3" Grid.Column="5" Content="–" Command="{Binding InputCommand}" CommandParameter="-" />
-			<Button Grid.Row="4" Grid.Column="5" Content="+" Command="{Binding InputCommand}" CommandParameter="+" />
-			<Button Grid.Row="5" Grid.Column="5" Content="=" Command="{Binding EvaluateCommand}" />
-			<!--CommandParameter="="-->
+			<Button Grid.Row="0" Grid.Column="5" Content="%" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="%" />
+			<Button Grid.Row="1" Grid.Column="5" Content="/" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="/" />
+			<Button Grid.Row="2" Grid.Column="5" Content="×" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="*" />
+			<Button Grid.Row="3" Grid.Column="5" Content="–" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="-" />
+			<Button Grid.Row="4" Grid.Column="5" Content="+" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="+" />
+			<Button Grid.Row="5" Grid.Column="5" Content="=" Style="{StaticResource SpecialButton}" Command="{Binding EvaluateCommand}" />
 
-			<Button Grid.Row="5" Grid.Column="1" Content="␣" Command="{Binding InputCommand}" CommandParameter=" " />
-			<Button Grid.Row="5" Grid.Column="3" Content="." Command="{Binding InputCommand}" CommandParameter="." />
-			<Button Grid.Row="0" Grid.Column="1" Content="(" Command="{Binding InputCommand}" CommandParameter="(" />
-			<Button Grid.Row="0" Grid.Column="2" Content=")" Command="{Binding InputCommand}" CommandParameter=")" />
+			<Button Grid.Row="5" Grid.Column="1" Content="␣" Style="{StaticResource LightButton}" Command="{Binding InputCommand}" CommandParameter=" " />
+			<Button Grid.Row="5" Grid.Column="3" Content="{Binding Separator}" Command="{Binding InputCommand}" Style="{StaticResource LightButton}" 
+			CommandParameter="{Binding Separator}" />
 
-			<Button Grid.Row="0" Grid.Column="0" Content="x²" Command="{Binding InputCommand}" CommandParameter="^2" />
-			<Button Grid.Row="1" Grid.Column="0" Content="xⁿ" Command="{Binding InputCommand}" CommandParameter="^" />
-			<Button Grid.Row="2" Grid.Column="0" Content="!x" Command="{Binding InputCommand}" CommandParameter="!" />
-			<Button Grid.Row="3" Grid.Column="0" Content="√x" Command="{Binding InputCommand}" CommandParameter="2|" />
-			<Button Grid.Row="4" Grid.Column="0" Content="ⁿ√x" Command="{Binding InputCommand}" CommandParameter="|" />
-			<Button Grid.Row="5" Grid.Column="0" Content="|x|" Command="{Binding InputCommand}" CommandParameter="abs("/>
+			<Button Grid.Row="0" Grid.Column="1" Content="(" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="(" />
+			<Button Grid.Row="0" Grid.Column="2" Content=")" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter=")" />
 
-			<Button Grid.Row="1" Grid.Column="1" Content="π" Command="{Binding InputCommand}" CommandParameter="pi" />
-			<Button Grid.Row="1" Grid.Column="2" Content="e" Command="{Binding InputCommand}" CommandParameter="e" />
+			<Button Grid.Row="0" Grid.Column="0" Content="x²" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^2" />
+			<Button Grid.Row="1" Grid.Column="0" Content="xⁿ" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^" />
+			<Button Grid.Row="2" Grid.Column="0" Content="!x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="fact(" />
+			<Button Grid.Row="3" Grid.Column="0" Content="√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="2|" />
+			<Button Grid.Row="4" Grid.Column="0" Content="ⁿ√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="|" />
+			<Button Grid.Row="5" Grid.Column="0" Content="|x|" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="abs("/>
 
-			<Button Grid.Row="0" Grid.Column="3" Content="C" Command="{Binding ClearCommand}" />
-			<Button Grid.Row="1" Grid.Column="3" Content="⇦" Command="{Binding BackSpaceCommand}" />
+			<Button Grid.Row="1" Grid.Column="1" Content="π" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="pi" />
+			<Button Grid.Row="1" Grid.Column="2" Content="e" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="e" />
+
+			<Button Grid.Row="0" Grid.Column="3" Content="C" Style="{StaticResource DarkButton}" Command="{Binding ClearCommand}" />
+			<Button Grid.Row="1" Grid.Column="3" Content="⇦" Style="{StaticResource DarkButton}" Command="{Binding BackSpaceCommand}" />
 		</Grid>
 	</Grid>
 </Window>
