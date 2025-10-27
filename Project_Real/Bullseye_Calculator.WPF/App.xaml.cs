@@ -1,13 +1,16 @@
-﻿using Bullseye_Calculator.View;
-using System.ComponentModel;
+﻿using Bullseye_Calculator.Model.Standard;
+using Bullseye_Calculator.WPF.View;
+using Bullseye_Calculator.WPF.ViewModel;
 using System.Windows;
-using System.Windows.Threading;
 
-namespace Bullseye_Calculator;
+namespace Bullseye_Calculator.WPF;
 
 public partial class App : Application
 {
-	private MainWindow _menu = null!;
+	private MainWindow menu = null!;
+
+	//private Calculator model;
+	private CalculatorViewModel viewModel;
 	//private DispatcherTimer _timer = null!;
 
 	public App()
@@ -17,18 +20,17 @@ public partial class App : Application
 
 	public void AppStartup(object? sender, StartupEventArgs e)
 	{
-		/*_model = new SnakeGameModel(new SnakeFileDataAccess());
-		_model.Moving += new EventHandler<SnakeFieldEventArgs>(Moving);
-		_model.EndGame += new EventHandler<SnakeEventArgs>(ScoreAdvanced);
+		/*_model.Moving += new EventHandler<SnakeFieldEventArgs>(Moving);
+		_model.EndGame += new EventHandler<SnakeEventArgs>(ScoreAdvanced);*/
 
-		_viewModel = new SnakeViewModel(_model);
-		_viewModel.NewGame += new EventHandler(NewGame);
+		viewModel = new CalculatorViewModel();
+		/*_viewModel.NewGame += new EventHandler(NewGame);
 		_viewModel.Resume += new EventHandler(Resume);
 		_viewModel.Pause += new EventHandler(Pause);*/
 
-		_menu = new MainWindow { /*DataContext = _viewModel*/ };
+		menu = new MainWindow { DataContext = viewModel };
 		//_menu.Closing += new CancelEventHandler(Closing);
-		_menu.Show();
+		menu.Show();
 
 		/*_game = new GameWindow { DataContext = _viewModel };
 		_game.Closing += new CancelEventHandler(Closing);

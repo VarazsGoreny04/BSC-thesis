@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Bullseye_Calculator.WPF.ViewModel
+namespace Bullseye_Calculator.WPF.ViewModel;
+
+public abstract class ViewModelBase : INotifyPropertyChanged
 {
-	public abstract class ViewModelBase : INotifyPropertyChanged
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected ViewModelBase() { }
+
+	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 	{
-		public event PropertyChangedEventHandler? PropertyChanged;
-
-		protected ViewModelBase() { }
-
-		protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 }

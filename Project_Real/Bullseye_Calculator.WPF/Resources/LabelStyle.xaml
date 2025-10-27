@@ -20,4 +20,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style TargetType="TextBlock">
+		<Setter Property="TextWrapping" Value="Wrap" />
+	</Style>
 </ResourceDictionary>

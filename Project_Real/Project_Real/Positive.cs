@@ -24,9 +24,7 @@ public readonly struct Positive
 	/// <summary>
 	/// Gets or sets the character the <see cref="ToString"/> method should use as separator.
 	/// </summary>
-	/// <exception cref="ArgumentException">
-	/// <param name="value"/> cannot be a number character.
-	/// </exception>
+	/// <exception cref="ArgumentException"><param name="value"/> cannot be a number character.</exception>
 	public static char Separator
 	{
 		get => separator;
@@ -36,9 +34,7 @@ public readonly struct Positive
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.
 	/// </summary>
-	/// <exception cref="ArgumentException">
-	/// <param name="value"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="ArgumentException"><param name="value"/> cannot be less than 0.</exception>
 	public static int FractionCalculationLength
 	{
 		get => fractionCalculationLength;
@@ -69,9 +65,7 @@ public readonly struct Positive
 	public readonly ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException">
-	/// <paramref name="index"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
 	public readonly Digit this[Index i] => value.Digits[i];
 
 	#endregion
@@ -272,7 +266,7 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="left">The <see cref="Positive"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the denominator.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Positive Value, Positive Remainder) Divide(Positive left, Positive right, int? fractionCalculationLength = null)
@@ -316,7 +310,7 @@ public readonly struct Positive
 	/// Raises the given radicand to the second degree.
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> that represents the radicand.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculationLength = null)
 	{
@@ -344,7 +338,7 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="left">The <see cref="Positive"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as it is not mathematically meaningful.</exception>
 	/// <exception cref="NotSupportedException">

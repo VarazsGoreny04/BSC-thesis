@@ -239,7 +239,7 @@ public readonly struct Rational
 	/// Gets the <see cref="Writable"/> value of the given <see cref="Rational"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/>.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Writable Value, Writable Remainder) GetValue(Rational value, int? fractionCalculationLength = null)
 	{
@@ -370,7 +370,7 @@ public readonly struct Rational
 	/// Raises the given radicand to the second degree.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> that represents the radicand.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="value"/> being negative is not mathematically meaningful.</exception>
 	public static Rational SquareRoot(Rational value, int? fractionCalculationLength = null)
@@ -383,7 +383,7 @@ public readonly struct Rational
 	/// </summary>
 	/// <param name="left">The <see cref="Rational"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Rational"/> that represents the degree.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="fractionCalculationLength"/> just for this method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException">
 	/// <paramref name="right"/> being a fraction, negative or 0

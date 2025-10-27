@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bullseye_Calculator\Bullseye_Calculator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Resources\ListViewStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
