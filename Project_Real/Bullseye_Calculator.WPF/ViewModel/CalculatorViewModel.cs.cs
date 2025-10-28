@@ -1,14 +1,17 @@
 ﻿using Bullseye_Calculator.Model.Standard;
 using Project_Real;
+using System.Collections.ObjectModel;
 
 namespace Bullseye_Calculator.WPF.ViewModel;
 
 public class CalculatorViewModel : ViewModelBase
 {
+	private bool start;
 	private Mode currentMode;
 
 	private readonly List<string> input;
-	private readonly List<string> evaluation;
+	private string result;
+	private readonly ObservableCollection<string> evaluation;
 
 	public Mode CurrentMode
 	{
@@ -20,10 +23,18 @@ public class CalculatorViewModel : ViewModelBase
 			OnPropertyChanged(nameof(CurrentMode));
 		}
 	}
-
 	public string Input => string.Join(string.Empty, input);
-	public List<string> Evaluation => evaluation;
+	public string Result
+	{
+		get => result;
+		set
+		{
+			result = value;
 
+			OnPropertyChanged(nameof(Result));
+		}
+	}
+	public ObservableCollection<string> Evaluation => evaluation;
 	public char Separator
 	{
 		get => Rational.Separator;
@@ -47,8 +58,10 @@ public class CalculatorViewModel : ViewModelBase
 		Rational.FractionalFormat = false;
 
 		CurrentMode = Mode.Standard;
+		start = true;
 
 		input = [];
+		result = string.Empty;
 		evaluation = [];
 
 		InputCommand = new DelegateCommand(param => PushInput(param?.ToString() ?? throw new FormatException()));
@@ -61,65 +74,64 @@ public class CalculatorViewModel : ViewModelBase
 	public void PushInput(string text)
 	{
 		input.Add(text);
-
 		OnPropertyChanged(nameof(Input));
+
+		if (start)
+		{
+			Result = string.Empty;
+
+			evaluation.Clear();
+			OnPropertyChanged(nameof(Evaluation));
+
+			start = false;
+		}
 	}
 
 	public void PopInput()
 	{
 		if (input.Count > 0)
+		{
 			input.RemoveAt(input.Count - 1);
-
-		OnPropertyChanged(nameof(Input));
+			OnPropertyChanged(nameof(Input));
+		}
 	}
 
 	public void ClearInput()
 	{
-		if (input.Count > 0)
-			input.Clear();
-
+		input.Clear();
 		OnPropertyChanged(nameof(Input));
+
+		start = true;
 	}
 
 	public void CalculateByInput()
 	{
-		if (input.Count > 0)
+		if (!start)
 		{
 			try
 			{
 				ValueHolder valueHolder = Calculator.Evaluate(Input);
 
-				ResultToString(valueHolder);
-
 				FullEvaluationToString(Calculator.FullEvaluation(valueHolder));
+
+				string result = valueHolder.Value.ToString();
+
+				Result = $"={result}";
+
+				input.Clear();
+				input.Add(result);
 			}
 			catch (FormatException e)
 			{
-				input.Clear();
-				input.Add(e.Message);
-
-				OnPropertyChanged(nameof(Input));
-
-				input.Clear();
+				Result = e.Message;
 			}
+
+			start = true;
 		}
-	}
-
-	private void ResultToString(ValueHolder valueHolder)
-	{
-		input.Clear();
-		input.Add($"{valueHolder}\n={valueHolder.Value}");
-
-		OnPropertyChanged(nameof(Input));
-
-		input.Clear();
-		input.Add(valueHolder.Value.ToString());
 	}
 
 	private void FullEvaluationToString(List<(string Calculation, string State)> evaluation)
 	{
-		this.evaluation.Clear();
-
 		if (evaluation.Count > 0)
 		{
 			int maxLength = evaluation.Max(step => step.Calculation.Length);

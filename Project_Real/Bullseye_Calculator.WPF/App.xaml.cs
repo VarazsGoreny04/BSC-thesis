@@ -13,10 +13,7 @@ public partial class App : Application
 	private CalculatorViewModel viewModel = null!;
 	//private DispatcherTimer _timer = null!;
 
-	public App()
-	{
-		Startup += new StartupEventHandler(AppStartUp);
-	}
+	public App() => Startup += new StartupEventHandler(AppStartUp);
 
 	public void AppStartUp(object? sender, StartupEventArgs e)
 	{

@@ -12,6 +12,7 @@
 				<ResourceDictionary Source="/Resources/SpecialButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/ExpanderStyle.xaml" />
 				<ResourceDictionary Source="/Resources/ListViewStyle.xaml" />
+				<ResourceDictionary Source="/Resources/RoundedBorderStyle.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

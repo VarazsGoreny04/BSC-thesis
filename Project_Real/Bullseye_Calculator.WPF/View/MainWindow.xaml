@@ -3,8 +3,10 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:Bullseye_Calculator.WPF.View"
-		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260"> <!-- Icon="/Icon/icon.ico"> -->
+		xmlns:viewmodel="clr-namespace:Bullseye_Calculator.WPF.ViewModel"
+		d:DataContext="{d:DesignInstance Type=viewmodel:CalculatorViewModel}"
+		mc:Ignorable="d"
+		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260" >
 	<Grid Background="{StaticResource BackgroundBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="3*" />
@@ -12,7 +14,17 @@
 			<RowDefinition Height="6*" />
 		</Grid.RowDefinitions>
 
-		<Label Grid.Row="0" Content="{Binding Input}" />
+		<Border Style="{StaticResource RoundedBorderStyle}" >
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="2*" />
+					<RowDefinition Height="1*" />
+				</Grid.RowDefinitions>
+
+				<Label Grid.Row="0" Content="{Binding Input}" />
+				<Label Grid.Row="1" Content="{Binding Result}" />
+			</Grid>
+		</Border>
 
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>
@@ -27,11 +39,10 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Expander Grid.Column="0" x:Name="History" Header="Steps" ExpandDirection="Up" />
+			<Expander Grid.Column="0" x:Name="Steps" Header="Steps" ExpandDirection="Down" />
 			<Button Grid.Column="1" Content="S" Command="{Binding ChangeModeCommand}" CommandParameter="Standard">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
-						<Setter Property="IsEnabled" Value="True" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding CurrentMode}" Value="Standard">
 								<Setter Property="IsEnabled" Value="False" />
@@ -43,7 +54,6 @@
 			<Button Grid.Column="2" Content="[]" Command="{Binding ChangeModeCommand}" CommandParameter="Matrix">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
-						<Setter Property="IsEnabled" Value="True" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding CurrentMode}" Value="Matrix">
 								<Setter Property="IsEnabled" Value="False" />
@@ -55,7 +65,6 @@
 			<Button Grid.Column="3" Content="I" Command="{Binding ChangeModeCommand}" CommandParameter="Interpolation">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
-						<Setter Property="IsEnabled" Value="True" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding CurrentMode}" Value="Interpolation">
 								<Setter Property="IsEnabled" Value="False" />
@@ -67,7 +76,6 @@
 			<Button Grid.Column="4" Content="∫" Command="{Binding ChangeModeCommand}" CommandParameter="Integral">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
-						<Setter Property="IsEnabled" Value="True" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding CurrentMode}" Value="Integral">
 								<Setter Property="IsEnabled" Value="False" />
@@ -90,7 +98,7 @@
 			</Button>
 		</Grid>
 
-		<ListView Grid.Row="2" Style="{StaticResource ExpandableList}" ItemsSource="{Binding Evaluation}" />
+		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" />
 
 		<Grid Grid.Row="2">
 			<Grid.RowDefinitions>
