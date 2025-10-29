@@ -6,7 +6,7 @@ namespace Project_Real;
 /// <summary>
 /// Represents an integer number.
 /// </summary>
-public readonly struct Integer
+public class Integer
 {
 	#region Fields
 
@@ -29,13 +29,13 @@ public readonly struct Integer
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
-	public readonly int Length => value.Length;
+	public int Length => value.Length;
 
 	/// <summary>
 	/// Returns whether <see langword="this"/> is equal to 0.
 	/// </summary>
 	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
-	public readonly bool IsZero => value.IsZero;
+	public bool IsZero => value.IsZero;
 
 	/// <summary>
 	/// The sign of <see langword="this"/> <see cref="Positive"/> represented by a boolean.
@@ -47,11 +47,11 @@ public readonly struct Integer
 	public Natural Value => value;
 
 	/// <returns>The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
-	public readonly ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public readonly Digit this[Index index] => value.Digits[index];
+	public Digit this[Index index] => value.Digits[index];
 
 	#endregion
 
@@ -255,7 +255,7 @@ public readonly struct Integer
 	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Integer"/> and equal to the value of <see langword="this"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public override readonly bool Equals(object? obj) => obj is Integer integer && this == integer;
+	public override bool Equals(object? obj) => obj is Integer integer && this == integer;
 
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.

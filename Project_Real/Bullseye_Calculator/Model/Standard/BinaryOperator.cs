@@ -27,20 +27,22 @@ public abstract class BinaryOperator : Operator
 	{
 		Left?.FullEvaluation(ref partialValues, root, ref step);
 		Right?.FullEvaluation(ref partialValues, root, ref step);
-		++step;
 
-		int depthCopy = step;
+		int stepCopy = ++step;
 
-		partialValues.Add(($"{(Left is ValueHolder l ? $"({l.Value})" : "")}{Sign()}({Right?.Value}) == {Value}",
-			root.ToStringByStep(ref depthCopy)));
+		if (Left?.Value is Rational left)
+		{
+			Rational right = Right?.Value ?? throw new FormatException();
+			partialValues.Add(($"{ParenthesizeIfSigned(left)}{Sign()}{ParenthesizeIfSigned(right)} = {Value}", root.ToStringByStep(ref stepCopy)));
+		}
 	}
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
 	public override string ToStringByStep(ref int step)
 	{
 		string left = $"{Left?.ToStringByStep(ref step) ?? ""}{Sign()}";
-		string rigth = Right.ToStringByStep(ref step);
+		string right = $"{Right.ToStringByStep(ref step)}";
 
-		return --step <= 0 ? left + rigth : $"({Value})";
+		return --step <= 0 ? left + right : Value.ToString();
 	}
 }
 

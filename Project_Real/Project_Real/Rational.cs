@@ -5,7 +5,7 @@ namespace Project_Real;
 /// <summary>
 /// Represents a rational number.
 /// </summary>
-public readonly struct Rational
+public class Rational
 {
 	#region Fields
 
@@ -157,7 +157,7 @@ public readonly struct Rational
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? d : null as Writable?)) { }
+	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? new Writable(true, d) : null)) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <paramref name="sign"/>, <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -204,7 +204,7 @@ public readonly struct Rational
 			Positive resultNumerator = new(numerator.Value.Value / gCD, Math.Max(numerator.FractionLength - denominatorValue.FractionLength, 0));
 			Positive resultDenominator = new(denominatorValue.Value / gCD, Math.Max(denominatorValue.FractionLength - numerator.FractionLength, 0));
 
-			return (new Writable(numerator.Sign, resultNumerator), (resultDenominator == "1" ? null as Positive? : resultDenominator));
+			return (new Writable(numerator.Sign, resultNumerator), (resultDenominator == "1" ? null : resultDenominator));
 		}
 		else
 			return (numerator, null);
@@ -373,9 +373,12 @@ public readonly struct Rational
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="value"/> being negative is not mathematically meaningful.</exception>
-	public static Rational SquareRoot(Rational value, int? fractionCalculationLength = null)
+	public static (Rational Value, Rational Remainder) SquareRoot(Rational value, int? fractionCalculationLength = null)
 	{
-		return new Rational(Writable.SquareRoot(value.numerator, fractionCalculationLength).Value, value.denominator);
+		(Writable Value, Writable Remainder) numerator = Writable.SquareRoot(value.numerator, fractionCalculationLength);
+		(Positive Value, Positive Remainder)? denominator = value.denominator is Positive d ? Positive.SquareRoot(d, fractionCalculationLength) : null;
+
+		return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
 	}
 
 	/// <summary>
@@ -505,7 +508,7 @@ public readonly struct Rational
 		}
 
 		Natural n = new((uint)Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0));
-
+		
 		return "1" + new Rational(true, P("0", n), Q("0", n));
 	}
 
@@ -517,7 +520,7 @@ public readonly struct Rational
 	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Rational"/> and equal to the value of <see langword="this"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public override readonly bool Equals(object? obj) => obj is Rational real && this == real;
+	public override bool Equals(object? obj) => obj is Rational real && this == real;
 
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
@@ -543,7 +546,7 @@ public readonly struct Rational
 	public static Rational operator /(Rational left, Rational right) => Divide(left, right);
 	public static Rational operator %(Rational left, Rational right) => new(GetValue(left / right, 0).Remainder);
 	public static Rational operator ^(Rational left, Rational right) => Power(left, right);
-	public static Rational operator ~(Rational value) => SquareRoot(value);
+	public static Rational operator ~(Rational value) => SquareRoot(value).Value;
 	public static Rational operator |(Rational left, Rational right) => Root(right, left).Value;
 
 	#endregion

@@ -6,7 +6,7 @@ namespace Project_Real;
 /// <summary>
 /// Represents an unsigned number.
 /// </summary>
-public readonly struct Positive
+public class Positive
 {
 	#region Fields
 
@@ -42,19 +42,19 @@ public readonly struct Positive
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Positive"/>.</returns>
-	public readonly int Length => length;
+	public int Length => length;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the whole part of <see langword="this"/> <see cref="Positive"/>.</returns>
-	public readonly int WholeLength => length - fractionLength;
+	public int WholeLength => length - fractionLength;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the fraction part of <see langword="this"/> <see cref="Positive"/>.</returns>
-	public readonly int FractionLength => fractionLength;
+	public int FractionLength => fractionLength;
 
 	/// <summary>
 	/// Returns whether <see langword="this"/> is equal to 0.
 	/// </summary>
 	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
-	public readonly bool IsZero => value.IsZero;
+	public bool IsZero => value.IsZero;
 
 	/// <returns>The <see cref="Natural"/> used to represent <see langword="this"/> <see cref="Positive"/> without indicating the decimal separator.</returns>
 	public Natural Value => value;
@@ -62,11 +62,11 @@ public readonly struct Positive
 	/// <returns>
 	/// The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Positive"/> without indicating the decimal separator.
 	/// </returns>
-	public readonly ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public readonly Digit this[Index i] => value.Digits[i];
+	public Digit this[Index i] => value.Digits[i];
 
 	#endregion
 
@@ -180,9 +180,9 @@ public readonly struct Positive
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> instance.</param>
 	/// <returns>The whole value.</returns>
-	public static Positive GetWhole(Positive value)
+	public static Natural GetWhole(Positive value)
 	{
-		return value.fractionLength >= value.Digits.Length ? new Natural([.. value.Digits[(^value.WholeLength)..]]) : new Positive();
+		return value.fractionLength >= value.Digits.Length ? new Natural([.. value.Digits[(^value.WholeLength)..]]) : new Natural();
 	}
 
 	/// <summary>
@@ -390,7 +390,7 @@ public readonly struct Positive
 	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Positive"/> and equal to the value of <see langword="this"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public override readonly bool Equals(object? obj) => obj is Positive positive && this == positive;
+	public override bool Equals(object? obj) => obj is Positive positive && this == positive;
 
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.

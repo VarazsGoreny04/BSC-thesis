@@ -1,31 +1,13 @@
 ﻿using System;
 using Project_Real;
-using System.Collections.Immutable;
+using System.Linq;
 
 namespace Test;
 
 [TestClass]
 public class DigitTest
 {
-	private readonly ImmutableArray<bool>[] binary =
-	[
-		[false, false, false, false],	// 0
-		[true, false, false, false],	// 1
-		[false, true, false, false],	// 2
-		[true, true, false, false], 	// 3
-		[false, false, true, false],	// 4
-		[true, false, true, false], 	// 5
-		[false, true, true, false], 	// 6
-		[true, true, true, false],  	// 7
-		[false, false, false, true],	// 8
-		[true, false, false, true], 	// 9
-		[false, true, false, true], 	// 10
-		[true, true, false, true],  	// 11
-		[false, false, true, true], 	// 12
-		[true, false, true, true],  	// 13
-		[false, true, true, true],  	// 14
-		[true, true, true, true],   	// 15
-	];
+	private readonly byte[] binary = [.. Enumerable.Range(0, 16).Select(x => (byte)x)];
 
 	private static char ToChar(int num)
 	{
@@ -37,8 +19,8 @@ public class DigitTest
 	{
 		Digit digit = new();
 
-		for (int j = Digit.LENGTH - 1; j >= 0; --j)
-			Assert.AreEqual(binary[0][j], digit[j]);
+		/*for (int j = Digit.LENGTH - 1; j >= 0; --j)
+			Assert.AreEqual(binary[0][j], digit[j]);*/
 
 		Assert.AreEqual(Digit.ZERO, digit);
 	}
@@ -53,8 +35,10 @@ public class DigitTest
 		{
 			Digit digit = new(ToChar(i));
 
-			for (int j = Digit.LENGTH - 1; j >= 0; --j)
-				Assert.AreEqual(binary[i][j], digit[j]);
+			/*for (int j = Digit.LENGTH - 1; j >= 0; --j)
+				Assert.AreEqual(binary[i][j], digit[j]);*/
+
+			Assert.AreEqual(binary[i], digit);
 		}
 	}
 
@@ -113,7 +97,7 @@ public class DigitTest
 		array = Digit.TrimEnd(array);
 
 		Assert.AreEqual(valuableLength, array.Length);
-		
+
 		foreach (Digit digit in array)
 			Assert.AreNotEqual(digit, Digit.ZERO);
 

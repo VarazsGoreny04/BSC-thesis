@@ -6,7 +6,7 @@ namespace Project_Real;
 /// <summary>
 /// Represents a signed number.
 /// </summary>
-public readonly struct Writable
+public class Writable
 {
 	#region Fields
 
@@ -49,37 +49,37 @@ public readonly struct Writable
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Writable"/>.</returns>
-	public readonly int Length => value.Length;
+	public int Length => value.Length;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the whole part of <see langword="this"/> <see cref="Writable"/>.</returns>
-	public readonly int WholeLength => value.WholeLength;
+	public int WholeLength => value.WholeLength;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent the fraction part of <see langword="this"/> <see cref="Writable"/>.</returns>
-	public readonly int FractionLength => value.FractionLength;
+	public int FractionLength => value.FractionLength;
 
 	/// <summary>
 	/// Returns whether <see langword="this"/> is equal to 0.
 	/// </summary>
 	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
-	public readonly bool IsZero => value.IsZero;
+	public bool IsZero => value.IsZero;
 
 	/// <summary>
 	/// The sign of <see langword="this"/> <see cref="Positive"/> represented by a boolean.
 	/// </summary>
 	/// <returns><see langword="true"/> if the sign is +; <see langword="false"/> if the sign is -.</returns>
-	public readonly bool Sign => sign;
+	public bool Sign => sign;
 
 	/// <returns>The <see cref="Positive"/> used to represent <see langword="this"/> <see cref="Writable"/> without indicating the decimal separator.</returns>
-	public readonly Positive Value => value;
+	public Positive Value => value;
 
 	/// <returns>
 	/// The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Writable"/> without indicating the decimal separator.
 	/// </returns>
-	public readonly ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public readonly Digit this[Index i] => value.Digits[i];
+	public Digit this[Index i] => value.Digits[i];
 
 	#endregion
 
@@ -290,7 +290,7 @@ public readonly struct Writable
 	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Writable"/> and equal to the value of <see langword="this"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public override readonly bool Equals(object? obj) => obj is Writable writable && this == writable;
+	public override bool Equals(object? obj) => obj is Writable writable && this == writable;
 
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.

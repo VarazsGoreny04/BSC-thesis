@@ -135,9 +135,9 @@ public class CalculatorViewModel : ViewModelBase
 		if (evaluation.Count > 0)
 		{
 			int maxLength = evaluation.Max(step => step.Calculation.Length);
-			evaluation.ForEach(step => this.evaluation.Add($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}\t{step.State}"));
-		}
+			evaluation.ForEach(step => this.evaluation.Add($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}  ─→  {step.State}"));
 
-		OnPropertyChanged(nameof(Evaluation));
+			OnPropertyChanged(nameof(Evaluation));
+		}
 	}
 }

@@ -7,7 +7,7 @@ namespace Project_Real;
 /// <summary>
 /// Represents a natural number using a <see cref="Digit"/> array.
 /// </summary>
-public readonly struct Natural
+public class Natural
 {
 	#region Fields
 
@@ -33,7 +33,7 @@ public readonly struct Natural
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public readonly Digit this[Index index] => digits[index];
+	public Digit this[Index index] => digits[index];
 
 	#endregion
 
@@ -577,7 +577,7 @@ public readonly struct Natural
 	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Natural"/> and equal to the value of <see langword="this"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public override readonly bool Equals(object? obj) => obj is Natural natural && this == natural;
+	public override bool Equals(object? obj) => obj is Natural natural && this == natural;
 
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.

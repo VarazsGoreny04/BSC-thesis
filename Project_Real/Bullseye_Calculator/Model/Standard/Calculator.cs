@@ -14,29 +14,52 @@ public static partial class Calculator
 		public Func<string, Expression> Function => function;
 	}
 
-	private static readonly Regex sWhitespace = new(@"\s+");
 	private static readonly RegexToken[] regexTokens =
 	[
 		// Rational number
 		new(null!, s => new Number(s)),
 		// Function name
-		new(new(@"^[\p{Ll}\p{Lu}]+$"), _ => new PI()),
+		new(FunctionRegex(), _ => new PI()),
 		// Operators
-		new(new(@"^\+$"), _ => new Add()),
-		new(new(@"^\-$"), _ => new Subtract()),
-		new(new(@"^\*$"), _ => new Multiply()),
-		new(new(@"^\/$"), _ => new Divide()),
-		new(new(@"^\^$"), _ => new Power()),
-		new(new(@"^\|$"), _ => new Root()),
-		new(new(@"^\($"), _ => new OpeningParenthesis()),
-		new(new(@"^\)$"), _ => new ClosingParenthesis()),
-		/*new(new("^==$"), Function.GetTree), 
-		new(new("^<=$"), Function.GetTree), 
-		new(new("^>=$"), Function.GetTree), 
-		new(new("^<$"), Function.GetTree), 
-		new(new("^>$"), Function.GetTree),
-		new(new("^=$"), Function.GetTree)*/
+		new(AddRegex(), _ => new Add()),
+		new(SubtractRegex(), _ => new Subtract()),
+		new(MultiplyRegex(), _ => new Multiply()),
+		new(DivideRegex(), _ => new Divide()),
+		new(PowerRegex(), _ => new Power()),
+		new(RootRegex(), _ => new Root()),
+		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
+		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis()),
 	];
+
+	[GeneratedRegex(@"\s+")]
+	private static partial Regex WhitespaceRegex();
+
+	[GeneratedRegex(@"^[\p{Ll}\p{Lu}]+$")]
+	private static partial Regex FunctionRegex();
+
+	[GeneratedRegex(@"^\+$", RegexOptions.Compiled)]
+	private static partial Regex AddRegex();
+
+	[GeneratedRegex(@"^\-$")]
+	private static partial Regex SubtractRegex();
+
+	[GeneratedRegex(@"^\*$")]
+	private static partial Regex MultiplyRegex();
+
+	[GeneratedRegex(@"^\/$")]
+	private static partial Regex DivideRegex();
+
+	[GeneratedRegex(@"^\^$")]
+	private static partial Regex PowerRegex();
+
+	[GeneratedRegex(@"^\|$")]
+	private static partial Regex RootRegex();
+
+	[GeneratedRegex(@"^\($")]
+	private static partial Regex OpeningParenthesisRegex();
+
+	[GeneratedRegex(@"^\)$")]
+	private static partial Regex ClosingParenthesisRegex();
 
 	private static RegexToken[] Tokens
 	{
@@ -54,7 +77,7 @@ public static partial class Calculator
 		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
 	}
 
-	public static string RemoveWhitespaces(string input) => sWhitespace.Replace(input, "");
+	public static string RemoveWhitespaces(string input) => WhitespaceRegex().Replace(input, "");
 
 	public static List<Expression> Parse(string whitespacelessInput)
 	{

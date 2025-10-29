@@ -66,7 +66,7 @@ public static class Matrix
 		for (int i = a.Length; i >= 0; --i)
 			result += Rational.SecondPower(a[i]);
 
-		return Rational.SquareRoot(result);
+		return ~result;
 	}
 
 	/// <summary>

@@ -29,7 +29,7 @@ public abstract class Point
 	/// Returns a string that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Point"/> as a <see langword="string"/>.</returns>
-	public override string ToString() => $"({string.Join(", ", values)})";
+	public override string ToString() => $"({string.Join(", ", values as object?[])})";
 
 	public override bool Equals(object? obj) => obj is Point point && values.Length == point.values.Length && values.Zip(point.values).All(x => x.First == x.Second);
 
@@ -101,7 +101,7 @@ public class Point2D : Point
 	/// <param name="a">The first <see cref="Point2D"/>.</param>
 	/// <param name="b">The second <see cref="Point2D"/>.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Rational Distance(Point2D a, Point2D b) => Rational.SquareRoot( Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y));
+	public static Rational Distance(Point2D a, Point2D b) => ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y));
 
 	#endregion
 
@@ -179,7 +179,7 @@ public class Point3D : Point2D
 	/// <returns>The result of the calculation.</returns>
 	public static Rational Distance(Point3D a, Point3D b)
 	{
-		return Rational.SquareRoot(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y) + Rational.SecondPower(a.Z - b.Z));
+		return ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y) + Rational.SecondPower(a.Z - b.Z));
 	}
 
 	#endregion

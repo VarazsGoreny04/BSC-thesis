@@ -10,6 +10,6 @@ public partial class MainWindow : Window
 		InitializeComponent();
 
 		Uri iconUri = new("./Icon/icon.ico", UriKind.Relative);
-		this.Icon = BitmapFrame.Create(iconUri);
+		Icon = BitmapFrame.Create(iconUri);
 	}
 }
