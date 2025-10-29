@@ -180,10 +180,10 @@ public class Rational
 	/// <returns>The two numerator values and the common denominator in a tuple.</returns>
 	internal static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational first, Rational second)
 	{
-		Writable numerator1 = second.denominator is null ? first.numerator : new(first.numerator.Sign, first.numerator.Value * second.denominator.Value);
-		Writable numerator2 = first.denominator is null ? second.numerator : new(second.numerator.Sign, second.numerator.Value * first.denominator.Value);
-		Positive? denominator = first.Denominator is null ? second.Denominator :
-			(second.Denominator is null ? first.Denominator : first.Denominator.Value * second.Denominator.Value);
+		Writable numerator1 = second.denominator is null ? first.numerator : new(first.numerator.Sign, first.numerator.Value * second.denominator);
+		Writable numerator2 = first.denominator is null ? second.numerator : new(second.numerator.Sign, second.numerator.Value * first.denominator);
+		Positive? denominator = first.denominator is null ? second.denominator :
+			(second.denominator is null ? first.denominator : first.denominator * second.denominator);
 
 		return (numerator1, numerator2, denominator);
 	}

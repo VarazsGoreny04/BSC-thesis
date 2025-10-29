@@ -415,10 +415,10 @@ public class RationalTest
 			tokens2 = item.Number2.Split('/');
 
 			positive11 = new Positive(tokens1[0].Replace("+", "").Replace("-", ""));
-			positive12 = tokens1.Length == 2 ? new Positive?(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
+			positive12 = tokens1.Length == 2 ? new Positive(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
 
 			positive21 = new Positive(tokens2[0].Replace("+", "").Replace("-", ""));
-			positive22 = tokens2.Length == 2 ? new Positive?(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
+			positive22 = tokens2.Length == 2 ? new Positive(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
 
 			sign1 = positive11.IsZero || Sign(tokens1[0]) == (tokens1.Length != 2 || Sign(tokens1[1]));
 			sign2 = positive21.IsZero || Sign(tokens2[0]) == (tokens2.Length != 2 || Sign(tokens2[1]));
@@ -465,10 +465,10 @@ public class RationalTest
 			tokens2 = item.Number2.Split('/');
 
 			positive11 = new Positive(tokens1[0].Replace("+", "").Replace("-", ""));
-			positive12 = tokens1.Length == 2 ? new Positive?(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
+			positive12 = tokens1.Length == 2 ? new Positive(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
 
 			positive21 = new Positive(tokens2[0].Replace("+", "").Replace("-", ""));
-			positive22 = tokens2.Length == 2 ? new Positive?(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
+			positive22 = tokens2.Length == 2 ? new Positive(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
 
 			sign1 = positive11.IsZero || Sign(tokens1[0]) == (tokens1.Length != 2 || Sign(tokens1[1]));
 			sign2 = positive21.IsZero || Sign(tokens2[0]) == (tokens2.Length != 2 || Sign(tokens2[1]));
@@ -513,8 +513,8 @@ public class RationalTest
 			writable1 = new Writable(Sign(tokens1[0]) == (tokens1.Length != 2 || Sign(tokens1[1])), tokens1[0].Replace("+", "").Replace("-", ""));
 			writable2 = new Writable(Sign(tokens2[0]) == (tokens2.Length != 2 || Sign(tokens2[1])), tokens2[0].Replace("+", "").Replace("-", ""));
 
-			positive1 = tokens1.Length == 2 ? new Positive?(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
-			positive2 = tokens2.Length == 2 ? new Positive?(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
+			positive1 = tokens1.Length == 2 ? new Positive(tokens1[1].Replace("+", "").Replace("-", "")) : "1";
+			positive2 = tokens2.Length == 2 ? new Positive(tokens2[1].Replace("+", "").Replace("-", "")) : "1";
 
 			number1 = new Rational(writable1, positive1);
 			number2 = new Rational(writable2, positive2);
@@ -554,8 +554,8 @@ public class RationalTest
 			writable1 = new Writable(Sign(tokens1[0]) == (tokens1.Length != 2 || Sign(tokens1[1])), tokens1[0].Replace("+", "").Replace("-", ""));
 			writable2 = new Writable(Sign(tokens2[0]) == (tokens2.Length != 2 || Sign(tokens2[1])), tokens2[0].Replace("+", "").Replace("-", ""));
 
-			positive1 = tokens1.Length == 2 ? new Positive?(tokens1[1].Replace("+", "").Replace("-", "")) : null;
-			positive2 = tokens2.Length == 2 ? new Positive?(tokens2[1].Replace("+", "").Replace("-", "")) : null;
+			positive1 = tokens1.Length == 2 ? new Positive(tokens1[1].Replace("+", "").Replace("-", "")) : null;
+			positive2 = tokens2.Length == 2 ? new Positive(tokens2[1].Replace("+", "").Replace("-", "")) : null;
 
 			number1 = new Rational(item.Number1);
 			number2 = new Rational(item.Number2);
@@ -588,10 +588,10 @@ public class RationalTest
 			tokens2 = item.Number2.Split('/');
 
 			numberCharacters1 = new(item.Number1);
-			numberDigits1 = new Rational(new Writable(tokens1[0]), (tokens1.Length < 2 ? null : new Writable?(tokens1[1])));
+			numberDigits1 = new Rational(new Writable(tokens1[0]), (tokens1.Length < 2 ? null : new Writable(tokens1[1])));
 
 			numberCharacters2 = new(item.Number2);
-			numberDigits2 = new Rational(new Writable(tokens2[0]), (tokens2.Length < 2 ? null : new Writable?(tokens2[1])));
+			numberDigits2 = new Rational(new Writable(tokens2[0]), (tokens2.Length < 2 ? null : new Writable(tokens2[1])));
 
 			Assert.AreEqual(numberCharacters1, numberDigits1);
 			Assert.AreEqual(numberCharacters2, numberDigits2);
@@ -624,10 +624,10 @@ public class RationalTest
 			tokens2 = item.Number2.Split('/');
 
 			numberCharacters1 = new(item.Number1);
-			numberDigits1 = new Rational(new Writable(tokens1[0]), (tokens1.Length < 2 ? null : new Writable?(tokens1[1])));
+			numberDigits1 = new Rational(new Writable(tokens1[0]), (tokens1.Length < 2 ? null : new Writable(tokens1[1])));
 
 			numberCharacters2 = new(item.Number2);
-			numberDigits2 = new Rational(new Writable(tokens2[0]), (tokens2.Length < 2 ? null : new Writable?(tokens2[1])));
+			numberDigits2 = new Rational(new Writable(tokens2[0]), (tokens2.Length < 2 ? null : new Writable(tokens2[1])));
 
 			Assert.AreEqual(numberCharacters1, numberDigits1);
 			Assert.AreEqual(numberCharacters2, numberDigits2);

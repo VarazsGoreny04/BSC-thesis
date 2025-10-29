@@ -31,9 +31,7 @@ public abstract class Point
 	/// <returns>A <see cref="Point"/> as a <see langword="string"/>.</returns>
 	public override string ToString() => $"({string.Join(", ", values as object?[])})";
 
-	public override bool Equals(object? obj) => obj is Point point && values.Length == point.values.Length && values.Zip(point.values).All(x => x.First == x.Second);
-
-	public override int GetHashCode() => throw new NotImplementedException();
+	public static bool Equals(Point a, Point b) => a.values.Length == b.values.Length && a.values.Zip(b.values).All(x => x.First == x.Second);
 
 	#endregion
 }
@@ -102,6 +100,10 @@ public class Point2D : Point
 	/// <param name="b">The second <see cref="Point2D"/>.</param>
 	/// <returns>The result of the calculation.</returns>
 	public static Rational Distance(Point2D a, Point2D b) => ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y));
+
+	public override bool Equals(object? obj) => obj is Point2D point && Equals(this, point);
+	
+	public override int GetHashCode() => throw new NotImplementedException();
 
 	#endregion
 
@@ -181,6 +183,10 @@ public class Point3D : Point2D
 	{
 		return ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y) + Rational.SecondPower(a.Z - b.Z));
 	}
+
+	public override bool Equals(object? obj) => obj is Point3D point && Equals(this, point);
+
+	public override int GetHashCode() => throw new NotImplementedException();
 
 	#endregion
 

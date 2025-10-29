@@ -9,18 +9,12 @@ public class DigitTest
 {
 	private readonly byte[] binary = [.. Enumerable.Range(0, 16).Select(x => (byte)x)];
 
-	private static char ToChar(int num)
-	{
-		return Convert.ToChar('0' + num);
-	}
+	private static char ToChar(int num) => Convert.ToChar('0' + num);
 
 	[TestMethod]
 	public void ZeroConstructor()
 	{
 		Digit digit = new();
-
-		/*for (int j = Digit.LENGTH - 1; j >= 0; --j)
-			Assert.AreEqual(binary[0][j], digit[j]);*/
 
 		Assert.AreEqual(Digit.ZERO, digit);
 	}
@@ -34,9 +28,6 @@ public class DigitTest
 		for (int i = 0; i < 10; ++i)
 		{
 			Digit digit = new(ToChar(i));
-
-			/*for (int j = Digit.LENGTH - 1; j >= 0; --j)
-				Assert.AreEqual(binary[i][j], digit[j]);*/
 
 			Assert.AreEqual(binary[i], digit);
 		}
