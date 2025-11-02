@@ -69,13 +69,13 @@ public class Program
 		Console.WriteLine();
 
 		Console.WriteLine("Trim:");
-		Console.WriteLine(Natural.TrimEnd(nat2 - (nat2 + new Natural("1"))));
+		Console.WriteLine(Natural.TrimEnd(nat2 - (nat2 + new Natural(Digit.ONE))));
 		Console.WriteLine(Natural.TrimEnd(new Natural("0001000")));
 		Console.WriteLine();*/
 
 		/*Console.WriteLine("Integer:");
 		Integer i1 = "-100";
-		Integer i2 = "2";
+		Integer i2 = Digit.TWO;
 		Console.WriteLine(i1 + i2);
 		Console.WriteLine();*/
 
@@ -112,17 +112,17 @@ public class Program
 		Console.ReadKey();
 		Console.WriteLine(Integer.Multiply(new Integer("-35419993"), new Integer("1524315243"))); // -53,991,235,236,853,299*/
 
-		/*(Natural w, Natural value) = Natural.Divide(new Natural("132"), new Natural("4"));
+		/*(Natural w, Natural value) = Natural.Divide(new Natural("132"), new Natural(Digit.FOUR));
 		Console.WriteLine(w);
 		Console.WriteLine(value);*/
 
 		/*Console.WriteLine("Division:");
-		Console.WriteLine(new Integer("10") / new Integer("3"));
-		Console.WriteLine(new Integer("10") % new Integer("3"));
+		Console.WriteLine(new Integer("10") / new Integer(Digit.THREE));
+		Console.WriteLine(new Integer("10") % new Integer(Digit.THREE));
 		Console.WriteLine(new Integer("10") / new Integer("-3"));
 		Console.WriteLine(new Integer("10") % new Integer("-3"));
-		Console.WriteLine(new Integer("-10") / new Integer("3"));
-		Console.WriteLine(new Integer("-10") % new Integer("3"));
+		Console.WriteLine(new Integer("-10") / new Integer(Digit.THREE));
+		Console.WriteLine(new Integer("-10") % new Integer(Digit.THREE));
 		Console.WriteLine(new Integer("-10") / new Integer("-3"));
 		Console.WriteLine(new Integer("-10") % new Integer("-3"));
 		Console.WriteLine();*/
@@ -145,7 +145,7 @@ public class Program
 		/*Console.WriteLine("Positive formats:");
 		Positive p0 = new();
 		//Positive phiba = new(".0"); hiba
-		Positive p1 = new("0");
+		Positive p1 = new(Digit.ZERO);
 		Positive p2 = new("010.");
 		Positive p3 = new("00.00");
 		Console.WriteLine(p0);
@@ -154,7 +154,7 @@ public class Program
 		Console.WriteLine(p3);
 		Console.WriteLine();*/
 
-		//Natural.Divide("25", "2");
+		//Natural.Divide("25", Digit.TWO);
 
 		//var p8 = Positive.Divide(new Positive("927"), new Positive("0.000"));
 
@@ -187,7 +187,7 @@ public class Program
 		Console.Write(p3.Item2);
 		MatrixToString(p3.Item1);*/
 
-		//Console.WriteLine(Natural.Power("6", "2"));
+		//Console.WriteLine(Natural.Power(Digit.SIX, Digit.TWO));
 		//Console.WriteLine(Natural.Power("10", "100"));
 		//Console.WriteLine(Natural.Power("645", "219"));
 		//Console.WriteLine(Math.Pow(645, 219));
@@ -200,22 +200,22 @@ public class Program
 		Console.WriteLine(Positive.SquareRoot("2318785.835536"));*/
 		//Console.WriteLine(Positive.SquareRoot("100.0"));              // 10
 		//Console.WriteLine(Positive.SquareRoot("4192"));               // 64.745656224954581890369881235962
-		/*Console.WriteLine(Positive.Root("1522.756", "2"));              // 39.0225063264778009568663463383
-		Console.WriteLine(Natural.Root("1522756000000000", "2"));       // 39.0225063264778009568663463383
-		Console.WriteLine(Positive.Root("2318785.835536", "2"));
-		Console.WriteLine(Positive.Root("1522.756", "4"));
-		Console.WriteLine(Natural.Root("1522756000", "3"));
-		Console.WriteLine(Positive.Root("3530945043.777457217", "3"));
-		Console.WriteLine(Natural.Root("3530945043777457217", "3"));*/
-		//Console.WriteLine(Natural.Root("4192000000000", "3"));
-		//Console.WriteLine(Natural.Root("18446744073709551615", "2"));
-		//Console.WriteLine(Positive.Root("4192000000000", "3"));
+		/*Console.WriteLine(Positive.Root("1522.756", Digit.TWO));              // 39.0225063264778009568663463383
+		Console.WriteLine(Natural.Root("1522756000000000", Digit.TWO));       // 39.0225063264778009568663463383
+		Console.WriteLine(Positive.Root("2318785.835536", Digit.TWO));
+		Console.WriteLine(Positive.Root("1522.756", Digit.FOUR));
+		Console.WriteLine(Natural.Root("1522756000", Digit.THREE));
+		Console.WriteLine(Positive.Root("3530945043.777457217", Digit.THREE));
+		Console.WriteLine(Natural.Root("3530945043777457217", Digit.THREE));*/
+		//Console.WriteLine(Natural.Root("4192000000000", Digit.THREE));
+		//Console.WriteLine(Natural.Root("18446744073709551615", Digit.TWO));
+		//Console.WriteLine(Positive.Root("4192000000000", Digit.THREE));
 		//Console.WriteLine(Math.Pow(4192000000000.0, 1.0/3.0));
 		//Console.WriteLine(4192000000000.0 - Math.Pow(Math.Pow(4192000000000.0, 1.0/3.0), 3.0));
 		/*Positive.FractionCalculationLength = 11;
-		(Positive whole, Positive remainder) = Positive.Root("124.067", "6");
+		(Positive whole, Positive remainder) = Positive.Root("124.067", Digit.SIX);
 		Console.WriteLine((whole, remainder));
-		Console.WriteLine(whole ^ "6");*/
+		Console.WriteLine(whole ^ Digit.SIX);*/
 
 		/*Rational a = "+65/3";
 		Rational b = "-3/2";*/
@@ -255,7 +255,7 @@ public class Program
 			Console.WriteLine(timer.ToString());
 		}*/
 
-		/*Positive n = "3";
+		/*Positive n = Digit.THREE;
 
 		Positive res = Positive.Log(n);
 

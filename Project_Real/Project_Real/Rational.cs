@@ -168,6 +168,26 @@ public class Rational
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public Rational(bool sign, Positive numerator, Positive? denominator = null) : this(new Writable(sign, numerator), denominator) { }
 
+	/// <summary>
+	/// Constructs a <see cref="Rational"/> by the given <see cref="Digit"/>.
+	/// </summary>
+	public Rational(Digit value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Rational"/> by the given <see cref="Natural"/>.
+	/// </summary>
+	public Rational(Natural value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Rational"/> by the given <see cref="Integer"/>.
+	/// </summary>
+	public Rational(Integer value) : this(value.Sign, value.Value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Rational"/> by the given <see cref="Positive"/>.
+	/// </summary>
+	public Rational(Positive value) : this(true, value) { }
+
 	#endregion
 
 	#region Internal methods
@@ -204,7 +224,7 @@ public class Rational
 			Positive resultNumerator = new(numerator.Value.Value / gCD, Math.Max(numerator.FractionLength - denominatorValue.FractionLength, 0));
 			Positive resultDenominator = new(denominatorValue.Value / gCD, Math.Max(denominatorValue.FractionLength - numerator.FractionLength, 0));
 
-			return (new Writable(numerator.Sign, resultNumerator), (resultDenominator == "1" ? null : resultDenominator));
+			return (new Writable(numerator.Sign, resultNumerator), (resultDenominator == Digit.ONE ? null : resultDenominator));
 		}
 		else
 			return (numerator, null);
@@ -243,7 +263,7 @@ public class Rational
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Writable Value, Writable Remainder) GetValue(Rational value, int? fractionCalculationLength = null)
 	{
-		return (value.denominator is Positive denominator) ? Writable.Divide(value.numerator, new(true, denominator), fractionCalculationLength) :
+		return (value.denominator is Positive denominator) ? Writable.Divide(value.numerator, denominator, fractionCalculationLength) :
 			(value.numerator, new Writable());
 	}
 
@@ -289,7 +309,7 @@ public class Rational
 	/// </exception>
 	public static Rational Reciprocal(Rational value)
 	{
-		return value.IsZero ? throw new DivideByZeroException() : new Rational(value.Sign, (value.denominator is Positive p ? p : "1"), value.Numerator);
+		return value.IsZero ? throw new DivideByZeroException() : new Rational(value.Sign, (value.denominator is Positive p ? p : Digit.ONE), value.Numerator);
 	}
 
 	/// <summary>
@@ -362,7 +382,7 @@ public class Rational
 		if (right.Sign)
 			return new Rational(left.numerator ^ right.numerator, (left.denominator is Positive denominator ? denominator ^ right.Numerator : left.denominator));
 		else
-			return new Rational(new Writable(left.Sign, (left.denominator is Positive denominator ? denominator ^ right.Numerator : "1")),
+			return new Rational(new Writable(left.Sign, (left.denominator is Positive denominator ? denominator ^ right.Numerator : Digit.ONE)),
 				left.Numerator ^ right.Numerator);
 	}
 
@@ -405,8 +425,8 @@ public class Rational
 			return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
 		else
 		{
-			return (new Rational(true, denominator?.Value ?? "1", numerator.Value.Value),
-				new Rational(true, denominator?.Remainder ?? "1", numerator.Remainder.Value));
+			return (new Rational(true, denominator?.Value ?? Digit.ONE, numerator.Value.Value),
+				new Rational(true, denominator?.Remainder ?? Digit.ONE, numerator.Remainder.Value));
 		}
 	}
 
@@ -428,17 +448,17 @@ public class Rational
 			Natural Pab, Qab;
 			Integer Tab;
 
-			if (b == a + "1")
+			if (b == a + Digit.ONE)
 			{
 				// Directly compute P(a,a+1), Q(a,a+1) and T(a,a+1)
-				if (a == "0")
+				if (a == Digit.ZERO)
 				{
-					Pab = "1";
-					Qab = "1";
+					Pab = Digit.ONE;
+					Qab = Digit.ONE;
 				}
 				else
 				{
-					Pab = ("6" * a - "5") * ("2" * a - "1") * ("6" * a - "1");
+					Pab = (Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE);
 					Qab = a * a * a * "10939058860032000";
 				}
 
@@ -451,7 +471,7 @@ public class Rational
 			{
 				// Recursively compute P(a,b), Q(a,b) and T(a,b)
 				// m is the midpoint of a and b
-				Natural m = (a + b) / "2";
+				Natural m = (a + b) / Digit.TWO;
 
 				// Recursively calculate P(a,m), Q(a,m) T(a,m) and P(m,b), Q(m,b), T(m,b)
 				(Natural Pam, Natural Qam, Integer Tam) = BinarySplitting(a, m);
@@ -469,10 +489,10 @@ public class Rational
 
 		// how many terms to compute
 		Natural DIGITS_PER_TERM = "13";
-		Natural n = (new Natural((uint)fCL)) / DIGITS_PER_TERM + "1";
+		Natural n = (new Natural((uint)fCL)) / DIGITS_PER_TERM + Digit.ONE;
 
 		// Calculate P(0,N) and Q(0,N)
-		(Natural _, Natural Q, Integer T) = BinarySplitting("0", n);
+		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, n);
 
 		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
 	}
@@ -487,29 +507,29 @@ public class Rational
 	{
 		static Natural P(Natural a, Natural b)
 		{
-			if (b == a + "1")
-				return "1";
+			if (b == a + Digit.ONE)
+				return Digit.ONE;
 			else
 			{
-				Natural m = (a + b) / "2";
+				Natural m = (a + b) / Digit.TWO;
 				return P(a, m) * Q(m, b) + P(m, b);
 			}
 		}
 
 		static Natural Q(Natural a, Natural b)
 		{
-			if (b == a + "1")
+			if (b == a + Digit.ONE)
 				return b;
 			else
 			{
-				Natural m = (a + b) / "2";
+				Natural m = (a + b) / Digit.TWO;
 				return Q(a, m) * Q(m, b);
 			}
 		}
 
 		Natural n = new((uint)Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0));
 		
-		return "1" + new Rational(true, P("0", n), Q("0", n));
+		return Digit.ONE + new Rational(true, P(Digit.ZERO, n), Q(Digit.ZERO, n));
 	}
 
 	/// <summary>
@@ -531,7 +551,12 @@ public class Rational
 
 	#region Operators
 
+	public static implicit operator Rational(char value) => new(value.ToString());
 	public static implicit operator Rational(string value) => new(value);
+	public static implicit operator Rational(Digit value) => new(value);
+	public static implicit operator Rational(Natural value) => new(value);
+	public static implicit operator Rational(Integer value) => new(value);
+	public static implicit operator Rational(Positive value) => new(value);
 	public static implicit operator Rational(Writable value) => new(value);
 	public static bool operator ==(Rational left, Rational right) => Equals(left, right);
 	public static bool operator !=(Rational left, Rational right) => !Equals(left, right);

@@ -140,6 +140,16 @@ public class Positive
 		}
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> by the given <see cref="Digit"/>.
+	/// </summary>
+	public Positive(Digit value) : this(value, 0) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> by the given <see cref="Natural"/>.
+	/// </summary>
+	public Positive(Natural value) : this(value, 0) { }
+
 	#endregion
 
 	#region Private methods
@@ -170,7 +180,7 @@ public class Positive
 	{
 		return (fractionLength == 0) ? value.ToString() :
 			(
-				(fractionLength < Digits.Length) ? value.ToString() : 
+				(fractionLength < Digits.Length) ? value.ToString() :
 				new string('0', length - Digits.Length) + value.ToString()
 			).Insert(WholeLength, separator.ToString());
 	}
@@ -215,7 +225,7 @@ public class Positive
 		{
 			Digit[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
 
-			return left.fractionLength < right.fractionLength ? new Natural([.. splicing, .. left.Digits]) > right.Value : 
+			return left.fractionLength < right.fractionLength ? new Natural([.. splicing, .. left.Digits]) > right.Value :
 				left.Value > new Natural([.. splicing, .. right.Digits]);
 		}
 	}
@@ -302,7 +312,7 @@ public class Positive
 	/// </exception>
 	public static Positive Power(Positive left, Positive right)
 	{
-		return right.fractionLength == 0 ? 
+		return right.fractionLength == 0 ?
 			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) : throw new NotSupportedException();
 	}
 
@@ -314,7 +324,7 @@ public class Positive
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculationLength = null)
 	{
-		if (value.IsZero || value == "1")
+		if (value.IsZero || value == Digit.ONE)
 			return (value, new Positive());
 
 		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
@@ -355,13 +365,13 @@ public class Positive
 			return Digit.ToChar(right[0]) switch
 			{
 				'0' => throw new NotImplementedException(),
-				'1' => (left, "0"),
+				'1' => (left, Digit.ZERO),
 				_ => SquareRoot(left)
 			};
 		}
 
-		if (left.IsZero || left == "1")
-			return (left, "0");
+		if (left.IsZero || left == Digit.ONE)
+			return (left, Digit.ZERO);
 
 		Natural degree = right.Value;
 		int degreeInt = (int)Natural.ToUInt32(degree);
@@ -401,8 +411,10 @@ public class Positive
 
 	#region Operators
 
+	public static implicit operator Positive(char value) => new(value.ToString());
 	public static implicit operator Positive(string value) => new(value);
-	public static implicit operator Positive(Natural value) => new(value, 0);
+	public static implicit operator Positive(Digit value) => new(value);
+	public static implicit operator Positive(Natural value) => new(value);
 	public static bool operator ==(Positive left, Positive right) => Equals(left, right);
 	public static bool operator !=(Positive left, Positive right) => !Equals(left, right);
 	public static bool operator >(Positive left, Positive right) => GreaterThan(left, right);

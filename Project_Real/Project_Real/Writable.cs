@@ -139,6 +139,26 @@ public class Writable
 		this.sign = sign || IsZero;
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Writable"/> by the given <see cref="Digit"/>.
+	/// </summary>
+	public Writable(Digit value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Writable"/> by the given <see cref="Natural"/>.
+	/// </summary>
+	public Writable(Natural value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Writable"/> by the given <see cref="Integer"/>.
+	/// </summary>
+	public Writable(Integer value) : this(value.Sign, value.Value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Writable"/> by the given <see cref="Positive"/>.
+	/// </summary>
+	public Writable(Positive value) : this(true, value) { }
+
 	#endregion
 
 	#region Public methods
@@ -301,9 +321,12 @@ public class Writable
 
 	#region Operators
 
+	public static implicit operator Writable(char value) => new(value.ToString());
 	public static implicit operator Writable(string value) => new(value);
-	public static implicit operator Writable(Integer value) => new(value.Sign, value.Value);
-	public static implicit operator Writable(Positive value) => new(true, value);
+	public static implicit operator Writable(Digit value) => new(value);
+	public static implicit operator Writable(Natural value) => new(value);
+	public static implicit operator Writable(Integer value) => new(value);
+	public static implicit operator Writable(Positive value) => new(value);
 	public static bool operator ==(Writable left, Writable right) => Equals(left, right);
 	public static bool operator !=(Writable left, Writable right) => !Equals(left, right);
 	public static bool operator >(Writable left, Writable right) => GreaterThan(left, right);

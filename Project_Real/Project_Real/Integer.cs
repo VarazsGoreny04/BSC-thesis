@@ -108,6 +108,28 @@ public class Integer
 		this.sign = sign || IsZero;
 	}
 
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> by the given <see cref="Digit"/>.
+	/// </summary>
+	public Integer(Digit value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Positive"/> by the given <see cref="Natural"/>.
+	/// </summary>
+	public Integer(Natural value) : this(true, value) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Integer"/> by the given <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">An unsigned integer value.</param>
+	public Integer(uint number) : this(true, new Natural(number)) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Integer"/> by the given <paramref name="number"/>.
+	/// </summary>
+	/// <param name="number">An integer value.</param>
+	public Integer(int number) : this(number.ToString()) { }
+
 	#endregion
 
 	#region Public methods
@@ -117,6 +139,14 @@ public class Integer
 	/// </summary>
 	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
+
+	/// <summary>
+	/// Returns an integer that represents the given <paramref name="value"/>.
+	/// </summary>
+	/// <param name="value">The <see cref="Integer"/> to convert.</param>
+	/// <returns>A <see cref="Integer"/> number as an <see langword="int"/>.</returns>
+	/// <exception cref="OverflowException"><paramref name="value"/> cannot be greater than than <see cref="int.MaxValue"/>.</exception>
+	public static int ToInt32(Integer value) => Convert.ToInt32(value.ToString());
 
 	/// <summary>
 	/// Compares two <see cref="Integer"/>s.
@@ -266,8 +296,10 @@ public class Integer
 
 	#region Operators
 
+	public static implicit operator Integer(char value) => new(value.ToString());
 	public static implicit operator Integer(string value) => new(value);
-	public static implicit operator Integer(Natural value) => new(true, value);
+	public static implicit operator Integer(Digit value) => new(value);
+	public static implicit operator Integer(Natural value) => new(value);
 	public static bool operator ==(Integer left, Integer right) => Equals(left, right);
 	public static bool operator !=(Integer left, Integer right) => !Equals(left, right);
 	public static bool operator >(Integer left, Integer right) => GreaterThan(left, right);

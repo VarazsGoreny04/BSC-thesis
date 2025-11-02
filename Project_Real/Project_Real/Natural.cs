@@ -98,10 +98,15 @@ public class Natural
 	}
 
 	/// <summary>
+	/// Constructs a <see cref="Natural"/> by the given <see cref="Digit"/>.
+	/// </summary>
+	public Natural(Digit value) : this([value]) { }
+
+	/// <summary>
 	/// Constructs a <see cref="Natural"/> by the given <paramref name="number"/>.
 	/// </summary>
-	/// <param name="number">An integer value.</param>
-	internal Natural(uint number) : this(number.ToString()) { }
+	/// <param name="number">An unsigned integer value.</param>
+	public Natural(uint number) : this(number.ToString()) { }
 
 	#endregion
 
@@ -205,7 +210,7 @@ public class Natural
 	}
 
 	/// <summary>
-	/// Returns an integer that represents the given <paramref name="value"/>.
+	/// Returns an unsigned integer that represents the given <paramref name="value"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Natural"/> to convert.</param>
 	/// <returns>A <see cref="Natural"/> number as an <see langword="uint"/>.</returns>
@@ -309,7 +314,7 @@ public class Natural
 
 		if (right.isZero)
 			return new Natural();
-		else if (right == "1")
+		else if (right == Digit.ONE)
 			return left;
 
 		Natural result = new();
@@ -479,7 +484,7 @@ public class Natural
 	{
 		Natural remainder = new();
 
-		if (right < new Natural([Digit.THREE]))
+		if (right < Digit.THREE)
 		{
 			return Digit.ToChar(right[0]) switch
 			{
@@ -588,9 +593,8 @@ public class Natural
 
 	#region Operators
 
-	public static implicit operator Natural(char value) => new(value.ToString());
 	public static implicit operator Natural(string value) => new(value);
-	public static implicit operator Natural(Digit value) => new([value]);
+	public static implicit operator Natural(Digit value) => new(value);
 	public static implicit operator Natural(Digit[] value) => new(value);
 	public static bool operator ==(Natural left, Natural right) => Equals(left, right);
 	public static bool operator !=(Natural left, Natural right) => !Equals(left, right);

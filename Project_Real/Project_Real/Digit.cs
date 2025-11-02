@@ -18,15 +18,15 @@ public readonly struct Digit
 	#region Constants
 
 	public static readonly Digit ZERO = new();
-	public static readonly Digit ONE = new('1');
-	public static readonly Digit TWO = new('2');
-	public static readonly Digit THREE = new('3');
-	public static readonly Digit FOUR = new('4');
-	public static readonly Digit FIVE = new('5');
-	public static readonly Digit SIX = new('6');
-	public static readonly Digit SEVEN = new('7');
-	public static readonly Digit EIGHT = new('8');
-	public static readonly Digit NINE = new('9');
+	public static readonly Digit ONE = '1';
+	public static readonly Digit TWO = '2';
+	public static readonly Digit THREE = '3';
+	public static readonly Digit FOUR = '4';
+	public static readonly Digit FIVE = '5';
+	public static readonly Digit SIX = '6';
+	public static readonly Digit SEVEN = '7';
+	public static readonly Digit EIGHT = '8';
+	public static readonly Digit NINE = '9';
 
 	private const byte TEN = 0b1010;
 
