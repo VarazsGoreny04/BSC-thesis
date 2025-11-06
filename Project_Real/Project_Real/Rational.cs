@@ -230,6 +230,53 @@ public class Rational
 			return (numerator, null);
 	}
 
+	// abpq_series is initialised by user
+	/*internal class abpq_series(Func<int, Natural> a, Func<int, Natural> b, Func<int, Natural> p, Func<int, Natural> q)
+	{
+		public Func<int, Natural> a = a, b = b, p = p, q = q;
+	}*/
+
+	// abpq_series_result holds the partial results
+	internal class ABPQSeriesResult(Writable P, Writable Q, Writable B, Writable T)
+	{
+		public Writable P = P, Q = Q, B = B, T = T;
+	}
+
+	// binary splitting summation for abpq_series
+	/*internal abpq_series_result sum_abpq(int n1, int n2, abpq_series arg)
+	{
+		abpq_series_result r = new();
+
+		// check the length of the summation interval
+		switch (n2 - n1)
+		{
+			case 0:
+				throw new Exception();
+			case 1: // the result at the point n1
+				r.P = arg.p(n1);
+				r.Q = arg.q(n1);
+				r.B = arg.b(n1);
+				r.T = arg.a(n1) * arg.p(n1);
+				break;
+			// cases 2, 3, 4 left out for simplicity
+			default: // the general case
+					 // find the middle of the interval
+				int nm = (n1 + n2) / 2;
+				// sum left side
+				abpq_series_result L = sum_abpq(n1, nm, arg);
+				// sum right side
+				abpq_series_result R = sum_abpq(nm, n2, arg);
+				// put together
+				r.P = L.P * R.P;
+				r.Q = L.Q * R.Q;
+				r.B = L.B * R.B;
+				r.T = R.B * R.Q * L.T + L.B * L.P * R.T;
+				break;
+		}
+
+		return r;
+	}*/
+
 	#endregion
 
 	#region Public methods
@@ -528,8 +575,148 @@ public class Rational
 		}
 
 		Natural n = new((uint)Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0));
-		
+
 		return Digit.ONE + new Rational(true, P(Digit.ZERO, n), Q(Digit.ZERO, n));
+	}
+
+	/// <summary>
+	/// Calculates the exponential function for the given exponent until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks>
+	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
+	/// <br />
+	/// <see href="https://stackoverflow.com/questions/57510825/binary-splitting-in-pari-gp"/>
+	/// </remarks>
+	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns></returns>
+	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
+	{
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)	// B is always 1 so all the multiplications are unnecessary.
+		{
+			ABPQSeriesResult r;
+
+			// check the length of the summation interval
+			switch (n2 - n1)
+			{
+				case 0:
+					throw new Exception();
+				case 1: // the result at the point n1
+
+					r = n1 == 0 ?
+					new(
+						P: Digit.ONE,
+						Q: Digit.ONE,
+						B: null! /*Digit.ONE*/,
+						T: Digit.ONE
+					) :
+					new(
+						P: x.numerator,
+						Q: new Natural((uint)n1) * (x.denominator ?? Digit.ONE),
+						B: null! /*Digit.ONE*/,
+						T: x.numerator
+					);
+
+					break;
+				// cases 2, 3, 4 left out for simplicity
+				default: // the general case
+					// find the middle of the interval
+					int nm = (n1 + n2) / 2;
+					// sum left side
+					ABPQSeriesResult L = SumABPQ(n1, nm, x);
+					// sum right side
+					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+					// put together
+					r = new(
+						P: L.P * R.P, 
+						Q: L.Q * R.Q, 
+						B: null! /*L.B * R.B*/, 
+						T: /*R.B **/ R.Q * L.T + /*L.B **/ L.P * R.T
+					);
+
+					break;
+			}
+
+			return r;
+		}
+
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+
+		// r = [P, Q, B, T]
+		ABPQSeriesResult r = SumABPQ(0, n + 1, x);
+
+		// S = T / (B * Q)
+		Rational ret = new Rational(r.T) / new Rational(/*r.B **/ r.Q);
+
+		return ret;
+	}
+
+	/// <summary>
+	/// Calculates the natural logarithm for the given anti-logarithm until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks><see href="https://ginac.de/CLN/binsplit.pdf"/></remarks>
+	/// <param name="x">The anti-logarithm in ln(<paramref name="x"/>).</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns></returns>
+	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
+	{
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)	// B is always 1 so all the multiplications are unnecessary.
+		{
+			ABPQSeriesResult r;
+
+			// check the length of the summation interval
+			switch (n2 - n1)
+			{
+				case 0:
+					throw new Exception();
+				case 1: // the result at the point n1
+
+					r = n1 == 0 ?
+					new(
+						P: x.numerator,
+						Q: Digit.ONE,
+						B: Digit.ONE,
+						T: x.numerator
+					) :
+					new(
+						P: -x.numerator,
+						Q: x.denominator ?? Digit.ONE,
+						B: new Natural((uint)n1) + Digit.ONE,
+						T: -x.numerator
+					);
+
+					break;
+				// cases 2, 3, 4 left out for simplicity
+				default: // the general case
+					// find the middle of the interval
+					int nm = (n1 + n2) / 2;
+					// sum left side
+					ABPQSeriesResult L = SumABPQ(n1, nm, x);
+					// sum right side
+					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+					// put together
+					r = new(
+						P: L.P * R.P, 
+						Q: L.Q * R.Q, 
+						B: L.B * R.B, 
+						T: R.B * R.Q * L.T + L.B * L.P * R.T
+					);
+
+					break;
+			}
+
+			return r;
+		}
+
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+
+		// r = [P, Q, B, T]
+		ABPQSeriesResult r = SumABPQ(0, n + 1, x - Digit.ONE);
+
+		// S = T / (B * Q)
+		Rational ret = new Rational(r.T) / new Rational(r.B * r.Q);
+
+		return ret;
 	}
 
 	/// <summary>

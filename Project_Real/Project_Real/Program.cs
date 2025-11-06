@@ -261,6 +261,28 @@ public class Program
 
 		Console.WriteLine(res);*/
 		//Console.WriteLine(Positive.Power("10", res));
+
+
+		Rational.FractionCalculationLength = 100;
+
+		Rational a = Rational.E();
+		Rational b = Rational.Exp("2");
+
+		Console.WriteLine(Rational.ToWritableString(a * a));
+		Console.WriteLine(Rational.ToWritableString(b));
+
+
+		Rational.FractionCalculationLength = 50;
+
+		Rational a2 = Rational.E();
+		Rational b2 = Rational.Exp("2");
+
+		Console.WriteLine(Rational.ToWritableString(a2 * a2));
+		Console.WriteLine(Rational.ToWritableString(b2));
+
+		Rational l = Rational.Ln("2");
+
+		Console.WriteLine(Rational.ToWritableString(l));
 	}
 
 	public static void MatrixToString<T>(T[] a)
