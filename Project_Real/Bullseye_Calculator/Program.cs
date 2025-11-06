@@ -1,4 +1,5 @@
-﻿using Bullseye_Calculator.Model.Standard;
+﻿using Bullseye_Calculator.Model;
+using Bullseye_Calculator.Model.Standard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ public class Program
 {
 	public static void Main()
 	{
+		Calculator calculator = new StandardCalculator();
+
 		/*Rational[,] a = new Rational[10, 10];
 
 		for (int i = 0; i < 100; ++i)
@@ -68,7 +71,7 @@ public class Program
 		Console.WriteLine(result.ToString());
 		Console.WriteLine(result.Value().ToString());*/
 
-		ValueHolder valueHolder = Calculator.Evaluate(text);
+		ValueHolder valueHolder = Calculator.Evaluate(text, calculator);
 		List<(string Calculation, string State)> evaluation = Calculator.FullEvaluation(valueHolder);
 
 		Console.WriteLine($"{valueHolder} == {valueHolder.Value}");

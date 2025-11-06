@@ -19,15 +19,15 @@ public abstract class UnaryOperator : Operator
 		++step;
 		Parameter?.FullEvaluation(ref partialValues, root, ref step);
 
-		int depthCopy = step;
+		int stepCopy = step;
 
-		partialValues.Add(($"({Parameter?.Value}){Sign()} == {Value}", root.ToStringByStep(ref depthCopy)));
+		partialValues.Add(($"({Parameter?.Value}){Sign()} = {Value}", root.ToStringByStep(ref stepCopy)));
 	}
 	internal override Priority Order() => Priority.UnaryOperator;
 	public override string ToStringByStep(ref int step)
 	{
-		string next = $"{Parameter.ToStringByStep(ref step)}{Sign()}";
+		string parameterToString = Parameter.ToStringByStep(ref step);
 
-		return --step <= 0 ? next : $"({Value})";
+		return --step <= 0 ? $"{parameterToString}{Sign()}" : $"({Value})";
 	}
 }

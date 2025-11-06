@@ -1,4 +1,5 @@
-﻿using Bullseye_Calculator.Model.Standard;
+﻿using Bullseye_Calculator.Model;
+using Bullseye_Calculator.Model.Standard;
 using Project_Real;
 using System.Collections.ObjectModel;
 
@@ -9,6 +10,7 @@ public class CalculatorViewModel : ViewModelBase
 	private bool start;
 	private Mode currentMode;
 
+	Calculator calculator;
 	private readonly List<string> input;
 	private string result;
 	private readonly ObservableCollection<string> evaluation;
@@ -60,6 +62,7 @@ public class CalculatorViewModel : ViewModelBase
 		CurrentMode = Mode.Standard;
 		start = true;
 
+		calculator = new StandardCalculator();
 		input = [];
 		result = string.Empty;
 		evaluation = [];
@@ -110,9 +113,9 @@ public class CalculatorViewModel : ViewModelBase
 		{
 			try
 			{
-				ValueHolder valueHolder = Calculator.Evaluate(Input);
+				ValueHolder valueHolder = Calculator.Evaluate(Input, calculator);
 
-				FullEvaluationToString(Calculator.FullEvaluation(valueHolder));
+				ShowFullEvaluation(Calculator.FullEvaluation(valueHolder));
 
 				string result = valueHolder.Value.ToString();
 
@@ -130,7 +133,7 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 
-	private void FullEvaluationToString(List<(string Calculation, string State)> evaluation)
+	private void ShowFullEvaluation(List<(string Calculation, string State)> evaluation)
 	{
 		if (evaluation.Count > 0)
 		{

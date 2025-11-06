@@ -1,11 +1,42 @@
 ﻿using Project_Real;
+using Bullseye_Calculator.Model.Standard;
 using System.Text.RegularExpressions;
 
-namespace Bullseye_Calculator.Model.Standard;
+namespace Bullseye_Calculator.Model;
 
-public static partial class Calculator
+public abstract partial class Calculator
 {
-	private sealed class RegexToken(Regex pattern, Func<string, Expression> function)
+	[GeneratedRegex(@"\s+")]
+	protected static partial Regex WhitespaceRegex();
+
+	[GeneratedRegex(@"^\w+$")]
+	protected static partial Regex FunctionNameRegex();
+
+	[GeneratedRegex(@"^\+$")]
+	protected static partial Regex AddRegex();
+
+	[GeneratedRegex(@"^-$")]
+	protected static partial Regex SubtractRegex();
+
+	[GeneratedRegex(@"^\*$")]
+	protected static partial Regex MultiplyRegex();
+
+	[GeneratedRegex(@"^/$")]
+	protected static partial Regex DivideRegex();
+
+	[GeneratedRegex(@"^\^$")]
+	protected static partial Regex PowerRegex();
+
+	[GeneratedRegex(@"^\|$")]
+	protected static partial Regex RootRegex();
+
+	[GeneratedRegex(@"^\($")]
+	protected static partial Regex OpeningParenthesisRegex();
+
+	[GeneratedRegex(@"^\)$")]
+	protected static partial Regex ClosingParenthesisRegex();
+
+	protected sealed class RegexToken(Regex pattern, Func<string, Expression> function)
 	{
 		private readonly Regex pattern = pattern;
 		private readonly Func<string, Expression> function = function;
@@ -14,74 +45,42 @@ public static partial class Calculator
 		public Func<string, Expression> Function => function;
 	}
 
-	private static readonly RegexToken[] regexTokens =
-	[
-		// Rational number
-		new(null!, s => new Number(s)),
-		// Function name
-		new(FunctionRegex(), _ => new PI()),
-		// Operators
-		new(AddRegex(), _ => new Add()),
-		new(SubtractRegex(), _ => new Subtract()),
-		new(MultiplyRegex(), _ => new Multiply()),
-		new(DivideRegex(), _ => new Divide()),
-		new(PowerRegex(), _ => new Power()),
-		new(RootRegex(), _ => new Root()),
-		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis()),
-	];
+	protected sealed class FunctionToken(string name, Func<Expression> function)
+	{
+		private readonly string name = name;
+		private readonly Func<Expression> function = function;
 
-	[GeneratedRegex(@"\s+")]
-	private static partial Regex WhitespaceRegex();
+		public string Name => name;
+		public Func<Expression> Function => function;
+	}
 
-	[GeneratedRegex(@"^[\p{Ll}\p{Lu}]+$")]
-	private static partial Regex FunctionRegex();
+	protected readonly RegexToken[] regexTokens;
 
-	[GeneratedRegex(@"^\+$", RegexOptions.Compiled)]
-	private static partial Regex AddRegex();
-
-	[GeneratedRegex(@"^\-$")]
-	private static partial Regex SubtractRegex();
-
-	[GeneratedRegex(@"^\*$")]
-	private static partial Regex MultiplyRegex();
-
-	[GeneratedRegex(@"^\/$")]
-	private static partial Regex DivideRegex();
-
-	[GeneratedRegex(@"^\^$")]
-	private static partial Regex PowerRegex();
-
-	[GeneratedRegex(@"^\|$")]
-	private static partial Regex RootRegex();
-
-	[GeneratedRegex(@"^\($")]
-	private static partial Regex OpeningParenthesisRegex();
-
-	[GeneratedRegex(@"^\)$")]
-	private static partial Regex ClosingParenthesisRegex();
-
-	private static RegexToken[] Tokens
+	protected RegexToken[] Tokens
 	{
 		get
 		{
-			regexTokens[0] = new(new($"^\\p{{Nd}}+[{(Rational.Separator is '.' ? @"\." : Rational.Separator)}]?\\p{{Nd}}*$"), s => new Number(s));
+			regexTokens[0] = new(new($"^\\p{{Nd}}+[{(Rational.Separator is '.' ? @"\." : Rational.Separator)}]?\\p{{Nd}}*$"), value => new Number(value));
 			return regexTokens;
 		}
 	}
 
-	public static ValueHolder Evaluate(string input)
+	protected Calculator(RegexToken[] regexTokens) => this.regexTokens = regexTokens;
+
+	public static ValueHolder Evaluate(string input, Calculator calculator)
 	{
-		ValueHolder result = TreeForm(PostfixForm(Parse(RemoveWhitespaces(input))));
+		ValueHolder result = TreeForm(PostfixForm(Parse(RemoveWhitespaces(input), calculator)));
 
 		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
 	}
 
-	public static string RemoveWhitespaces(string input) => WhitespaceRegex().Replace(input, "");
+	protected static string RemoveWhitespaces(string input) => WhitespaceRegex().Replace(input, "");
 
-	public static List<Expression> Parse(string whitespacelessInput)
+	protected static Expression GetFunctionByName(FunctionToken[] functionTokens, string name) => functionTokens.First(f => f.Name == name).Function.Invoke();
+
+	protected static List<Expression> Parse(string whitespacelessInput, Calculator calculator)
 	{
-		RegexToken[] tokens = Tokens;
+		RegexToken[] tokens = calculator.Tokens;
 		List<Expression> result = [];
 		string lastSequence = string.Empty;
 		string currentSequence = string.Empty;
@@ -119,7 +118,7 @@ public static partial class Calculator
 		return result;
 	}
 
-	public static List<Expression> PostfixForm(List<Expression> unordered)
+	protected static List<Expression> PostfixForm(List<Expression> unordered)
 	{
 		List<Expression> result = [];
 		Stack<Expression> functions = new();
@@ -152,22 +151,36 @@ public static partial class Calculator
 		result.Add(cp);
 	}
 
-	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, Operator f)
+	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, Operator o)
 	{
-		if (functions.FirstOrDefault() is Operator o && o.Order() >= f.Order())
+		if (functions.FirstOrDefault() is FunctionBase fB && fB.Order() >= o.Order())
 		{
 			functions.Pop();
 
-			result.Add(o);
+			result.Add(fB);
+		}
+
+		functions.Push(o);
+	}
+
+	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, Function f)
+	{
+		if (functions.FirstOrDefault() is FunctionBase fB && fB.Order() >= f.Order())
+		{
+			functions.Pop();
+
+			result.Add(fB);
 		}
 
 		functions.Push(f);
 	}
 
-	public static ValueHolder TreeForm(List<Expression> ordered)
+	internal static void VisitPostfix(ref Stack<Expression> _, ref List<Expression> result, Coma c) => result.Add(c);
+
+	protected static ValueHolder TreeForm(List<Expression> ordered)
 	{
 		Stack<Expression> result = new();
-		
+
 		ordered.ForEach(expression => expression.AcceptTree(ref result));
 
 		return result.FirstOrDefault() as ValueHolder ?? throw new FormatException();
@@ -195,17 +208,36 @@ public static partial class Calculator
 			throw new FormatException();
 	}
 
-	internal static void VisitTree(ref Stack<Expression> result, Operator f)
+	internal static void VisitTree(ref Stack<Expression> result, Operator o)
 	{
-		int length = Math.Min(f.Parameters.Length, result.Count);
+		int length = Math.Min(o.Parameters.Length, result.Count);
 
 		for (int i = 1; i <= length && result.Peek() is ValueHolder valueHolder; ++i)
 		{
 			result.Pop();
-			f.Parameters[^i] = valueHolder;
+
+			o.Parameters[^i] = valueHolder;
+		}
+
+		result.Push(o);
+	}
+
+	internal static void VisitTree(ref Stack<Expression> result, Function f)
+	{
+		for (int i = 1; i <= f.Parameters.Length && result.Peek() is Parenthesized parenthesized; ++i)
+		{
+			result.Pop();
+
+			f.Parameters[^i] = parenthesized.Content;
 		}
 
 		result.Push(f);
+	}
+
+	internal static void VisitTree(ref Stack<Expression> result, Coma _)
+	{
+		VisitTree(ref result, new ClosingParenthesis());
+		VisitTree(ref result, new OpeningParenthesis());
 	}
 
 	internal static void VisitTree(ref Stack<Expression> result, Parenthesized p) => throw new NotImplementedException();

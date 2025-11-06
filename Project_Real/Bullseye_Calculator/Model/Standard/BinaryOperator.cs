@@ -39,10 +39,10 @@ public abstract class BinaryOperator : Operator
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
 	public override string ToStringByStep(ref int step)
 	{
-		string left = $"{Left?.ToStringByStep(ref step) ?? ""}{Sign()}";
-		string right = $"{Right.ToStringByStep(ref step)}";
+		string left = Left?.ToStringByStep(ref step) ?? "";
+		string right = Right.ToStringByStep(ref step);
 
-		return --step <= 0 ? left + right : Value.ToString();
+		return --step <= 0 ? $"{left}{Sign()}{right}" : ParenthesizeIfSigned(Value);
 	}
 }
 

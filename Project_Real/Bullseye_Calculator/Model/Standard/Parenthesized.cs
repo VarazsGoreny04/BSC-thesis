@@ -6,6 +6,8 @@ public sealed class Parenthesized(ValueHolder value) : ValueHolder
 {
 	private readonly ValueHolder value = value;
 
+	public ValueHolder Content => value;
+
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder root, ref int step)
 	{
 		value.FullEvaluation(ref partialValues, root, ref step);
