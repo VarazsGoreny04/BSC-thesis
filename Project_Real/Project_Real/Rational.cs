@@ -487,7 +487,7 @@ public class Rational
 	/// <para><see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
 	/// </remarks>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns></returns>
+	/// <returns>The number π.</returns>
 	public static Rational PI(int? fractionCalculationLength = null)
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
@@ -549,7 +549,7 @@ public class Rational
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns></returns>
+	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
 		static Natural P(Natural a, Natural b)
@@ -589,7 +589,7 @@ public class Rational
 	/// </remarks>
 	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns></returns>
+	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
 	{
 		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)	// B is always 1 so all the multiplications are unnecessary.
@@ -657,10 +657,10 @@ public class Rational
 	/// <remarks><see href="https://ginac.de/CLN/binsplit.pdf"/></remarks>
 	/// <param name="x">The anti-logarithm in ln(<paramref name="x"/>).</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns></returns>
+	/// <returns>The natural logarithm of the given parameter.</returns>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)	// B is always 1 so all the multiplications are unnecessary.
+		static ABPQSeriesResult SumABPQ_ArTanH(int n1, int n2, Rational x)
 		{
 			ABPQSeriesResult r;
 
@@ -671,18 +671,17 @@ public class Rational
 					throw new Exception();
 				case 1: // the result at the point n1
 
-					r = n1 == 0 ?
-					new(
-						P: x.numerator,
-						Q: Digit.ONE,
-						B: Digit.ONE,
-						T: x.numerator
-					) :
-					new(
-						P: -x.numerator,
-						Q: x.denominator ?? Digit.ONE,
-						B: new Natural((uint)n1) + Digit.ONE,
-						T: -x.numerator
+					uint k = (uint)n1;
+
+					Natural denominator = new(2 * k + 1);
+					// a_k = y^(2k+1)
+					Rational a = Power(x, denominator);
+
+					r = new(
+						P: null!,
+						Q: a.denominator ?? Digit.ONE,
+						B: denominator,
+						T: a.numerator
 					);
 
 					break;
@@ -691,15 +690,15 @@ public class Rational
 					// find the middle of the interval
 					int nm = (n1 + n2) / 2;
 					// sum left side
-					ABPQSeriesResult L = SumABPQ(n1, nm, x);
+					ABPQSeriesResult L = SumABPQ_ArTanH(n1, nm, x);
 					// sum right side
-					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+					ABPQSeriesResult R = SumABPQ_ArTanH(nm, n2, x);
 					// put together
 					r = new(
-						P: L.P * R.P, 
+						P: null!, 
 						Q: L.Q * R.Q, 
 						B: L.B * R.B, 
-						T: R.B * R.Q * L.T + L.B * L.P * R.T
+						T: R.B * R.Q * L.T + L.B * L.Q * R.T
 					);
 
 					break;
@@ -708,13 +707,17 @@ public class Rational
 			return r;
 		}
 
-		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1);
 
+		// y = (x - 1) / (x + 1)
+		Rational y = (x - Digit.ONE) / (x + Digit.ONE);
+
+		// Binary splitting on the artanh series
 		// r = [P, Q, B, T]
-		ABPQSeriesResult r = SumABPQ(0, n + 1, x - Digit.ONE);
+		ABPQSeriesResult r = SumABPQ_ArTanH(0, n, y);
 
 		// S = T / (B * Q)
-		Rational ret = new Rational(r.T) / new Rational(r.B * r.Q);
+		Rational ret = new Rational(r.T * Digit.TWO) / new Rational(r.B * r.Q);
 
 		return ret;
 	}

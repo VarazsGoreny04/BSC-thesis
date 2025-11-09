@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics; 
+using System.Diagnostics;
 
 namespace Project_Real;
 
@@ -263,35 +263,39 @@ public class Program
 		//Console.WriteLine(Positive.Power("10", res));
 
 
-		Rational.FractionCalculationLength = 100;
-
-		Rational a = Rational.E();
-		Rational b = Rational.Exp("2");
-
-		Console.WriteLine(Rational.ToWritableString(a * a));
-		Console.WriteLine(Rational.ToWritableString(b));
-
-
-		Rational.FractionCalculationLength = 50;
-
-		Rational a2 = Rational.E();
-		Rational b2 = Rational.Exp("2");
-
-		Console.WriteLine(Rational.ToWritableString(a2 * a2));
-		Console.WriteLine(Rational.ToWritableString(b2));
-
-		Rational l = Rational.Ln("2");
-
-		Console.WriteLine(Rational.ToWritableString(l));
-	}
-
-	public static void MatrixToString<T>(T[] a)
-	{
-		Console.Write($"[{a[0]}");
-		for (int i = 1; i < a.Length; ++i)
+		for (int i = 1; i <= 10; i++)
 		{
-			Console.Write($", {a[i]}");
+			Rational.FractionCalculationLength = i * 10;
+
+			timer.Restart();
+
+			Rational a = Rational.E();
+			Console.Write(Rational.ToWritableString(a * a));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
+
+			timer.Restart();
+
+			Rational b = Rational.Exp("2");
+			Console.Write(Rational.ToWritableString(b));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
 		}
-		Console.WriteLine("]");
+
+		for (int i = 1; i <= 10; i++)
+		{
+			Rational.FractionCalculationLength = i * 10;
+
+			timer.Restart();
+
+			Rational l = Rational.Ln("1.2");
+			Console.Write(Rational.ToWritableString(l));
+			
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
+		}
+
 	}
 }
