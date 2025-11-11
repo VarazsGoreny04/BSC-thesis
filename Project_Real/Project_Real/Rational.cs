@@ -770,6 +770,145 @@ public class Rational
 	}
 
 	/// <summary>
+	/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks>
+	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
+	/// </remarks>
+	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>The the exponential function for the given exponent.</returns>
+	public static Rational Sin(Rational x, int? fractionCalculationLength = null)
+	{
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x) // B is always 1 so all the multiplications are unnecessary.
+		{
+			ABPQSeriesResult r;
+
+			// check the length of the summation interval
+			switch (n2 - n1)
+			{
+				case 0:
+					throw new Exception();
+				case 1: // the result at the point n1
+
+					r = n1 == 0 ?
+					new(
+						P: x.numerator,
+						Q: x.denominator ?? Digit.ONE,
+						B: null! /*Digit.ONE*/,
+						T: x.numerator
+					) :
+					new(
+						P: -Writable.SecondPower(x.numerator),
+						Q: new Natural((uint)((2 * n1) * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+						B: null! /*Digit.ONE*/,
+						T: -Writable.SecondPower(x.numerator)
+					);
+
+					break;
+				// cases 2, 3, 4 left out for simplicity
+				default: // the general case
+						 // find the middle of the interval
+					int nm = (n1 + n2) / 2;
+					// sum left side
+					ABPQSeriesResult L = SumABPQ(n1, nm, x);
+					// sum right side
+					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+					// put together
+					r = new(
+						P: L.P * R.P,
+						Q: L.Q * R.Q,
+						B: null! /*L.B * R.B*/,
+						T: /*R.B **/ R.Q * L.T + /*L.B **/ L.P * R.T
+					);
+
+					break;
+			}
+
+			return r;
+		}
+
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+
+		// r = [P, Q, B, T]
+		ABPQSeriesResult r = SumABPQ(0, Math.Max(n / 2 + 2, 1), x);
+
+		// S = T / (B * Q)
+		Rational ret = new Rational(r.T) / new Rational(/*r.B **/ r.Q);
+
+		return ret;
+	}
+	/// <summary>
+	/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks>
+	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
+	/// </remarks>
+	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>The the exponential function for the given exponent.</returns>
+	public static Rational Cos(Rational x, int? fractionCalculationLength = null)
+	{
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x) // B is always 1 so all the multiplications are unnecessary.
+		{
+			ABPQSeriesResult r;
+
+			// check the length of the summation interval
+			switch (n2 - n1)
+			{
+				case 0:
+					throw new Exception();
+				case 1: // the result at the point n1
+
+					r = n1 == 0 ?
+					new(
+						P: Digit.ONE,
+						Q: Digit.ONE,
+						B: null! /*Digit.ONE*/,
+						T: Digit.ONE
+					) :
+					new(
+						P: -Writable.SecondPower(x.numerator),
+						Q: new Natural((uint)((2 * n1) * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+						B: null! /*Digit.ONE*/,
+						T: -Writable.SecondPower(x.numerator)
+					);
+
+					break;
+				// cases 2, 3, 4 left out for simplicity
+				default: // the general case
+						 // find the middle of the interval
+					int nm = (n1 + n2) / 2;
+					// sum left side
+					ABPQSeriesResult L = SumABPQ(n1, nm, x);
+					// sum right side
+					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+					// put together
+					r = new(
+						P: L.P * R.P,
+						Q: L.Q * R.Q,
+						B: null! /*L.B * R.B*/,
+						T: /*R.B **/ R.Q * L.T + /*L.B **/ L.P * R.T
+					);
+
+					break;
+			}
+
+			return r;
+		}
+
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+
+		// r = [P, Q, B, T]
+		ABPQSeriesResult r = SumABPQ(0, Math.Max(n / 2 + 2, 1), x);
+
+		// S = T / (B * Q)
+		Rational ret = new Rational(r.T) / new Rational(/*r.B **/ r.Q);
+
+		return ret;
+	}
+
+	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.
 	/// </summary>
 	/// <param name="obj">The <see langword="object"/>? to compare to.</param>

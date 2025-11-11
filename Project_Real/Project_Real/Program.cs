@@ -284,22 +284,50 @@ public class Program
 			Console.WriteLine($" - {timer}");
 		}*/
 
-		for (int i = 1; i <= 10; i++)
+		/*for (int i = 1; i <= 10; i++)
 		{
 			Rational.FractionCalculationLength = i * 10;
 
-			/*timer.Restart();
+			*//*timer.Restart();
 
 			Rational l1 = Rational.Ln("2");
 			Console.Write(Rational.ToWritableString(l1));
 
 			timer.Stop();
-			Console.WriteLine($" - {timer}");*/
+			Console.WriteLine($" - {timer}");*//*
 
 			timer.Restart();
 
 			Rational l2 = Rational.LnFast("16.2");
 			Console.Write(Rational.ToWritableString(l2));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
+		}*/
+
+		Rational pi = "3.14";
+
+		for (int i = 1; i <= 100; i++)
+		{
+			Rational.FractionCalculationLength = i;
+
+			timer.Restart();
+
+			Rational a1 = Rational.Sin(pi);
+			Console.Write(Rational.ToWritableString(a1));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
+		}
+
+		for (int i = 1; i <= 100; i++)
+		{
+			Rational.FractionCalculationLength = i;
+
+			timer.Restart();
+
+			Rational b1 = Rational.Cos(pi);
+			Console.Write(Rational.ToWritableString(b1));
 
 			timer.Stop();
 			Console.WriteLine($" - {timer}");
