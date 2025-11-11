@@ -186,14 +186,28 @@ public class Positive
 	}
 
 	/// <summary>
-	/// Returns the whole part of the given <see cref="Positive"/> instance.
+	/// Rounds down the given <see cref="Positive"/> instance.
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> instance.</param>
-	/// <returns>The whole value.</returns>
-	public static Natural GetWhole(Positive value)
+	/// <returns>The whole part of the given <see cref="Positive"/> instance.</returns>
+	public static Natural RoundDown(Positive value)
 	{
-		return value.fractionLength >= value.Digits.Length ? new Natural([.. value.Digits[(^value.WholeLength)..]]) : new Natural();
+		return value.fractionLength < value.Digits.Length ? new Natural([.. value.Digits[(^value.WholeLength)..]]) : new Natural();
 	}
+
+	/// <summary>
+	/// Rounds up the given <see cref="Positive"/> instance.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> instance.</param>
+	/// <returns>The whole part of the given <see cref="Positive"/> instance plus one if it was not whole.</returns>
+	public static Natural RoundUp(Positive value) => value.fractionLength > 0 ? RoundDown(value) + Digit.ONE : RoundDown(value);
+
+	/// <summary>
+	/// Rounds the given <see cref="Positive"/> instance to the nearest number.
+	/// </summary>
+	/// <param name="value">The <see cref="Positive"/> instance.</param>
+	/// <returns>The rounded value of the given <see cref="Positive"/> instance.</returns>
+	public static Natural Round(Positive value) => value.fractionLength > 0 && value.Digits[value.fractionLength - 1] > Digit.FOUR ? RoundUp(value) : RoundDown(value);
 
 	/// <summary>
 	/// Compares two <see cref="Positive"/>s.

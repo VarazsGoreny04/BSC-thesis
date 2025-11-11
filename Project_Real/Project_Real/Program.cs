@@ -263,7 +263,7 @@ public class Program
 		//Console.WriteLine(Positive.Power("10", res));
 
 
-		for (int i = 1; i <= 10; i++)
+		/*for (int i = 1; i <= 10; i++)
 		{
 			Rational.FractionCalculationLength = i * 10;
 
@@ -282,20 +282,27 @@ public class Program
 
 			timer.Stop();
 			Console.WriteLine($" - {timer}");
-		}
+		}*/
 
 		for (int i = 1; i <= 10; i++)
 		{
 			Rational.FractionCalculationLength = i * 10;
 
+			/*timer.Restart();
+
+			Rational l1 = Rational.Ln("2");
+			Console.Write(Rational.ToWritableString(l1));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");*/
+
 			timer.Restart();
 
-			Rational l = Rational.Ln("1.2");
-			Console.Write(Rational.ToWritableString(l));
-			
+			Rational l2 = Rational.LnFast("16.2");
+			Console.Write(Rational.ToWritableString(l2));
+
 			timer.Stop();
 			Console.WriteLine($" - {timer}");
 		}
-
 	}
 }

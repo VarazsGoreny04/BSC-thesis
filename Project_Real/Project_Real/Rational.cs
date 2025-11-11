@@ -315,6 +315,27 @@ public class Rational
 	}
 
 	/// <summary>
+	/// Rounds down the given <see cref="Rational"/> instance.
+	/// </summary>
+	/// <param name="value">The <see cref="Rational"/> instance.</param>
+	/// <returns>The whole part of the given <see cref="Rational"/> instance.</returns>
+	public static Integer RoundDown(Rational value) => new(value.Sign, Positive.RoundDown(GetValue(value).Value.Value));
+
+	/// <summary>
+	/// Rounds up the given <see cref="Rational"/> instance.
+	/// </summary>
+	/// <param name="value">The <see cref="Rational"/> instance.</param>
+	/// <returns>The whole part of the given <see cref="Rational"/> instance plus one if it was not whole.</returns>
+	public static Integer RoundUp(Rational value) => new(value.Sign, Positive.RoundUp(GetValue(value).Value.Value));
+
+	/// <summary>
+	/// Rounds the given <see cref="Rational"/> instance to the nearest number.
+	/// </summary>
+	/// <param name="value">The <see cref="Rational"/> instance.</param>
+	/// <returns>The rounded value of the given <see cref="Rational"/> instance.</returns>
+	public static Integer Round(Rational value) => new(value.Sign, Positive.Round(GetValue(value).Value.Value));
+
+	/// <summary>
 	/// Compares two <see cref="Rational"/>s.
 	/// </summary>
 	/// <param name="left">The first <see cref="Rational"/> to compare.</param>
@@ -498,7 +519,7 @@ public class Rational
 			if (b == a + Digit.ONE)
 			{
 				// Directly compute P(a,a+1), Q(a,a+1) and T(a,a+1)
-				if (a == Digit.ZERO)
+				if (a.IsZero)
 				{
 					Pab = Digit.ONE;
 					Qab = Digit.ONE;
@@ -511,7 +532,7 @@ public class Rational
 
 				Tab = Pab * ("13591409" + "545140134" * a); // a(a) * p(a)
 
-				if (a[0] % '2' == '1')
+				if (a[0] % Digit.TWO == Digit.ONE)
 					Tab = -Tab;
 			}
 			else
@@ -592,7 +613,7 @@ public class Rational
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)	// B is always 1 so all the multiplications are unnecessary.
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x) // B is always 1 so all the multiplications are unnecessary.
 		{
 			ABPQSeriesResult r;
 
@@ -620,7 +641,7 @@ public class Rational
 					break;
 				// cases 2, 3, 4 left out for simplicity
 				default: // the general case
-					// find the middle of the interval
+						 // find the middle of the interval
 					int nm = (n1 + n2) / 2;
 					// sum left side
 					ABPQSeriesResult L = SumABPQ(n1, nm, x);
@@ -628,9 +649,9 @@ public class Rational
 					ABPQSeriesResult R = SumABPQ(nm, n2, x);
 					// put together
 					r = new(
-						P: L.P * R.P, 
-						Q: L.Q * R.Q, 
-						B: null! /*L.B * R.B*/, 
+						P: L.P * R.P,
+						Q: L.Q * R.Q,
+						B: null! /*L.B * R.B*/,
 						T: /*R.B **/ R.Q * L.T + /*L.B **/ L.P * R.T
 					);
 
@@ -660,7 +681,7 @@ public class Rational
 	/// <returns>The natural logarithm of the given parameter.</returns>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ_ArTanH(int n1, int n2, Rational x)
+		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)
 		{
 			ABPQSeriesResult r;
 
@@ -670,10 +691,7 @@ public class Rational
 				case 0:
 					throw new Exception();
 				case 1: // the result at the point n1
-
-					uint k = (uint)n1;
-
-					Natural denominator = new(2 * k + 1);
+					Natural denominator = new(2 * (uint)n1 + 1);
 					// a_k = y^(2k+1)
 					Rational a = Power(x, denominator);
 
@@ -687,17 +705,17 @@ public class Rational
 					break;
 				// cases 2, 3, 4 left out for simplicity
 				default: // the general case
-					// find the middle of the interval
+						 // find the middle of the interval
 					int nm = (n1 + n2) / 2;
 					// sum left side
-					ABPQSeriesResult L = SumABPQ_ArTanH(n1, nm, x);
+					ABPQSeriesResult L = SumABPQ(n1, nm, x);
 					// sum right side
-					ABPQSeriesResult R = SumABPQ_ArTanH(nm, n2, x);
+					ABPQSeriesResult R = SumABPQ(nm, n2, x);
 					// put together
 					r = new(
-						P: null!, 
-						Q: L.Q * R.Q, 
-						B: L.B * R.B, 
+						P: null!,
+						Q: L.Q * R.Q,
+						B: L.B * R.B,
 						T: R.B * R.Q * L.T + L.B * L.Q * R.T
 					);
 
@@ -714,12 +732,41 @@ public class Rational
 
 		// Binary splitting on the artanh series
 		// r = [P, Q, B, T]
-		ABPQSeriesResult r = SumABPQ_ArTanH(0, n, y);
+		ABPQSeriesResult r = SumABPQ(0, n, y);
 
 		// S = T / (B * Q)
 		Rational ret = new Rational(r.T * Digit.TWO) / new Rational(r.B * r.Q);
 
 		return ret;
+	}
+
+	public static Rational LnFast(Rational x, int? fractionCalculationLength = null)
+	{
+		Natural n = Digit.ZERO;
+		Natural twoToTheNth = Digit.ONE;
+		
+		while ((twoToTheNth *= Digit.TWO) <= x)
+			n += Digit.ONE;
+		
+		twoToTheNth /= Digit.TWO;
+
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+
+		Natural r2 = RoundUp(SecondPower((x - "1") / (x + "1"))).Value; // r^2 where r is (x−1)/(x+1)
+		Natural log10r2 = Natural.Log(r2, "10"); // log10(r^2)
+		int ln2n = fCL / (int)Natural.ToUInt32(log10r2.IsZero ? Digit.ONE : log10r2); // p / log10(r^2) where p is the precision (10^-p)
+
+		/*{
+			Rational ln2 = Ln(Digit.TWO, ln2n);
+			Rational lnLt2 = Ln(x / twoToTheNth, ln2n - 2);
+
+			Console.WriteLine(GetValue(ln2).Value);
+			Console.WriteLine(GetValue(lnLt2).Value);
+
+			return lnLt2 + n * ln2;
+		}*/
+
+		return Ln(x / twoToTheNth, ln2n) + n * Ln(Digit.TWO, ln2n);
 	}
 
 	/// <summary>

@@ -191,6 +191,23 @@ public class Natural
 		return new Natural([xTry, .. root.Digits]);
 	}
 
+	internal static Natural Log(Natural left, Natural right)
+	{
+		if (left.isZero || right.isZero)
+			throw new NotImplementedException();
+
+		Natural one = Digit.ONE;
+		Natural result = new();
+
+		while (right <= left)
+		{
+			left /= right;
+			result += one;
+		}
+
+		return result;
+	}
+
 	#endregion
 
 	#region Public methods
@@ -536,23 +553,6 @@ public class Natural
 
 		return result;
 	}
-
-	/*public static Natural Log(Natural left, Natural right)
-	{
-		if (left.isZero || right.isZero)
-			throw new NotImplementedException();
-
-		Natural one = new([Digit.ONE]);
-		Natural result = new();
-
-		while (right <= left)
-		{
-			left /= right;
-			result += one;
-		}
-
-		return result;
-	}*/
 
 	/// <summary>
 	/// Calculates the greatest common divisor of the given two <see cref="Natural"/> numbers using the Euclidean algorithm.
