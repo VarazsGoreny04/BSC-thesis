@@ -149,6 +149,13 @@ public class Integer
 	public static int ToInt32(Integer value) => Convert.ToInt32(value.ToString());
 
 	/// <summary>
+	/// Gets the absolut value of the given <see cref="Integer"/>.
+	/// </summary>
+	/// <param name="value">The <see cref="Integer"/>.</param>
+	/// <returns>The absolut value of the given <see cref="Integer"/>.</returns>
+	public static Natural Abs(Integer value) => value.value;
+
+	/// <summary>
 	/// Compares two <see cref="Integer"/>s.
 	/// </summary>
 	/// <param name="left">The first <see cref="Integer"/> to compare.</param>

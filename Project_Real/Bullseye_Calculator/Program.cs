@@ -1,5 +1,8 @@
 ﻿using Bullseye_Calculator.Model;
+using Bullseye_Calculator.Model.EuclideanSpace;
+using Bullseye_Calculator.Model.Polynomials;
 using Bullseye_Calculator.Model.Standard;
+using Project_Real;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,17 +74,34 @@ public class Program
 		Console.WriteLine(result.ToString());
 		Console.WriteLine(result.Value().ToString());*/
 
-		ValueHolder valueHolder = Calculator.Evaluate(text, calculator);
+		/*ValueHolder valueHolder = Calculator.Evaluate(text, calculator);
 		List<(string Calculation, string State)> evaluation = Calculator.FullEvaluation(valueHolder);
 
 		Console.WriteLine($"{valueHolder} == {valueHolder.Value}");
 		int maxLength = evaluation.Max(step => step.Calculation.Length);
-		evaluation.ForEach(step => Console.WriteLine($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}\t{step.State}"));
+		evaluation.ForEach(step => Console.WriteLine($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}\t{step.State}"));*/
 
 		/*for (int i = 1; i < 12; ++i)
 		{
 			int temp = i;
 			Console.WriteLine(valueHolder.StepToString(ref temp));
 		}*/
+
+		Rational.FractionCalculationLength = 3;
+		Rational.FractionalFormat = false;
+
+		Point2D[] myPoints = [
+			new("0.1", "8"),
+			new("1", "5"),
+			new("2", "3"),
+			new("3", "2"),
+			new(Rational.PI(), "1")
+		];
+
+		Rational[] res = Interpolation.Lagrange(myPoints);
+		Console.WriteLine(Polynomial.ToString(res));
+
+		/*Rational[] points = CoordinateSystem.LinSpace("1", "6", 100);
+		Console.WriteLine(Matrix.ToString(Polynomial.EvaluateRange(res, points)));*/
 	}
 }

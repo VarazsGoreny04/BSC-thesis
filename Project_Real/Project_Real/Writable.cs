@@ -191,6 +191,13 @@ public class Writable
 	public static Integer Round(Writable value) => new(value.Sign, Positive.Round(value.Value));
 
 	/// <summary>
+	/// Gets the absolut value of the given <see cref="Writable"/>.
+	/// </summary>
+	/// <param name="value">The <see cref="Writable"/>.</param>
+	/// <returns>The absolut value of the given <see cref="Writable"/>.</returns>
+	public static Positive Abs(Writable value) => value.value;
+
+	/// <summary>
 	/// Compares two <see cref="Writable"/>s.
 	/// </summary>
 	/// <param name="left">The first <see cref="Writable"/> to compare.</param>
