@@ -288,10 +288,13 @@ public class Natural
 			(left, right) = (right, left);
 
 		bool carry = false;
-		Digit[] result = new Digit[left.Length];
+		Digit[] result = [.. left.digits];
 
-		for (int i = 0; i < left.Length; ++i)
-			(carry, result[i]) = Digit.Add(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
+		for (int i = 0; i < right.Length; ++i)
+			(carry, result[i]) = Digit.Add(left[i], right[i], carry);
+
+		for (int i = right.Length; i < left.length && carry; ++i)
+			(carry, result[i]) = Digit.Add(left[i], Digit.ZERO, carry);
 
 		return carry ? new Natural([.. result, Digit.ONE]) : result;
 	}
@@ -310,10 +313,13 @@ public class Natural
 			(left, right) = (right, left);
 
 		bool carry = false;
-		Digit[] result = new Digit[left.Length];
+		Digit[] result = [.. left.digits];
 
-		for (int i = 0; i < left.Length; ++i)
-			(carry, result[i]) = Digit.Subtract(left[i], (i < right.Length ? right[i] : Digit.ZERO), carry);
+		for (int i = 0; i < right.Length; ++i)
+			(carry, result[i]) = Digit.Subtract(left[i], right[i], carry);
+
+		for (int i = right.Length; i < left.length && carry; ++i)
+			(carry, result[i]) = Digit.Subtract(left[i], Digit.ZERO, carry);
 
 		return (swap, result);
 	}
@@ -340,19 +346,19 @@ public class Natural
 		bool overflowB;
 		int addedIndex;
 
-		for (int n2i = 0; n2i < right.Length; ++n2i)
+		for (int rightStep = 0; rightStep < right.Length; ++rightStep)
 		{
-			if (right[n2i] == Digit.ZERO)
+			if (right[rightStep] == Digit.ZERO)
 				continue;
 
-			temp = new Digit[left.Length + n2i + 1];
-			Array.Fill(temp, Digit.ZERO, 0, n2i + 1);
+			temp = new Digit[left.Length + rightStep + 1];
+			Array.Fill(temp, Digit.ZERO, 0, rightStep + 1);
 
-			addedIndex = n2i;
+			addedIndex = rightStep;
 
-			for (int n1i = 0; n1i < left.Length; ++n1i)
+			for (int leftStep = 0; leftStep < left.Length; ++leftStep)
 			{
-				(overflowD, digit) = Digit.Multiply(left[n1i], right[n2i]);
+				(overflowD, digit) = Digit.Multiply(left[leftStep], right[rightStep]);
 				(overflowB, temp[addedIndex]) = Digit.Add(temp[addedIndex], digit);
 				++addedIndex;
 				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
@@ -376,37 +382,37 @@ public class Natural
 		if (right.isZero)
 			throw new DivideByZeroException();
 		else if (left.Length < right.Length)
-			return (new Natural(), left);
-		else if (right.Length == 1 && right[0] == Digit.ONE)
-			return (left, new Natural());
+			return (Digit.ZERO, left);
+		else if (right == Digit.ONE)
+			return (left, Digit.ZERO);
 
-		int tempLength;
-		Natural temp = new();
+		int initialNextChunkLength;
+		Natural nextChunk = new();
 		Digit[] remainder = [.. left.digits];
 		Digit[] result = Digit.CreateArray(left.Length - right.Length + 1);
 
-		int i = left.Length - right.Length;
-		while (i >= 0)
+		int stepBack = left.Length - right.Length;
+		while (stepBack >= 0)
 		{
-			temp = new Natural([.. remainder.Skip(i)]);
-			tempLength = temp.Length;
+			nextChunk = remainder.Skip(stepBack).ToArray();
+			initialNextChunkLength = nextChunk.Length;
 
-			while (right <= temp)
+			while (right <= nextChunk)
 			{
-				temp -= right;
-				result[i] += Digit.ONE;
+				nextChunk -= right;
+				result[stepBack] += Digit.ONE;
 			}
 
-			Array.Copy(temp.digits.ToArray(), 0, remainder, i, temp.Length);
-			Array.Fill(remainder, Digit.ZERO, i + temp.Length, tempLength - temp.Length);
+			Array.Copy(nextChunk.digits.ToArray(), 0, remainder, stepBack, nextChunk.Length);
+			Array.Fill(remainder, Digit.ZERO, stepBack + nextChunk.Length, initialNextChunkLength - nextChunk.Length);
 
-			if (temp.isZero)
-				while (--i >= 0 && remainder[i] == Digit.ZERO) { }
+			if (nextChunk.isZero)
+				while (--stepBack >= 0 && remainder[stepBack] == Digit.ZERO) { }
 			else
-				--i;
+				--stepBack;
 		}
 
-		return (result, temp);
+		return (result, nextChunk);
 	}
 
 	/// <summary>
@@ -477,9 +483,9 @@ public class Natural
 		Natural remainder = new();
 		Natural root = new();
 
-		for (int i = value.length - (((value.Length - 1) & 1) + 1); i >= 0; i -= 2)
+		for (int stepBack = value.length - (((value.Length - 1) & 1) + 1); stepBack >= 0; stepBack -= 2)
 		{
-			remainder = new Natural([value[i], (i + 1 < value.Length ? value[i + 1] : Digit.ZERO), .. remainder.digits]);
+			remainder = new Natural([value[stepBack], (stepBack + 1 < value.Length ? value[stepBack + 1] : Digit.ZERO), .. remainder.digits]);
 
 			root = CalculateTwoRootDigits(root, ref remainder);
 		}
@@ -523,9 +529,9 @@ public class Natural
 		Natural degreeFactorial = Factorial(right);
 		Natural root = new();
 
-		for (int i = digits.Length - degreeInt; i >= 0; i -= degreeInt)
+		for (int stepBack = digits.Length - degreeInt; stepBack >= 0; stepBack -= degreeInt)
 		{
-			remainder = new Natural([.. digits[i..(i + degreeInt)], .. remainder.digits]);
+			remainder = new Natural([.. digits[stepBack..(stepBack + degreeInt)], .. remainder.digits]);
 
 			root = CalculateNRootDigits(root, ref remainder, right, degreeFactorial);
 		}
@@ -540,6 +546,26 @@ public class Natural
 	/// <returns>The result of the calculation.</returns>
 	public static Natural Factorial(Natural value)
 	{
+		/*static Natural ProductRange(Natural a, Natural b)
+		{
+			if (a == b)
+				return a;
+			else if (b == a + Digit.ONE)
+				return a * b;
+
+			Natural m = (a + b) / Digit.TWO;
+
+			Natural left = ProductRange(a, m);
+			Natural right = ProductRange(m + Digit.ONE, b);
+
+			return left * right;
+		}
+
+		if (value.isZero || value == Digit.ONE)
+			return Digit.ONE;
+
+		return ProductRange(Digit.ONE, value);*/
+
 		if (value.isZero || value == Digit.ONE)
 			return Digit.ONE;
 

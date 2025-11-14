@@ -343,11 +343,11 @@ public class Positive
 
 		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 		int splicingLength = value.fractionLength & 1;
-		int zeroCalculationLength = (fCL * 2 - (value.fractionLength + splicingLength)) / 2;
 
 		(Natural root, Natural remainder) = Natural.SquareRoot(new Natural([.. Digit.CreateArray(splicingLength), .. value.Digits]));
 
-		for (int i = zeroCalculationLength; i > 0; --i)
+		int zeroCalculationLength = (fCL * 2 - (value.fractionLength + splicingLength)) / 2;
+		for (int i = 0; i < zeroCalculationLength; ++i)
 		{
 			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
 
@@ -396,7 +396,8 @@ public class Positive
 		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 		Natural degreeFactorial = Natural.Factorial(degree);
 
-		for (int i = (fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt; i > 0; --i)
+		int zeroCalculationLength = (fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt;
+		for (int i = 0; i < zeroCalculationLength; ++i)
 		{
 			remainder = new Natural([.. Digit.CreateArray(degreeInt), .. remainder.Digits]);
 
