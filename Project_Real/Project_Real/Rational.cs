@@ -312,7 +312,7 @@ public class Rational
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The rounded value of the given <see cref="Rational"/> instance.</returns>
 	public static Integer Round(Rational value) => new(value.Sign, Positive.Round(GetValue(value).Value.Value));
-	
+
 	/// <summary>
 	/// Gets the absolut value of the given <see cref="Rational"/>.
 	/// </summary>
@@ -508,7 +508,7 @@ public class Rational
 	/// </remarks>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The number π.</returns>
-	public static Rational PI(int? fractionCalculationLength = null)
+	public static Rational Pi(int? fractionCalculationLength = null)
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
@@ -706,7 +706,25 @@ public class Rational
 			return r;
 		}
 
-		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1);
+		static int IterationsNeeded(Rational x, int fractionCalculationLength)
+		{
+			int result;
+
+			if (x < "1.1")
+				result = fractionCalculationLength * 3 / 8;
+			else if (x < "1.5")
+				result = fractionCalculationLength * 13 / 18;
+			else if (x >= "1.5")
+				result = fractionCalculationLength * 11 / 10;
+			else
+				throw new Exception(); // TODO
+
+			return result + 1;
+		}
+
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+
+		int n = IterationsNeeded(x, fCL);
 
 		Rational y = (x - Digit.ONE) / (x + Digit.ONE);
 
@@ -719,10 +737,10 @@ public class Rational
 	{
 		Natural n = Digit.ZERO;
 		Natural twoToTheNth = Digit.ONE;
-		
+
 		while ((twoToTheNth *= Digit.TWO) <= x)
 			n += Digit.ONE;
-		
+
 		twoToTheNth /= Digit.TWO;
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
@@ -733,8 +751,9 @@ public class Rational
 
 		/*{
 			Rational ln2 = Ln(Digit.TWO, ln2n);
-			Rational lnLt2 = Ln(x / twoToTheNth, ln2n - 2);
+			Rational lnLt2 = Ln(x / twoToTheNth, IterationsNeededSinCos("1", fCL));
 
+			Console.WriteLine($"{fractionCalculationLength} -");
 			Console.WriteLine(GetValue(ln2).Value);
 			Console.WriteLine(GetValue(lnLt2).Value);
 
@@ -764,6 +783,8 @@ public class Rational
 				case 0:
 					throw new Exception();
 				case 1:
+					Writable tempP;
+
 					r = n1 == 0 ?
 					new(
 						P: x.numerator,
@@ -772,10 +793,10 @@ public class Rational
 						T: x.numerator
 					) :
 					new(
-						P: -Writable.SecondPower(x.numerator),
+						P: tempP = -Writable.SecondPower(x.numerator),
 						Q: new Natural((uint)((2 * n1) * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
 						B: null!,
-						T: -Writable.SecondPower(x.numerator)
+						T: tempP
 					);
 					break;
 				default:
@@ -798,8 +819,8 @@ public class Rational
 
 		int fCL = fractionCalculationLength ?? FractionCalculationLength;
 
-		if (x > Digit.THREE)
-			x %= Digit.TWO * PI(fCL + 1);
+		if (Abs(x) > Digit.SIX)
+			x %= Digit.TWO * Pi(fCL);
 
 		int n = IterationsNeededSinCos(x, fCL);
 
@@ -828,6 +849,8 @@ public class Rational
 				case 0:
 					throw new Exception();
 				case 1:
+					Writable tempP;
+
 					r = n1 == 0 ?
 					new(
 						P: Digit.ONE,
@@ -836,10 +859,10 @@ public class Rational
 						T: Digit.ONE
 					) :
 					new(
-						P: -Writable.SecondPower(x.numerator),
+						P: tempP = -Writable.SecondPower(x.numerator),
 						Q: new Natural((uint)((2 * n1) * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
 						B: null!,
-						T: -Writable.SecondPower(x.numerator)
+						T: tempP
 					);
 					break;
 				default:
@@ -862,8 +885,8 @@ public class Rational
 
 		int fCL = fractionCalculationLength ?? FractionCalculationLength;
 
-		if (x > Digit.THREE)
-			x %= Digit.TWO * PI(fCL + 1);
+		if (Abs(x) > Digit.SIX)
+			x %= Digit.TWO * Pi(fCL);
 
 		int n = IterationsNeededSinCos(x, fCL);
 
@@ -871,6 +894,22 @@ public class Rational
 
 		return new Rational(r.T, r.Q);
 	}
+
+	/*
+		/// <summary>
+		/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+		/// </summary>
+		/// <remarks>
+		/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
+		/// </remarks>
+		/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+		/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+		/// <returns>The the exponential function for the given exponent.</returns>
+		public static Rational Fact(Rational x, int? fractionCalculationLength = null)
+		{
+
+		}
+	*/
 
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.

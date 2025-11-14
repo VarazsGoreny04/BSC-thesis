@@ -14,7 +14,7 @@ public abstract class Term : ValueHolder
 
 public sealed class PI : Term
 {
-	public override Rational GetValue() => Rational.PI();
+	public override Rational GetValue() => Rational.Pi();
 	public override string ToStringByStep(ref int _) => "pi";
 }
 

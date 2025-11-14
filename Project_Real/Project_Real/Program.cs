@@ -285,16 +285,19 @@ public class Program
 		}*/
 
 		// Test(new Func<Rational>(() => Rational.Ln("2")), 1, 100);
-		// Test(new Func<Rational>(() => Rational.LnFast("16,2")), 1, 100);
+		Test2(new Func<int, Rational>(x => Rational.Ln("1.49", x)), 20, 30);
+		// Test2(new Func<int, Rational>(x => Rational.LnFast("16.2", x)), 1, 100);
 
-		Rational pi = new Rational("0.2") * "26";
+		/*Rational pi = "0";
 
-		for (int i = 27; i < 31; i++)
+		for (int i = 1; i < 31; i++)
 		{
 			pi += "0.2";
 			Test(new Func<Rational>(() => Rational.Sin(pi)), 1, 100);
-		}
+		}*/
 
+		//Console.Write(Rational.ToWritableString(Rational.Sin(-Rational.Pi() * "4")));
+		//Test(new Func<Rational>(() => Rational.Sin("0.6")), 100, 150);
 		//Test(new Func<Rational>(() => Rational.Cos(pi)), 1, 100);
 	}
 
@@ -309,6 +312,23 @@ public class Program
 			timer.Restart();
 
 			Console.Write(Rational.ToWritableString(func.Invoke()));
+
+			timer.Stop();
+			Console.WriteLine($" - {timer}");
+		}
+	}
+
+	private static void Test2(Func<int, Rational> func, int from, int to)
+	{
+		Rational.FractionCalculationLength = to;
+
+		Stopwatch timer = new();
+
+		for (int i = from; i <= to; i+=2)
+		{
+			timer.Restart();
+
+			Console.Write(Rational.ToWritableString(func.Invoke(i)));
 
 			timer.Stop();
 			Console.WriteLine($" - {timer}");

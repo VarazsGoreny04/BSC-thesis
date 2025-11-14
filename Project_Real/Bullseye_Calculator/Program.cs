@@ -95,7 +95,7 @@ public class Program
 			new("1", "5"),
 			new("2", "3"),
 			new("3", "2"),
-			new(Rational.PI(), "1")
+			new(Rational.Pi(), "1")
 		];
 
 		Rational[] res = Interpolation.Lagrange(myPoints);
