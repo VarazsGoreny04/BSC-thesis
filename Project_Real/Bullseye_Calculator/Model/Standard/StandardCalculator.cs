@@ -4,7 +4,10 @@ public partial class StandardCalculator : Calculator
 {
 	protected static readonly FunctionToken[] functionTokens = 
 	[
-		//new("fact", () => new Fact()),
+		new("ceiling", () => new Ceiling()),
+		new("round", () => new Round()),
+		new("floor", () => new Floor()),
+		new("fact", () => new Fact()),
 		new("abs", () => new Abs()),
 		new("pi", () => new PI()),
 		new("e", () => new E()),

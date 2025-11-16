@@ -13,7 +13,7 @@ public abstract class Function(int parameters) : FunctionBase(parameters)
 
 		int stepCopy = step;
 
-		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(p => p.Value))} = {Value}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(p => p.Value))}) = {Value}", root.ToStringByStep(ref stepCopy)));
 	}
 	public override string ToStringByStep(ref int step)
 	{
@@ -43,9 +43,60 @@ public sealed class Abs : Function
 
 	public Abs(ValueHolder parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => new(true, Parameter.Value.Numerator, Parameter.Value.Denominator);
+	public override Rational GetValue() => Rational.Abs(Parameter?.Value ?? throw new FormatException());
 
 	public override string Sign() => "abs";
+}
+
+public sealed class Floor : Function
+{
+	public ValueHolder Parameter
+	{
+		get => parameters[0];
+		set => parameters[0] = value;
+	}
+
+	public Floor() : base(1) { }
+
+	public Floor(ValueHolder parameter) : base(1) => Parameter = parameter;
+
+	public override Rational GetValue() => Rational.RoundDown(Parameter?.Value ?? throw new FormatException());
+
+	public override string Sign() => "floor";
+}
+
+public sealed class Round : Function
+{
+	public ValueHolder Parameter
+	{
+		get => parameters[0];
+		set => parameters[0] = value;
+	}
+
+	public Round() : base(1) { }
+
+	public Round(ValueHolder parameter) : base(1) => Parameter = parameter;
+
+	public override Rational GetValue() => Rational.Round(Parameter?.Value ?? throw new FormatException());
+
+	public override string Sign() => "round";
+}
+
+public sealed class Ceiling : Function
+{
+	public ValueHolder Parameter
+	{
+		get => parameters[0];
+		set => parameters[0] = value;
+	}
+
+	public Ceiling() : base(1) { }
+
+	public Ceiling(ValueHolder parameter) : base(1) => Parameter = parameter;
+
+	public override Rational GetValue() => Rational.RoundUp(Parameter?.Value ?? throw new FormatException());
+
+	public override string Sign() => "ceiling";
 }
 
 public sealed class Fact : Function
@@ -60,9 +111,9 @@ public sealed class Fact : Function
 
 	public Fact(ValueHolder parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => new(true, Parameter.Value.Numerator, Parameter.Value.Denominator);
+	public override Rational GetValue() => Rational.Abs(Parameter?.Value ?? throw new FormatException());
 
-	public override string Sign() => "abs";
+	public override string Sign() => "fact";
 }
 
 public sealed class Max : Function

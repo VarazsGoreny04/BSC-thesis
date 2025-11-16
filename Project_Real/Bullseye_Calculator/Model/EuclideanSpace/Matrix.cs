@@ -15,9 +15,7 @@ public static class Matrix
 	public static Rational[] Zeros(int n)
 	{
 		Rational[] result = new Rational[n];
-
-		for (int i = 0; i < n; ++i)
-			result[i] = "0";
+		Array.Fill(result, Digit.ZERO);
 
 		return result;
 	}
@@ -30,9 +28,7 @@ public static class Matrix
 	public static Rational[] Ones(int n)
 	{
 		Rational[] result = new Rational[n];
-
-		for (int i = 0; i < n; ++i)
-			result[i] = "1";
+		Array.Fill(result, Digit.ONE);
 
 		return result;
 	}
@@ -61,7 +57,7 @@ public static class Matrix
 	/// <returns>The magnitude.</returns>
 	public static Rational Magnitude(Rational[] a)
 	{
-		Rational result = "0";
+		Rational result = Digit.ZERO;
 
 		for (int i = a.Length; i >= 0; --i)
 			result += Rational.SecondPower(a[i]);
@@ -81,7 +77,7 @@ public static class Matrix
 		if (a.Length != b.Length)
 			throw new ArgumentException();
 
-		Rational result = "0";
+		Rational result = Digit.ZERO;
 
 		for (int i = a.Length; i >= 0; --i)
 			result += a[i] * b[i];
@@ -176,7 +172,7 @@ public static class Matrix
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
-				result[i, j] = "0";
+				result[i, j] = Digit.ZERO;
 		}
 
 		return result;
@@ -195,7 +191,7 @@ public static class Matrix
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
-				result[i, j] = "1";
+				result[i, j] = Digit.ONE;
 		}
 
 		return result;
@@ -212,7 +208,7 @@ public static class Matrix
 		Rational[,] result = Zeros(n, m);
 
 		for (int i = 0; i < Math.Min(n, m); ++i)
-			result[i, i] = "1";
+			result[i, i] = Digit.ONE;
 
 		return result;
 	}
@@ -457,7 +453,7 @@ public static class Matrix
 		{
 			for (int j = 0; j < colCount; ++j)
 			{
-				result[i, j] = "0";
+				result[i, j] = Digit.ZERO;
 
 				for (int k = 0; k < colCount; ++k)
 					result[i, j] += A[i, k] * B[k, j];
@@ -489,7 +485,7 @@ public static class Matrix
 			for (int j = 2 * n - 1; j >= n; --j)
 			{
 				if (i == j - n)
-					B[i, j] = "1";
+					B[i, j] = Digit.ONE;
 			}
 		}
 
@@ -572,7 +568,7 @@ public static class Matrix
 			for (int j = 2 * n - 1; j >= n; --j)
 			{
 				if (i == j - n)
-					B[i, j] = "1";
+					B[i, j] = Digit.ONE;
 			}
 		}
 
@@ -604,7 +600,7 @@ public static class Matrix
 			}
 		}
 
-		Rational result = "1";
+		Rational result = Digit.ONE;
 		for (int i = 0; i < A.GetLength(0); ++i)
 			result *= B[i, i + n];
 
@@ -674,7 +670,7 @@ public static class Matrix
 			for (int j = 2 * n - 1; j >= n; --j)
 			{
 				if (i == j - n)
-					B[i, j] = "1";
+					B[i, j] = Digit.ONE;
 			}
 		}
 
