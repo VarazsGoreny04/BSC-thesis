@@ -1,14 +1,14 @@
-﻿using Bullseye_Calculator.Model.Standard;
+﻿using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
 public class VectorHolder : Expression
 {
-	private readonly ValueHolder[] value;
+	private readonly ValueHolder<MatrixHolder>[] value;
 
-    public VectorHolder(ValueHolder[] value) => this.value = value;
+	public VectorHolder(ValueHolder<MatrixHolder>[] value) => this.value = value;
 
-    internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
 	internal override void ToTree(ref Stack<Expression> result) => result.Push(this);
 	public override string ToStringByStep(ref int step)
 	{

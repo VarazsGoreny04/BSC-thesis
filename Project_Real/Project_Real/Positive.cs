@@ -10,7 +10,7 @@ public class Positive
 {
 	#region Fields
 
-	private static char separator = '.';
+	private const char separator = '.';
 	private static int fractionCalculationLength = 10;
 
 	private readonly int length;
@@ -21,15 +21,8 @@ public class Positive
 
 	#region Properties
 
-	/// <summary>
-	/// Gets or sets the character the <see cref="ToString"/> method should use as separator.
-	/// </summary>
-	/// <exception cref="ArgumentException"><param name="value"/> cannot be a number character.</exception>
-	public static char Separator
-	{
-		get => separator;
-		set => separator = value < '0' || value > '9' ? value : throw new ArgumentException();
-	}
+	/// <returns>The character the <see cref="ToString"/> method uses as separator.</returns>
+	public static char Separator => separator;
 
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.

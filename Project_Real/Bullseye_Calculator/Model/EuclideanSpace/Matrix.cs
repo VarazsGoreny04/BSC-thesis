@@ -1,4 +1,5 @@
 ﻿using Project_Real;
+using System;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 

@@ -43,7 +43,7 @@ public class Program
 		double f5 = 0.2;
 		double f6 = 0.3;
 		Console.WriteLine($" ({f4})  +  ({f5})  =  ({f6})  ->  ({f4})  +  ({f5})  ==  ({f4 + f5}) => {f4 + f5 == f6}");
-		Console.WriteLine($"({left}) + ({right}) = ({f3}) -> ({left}) + ({right}) == ({left + right})            => {left + right == f3}");
+		Console.WriteLine($"({left}) + ({right}) = ({f3}) -> ({left}) + ({right}) == ({left + right})			=> {left + right == f3}");
 
 
 		bool[] b = [false, true, false, true, false, false, false, false];
@@ -198,10 +198,10 @@ public class Program
 		Console.WriteLine(Positive.SquareRoot("152.2756"));
 		Console.WriteLine(Positive.SquareRoot("1522.756"));
 		Console.WriteLine(Positive.SquareRoot("2318785.835536"));*/
-		//Console.WriteLine(Positive.SquareRoot("100.0"));              // 10
-		//Console.WriteLine(Positive.SquareRoot("4192"));               // 64.745656224954581890369881235962
-		/*Console.WriteLine(Positive.Root("1522.756", Digit.TWO));              // 39.0225063264778009568663463383
-		Console.WriteLine(Natural.Root("1522756000000000", Digit.TWO));       // 39.0225063264778009568663463383
+		//Console.WriteLine(Positive.SquareRoot("100.0"));			  // 10
+		//Console.WriteLine(Positive.SquareRoot("4192"));			   // 64.745656224954581890369881235962
+		/*Console.WriteLine(Positive.Root("1522.756", Digit.TWO));			  // 39.0225063264778009568663463383
+		Console.WriteLine(Natural.Root("1522756000000000", Digit.TWO));	   // 39.0225063264778009568663463383
 		Console.WriteLine(Positive.Root("2318785.835536", Digit.TWO));
 		Console.WriteLine(Positive.Root("1522.756", Digit.FOUR));
 		Console.WriteLine(Natural.Root("1522756000", Digit.THREE));

@@ -1,4 +1,6 @@
 ﻿using Project_Real;
+using System;
+using System.Linq;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 

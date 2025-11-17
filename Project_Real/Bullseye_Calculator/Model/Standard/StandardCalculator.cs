@@ -1,8 +1,11 @@
-﻿namespace Bullseye_Calculator.Model.Standard;
+﻿using Project_Real;
+using System.Collections.Generic;
+
+namespace Bullseye_Calculator.Model.Standard;
 
 public partial class StandardCalculator : Calculator
 {
-	protected static readonly FunctionToken[] functionTokens = 
+	protected static readonly FunctionToken[] functionTokens =
 	[
 		new("ceiling", () => new Ceiling()),
 		new("round", () => new Round()),
@@ -16,7 +19,7 @@ public partial class StandardCalculator : Calculator
 	public StandardCalculator() : base(
 	[
 		// Rational number
-		new(null!, value => new Number(value)),
+		new(new(new($"^\\p{{Nd}}+[{Rational.Separator}]?\\p{{Nd}}*$")), value => new Number(value)),
 		// Function name
 		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
 		// Operators
@@ -28,7 +31,10 @@ public partial class StandardCalculator : Calculator
 		new(RootRegex(), _ => new Root()),
 		// Separators
 		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis()),
-		new(ComaRegex(), _ => new Coma())
-	]) { }
+		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Rational>()),
+		new(ComaRegex(), _ => new Coma<Rational>())
+	])
+	{ }
+
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Rational>(input, this));
 }

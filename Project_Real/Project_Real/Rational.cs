@@ -40,17 +40,8 @@ public class Rational
 		set => Writable.WriteSign = value;
 	}
 
-	/// <summary>
-	/// Gets or sets the character the <see cref="ToString"/> method should use as separator.
-	/// </summary>
-	/// <exception cref="ArgumentException">
-	/// <param name="value"/> cannot be a number character.
-	/// </exception>
-	public static char Separator
-	{
-		get => Writable.Separator;
-		set => Writable.Separator = value;
-	}
+	/// <returns>The character the <see cref="ToString"/> method uses as separator</returns>
+	public static char Separator => Writable.Separator;
 
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.

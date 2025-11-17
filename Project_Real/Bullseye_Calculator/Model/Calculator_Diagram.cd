@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Bullseye_Calculator.Model.Expression" Collapsed="true">
+	<Position X="11.5" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Expression.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.ValueHolder&lt;T&gt;" Collapsed="true">
+	<Position X="6.5" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAAAAiAAAAAAA=</HashCode>
+	  <FileName>Model\ValueHolder.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Coma&lt;T&gt;" Collapsed="true">
+	<Position X="11.5" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Coma.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Parenthesized&lt;T&gt;" Collapsed="true">
+	<Position X="6.5" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAIgAAAAAAAAAAAAAAAAAAACAAAAACAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesized.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Term&lt;T&gt;" Collapsed="true">
+	<Position X="2.25" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+	  <FileName>Model\Term.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Parenthesis" Collapsed="true">
+	<Position X="16.75" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.OpeningParenthesis" Collapsed="true">
+	<Position X="17.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.ClosingParenthesis&lt;T&gt;" Collapsed="true">
+	<Position X="15.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.FunctionBase&lt;T&gt;" Collapsed="true">
+	<Position X="10.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAE=</HashCode>
+	  <FileName>Model\FunctionBase.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Operator&lt;T&gt;" Collapsed="true">
+	<Position X="7.25" Y="4.25" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Operator.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Function&lt;T&gt;" Collapsed="true">
+	<Position X="15" Y="4.25" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAEAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+	  <FileName>Model\Function.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

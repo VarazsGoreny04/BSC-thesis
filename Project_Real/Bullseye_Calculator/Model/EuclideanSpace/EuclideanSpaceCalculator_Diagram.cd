@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Bullseye_Calculator.Model.Standard.Expression" Collapsed="true">
-    <Position X="4.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAEAAAAAAAAAAAAAAABEAAAAAAAAAA=</HashCode>
-      <FileName>Model\Standard\Expression.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.MatrixHolder" Collapsed="true">
-    <Position X="4.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAACABEAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\MatrixHolder.cs</FileName>
-    </TypeIdentifier>
+	<Position X="4.75" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\EuclideanSpace\MatrixHolder.cs</FileName>
+	</TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.VectorHolder" Collapsed="true">
-    <Position X="4.75" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAACABEAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\VectorHolder.cs</FileName>
-    </TypeIdentifier>
+	<Position X="4.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\EuclideanSpace\VectorHolder.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Expression" Collapsed="true">
+	<Position X="4.75" Y="0.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Expression.cs</FileName>
+	</TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

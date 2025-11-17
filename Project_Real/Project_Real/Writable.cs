@@ -26,15 +26,8 @@ public class Writable
 		set => Integer.WriteSign = value;
 	}
 
-	/// <summary>
-	/// Gets or sets the character the <see cref="ToString"/> method should use as separator.
-	/// </summary>
-	/// <exception cref="ArgumentException"><param name="value"/> cannot be a number character.</exception>
-	public static char Separator 
-	{
-		get => Positive.Separator;
-		set => Positive.Separator = value;
-	}
+	/// <returns>The character the <see cref="ToString"/> method uses as separator.</returns>
+	public static char Separator => Positive.Separator;
 
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.

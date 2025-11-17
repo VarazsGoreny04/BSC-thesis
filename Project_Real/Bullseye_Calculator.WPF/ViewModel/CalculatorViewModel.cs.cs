@@ -1,7 +1,9 @@
 ﻿using Bullseye_Calculator.Model;
-using Bullseye_Calculator.Model.Standard;
 using Project_Real;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Bullseye_Calculator.WPF.ViewModel;
 
@@ -9,8 +11,7 @@ public class CalculatorViewModel : ViewModelBase
 {
 	private bool start;
 	private Mode currentMode;
-
-	Calculator calculator;
+	private Calculator calculator;
 	private readonly List<string> input;
 	private string result;
 	private readonly ObservableCollection<string> evaluation;
@@ -37,32 +38,26 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 	public ObservableCollection<string> Evaluation => evaluation;
-	public char Separator
-	{
-		get => Rational.Separator;
-		set
-		{
-			Rational.Separator = value;
+	public char Separator => Rational.Separator;
 
-			OnPropertyChanged(nameof(Separator));
-		}
-	}
+	public DelegateCommand InputCommand { get; }
+	public DelegateCommand BackSpaceCommand { get; }
+	public DelegateCommand ClearCommand { get; }
+	public DelegateCommand EvaluateCommand { get; }
 
-	public DelegateCommand InputCommand { get; private set; }
-	public DelegateCommand BackSpaceCommand { get; private set; }
-	public DelegateCommand ClearCommand { get; private set; }
-	public DelegateCommand EvaluateCommand { get; private set; }
-	public DelegateCommand ChangeModeCommand { get; private set; }
+	/*public DelegateCommand StandardModeCommand { get; }
+	public DelegateCommand EuclideanModeCommand { get; }
+	public DelegateCommand InterpolationModeCommand { get; }*/
+	public DelegateCommand ChangeModeCommand { get; }
 
 	public CalculatorViewModel()
 	{
 		Rational.WriteSign = false;
 		Rational.FractionalFormat = false;
 
-		CurrentMode = Mode.Standard;
 		start = true;
-
-		calculator = new StandardCalculator();
+		CurrentMode = Mode.Standard;
+		calculator = new Model.Standard.StandardCalculator();
 		input = [];
 		result = string.Empty;
 		evaluation = [];
@@ -73,6 +68,11 @@ public class CalculatorViewModel : ViewModelBase
 		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
 		ChangeModeCommand = new DelegateCommand(param => CurrentMode = Enum.Parse<Mode>(param?.ToString() ?? throw new FormatException()));
 	}
+
+	/*private void ChangeMode()
+	{
+
+	}*/
 
 	public void PushInput(string text)
 	{
@@ -113,11 +113,11 @@ public class CalculatorViewModel : ViewModelBase
 		{
 			try
 			{
-				ValueHolder valueHolder = Calculator.Evaluate(Input, calculator);
+				List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
 
-				ShowFullEvaluation(Calculator.FullEvaluation(valueHolder));
+				ShowFullEvaluation(fullEvaluation);
 
-				string result = valueHolder.Value.ToString();
+				string result = fullEvaluation.Last().State;
 
 				Result = $"={result}";
 

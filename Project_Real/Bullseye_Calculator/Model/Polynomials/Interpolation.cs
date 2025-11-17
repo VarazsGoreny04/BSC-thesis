@@ -1,5 +1,6 @@
 ﻿using Bullseye_Calculator.Model.EuclideanSpace;
 using Project_Real;
+using System;
 
 namespace Bullseye_Calculator.Model.Polynomials;
 

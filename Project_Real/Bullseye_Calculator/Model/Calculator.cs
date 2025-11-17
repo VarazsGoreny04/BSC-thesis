@@ -1,11 +1,14 @@
-﻿using Bullseye_Calculator.Model.Standard;
-using Project_Real;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Bullseye_Calculator.Model;
 
 public abstract partial class Calculator
 {
+	#region GeneratedRegex
+
 	[GeneratedRegex(@"\s+")]
 	protected static partial Regex WhitespaceRegex();
 
@@ -39,6 +42,10 @@ public abstract partial class Calculator
 	[GeneratedRegex(@"^,$")]
 	protected static partial Regex ComaRegex();
 
+	#endregion
+
+	#region Token types
+
 	protected sealed class RegexToken(Regex pattern, Func<string, Expression> function)
 	{
 		private readonly Regex pattern = pattern;
@@ -57,22 +64,17 @@ public abstract partial class Calculator
 		public Func<Expression> Function => function;
 	}
 
-	protected readonly RegexToken[] regexTokens;
+	#endregion
 
-	protected RegexToken[] Tokens
-	{
-		get
-		{
-			regexTokens[0] = new(new($"^\\p{{Nd}}+[{(Rational.Separator is '.' ? @"\." : Rational.Separator)}]?\\p{{Nd}}*$"), value => new Number(value));
-			return regexTokens;
-		}
-	}
+	protected readonly RegexToken[] regexTokens;
 
 	protected Calculator(RegexToken[] regexTokens) => this.regexTokens = regexTokens;
 
-	public static ValueHolder Evaluate(string input, Calculator calculator)
+	public abstract List<(string Calculation, string State)> FullEvaluation(string input);
+
+	public static ValueHolder<T> Evaluate<T>(string input, Calculator calculator)
 	{
-		ValueHolder result = TreeForm(PostfixForm(Parse(RemoveWhitespaces(input), calculator)));
+		ValueHolder<T> result = TreeForm<T>(PostfixForm(Parse(RemoveWhitespaces(input), calculator)));
 
 		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
 	}
@@ -83,7 +85,7 @@ public abstract partial class Calculator
 
 	protected static List<Expression> Parse(string whitespacelessInput, Calculator calculator)
 	{
-		RegexToken[] tokens = calculator.Tokens;
+		RegexToken[] tokens = calculator.regexTokens;
 		List<Expression> result = [];
 		string lastSequence = string.Empty;
 		string currentSequence = string.Empty;
@@ -132,16 +134,16 @@ public abstract partial class Calculator
 
 		return result;
 	}
-	protected static ValueHolder TreeForm(List<Expression> ordered)
+	protected static ValueHolder<T> TreeForm<T>(List<Expression> ordered)
 	{
 		Stack<Expression> result = new();
 
 		ordered.ForEach(expression => expression.ToTree(ref result));
 
-		return result.FirstOrDefault() as ValueHolder ?? throw new FormatException();
+		return result.FirstOrDefault() as ValueHolder<T> ?? throw new FormatException();
 	}
 
-	public static List<(string Calculation, string State)> FullEvaluation(ValueHolder root)
+	public static List<(string Calculation, string State)> FullEvaluation<T>(ValueHolder<T> root)
 	{
 		List<(string, string)> result = [];
 		int step = 1;

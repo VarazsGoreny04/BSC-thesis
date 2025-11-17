@@ -1,4 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using Project_Real;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
@@ -9,54 +13,30 @@ public partial class EuclideanSpaceCalculator : Calculator
 
 	protected static readonly FunctionToken[] functionTokens =
 	[
-		/*new("ceiling", () => new Ceiling()),
-		new("round", () => new Round()),
-		new("floor", () => new Floor()),
-		new("fact", () => new Fact()),
-		new("abs", () => new Abs()),
-		new("pi", () => new PI()),
-		new("e", () => new E()),*/
-	];
 
-	protected readonly Standard.StandardCalculator standardCalculator;
+	];
 
 	public EuclideanSpaceCalculator() : base(
 	[
-		/*// Rational number
-		new(null!, value => new Number(value)),
-		// Function name
-		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
-		// Operators
-		new(AddRegex(), _ => new Add()),
-		new(SubtractRegex(), _ => new Subtract()),
-		new(MultiplyRegex(), _ => new Multiply()),
-		new(DivideRegex(), _ => new Divide()),
-		new(PowerRegex(), _ => new Power()),
-		new(RootRegex(), _ => new Root()),
-		// Separators
-		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis()),
-		new(ComaRegex(), _ => new Coma()),*/
 		// Matrix
 		new(BracketedRegex(), match => MakeMatrix(match[1..^2])),
-	]) 
-	{
-		standardCalculator = new Standard.StandardCalculator();
-	}
+	])
+	{ }
 
 	private static MatrixHolder MakeMatrix(string content)
 	{
 		string[] rows = content.Split('&', StringSplitOptions.TrimEntries);
-        string[][] tokenized = [.. rows.Select(row => row.Split(';', StringSplitOptions.TrimEntries))];
+		string[][] tokenized = [.. rows.Select(row => row.Split(';', StringSplitOptions.TrimEntries))];
 
-		Standard.ValueHolder[,] matrix = new Standard.ValueHolder[tokenized.Length, tokenized[0].Length];
+		ValueHolder<Rational>[,] matrix = new ValueHolder<Rational>[tokenized.Length, tokenized[0].Length];
+		Standard.StandardCalculator standardCalculator = new();
 
 		try
 		{
 			for (int row = tokenized.Length - 1; row >= 0; --row)
 			{
 				for (int col = tokenized[row].Length - 1; col >= 0; --col)
-					matrix[row, col] = Evaluate(tokenized[row][col], new Standard.StandardCalculator());
+					matrix[row, col] = Evaluate<Rational>(tokenized[row][col], standardCalculator);
 			}
 		}
 		catch (IndexOutOfRangeException)
@@ -64,6 +44,8 @@ public partial class EuclideanSpaceCalculator : Calculator
 			throw new FormatException();
 		}
 
-        return new MatrixHolder(matrix);
-    }
+		return new MatrixHolder(matrix);
+	}
+
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<MatrixHolder>(input, this));
 }

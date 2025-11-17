@@ -1,4 +1,4 @@
-﻿namespace Bullseye_Calculator.Model.Standard;
+﻿namespace Bullseye_Calculator.Model;
 
 internal enum Priority
 {
