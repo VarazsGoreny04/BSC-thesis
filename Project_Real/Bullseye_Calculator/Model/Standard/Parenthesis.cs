@@ -1,17 +1,49 @@
 ﻿namespace Bullseye_Calculator.Model.Standard;
 
-public abstract class Parenthesis() : Expression { }
+public abstract class Parenthesis() : Expression
+{ }
 
-public class OpeningParenthesis : Parenthesis
+public sealed class OpeningParenthesis : Parenthesis
 {
-	internal override void AcceptPostfix(ref Stack<Expression> functions, ref List<Expression> result) => Calculator.VisitPostfix(ref functions, ref result, this);
-	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
+    internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
+    {
+		functions.Push(this);
+		result.Add(this);
+	}
+    internal override void ToTree(ref Stack<Expression> result) => result.Push(this);
 	public override string ToStringByStep(ref int _) => "(";
 }
 
-public class ClosingParenthesis : Parenthesis
+public sealed class ClosingParenthesis : Parenthesis
 {
-	internal override void AcceptPostfix(ref Stack<Expression> functions, ref List<Expression> result) => Calculator.VisitPostfix(ref functions, ref result, this);
-	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
-	public override string ToStringByStep(ref int _) => ")";
+    internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
+    {
+		if (!functions.Any(f => f is OpeningParenthesis))
+			throw new FormatException();
+
+		Expression e;
+
+		while ((e = functions.Pop()) is not OpeningParenthesis)
+			result.Add(e);
+
+		result.Add(this);
+	}
+    internal override void ToTree(ref Stack<Expression> result)
+	{
+		Stack<ValueHolder> temp = new();
+
+		while (result.TryPop(out Expression? expression) && expression is not OpeningParenthesis)
+		{
+			if (expression is ValueHolder valueHolder)
+				temp.Push(valueHolder);
+			else
+				throw new FormatException();
+		}
+
+		if (temp.Count == 1)
+			result.Push(new Parenthesized(temp.Pop()));
+		else
+			throw new FormatException();
+	}
+    public override string ToStringByStep(ref int _) => ")";
 }

@@ -12,8 +12,8 @@ public sealed class Parenthesized(ValueHolder value) : ValueHolder
 	{
 		value.FullEvaluation(ref partialValues, root, ref step);
 	}
-	internal override void AcceptPostfix(ref Stack<Expression> functions, ref List<Expression> result) => throw new NotImplementedException();
-	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => throw new NotImplementedException();
+	internal override void ToTree(ref Stack<Expression> result) => throw new NotImplementedException();
 	public override Rational GetValue() => value.GetValue();
 	public override string ToStringByStep(ref int step) => $"({value.ToStringByStep(ref step)})";
 }

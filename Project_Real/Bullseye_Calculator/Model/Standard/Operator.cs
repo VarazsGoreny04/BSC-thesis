@@ -2,6 +2,17 @@
 
 public abstract class Operator(int parameter) : FunctionBase(parameter)
 {
-	internal override void AcceptPostfix(ref Stack<Expression> functions, ref List<Expression> result) => Calculator.VisitPostfix(ref functions, ref result, this);
-	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
-}	
+    internal override void ToTree(ref Stack<Expression> result)
+    {
+		int length = Math.Min(Parameters.Length, result.Count);
+
+		for (int i = 1; i <= length && result.Peek() is ValueHolder valueHolder; ++i)
+		{
+			result.Pop();
+
+			Parameters[^i] = valueHolder;
+		}
+
+		result.Push(this);
+	}
+}

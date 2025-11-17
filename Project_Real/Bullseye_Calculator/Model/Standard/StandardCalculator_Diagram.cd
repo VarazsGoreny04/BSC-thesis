@@ -3,35 +3,35 @@
   <Class Name="Bullseye_Calculator.Model.Standard.Operator" Collapsed="true">
     <Position X="7.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\Operator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Parenthesis" Collapsed="true">
-    <Position X="18.25" Y="1.75" Width="1.5" />
+    <Position X="16.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\Parenthesis.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.OpeningParenthesis" Collapsed="true">
-    <Position X="19.25" Y="3" Width="1.5" />
+    <Position X="17.75" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
       <FileName>Model\Standard\Parenthesis.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.ClosingParenthesis" Collapsed="true">
-    <Position X="17.25" Y="3" Width="1.5" />
+    <Position X="15.75" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
       <FileName>Model\Standard\Parenthesis.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Term" Collapsed="true">
     <Position X="2.25" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
       <FileName>Model\Standard\Term.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -50,21 +50,21 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Add" Collapsed="true">
-    <Position X="8" Y="7" Width="1.5" />
+    <Position X="4.5" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Subtract" Collapsed="true">
-    <Position X="11.5" Y="7" Width="1.5" />
+    <Position X="6.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Multiply" Collapsed="true">
-    <Position X="4.5" Y="7" Width="1.5" />
+    <Position X="8" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\BinaryOperator.cs</FileName>
@@ -78,14 +78,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Power" Collapsed="true">
-    <Position X="13.25" Y="7" Width="1.5" />
+    <Position X="11.5" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.Root" Collapsed="true">
-    <Position X="6.25" Y="7" Width="1.5" />
+    <Position X="13.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\BinaryOperator.cs</FileName>
@@ -101,7 +101,7 @@
   <Class Name="Bullseye_Calculator.Model.Standard.Function" Collapsed="true">
     <Position X="15" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAIAAAAAAAAAAAAAAAAAAAAAAAAAABEAACAAAAAAA=</HashCode>
+      <HashCode>AAEAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
       <FileName>Model\Standard\Function.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -119,13 +119,6 @@
       <FileName>Model\Standard\Term.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Bullseye_Calculator.Model.Standard.Expression" Collapsed="true">
-    <Position X="11" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAEAAAAAAAAAAAAAAABEAAAAAAAAAA=</HashCode>
-      <FileName>Model\Standard\Expression.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.ValueHolder" Collapsed="true">
     <Position X="6.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
@@ -136,14 +129,14 @@
   <Class Name="Bullseye_Calculator.Model.Standard.Parenthesized" Collapsed="true">
     <Position X="6.5" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAIAAAIgAAAAAAAAAAAAAAAAAAACABEAACAAAAAAA=</HashCode>
+      <HashCode>AAAAIABAIgAAAAAAAAAAAAAAAAAAACAAAAACAAAAAAE=</HashCode>
       <FileName>Model\Standard\Parenthesized.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Standard.FunctionBase" Collapsed="true">
     <Position X="11" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAE=</HashCode>
       <FileName>Model\Standard\FunctionBase.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -187,6 +180,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Standard\Function.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Standard.Coma" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Standard\Coma.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Expression" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Expression.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

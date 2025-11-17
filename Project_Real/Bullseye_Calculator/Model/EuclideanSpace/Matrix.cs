@@ -759,7 +759,7 @@ public static class Matrix
 	/// <param name="a">The vector to print.</param>
 	/// <returns>The string representation of the given vector.</returns>
 	/// <exception cref="ArgumentException">The vector</exception>
-	public static string ToString<T>(T[] a) => $"[ {string.Join(",\t", a)} ]\n";
+	public static string ToString<T>(T[] a) => a.Length < 1 ? "[ ]" : $"[ {string.Join(",\t", a)} ]";
 
 	/// <summary>
 	/// Prints the given matrix.
@@ -772,7 +772,7 @@ public static class Matrix
 		int colCount = A.GetLength(1);
 
 		if (rowCount < 1 || colCount < 1)
-			return "[ ]\n";
+			return "[ ]";
 
 		string text = "[\n";
 
@@ -786,6 +786,6 @@ public static class Matrix
 			text += ";\n";
 		}
 
-		return text + "]\n";
+		return text + "]";
 	}
 }

@@ -1,8 +1,12 @@
 ﻿namespace Bullseye_Calculator.Model.Standard;
 
-public abstract class Coma() : Expression
+public sealed class Coma() : Expression
 {
-	internal override void AcceptPostfix(ref Stack<Expression> functions, ref List<Expression> result) => Calculator.VisitPostfix(ref functions, ref result, this);
-	internal override void AcceptTree(ref Stack<Expression> result) => Calculator.VisitTree(ref result, this);
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
+	internal override void ToTree(ref Stack<Expression> result)
+	{
+		(new ClosingParenthesis()).ToTree(ref result);
+		(new OpeningParenthesis()).ToTree(ref result);
+	}
 	public override string ToStringByStep(ref int _) => ",";
 }

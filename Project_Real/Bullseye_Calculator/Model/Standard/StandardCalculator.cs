@@ -26,8 +26,9 @@ public partial class StandardCalculator : Calculator
 		new(DivideRegex(), _ => new Divide()),
 		new(PowerRegex(), _ => new Power()),
 		new(RootRegex(), _ => new Root()),
-		// Parentheses
+		// Separators
 		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis())
+		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis()),
+		new(ComaRegex(), _ => new Coma())
 	]) { }
 }

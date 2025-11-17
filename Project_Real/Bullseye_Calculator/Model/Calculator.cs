@@ -1,5 +1,5 @@
-﻿using Project_Real;
-using Bullseye_Calculator.Model.Standard;
+﻿using Bullseye_Calculator.Model.Standard;
+using Project_Real;
 using System.Text.RegularExpressions;
 
 namespace Bullseye_Calculator.Model;
@@ -35,6 +35,9 @@ public abstract partial class Calculator
 
 	[GeneratedRegex(@"^\)$")]
 	protected static partial Regex ClosingParenthesisRegex();
+
+	[GeneratedRegex(@"^,$")]
+	protected static partial Regex ComaRegex();
 
 	protected sealed class RegexToken(Regex pattern, Func<string, Expression> function)
 	{
@@ -123,124 +126,20 @@ public abstract partial class Calculator
 		List<Expression> result = [];
 		Stack<Expression> functions = new();
 
-		unordered.ForEach(expression => expression.AcceptPostfix(ref functions, ref result));
+		unordered.ForEach(expression => expression.ToPostfix(ref functions, ref result));
 
 		result.AddRange(functions);
 
 		return result;
 	}
-
-	internal static void VisitPostfix(ref Stack<Expression> _, ref List<Expression> result, Term t) => result.Add(t);
-
-	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, OpeningParenthesis op)
-	{
-		functions.Push(op);
-		result.Add(op);
-	}
-
-	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, ClosingParenthesis cp)
-	{
-		if (!functions.Any(f => f is OpeningParenthesis))
-			throw new FormatException();
-
-		Expression e;
-
-		while ((e = functions.Pop()) is not OpeningParenthesis)
-			result.Add(e);
-
-		result.Add(cp);
-	}
-
-	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, Operator o)
-	{
-		if (functions.FirstOrDefault() is FunctionBase fB && fB.Order() >= o.Order())
-		{
-			functions.Pop();
-
-			result.Add(fB);
-		}
-
-		functions.Push(o);
-	}
-
-	internal static void VisitPostfix(ref Stack<Expression> functions, ref List<Expression> result, Function f)
-	{
-		if (functions.FirstOrDefault() is FunctionBase fB && fB.Order() >= f.Order())
-		{
-			functions.Pop();
-
-			result.Add(fB);
-		}
-
-		functions.Push(f);
-	}
-
-	internal static void VisitPostfix(ref Stack<Expression> _, ref List<Expression> result, Coma c) => result.Add(c);
-
 	protected static ValueHolder TreeForm(List<Expression> ordered)
 	{
 		Stack<Expression> result = new();
 
-		ordered.ForEach(expression => expression.AcceptTree(ref result));
+		ordered.ForEach(expression => expression.ToTree(ref result));
 
 		return result.FirstOrDefault() as ValueHolder ?? throw new FormatException();
 	}
-
-	internal static void VisitTree(ref Stack<Expression> result, Term t) => result.Push(t);
-
-	internal static void VisitTree(ref Stack<Expression> result, OpeningParenthesis op) => result.Push(op);
-
-	internal static void VisitTree(ref Stack<Expression> result, ClosingParenthesis _)
-	{
-		Stack<ValueHolder> temp = new();
-
-		while (result.TryPop(out Expression? expression) && expression is not OpeningParenthesis)
-		{
-			if (expression is ValueHolder valueHolder)
-				temp.Push(valueHolder);
-			else
-				throw new FormatException();
-		}
-
-		if (temp.Count == 1)
-			result.Push(new Parenthesized(temp.Pop()));
-		else
-			throw new FormatException();
-	}
-
-	internal static void VisitTree(ref Stack<Expression> result, Operator o)
-	{
-		int length = Math.Min(o.Parameters.Length, result.Count);
-
-		for (int i = 1; i <= length && result.Peek() is ValueHolder valueHolder; ++i)
-		{
-			result.Pop();
-
-			o.Parameters[^i] = valueHolder;
-		}
-
-		result.Push(o);
-	}
-
-	internal static void VisitTree(ref Stack<Expression> result, Function f)
-	{
-		for (int i = 1; i <= f.Parameters.Length && result.Peek() is Parenthesized parenthesized; ++i)
-		{
-			result.Pop();
-
-			f.Parameters[^i] = parenthesized.Content;
-		}
-
-		result.Push(f);
-	}
-
-	internal static void VisitTree(ref Stack<Expression> result, Coma _)
-	{
-		VisitTree(ref result, new ClosingParenthesis());
-		VisitTree(ref result, new OpeningParenthesis());
-	}
-
-	internal static void VisitTree(ref Stack<Expression> result, Parenthesized p) => throw new NotImplementedException();
 
 	public static List<(string Calculation, string State)> FullEvaluation(ValueHolder root)
 	{
