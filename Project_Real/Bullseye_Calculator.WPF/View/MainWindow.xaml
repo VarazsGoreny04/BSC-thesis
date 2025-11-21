@@ -37,7 +37,7 @@
 			</Grid.ColumnDefinitions>
 
 			<Expander Grid.Column="0" x:Name="Steps" Header="Steps" ExpandDirection="Down" />
-			<Button Grid.Column="1" Content="S" Command="{Binding ChangeModeCommand}" CommandParameter="Standard">
+			<Button Grid.Column="1" Content="S" Command="{Binding StandardModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -48,7 +48,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="2" Content="[]" Command="{Binding ChangeModeCommand}" CommandParameter="Matrix">
+			<Button Grid.Column="2" Content="[]" Command="{Binding EuclideanModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -59,7 +59,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="3" Content="I" Command="{Binding ChangeModeCommand}" CommandParameter="Interpolation">
+			<Button Grid.Column="3" Content="I" Command="{Binding InterpolationModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -70,7 +70,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="4" Content="∫" Command="{Binding ChangeModeCommand}" CommandParameter="Integral">
+			<Button Grid.Column="4" Content="∫" Command="{Binding IntegralModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -81,7 +81,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="5" Content="⚙️" Command="{Binding ChangeModeCommand}" CommandParameter="Options">
+			<Button Grid.Column="5" Content="⚙️" Command="{Binding ShowOptionsCommand}">
 				<Button.Style>
 				<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
 					<Setter Property="IsEnabled" Value="True" />

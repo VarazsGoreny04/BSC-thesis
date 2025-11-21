@@ -45,10 +45,12 @@ public class CalculatorViewModel : ViewModelBase
 	public DelegateCommand ClearCommand { get; }
 	public DelegateCommand EvaluateCommand { get; }
 
-	/*public DelegateCommand StandardModeCommand { get; }
+	public DelegateCommand StandardModeCommand { get; }
 	public DelegateCommand EuclideanModeCommand { get; }
-	public DelegateCommand InterpolationModeCommand { get; }*/
-	public DelegateCommand ChangeModeCommand { get; }
+	public DelegateCommand InterpolationModeCommand { get; }
+	public DelegateCommand IntegralModeCommand { get; }
+
+	public DelegateCommand ShowOptionsCommand { get; }
 
 	public CalculatorViewModel()
 	{
@@ -66,13 +68,20 @@ public class CalculatorViewModel : ViewModelBase
 		BackSpaceCommand = new DelegateCommand(_ => PopInput());
 		ClearCommand = new DelegateCommand(_ => ClearInput());
 		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
-		ChangeModeCommand = new DelegateCommand(param => CurrentMode = Enum.Parse<Mode>(param?.ToString() ?? throw new FormatException()));
+
+		StandardModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Standard));
+		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(new Model.EuclideanSpace.EuclideanSpaceCalculator(), Mode.Matrix));
+		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Interpolation));
+		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Integral));
+
+		ShowOptionsCommand = new DelegateCommand(_ => { });
 	}
 
-	/*private void ChangeMode()
+	private void ChangeMode(Calculator calculator, Mode mode)
 	{
-
-	}*/
+		this.calculator = calculator;
+		CurrentMode = mode;
+	}
 
 	public void PushInput(string text)
 	{
@@ -117,7 +126,7 @@ public class CalculatorViewModel : ViewModelBase
 
 				ShowFullEvaluation(fullEvaluation);
 
-				string result = fullEvaluation.Last().State;
+				string result = fullEvaluation.Count > 1 ? fullEvaluation.Last().State : Input;
 
 				Result = $"={result}";
 

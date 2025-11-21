@@ -4,9 +4,9 @@ namespace Bullseye_Calculator.Model.EuclideanSpace;
 
 public class VectorHolder : Expression
 {
-	private readonly ValueHolder<MatrixHolder>[] value;
+	private readonly ValueHolder<Matrix>[] value;
 
-	public VectorHolder(ValueHolder<MatrixHolder>[] value) => this.value = value;
+	public VectorHolder(ValueHolder<Matrix>[] value) => this.value = value;
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
 	internal override void ToTree(ref Stack<Expression> result) => result.Push(this);

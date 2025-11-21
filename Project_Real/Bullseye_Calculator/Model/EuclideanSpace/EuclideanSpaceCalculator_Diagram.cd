@@ -1,25 +1,144 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.MatrixHolder" Collapsed="true">
-	<Position X="4.75" Y="1.75" Width="1.5" />
-	<TypeIdentifier>
-	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
-	  <FileName>Model\EuclideanSpace\MatrixHolder.cs</FileName>
-	</TypeIdentifier>
-  </Class>
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.VectorHolder" Collapsed="true">
-	<Position X="4.75" Y="3" Width="1.5" />
-	<TypeIdentifier>
-	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
-	  <FileName>Model\EuclideanSpace\VectorHolder.cs</FileName>
-	</TypeIdentifier>
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\EuclideanSpace\VectorHolder.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.Expression" Collapsed="true">
-	<Position X="4.75" Y="0.75" Width="1.5" />
-	<TypeIdentifier>
-	  <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
-	  <FileName>Model\Expression.cs</FileName>
-	</TypeIdentifier>
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Expression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.ValueHolder&lt;T&gt;" Collapsed="true">
+    <Position X="6.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAAAAiAAAAAAA=</HashCode>
+      <FileName>Model\ValueHolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Coma&lt;T&gt;" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Coma.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Parenthesized&lt;T&gt;" Collapsed="true">
+    <Position X="6.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAIgAAAAAAAAAAAAAAAAAAACAAAAACAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesized.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Term&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+      <FileName>Model\Term.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Parenthesis" Collapsed="true">
+    <Position X="16.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.OpeningParenthesis" Collapsed="true">
+    <Position X="17.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.ClosingParenthesis&lt;T&gt;" Collapsed="true">
+    <Position X="15.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.FunctionBase&lt;T&gt;" Collapsed="true">
+    <Position X="10.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAE=</HashCode>
+      <FileName>Model\FunctionBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Operator&lt;T&gt;" Collapsed="true">
+    <Position X="7.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Operator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.Function&lt;T&gt;" Collapsed="true">
+    <Position X="15" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Model\Function.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.BinaryOperator" Collapsed="true">
+    <Position X="8.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAACACCAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Add" Collapsed="true">
+    <Position X="4.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Subtract" Collapsed="true">
+    <Position X="6.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Multiply" Collapsed="true">
+    <Position X="8" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Divide" Collapsed="true">
+    <Position X="9.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Power" Collapsed="true">
+    <Position X="11.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Root" Collapsed="true">
+    <Position X="13.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Matrix" Collapsed="true">
+    <Position X="3.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICYABAogAAwAEEAIICCAAAEQAIICEAAEACAAkAAAE=</HashCode>
+      <FileName>Model\EuclideanSpace\Matrix.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

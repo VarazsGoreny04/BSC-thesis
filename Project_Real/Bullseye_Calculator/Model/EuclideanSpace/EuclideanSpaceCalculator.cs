@@ -19,14 +19,20 @@ public partial class EuclideanSpaceCalculator : Calculator
 	public EuclideanSpaceCalculator() : base(
 	[
 		// Matrix
-		new(BracketedRegex(), match => MakeMatrix(match[1..^2])),
+		new(BracketedRegex(), match => MakeMatrix(match[1..^1])),
 	])
 	{ }
 
-	private static MatrixHolder MakeMatrix(string content)
+	private static Matrix MakeMatrix(string content)
 	{
 		string[] rows = content.Split('&', StringSplitOptions.TrimEntries);
 		string[][] tokenized = [.. rows.Select(row => row.Split(';', StringSplitOptions.TrimEntries))];
+
+		for (int i = 1; i < tokenized.Length; ++i)
+		{
+			if (tokenized[0].Length != tokenized[i].Length)
+				throw new FormatException();
+		}
 
 		ValueHolder<Rational>[,] matrix = new ValueHolder<Rational>[tokenized.Length, tokenized[0].Length];
 		Standard.StandardCalculator standardCalculator = new();
@@ -44,8 +50,8 @@ public partial class EuclideanSpaceCalculator : Calculator
 			throw new FormatException();
 		}
 
-		return new MatrixHolder(matrix);
+		return new Matrix(matrix);
 	}
 
-	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<MatrixHolder>(input, this));
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<ValueHolder<Rational>[,]>(input, this));
 }

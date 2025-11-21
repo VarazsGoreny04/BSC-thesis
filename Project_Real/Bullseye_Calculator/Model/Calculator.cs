@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace Bullseye_Calculator.Model;
 
@@ -98,21 +99,20 @@ public abstract partial class Calculator
 
 			currentToken = tokens.FirstOrDefault(token => token.Pattern.IsMatch(currentSequence));
 
-			if (currentToken is not null)
+			if (currentToken is RegexToken)
 			{
 				lastSequence = currentSequence;
 				lastToken = currentToken;
 			}
-			else
+			else if (lastToken is RegexToken)
 			{
-				if (lastToken is null)
-					throw new FormatException("Invalid token found.");
-
 				result.Add(lastToken.Function.Invoke(lastSequence));
 
 				lastSequence = letter.ToString();
 				lastToken = tokens.FirstOrDefault(token => token.Pattern.IsMatch(lastSequence));
 			}
+			else
+				lastSequence = currentSequence;
 		}
 
 		if (lastToken is not null)
@@ -139,6 +139,8 @@ public abstract partial class Calculator
 		Stack<Expression> result = new();
 
 		ordered.ForEach(expression => expression.ToTree(ref result));
+
+		Debug.WriteLine(result.FirstOrDefault()?.GetType());
 
 		return result.FirstOrDefault() as ValueHolder<T> ?? throw new FormatException();
 	}

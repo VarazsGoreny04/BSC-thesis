@@ -1,13 +1,104 @@
 ﻿using Project_Real;
+using Bullseye_Calculator.Model.Standard;
 using System;
+using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
 /// <summary>
 /// Contains methods for operations with matrices.
 /// </summary>
-public static class Matrix
+public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 {
+	private readonly ValueHolder<Rational>[,] value;
+
+	public ValueHolder<Rational>[,] Content => value;
+
+	public Matrix(ValueHolder<Rational>[,] value) => this.value = value;
+	public Matrix(Rational[,] value)
+	{
+		int rows = value.GetLength(0);
+		int cols = value.GetLength(0);
+
+		if (rows < 1 || cols < 1)
+			throw new ArgumentException();
+
+		this.value = new ValueHolder<Rational>[rows, cols];
+
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < cols; ++j)
+				this.value[i, j] = new Number(value[i, j]);
+		}
+	}
+
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
+	internal override void ToTree(ref Stack<Expression> result) => result.Push(this);
+	public override string ToStringByStep(ref int step)
+	{
+		int rowCount = value.GetLength(0);
+		int colCount = value.GetLength(1);
+
+		List<string> rows = [];
+
+		for (int i = 0; i < rowCount; ++i)
+		{
+			string row = $"{value[i, 0].ToStringByStep(ref step)}";
+
+			for (int j = 1; j < colCount; ++j)
+				row += $";{value[i, j].ToStringByStep(ref step)}";
+
+			rows.Add(row);
+		}
+
+		return "[" + string.Join("&", rows) + "]";
+	}
+
+	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<ValueHolder<Rational>[,]> root, ref int step)
+	{
+		int stepCopy = step;
+
+		foreach (ValueHolder<Rational> item in value)
+			item.FullEvaluation(ref partialValues, item, ref step);
+
+		if (stepCopy != step)
+		{
+			stepCopy = ++step;
+			int toRockBottom = int.MaxValue;
+
+			partialValues.Add(($"{ToString()} = {ToStringByStep(ref toRockBottom)}", root.ToStringByStep(ref stepCopy)));
+		}
+	}
+
+	public override ValueHolder<Rational>[,] GetValue() => value;
+
+	public static implicit operator Matrix(ValueHolder<Rational>[,] value) => new(value);
+	public static implicit operator Matrix(Rational[,] value) => new(value);
+	public static Matrix operator +(Matrix left, Matrix right) => Add(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+	public static Matrix operator -(Matrix left, Matrix right) => Subtract(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+	public static Matrix operator *(Matrix left, Matrix right) => Product(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+
+	private static Rational[,] ToRationalMatrix(ValueHolder<Rational>[,] valueHolderMatrix)
+	{
+		int rows = valueHolderMatrix.GetLength(0);
+		int cols = valueHolderMatrix.GetLength(0);
+
+		Rational[,] result = new Rational[rows, cols];
+
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < cols; ++j)
+				result[i, j] = valueHolderMatrix[i, j].Value;
+		}
+
+		return result;
+	}
+
+
+
+
+
+
 	/// <summary>
 	/// Constructs a vector of <paramref name="n"/> length with full of zeros.
 	/// </summary>

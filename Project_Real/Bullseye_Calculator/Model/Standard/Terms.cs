@@ -2,12 +2,20 @@
 
 namespace Bullseye_Calculator.Model.Standard;
 
-public sealed class Number(string token) : Term<Rational>
+public sealed class Number : Term<Rational>
 {
-	private readonly string token = token;
+	private readonly string token;
 	public Rational? value = null;
 
 	public string Token => token;
+
+	public Number(string token) => this.token = token;
+
+	public Number(Rational value)
+	{
+		token = value.ToString();
+		this.value = value;
+	}
 
 	public override Rational GetValue() => value ??= new(token);
 	public override string ToStringByStep(ref int _) => ParenthesizeIfSigned(Value);
