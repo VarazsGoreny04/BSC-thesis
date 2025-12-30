@@ -14,7 +14,17 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 	public ValueHolder<Rational>[,] Content => value;
 
-	public Matrix(ValueHolder<Rational>[,] value) => this.value = value;
+	public Matrix(ValueHolder<Rational>[,] value)
+	{
+		int rows = value.GetLength(0);
+		int cols = value.GetLength(0);
+
+		if (rows < 1 || cols < 1)
+			throw new ArgumentException();
+
+		this.value = value;
+	}
+
 	public Matrix(Rational[,] value)
 	{
 		int rows = value.GetLength(0);
@@ -94,6 +104,21 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		return result;
 	}
 
+	private static ValueHolder<Rational>[,] ToValueHolderMatrix(Rational[,] rationalMatrix)
+	{
+		int rows = rationalMatrix.GetLength(0);
+		int cols = rationalMatrix.GetLength(0);
+
+		ValueHolder<Rational>[,] result = new ValueHolder<Rational>[rows, cols];
+
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < cols; ++j)
+				result[i, j] = new Number(rationalMatrix[i, j]);
+		}
+
+		return result;
+	}
 
 
 
@@ -147,6 +172,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// </summary>
 	/// <param name="a">The vector to compute the magnitude of.</param>
 	/// <returns>The magnitude.</returns>
+	/// 
 	public static Rational Magnitude(Rational[] a)
 	{
 		Rational result = Digit.ZERO;

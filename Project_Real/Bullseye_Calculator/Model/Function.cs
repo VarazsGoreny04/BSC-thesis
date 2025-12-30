@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Bullseye_Calculator.Model;
@@ -10,7 +11,7 @@ public abstract class Function<T>(int parameters) : FunctionBase<T>(parameters)
 		++step;
 
 		foreach (ValueHolder<T> parameter in parameters)
-			parameter?.FullEvaluation(ref partialValues, root, ref step);
+			parameter?.FullEvaluation(ref partialValues, root, ref step)/* ?? throw new FormatException()*/;
 
 		int stepCopy = step;
 
@@ -21,7 +22,7 @@ public abstract class Function<T>(int parameters) : FunctionBase<T>(parameters)
 		string[] arguments = new string[parameters.Length];
 
 		for (int i = 0; i < parameters.Length; ++i)
-			arguments[i] = parameters[i].ToStringByStep(ref step);
+			arguments[i] = parameters[i].ToStringByStep(ref step) ?? throw new FormatException();
 
 		return --step <= 0 ? $"{Sign()}({string.Join("; ", arguments)})" : $"({Value})";
 	}

@@ -88,14 +88,14 @@ public class Program
 		}*/
 
 		Rational.FractionCalculationLength = 3;
-		Rational.FractionalFormat = false;
+		Rational.FractionalFormat = true;
 
 		Point2D[] myPoints = [
-			new("0.1", "8"),
-			new("1", "5"),
-			new("2", "3"),
-			new("3", "2"),
-			new(Rational.Pi(), "1")
+			new("1", "8"),
+			new("2", "5"),
+			new("3", "3"),
+			new("4", "9"),
+			//new(Rational.Pi(), "1")
 		];
 
 		Rational[] res = Interpolation.Lagrange(myPoints);

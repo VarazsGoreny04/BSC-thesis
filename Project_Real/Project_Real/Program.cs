@@ -240,7 +240,7 @@ public class Program
 			timer.Restart();
 			int a = (int)Math.Pow(2, i);
 			Positive.FractionCalculationLength = (int)(a * 1.2);
-			Console.WriteLine($"{Rational.ToWritableString(Rational.PI(a))} - {a}");
+			Console.WriteLine($"{Rational.ToWritableString(Rational.Pi(a))} - {a}");
 			timer.Stop();
 			Console.WriteLine(timer.ToString());
 		}
@@ -285,7 +285,7 @@ public class Program
 		}*/
 
 		// Test(new Func<Rational>(() => Rational.Ln("2")), 1, 100);
-		Test2(new Func<int, Rational>(x => Rational.Ln("1.49", x)), 20, 30);
+		//Test2(new Func<int, Rational>(x => Rational.Ln("1.49", x)), 20, 30);
 		// Test2(new Func<int, Rational>(x => Rational.LnFast("16.2", x)), 1, 100);
 
 		/*Rational pi = "0";

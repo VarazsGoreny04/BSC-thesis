@@ -38,7 +38,7 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 	public ObservableCollection<string> Evaluation => evaluation;
-	public char Separator => Rational.Separator;
+	public static char Separator => Rational.Separator;
 
 	public DelegateCommand InputCommand { get; }
 	public DelegateCommand BackSpaceCommand { get; }
@@ -126,7 +126,7 @@ public class CalculatorViewModel : ViewModelBase
 
 				ShowFullEvaluation(fullEvaluation);
 
-				string result = fullEvaluation.Count > 1 ? fullEvaluation.Last().State : Input;
+				string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : Input;
 
 				Result = $"={result}";
 

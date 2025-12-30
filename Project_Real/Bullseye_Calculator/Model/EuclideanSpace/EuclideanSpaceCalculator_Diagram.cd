@@ -92,42 +92,21 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Add" Collapsed="true">
-    <Position X="4.5" Y="6.75" Width="1.5" />
+    <Position X="7" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Subtract" Collapsed="true">
-    <Position X="6.25" Y="6.75" Width="1.5" />
+    <Position X="8.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Multiply" Collapsed="true">
-    <Position X="8" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Divide" Collapsed="true">
-    <Position X="9.75" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Power" Collapsed="true">
-    <Position X="11.5" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Root" Collapsed="true">
-    <Position X="13.25" Y="6.75" Width="1.5" />
+  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Product" Collapsed="true">
+    <Position X="10.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
@@ -136,7 +115,7 @@
   <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Matrix" Collapsed="true">
     <Position X="3.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAICYABAogAAwAEEAIICCAAAEQAIICEAAEACAAkAAAE=</HashCode>
+      <HashCode>AAICYABAogQAwAEEYIMCCAAAEQAIICEAAEQCAAkAAQE=</HashCode>
       <FileName>Model\EuclideanSpace\Matrix.cs</FileName>
     </TypeIdentifier>
   </Class>

@@ -26,22 +26,21 @@ public abstract class BinaryOperator : Operator<Matrix>
 
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<Matrix> root, ref int step)
 	{
-		Left?.FullEvaluation(ref partialValues, root, ref step);
-		Right?.FullEvaluation(ref partialValues, root, ref step);
+		ValueHolder<Matrix> left = Left ?? throw new FormatException();
+		ValueHolder<Matrix> right = Right ?? throw new FormatException();
+
+		left.FullEvaluation(ref partialValues, root, ref step);
+		right.FullEvaluation(ref partialValues, root, ref step);
 
 		int stepCopy = ++step;
 
-		if (Left?.Value is Matrix left)
-		{
-			Matrix right = Right?.Value ?? throw new FormatException();
-			partialValues.Add(($"{left}{Sign()}{right} = {Value}", root.ToStringByStep(ref stepCopy)));
-		}
+		partialValues.Add(($"{left.Value}{Sign()}{right.Value} = {Value}", root.ToStringByStep(ref stepCopy)));
 	}
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
 	public override string ToStringByStep(ref int step)
 	{
-		string left = Left?.ToStringByStep(ref step) ?? "";
-		string right = Right.ToStringByStep(ref step);
+		string left = Left?.ToStringByStep(ref step) ?? throw new FormatException();
+		string right = Right?.ToStringByStep(ref step) ?? throw new FormatException();
 
 		return --step <= 0 ? $"{left}{Sign()}{right}" : Value.ToString();
 	}
@@ -65,10 +64,10 @@ public sealed class Subtract : BinaryOperator
 	public override string Sign() => "-";
 }
 
-public sealed class Multiply : BinaryOperator
+public sealed class Product : BinaryOperator
 {
-	public Multiply() : base() { }
-	public Multiply(ValueHolder<Matrix> left, ValueHolder<Matrix> right) : base(left, right) { }
+	public Product() : base() { }
+	public Product(ValueHolder<Matrix> left, ValueHolder<Matrix> right) : base(left, right) { }
 
 	public override Matrix GetValue() => Left is ValueHolder<Matrix> l && Right is ValueHolder<Matrix> r ? l.GetValue() * r.GetValue() : throw new FormatException();
 	internal override Priority Order() => Priority.BinaryOperatorSecondClass;

@@ -42,7 +42,7 @@ public abstract class BinaryOperator : Operator<Rational>
 	public override string ToStringByStep(ref int step)
 	{
 		string left = Left?.ToStringByStep(ref step) ?? "";
-		string right = Right.ToStringByStep(ref step);
+		string right = Right?.ToStringByStep(ref step) ?? throw new FormatException();
 
 		return --step <= 0 ? $"{left}{Sign()}{right}" : ParenthesizeIfSigned(Value);
 	}

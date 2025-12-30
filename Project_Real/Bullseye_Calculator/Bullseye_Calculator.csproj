@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<Folder Include="Persistence\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<ProjectReference Include="..\Project_Real\Project_Real.csproj" />
   </ItemGroup>
 
