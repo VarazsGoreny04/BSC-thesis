@@ -160,8 +160,7 @@ public readonly struct Digit
 	/// <returns>The result value and if there was an overflow in a tuple.</returns>
 	public static (bool Overflow, Digit Digit) Add(Digit left, Digit right, bool carry = false)
 	{
-		int result = carry ? left.bits + right.bits + 0b0001 : left.bits + right.bits;
-
+		int result = carry ? left.bits + right.bits + 0b0001 : left.bits + right.bits; 
 		bool overflow = TEN <= result;
 
 		return (overflow, (byte)(overflow ? result - TEN : result));
@@ -177,7 +176,6 @@ public readonly struct Digit
 	public static (bool Borrow, Digit Digit) Subtract(Digit left, Digit right, bool carry = false)
 	{
 		int rightBitsPlusCarry = carry ? right.bits + 0b0001 : right.bits;
-
 		bool borrow = rightBitsPlusCarry > left.bits;
 
 		return (borrow, (byte)(borrow ? TEN - (rightBitsPlusCarry - left.bits) : left.bits - rightBitsPlusCarry));
