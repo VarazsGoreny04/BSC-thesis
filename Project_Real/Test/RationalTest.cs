@@ -24,8 +24,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		Rational empty = new();
 
@@ -374,7 +372,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	//[TestMethod]
@@ -384,8 +381,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tests =
 		[
@@ -440,7 +435,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	//[TestMethod]
@@ -450,8 +444,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tokens1, tokens2;
 		bool sign1, sign2;
@@ -487,7 +479,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	//[TestMethod]
@@ -497,8 +488,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tokens1, tokens2;
 		Writable writable1, writable2;
@@ -528,7 +517,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	//[TestMethod]
@@ -538,8 +526,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tokens1, tokens2;
 		Writable writable1, writable2;
@@ -566,7 +552,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -576,8 +561,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
@@ -602,7 +585,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -612,8 +594,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
@@ -640,7 +620,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 
@@ -651,8 +630,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		Rational rational1, rational2;
 
@@ -666,7 +643,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -676,8 +652,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		Rational rational1, rational2;
 
@@ -691,7 +665,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -701,8 +674,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		Rational rational1, rational2;
 
@@ -716,7 +687,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -726,8 +696,6 @@ public class RationalTest
 		Rational.FractionalFormat = false;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		int length;
 		Rational rational1, rational2;
@@ -753,7 +721,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -763,8 +730,6 @@ public class RationalTest
 		Rational.FractionalFormat = true;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		Rational rational1, rational2;
 
@@ -789,7 +754,6 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 
 	[TestMethod]
@@ -799,8 +763,6 @@ public class RationalTest
 		Rational.FractionalFormat = false;
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
-		char separator = Rational.Separator;
-		Rational.Separator = '.';
 
 		int length;
 		Rational rational1, rational2, result, remainder;
@@ -835,6 +797,5 @@ public class RationalTest
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
-		Rational.Separator = separator;
 	}
 }

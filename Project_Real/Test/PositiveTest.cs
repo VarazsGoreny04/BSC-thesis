@@ -11,9 +11,6 @@ public class PositiveTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		Positive empty = new();
 
 		Positive[] zeros =
@@ -36,16 +33,11 @@ public class PositiveTest
 
 		foreach (Positive zero in zeros)
 			Assert.AreEqual(empty, zero);
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void StringConstructor()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		string nullString = null!;
 		Assert.ThrowsException<ArgumentException>(() => new Positive(nullString));
 		Assert.ThrowsException<ArgumentException>(() => new Positive(""));
@@ -97,16 +89,11 @@ public class PositiveTest
 			tokens = item.Number2.TrimEnd('0').Split('.', StringSplitOptions.RemoveEmptyEntries);
 			Assert.AreEqual((tokens.Length == 2 ? tokens[1].Length : 0), number2.FractionLength);
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void NaturalConstructor()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		Assert.ThrowsException<ArgumentException>(() => new Positive(new Natural(), -1));
 		Assert.ThrowsException<ArgumentException>(() => new Positive(new Natural(), -2));
 
@@ -160,16 +147,11 @@ public class PositiveTest
 				Assert.AreEqual(characters2[^(j + 1)].ToString(), number2.Digits[j].ToString());
 			Assert.AreEqual(fractionLength2, number2.FractionLength);
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		string characters1, characters2;
 		Positive number1, number2;
 
@@ -188,8 +170,6 @@ public class PositiveTest
 			Assert.AreEqual(characters1, number1.ToString());
 			Assert.AreEqual(characters2, number2.ToString());
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
@@ -291,9 +271,6 @@ public class PositiveTest
 	[TestMethod]
 	public void AddMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		Positive positive1, positive2;
 
 		foreach (PositiveTestCase item in PositiveTestCases.List)
@@ -303,16 +280,11 @@ public class PositiveTest
 
 			Assert.AreEqual(item.Add, Positive.Add(positive1, positive2).ToString());
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		bool swap;
 		Positive positive1, positive2, subNum;
 
@@ -326,16 +298,11 @@ public class PositiveTest
 			Assert.AreEqual(item.SubSwap, swap);
 			Assert.AreEqual(item.SubNum, subNum.ToString());
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		Positive positive1, positive2;
 
 		foreach (PositiveTestCase item in PositiveTestCases.List)
@@ -345,16 +312,11 @@ public class PositiveTest
 
 			Assert.AreEqual(item.Mul, Positive.Multiply(positive1, positive2).ToString());
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		int length;
 		Positive positive1, positive2, whole, remainder;
 
@@ -375,16 +337,11 @@ public class PositiveTest
 				Assert.AreEqual(positive1.ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		Positive positive1, positive2;
 
 		foreach (PositiveTestCase item in PositiveTestCases.List)
@@ -407,16 +364,11 @@ public class PositiveTest
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Positive.Power(positive1, positive2).ToString());
 		}
-
-		Positive.Separator = separator;
 	}
 
 	[TestMethod]
 	public void RootMethod()
 	{
-		char separator = Positive.Separator;
-		Positive.Separator = '.';
-
 		int length;
 		Positive positive1, positive2, whole, remainder;
 
@@ -447,7 +399,5 @@ public class PositiveTest
 				Assert.AreEqual(positive1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
-
-		Positive.Separator = separator;
 	}
 }

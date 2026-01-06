@@ -288,21 +288,21 @@ public class Rational
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Rational"/> instance.</returns>
-	public static Integer RoundDown(Rational value) => new(value.Sign, Positive.RoundDown(GetValue(value).Value.Value));
+	public static Integer RoundDown(Rational value) => Writable.RoundDown(GetValue(value).Value);
 
 	/// <summary>
 	/// Rounds up the given <see cref="Rational"/> instance.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Rational"/> instance plus one if it was not whole.</returns>
-	public static Integer RoundUp(Rational value) => new(value.Sign, Positive.RoundUp(GetValue(value).Value.Value));
+	public static Integer RoundUp(Rational value) => Writable.RoundUp(GetValue(value).Value);
 
 	/// <summary>
 	/// Rounds the given <see cref="Rational"/> instance to the nearest number.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The rounded value of the given <see cref="Rational"/> instance.</returns>
-	public static Integer Round(Rational value) => new(value.Sign, Positive.Round(GetValue(value).Value.Value));
+	public static Integer Round(Rational value) => Writable.Round(GetValue(value).Value);
 
 	/// <summary>
 	/// Gets the absolut value of the given <see cref="Rational"/>.

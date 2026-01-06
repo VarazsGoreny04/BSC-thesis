@@ -22,8 +22,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable empty = new();
 
@@ -71,7 +69,6 @@ public class WritableTest
 			Assert.AreEqual(empty, zero);
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -79,8 +76,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		string[] tests =
 		[
@@ -116,7 +111,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -124,8 +118,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Positive positive1, positive2;
 		Writable number1, number2;
@@ -146,7 +138,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -154,8 +145,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Positive positive1, positive2;
 		Writable number1, number2;
@@ -173,7 +162,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -181,8 +169,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -202,7 +188,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -210,8 +195,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -233,7 +216,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 
@@ -242,8 +224,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable writable1, writable2;
 
@@ -256,7 +236,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -264,8 +243,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable writable1, writable2;
 
@@ -278,7 +255,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -286,8 +262,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable writable1, writable2;
 
@@ -300,7 +274,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -308,8 +281,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
@@ -333,7 +304,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -341,8 +311,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		Writable writable1, writable2;
 
@@ -368,7 +336,6 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 
 	[TestMethod]
@@ -376,8 +343,6 @@ public class WritableTest
 	{
 		bool writeSign = Writable.WriteSign;
 		Writable.WriteSign = true;
-		char separator = Writable.Separator;
-		Writable.Separator = '.';
 
 		int length;
 		Writable writable1, writable2, whole, remainder;
@@ -411,6 +376,5 @@ public class WritableTest
 		}
 
 		Writable.WriteSign = writeSign;
-		Writable.Separator = separator;
 	}
 }

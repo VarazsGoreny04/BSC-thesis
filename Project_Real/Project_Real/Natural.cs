@@ -5,7 +5,7 @@ using System.Linq;
 namespace Project_Real;
 
 /// <summary>
-/// Represents a natural number using a <see cref="Digit"/> array.
+/// Represents a natural number.
 /// </summary>
 public class Natural
 {
