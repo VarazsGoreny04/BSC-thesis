@@ -75,7 +75,9 @@ public abstract partial class Calculator
 
 	public static ValueHolder<T> Evaluate<T>(string input, Calculator calculator)
 	{
-		ValueHolder<T> result = TreeForm<T>(PostfixForm(Parse(RemoveWhitespaces(input), calculator)));
+		input = RemoveWhitespaces(input);
+
+		ValueHolder<T> result = TreeForm<T>(PostfixForm(Parse(input, calculator)));
 
 		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
 	}

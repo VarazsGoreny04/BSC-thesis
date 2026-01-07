@@ -18,7 +18,7 @@ public sealed class Number : Term<Rational>
 	}
 
 	public override Rational GetValue() => value ??= new(token);
-	public override string ToStringByStep(ref int _) => ParenthesizeIfSigned(Value);
+	public override string ToStringByStep(ref int _) => ParenthesizeIfSigned(GetValue());
 }
 
 public sealed class PI : Term<Rational>

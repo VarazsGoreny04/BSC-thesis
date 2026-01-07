@@ -19,7 +19,7 @@ public partial class EuclideanSpaceCalculator : Calculator
 	public EuclideanSpaceCalculator() : base(
 	[
 		// Matrix
-		new(BracketedRegex(), match => MakeMatrix(match[1..^1])),
+		new(BracketedRegex(), match => new MatrixHolder(MakeMatrix(match[1..^1]))),
 		// Function name
 		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
 		// Operators
@@ -63,5 +63,5 @@ public partial class EuclideanSpaceCalculator : Calculator
 		return new Matrix(matrix);
 	}
 
-	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<ValueHolder<Rational>[,]>(input, this));
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Matrix>(input, this));
 }

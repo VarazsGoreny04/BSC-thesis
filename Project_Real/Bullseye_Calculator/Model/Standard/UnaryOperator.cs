@@ -24,13 +24,13 @@ public abstract class UnaryOperator : Operator<Rational>
 
 		int stepCopy = step;
 
-		partialValues.Add(($"({Parameter?.Value}){Sign()} = {Value}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"({Parameter?.GetValue()}){Sign()} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
 	internal override Priority Order() => Priority.UnaryOperator;
 	public override string ToStringByStep(ref int step)
 	{
 		string parameterToString = Parameter.ToStringByStep(ref step);
 
-		return --step <= 0 ? $"{parameterToString}{Sign()}" : $"({Value})";
+		return --step <= 0 ? $"{parameterToString}{Sign()}" : $"({GetValue()})";
 	}
 }

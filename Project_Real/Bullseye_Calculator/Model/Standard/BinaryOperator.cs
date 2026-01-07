@@ -32,10 +32,10 @@ public abstract class BinaryOperator : Operator<Rational>
 
 		int stepCopy = ++step;
 
-		if (Left?.Value is Rational left)
+		if (Left?.GetValue() is Rational left)
 		{
-			Rational right = Right?.Value ?? throw new FormatException();
-			partialValues.Add(($"{ParenthesizeIfSigned(left)}{Sign()}{ParenthesizeIfSigned(right)} = {Value}", root.ToStringByStep(ref stepCopy)));
+			Rational right = Right?.GetValue() ?? throw new FormatException();
+			partialValues.Add(($"{ParenthesizeIfSigned(left)}{Sign()}{ParenthesizeIfSigned(right)} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 		}
 	}
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
@@ -44,7 +44,7 @@ public abstract class BinaryOperator : Operator<Rational>
 		string left = Left?.ToStringByStep(ref step) ?? "";
 		string right = Right?.ToStringByStep(ref step) ?? throw new FormatException();
 
-		return --step <= 0 ? $"{left}{Sign()}{right}" : ParenthesizeIfSigned(Value);
+		return --step <= 0 ? $"{left}{Sign()}{right}" : ParenthesizeIfSigned(GetValue());
 	}
 }
 

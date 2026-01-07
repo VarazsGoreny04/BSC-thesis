@@ -15,7 +15,7 @@ public sealed class Abs : Function<Rational>
 
 	public Abs(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => Rational.Abs(Parameter?.Value ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Abs(Parameter?.GetValue() ?? throw new FormatException());
 
 	public override string Sign() => "abs";
 }
@@ -32,7 +32,7 @@ internal sealed class Floor : Function<Rational>
 
 	public Floor(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => Rational.RoundDown(Parameter?.Value ?? throw new FormatException());
+	public override Rational GetValue() => Rational.RoundDown(Parameter?.GetValue() ?? throw new FormatException());
 
 	public override string Sign() => "floor";
 }
@@ -49,7 +49,7 @@ public sealed class Round : Function<Rational>
 
 	public Round(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => Rational.Round(Parameter?.Value ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Round(Parameter?.GetValue() ?? throw new FormatException());
 
 	public override string Sign() => "round";
 }
@@ -66,7 +66,7 @@ public sealed class Ceiling : Function<Rational>
 
 	public Ceiling(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => Rational.RoundUp(Parameter?.Value ?? throw new FormatException());
+	public override Rational GetValue() => Rational.RoundUp(Parameter?.GetValue() ?? throw new FormatException());
 
 	public override string Sign() => "ceiling";
 }
@@ -83,7 +83,7 @@ public sealed class Fact : Function<Rational>
 
 	public Fact(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
 
-	public override Rational GetValue() => Rational.Abs(Parameter?.Value ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Abs(Parameter?.GetValue() ?? throw new FormatException());
 
 	public override string Sign() => "fact";
 }
@@ -110,7 +110,7 @@ public sealed class Max : Function<Rational>
 		Second = second;
 	}
 
-	public override Rational GetValue() => First.Value >= Second.Value ? First.Value : Second.Value;
+	public override Rational GetValue() => First.GetValue() >= Second.GetValue() ? First.GetValue() : Second.GetValue();
 
 	public override string Sign() => "max";
 }
@@ -137,7 +137,7 @@ public sealed class Min : Function<Rational>
 		Second = second;
 	}
 
-	public override Rational GetValue() => First.Value >= Second.Value ? First.Value : Second.Value;
+	public override Rational GetValue() => First.GetValue() >= Second.GetValue() ? First.GetValue() : Second.GetValue();
 
 	public override string Sign() => "min";
 }

@@ -1,12 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.VectorHolder" Collapsed="true">
-    <Position X="14.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
-      <FileName>Model\EuclideanSpace\VectorHolder.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Bullseye_Calculator.Model.Expression" Collapsed="true">
     <Position X="11.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
@@ -88,27 +81,6 @@
     <Position X="8.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAACACCAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Add" Collapsed="true">
-    <Position X="7" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Subtract" Collapsed="true">
-    <Position X="8.75" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Bullseye_Calculator.Model.EuclideanSpace.Product" Collapsed="true">
-    <Position X="10.5" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\EuclideanSpace\BinaryOperator.cs</FileName>
     </TypeIdentifier>
   </Class>

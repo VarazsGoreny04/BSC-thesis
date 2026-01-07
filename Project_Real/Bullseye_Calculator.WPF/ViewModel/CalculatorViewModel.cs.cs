@@ -120,8 +120,8 @@ public class CalculatorViewModel : ViewModelBase
 	{
 		if (!start)
 		{
-			try
-			{
+			/*try
+			{*/
 				List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
 
 				ShowFullEvaluation(fullEvaluation);
@@ -132,11 +132,11 @@ public class CalculatorViewModel : ViewModelBase
 
 				input.Clear();
 				input.Add(result);
-			}
+			/*}
 			catch (FormatException e)
 			{
 				Result = e.Message;
-			}
+			}*/
 
 			start = true;
 		}

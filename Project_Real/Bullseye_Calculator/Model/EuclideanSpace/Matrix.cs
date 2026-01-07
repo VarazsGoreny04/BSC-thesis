@@ -42,8 +42,8 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		}
 	}
 
-	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
-	internal override void ToTree(ref Stack<Expression> result) => result.Push(this);
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => throw new NotImplementedException();
+	internal override void ToTree(ref Stack<Expression> result) => throw new NotImplementedException();
 	public override string ToStringByStep(ref int step)
 	{
 		int rowCount = value.GetLength(0);
@@ -82,43 +82,27 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 	public override ValueHolder<Rational>[,] GetValue() => value;
 
-	public static implicit operator Matrix(ValueHolder<Rational>[,] value) => new(value);
-	public static implicit operator Matrix(Rational[,] value) => new(value);
-	public static Matrix operator +(Matrix left, Matrix right) => Add(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
-	public static Matrix operator -(Matrix left, Matrix right) => Subtract(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
-	public static Matrix operator *(Matrix left, Matrix right) => Product(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
-
 	private static Rational[,] ToRationalMatrix(ValueHolder<Rational>[,] valueHolderMatrix)
 	{
 		int rows = valueHolderMatrix.GetLength(0);
-		int cols = valueHolderMatrix.GetLength(0);
+		int cols = valueHolderMatrix.GetLength(1);
 
 		Rational[,] result = new Rational[rows, cols];
 
 		for (int i = 0; i < rows; ++i)
 		{
 			for (int j = 0; j < cols; ++j)
-				result[i, j] = valueHolderMatrix[i, j].Value;
+				result[i, j] = valueHolderMatrix[i, j].GetValue();
 		}
 
 		return result;
 	}
 
-	private static ValueHolder<Rational>[,] ToValueHolderMatrix(Rational[,] rationalMatrix)
-	{
-		int rows = rationalMatrix.GetLength(0);
-		int cols = rationalMatrix.GetLength(0);
-
-		ValueHolder<Rational>[,] result = new ValueHolder<Rational>[rows, cols];
-
-		for (int i = 0; i < rows; ++i)
-		{
-			for (int j = 0; j < cols; ++j)
-				result[i, j] = new Number(rationalMatrix[i, j]);
-		}
-
-		return result;
-	}
+	public static implicit operator Matrix(ValueHolder<Rational>[,] value) => new(value);
+	public static implicit operator Matrix(Rational[,] value) => new(value);
+	public static Matrix operator +(Matrix left, Matrix right) => Add(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+	public static Matrix operator -(Matrix left, Matrix right) => Subtract(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+	public static Matrix operator *(Matrix left, Matrix right) => Product(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
 
 
 

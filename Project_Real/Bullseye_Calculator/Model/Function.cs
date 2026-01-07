@@ -15,7 +15,7 @@ public abstract class Function<T>(int parameters) : FunctionBase<T>(parameters)
 
 		int stepCopy = step;
 
-		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(p => p.Value))}) = {Value}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(p => p.GetValue()))}) = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
 	public override string ToStringByStep(ref int step)
 	{
@@ -24,7 +24,7 @@ public abstract class Function<T>(int parameters) : FunctionBase<T>(parameters)
 		for (int i = 0; i < parameters.Length; ++i)
 			arguments[i] = parameters[i].ToStringByStep(ref step) ?? throw new FormatException();
 
-		return --step <= 0 ? $"{Sign()}({string.Join("; ", arguments)})" : $"({Value})";
+		return --step <= 0 ? $"{Sign()}({string.Join("; ", arguments)})" : $"({GetValue()})";
 	}
 
 	internal override void ToTree(ref Stack<Expression> result)

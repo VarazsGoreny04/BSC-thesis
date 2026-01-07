@@ -34,7 +34,7 @@ public abstract class BinaryOperator : Operator<Matrix>
 
 		int stepCopy = ++step;
 
-		partialValues.Add(($"{left.Value}{Sign()}{right.Value} = {Value}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{left.GetValue()}{Sign()}{right.GetValue()} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
 	internal override Priority Order() => Priority.BinaryOperatorFirstClass;
 	public override string ToStringByStep(ref int step)
@@ -42,7 +42,7 @@ public abstract class BinaryOperator : Operator<Matrix>
 		string left = Left?.ToStringByStep(ref step) ?? throw new FormatException();
 		string right = Right?.ToStringByStep(ref step) ?? throw new FormatException();
 
-		return --step <= 0 ? $"{left}{Sign()}{right}" : Value.ToString();
+		return --step <= 0 ? $"{left}{Sign()}{right}" : GetValue().ToString();
 	}
 }
 
