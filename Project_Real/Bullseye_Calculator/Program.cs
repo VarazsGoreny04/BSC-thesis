@@ -87,7 +87,7 @@ public class Program
 			Console.WriteLine(valueHolder.StepToString(ref temp));
 		}*/
 
-		Rational.FractionCalculationLength = 3;
+		/*Rational.FractionCalculationLength = 3;
 		Rational.FractionalFormat = true;
 
 		Point2D[] myPoints = [
@@ -99,9 +99,20 @@ public class Program
 		];
 
 		Rational[] res = Interpolation.Lagrange(myPoints);
-		Console.WriteLine(Polynomial.ToString(res));
+		Console.WriteLine(Polynomial.ToString(res));*/
 
 		/*Rational[] points = CoordinateSystem.LinSpace("1", "6", 100);
 		Console.WriteLine(Matrix.ToString(Polynomial.EvaluateRange(res, points)));*/
+
+		Rational.WriteSign = false;
+
+		Matrix m1 = new("1;2");
+		Matrix m2 = new("3;5");
+
+		Rational[,] r = Matrix.Add(Matrix.ToRationalMatrix(m1.Content), Matrix.ToRationalMatrix(m2.Content));
+
+		Console.WriteLine(new Matrix(r));
+
+		Console.WriteLine(m1 + m2);
 	}
 }

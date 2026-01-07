@@ -1,7 +1,7 @@
 ﻿using Project_Real;
-using Bullseye_Calculator.Model.Standard;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
@@ -10,14 +10,47 @@ namespace Bullseye_Calculator.Model.EuclideanSpace;
 /// </summary>
 public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 {
+	private const char columnSeparator = ';';
+	private const char rowSeparator = '&';
+
 	private readonly ValueHolder<Rational>[,] value;
 
+	public static char ColumnSeparator => columnSeparator;
+	public static char RowSeparator => rowSeparator;
 	public ValueHolder<Rational>[,] Content => value;
+
+	public Matrix(string content)
+	{
+		string[] rows = content.Split(rowSeparator, StringSplitOptions.TrimEntries);
+		string[][] tokenized = [.. rows.Select(row => row.Split(columnSeparator, StringSplitOptions.TrimEntries))];
+
+		for (int i = 1; i < tokenized.Length; ++i)
+		{
+			if (tokenized[0].Length != tokenized[i].Length)
+				throw new FormatException();
+		}
+
+		value = new ValueHolder<Rational>[tokenized.Length, tokenized[0].Length];
+		Standard.StandardCalculator standardCalculator = new();
+
+		try
+		{
+			for (int row = tokenized.Length - 1; row >= 0; --row)
+			{
+				for (int col = tokenized[row].Length - 1; col >= 0; --col)
+					value[row, col] = Calculator.Evaluate<Rational>(tokenized[row][col], standardCalculator);
+			}
+		}
+		catch (IndexOutOfRangeException)
+		{
+			throw new FormatException();
+		}
+	}
 
 	public Matrix(ValueHolder<Rational>[,] value)
 	{
 		int rows = value.GetLength(0);
-		int cols = value.GetLength(0);
+		int cols = value.GetLength(1);
 
 		if (rows < 1 || cols < 1)
 			throw new ArgumentException();
@@ -28,7 +61,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	public Matrix(Rational[,] value)
 	{
 		int rows = value.GetLength(0);
-		int cols = value.GetLength(0);
+		int cols = value.GetLength(1);
 
 		if (rows < 1 || cols < 1)
 			throw new ArgumentException();
@@ -38,7 +71,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		for (int i = 0; i < rows; ++i)
 		{
 			for (int j = 0; j < cols; ++j)
-				this.value[i, j] = new Number(value[i, j]);
+				this.value[i, j] = new Standard.Number(value[i, j]);
 		}
 	}
 
@@ -82,7 +115,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 	public override ValueHolder<Rational>[,] GetValue() => value;
 
-	private static Rational[,] ToRationalMatrix(ValueHolder<Rational>[,] valueHolderMatrix)
+	public static Rational[,] ToRationalMatrix(ValueHolder<Rational>[,] valueHolderMatrix)
 	{
 		int rows = valueHolderMatrix.GetLength(0);
 		int cols = valueHolderMatrix.GetLength(1);

@@ -1,4 +1,5 @@
 ﻿using Bullseye_Calculator.Model;
+using Bullseye_Calculator.Model.EuclideanSpace;
 using Project_Real;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ public class CalculatorViewModel : ViewModelBase
 	}
 	public ObservableCollection<string> Evaluation => evaluation;
 	public static char Separator => Rational.Separator;
+	public static char ColumnSeparator => Matrix.ColumnSeparator;
+	public static char RowSeparator => Matrix.RowSeparator;
 
 	public DelegateCommand InputCommand { get; }
 	public DelegateCommand BackSpaceCommand { get; }
@@ -120,8 +123,8 @@ public class CalculatorViewModel : ViewModelBase
 	{
 		if (!start)
 		{
-			/*try
-			{*/
+			try
+			{
 				List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
 
 				ShowFullEvaluation(fullEvaluation);
@@ -132,11 +135,11 @@ public class CalculatorViewModel : ViewModelBase
 
 				input.Clear();
 				input.Add(result);
-			/*}
+			}
 			catch (FormatException e)
 			{
 				Result = e.Message;
-			}*/
+			}
 
 			start = true;
 		}
