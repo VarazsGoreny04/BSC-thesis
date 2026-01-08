@@ -117,7 +117,7 @@ public abstract partial class Calculator
 				lastSequence = currentSequence;
 		}
 
-		if (lastToken is not null)
+		if (lastToken is RegexToken)
 			result.Add(lastToken.Function.Invoke(lastSequence));
 		else
 			throw new FormatException("Invalid token found.");
