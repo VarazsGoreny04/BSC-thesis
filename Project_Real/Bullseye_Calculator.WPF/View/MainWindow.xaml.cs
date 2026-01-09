@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -20,5 +21,12 @@ public partial class MainWindow : Window
 
 		Uri iconUri = new("./Icon/icon.ico", UriKind.Relative);
 		Icon = BitmapFrame.Create(iconUri);
+
+		int TitlebarColor = 0x232323;
+		DwmSetWindowAttribute(new System.Windows.Interop.WindowInteropHelper(this).EnsureHandle(), 35, ref TitlebarColor, Marshal.SizeOf(TitlebarColor));
 	}
+
+
+	[DllImport("dwmapi.dll")]
+	private static extern int DwmSetWindowAttribute(IntPtr windowHandle, int attributeID, ref int attributeValue, int attributeSize);
 }
