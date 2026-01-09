@@ -579,14 +579,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
 
-		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
+		if (rowCount != B.GetLength(1) || colCount != B.GetLength(0))
 			throw new ArgumentException();
 
-		Rational[,] result = new Rational[rowCount, colCount];
+		Rational[,] result = new Rational[rowCount, rowCount];
 
 		for (int i = 0; i < rowCount; ++i)
 		{
-			for (int j = 0; j < colCount; ++j)
+			for (int j = 0; j < rowCount; ++j)
 			{
 				result[i, j] = Digit.ZERO;
 

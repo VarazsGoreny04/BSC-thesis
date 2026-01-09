@@ -8,5 +8,5 @@ public abstract partial class ValueHolder<T> : Expression
 	protected static string ParenthesizeIfSigned(Rational value) => Rational.WriteSign || !value.Sign ? $"({value})" : value.ToString();
 	public abstract void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step);
 	public abstract T GetValue();
-	public abstract ValueHolder<T> GetDerivativeForm();
+	//public abstract ValueHolder<T> GetDerivativeForm();
 }
