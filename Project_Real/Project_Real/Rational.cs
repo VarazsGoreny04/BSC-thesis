@@ -432,6 +432,9 @@ public class Rational
 	/// <param name="right">The <see cref="Rational"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive.
+	/// </exception>
 	public static Rational Power(Rational left, Rational right)
 	{
 		if (right.denominator is not null)
@@ -451,12 +454,12 @@ public class Rational
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="value"/> being negative is not mathematically meaningful.</exception>
-	public static (Rational Value, Rational Remainder) SquareRoot(Rational value, int? fractionCalculationLength = null)
+	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) SquareRoot(Rational value, int? fractionCalculationLength = null)
 	{
 		(Writable Value, Writable Remainder) numerator = Writable.SquareRoot(value.numerator, fractionCalculationLength);
-		(Positive Value, Positive Remainder)? denominator = value.denominator is Positive d ? Positive.SquareRoot(d, fractionCalculationLength) : null;
+		(Positive Value, Positive Remainder) denominator = value.denominator is Positive d ? Positive.SquareRoot(d, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
 
-		return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
+		return (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder);
 	}
 
 	/// <summary>
@@ -471,21 +474,20 @@ public class Rational
 	/// -or-
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
-	public static (Rational Value, Rational Remainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be a fraction or higher than 99 as it would be too computationally expensive.
+	/// </exception>
+	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
 		if (right.denominator is not null)
 			throw new NotImplementedException();
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
-		(Positive Value, Positive Remainder)? denominator = left.denominator is Positive d ? Positive.Root(d, right.Numerator, fractionCalculationLength) : null;
+		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ? 
+			Positive.Root(d, right.Numerator, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
 
-		if (right.Sign)
-			return (new Rational(numerator.Value, denominator?.Value), new Rational(numerator.Remainder, denominator?.Remainder));
-		else
-		{
-			return (new Rational(true, denominator?.Value ?? Digit.ONE, numerator.Value.Value),
-				new Rational(true, denominator?.Remainder ?? Digit.ONE, numerator.Remainder.Value));
-		}
+		return (right.Sign) ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) : 
+			(new Rational(true, denominator.Value, numerator.Value.Value), denominator.Remainder, numerator.Remainder.Value);
 	}
 
 	/// <summary>

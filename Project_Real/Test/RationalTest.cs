@@ -384,14 +384,14 @@ public class RationalTest
 
 		string[] tests =
 		[
-			/*null!, "", "+", "-", ".", "+.", "-.",
+			null!, "", "+", "-", ".", "+.", "-.",
 			".123", "+.123", "-.123",
 			"/", "+/", "-/", "./", "+/.", "-/.",
 			"a123", "123a", "12a3",
 			"+a123", "+123a", "+12a3",
 			"-a123", "-123a", "-12a3",
 			".12/3", "+/.123", "-.123/",
-			"0/0", "+0/0", "-0/0", "0/+0", "0/-0", "+0/+0", "+0/-0", "-0/+0", "-0/-0"*/
+			"0/0", "+0/0", "-0/0", "0/+0", "0/-0", "+0/+0", "+0/-0", "-0/+0", "-0/-0"
 		];
 
 		for (int j = 0; j < tests.Length; ++j)
@@ -765,7 +765,9 @@ public class RationalTest
 		Rational.WriteSign = true;
 
 		int length;
-		Rational rational1, rational2, result, remainder;
+		Rational rational1, rational2, result;
+		Writable numeratorRemainder;
+		Positive? denominatorRemainder;
 		string expected;
 
 		foreach (RationalTestCase item in RationalTestCases.List)
@@ -785,13 +787,14 @@ public class RationalTest
 				}
 			else if (item.Root != "BIG")
 			{
-				(result, remainder) = Rational.Root(rational1, rational2, fractionCalculationLength);
+				(result, numeratorRemainder, denominatorRemainder) = Rational.Root(rational1, rational2, fractionCalculationLength);
 				expected = (new Rational(item.Root)).ToString();
 
 				length = Math.Min(expected.Length, result.ToString().Length);
 
 				Assert.AreEqual(expected[..length], result.ToString()[..length]);
-				Assert.AreEqual(rational1.ToString(), ((result ^ item.Number2) + remainder).ToString());
+				Assert.AreEqual(rational1, ((new Rational(result.Sign, result.Numerator) ^ rational2) + numeratorRemainder) /
+					((result?.Denominator ?? Digit.ONE) ^ rational2) + denominatorRemainder);
 			}
 		}
 
