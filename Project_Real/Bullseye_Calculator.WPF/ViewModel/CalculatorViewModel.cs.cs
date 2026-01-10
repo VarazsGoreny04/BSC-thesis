@@ -1,5 +1,4 @@
 ﻿using Bullseye_Calculator.Model;
-using Bullseye_Calculator.Model.EuclideanSpace;
 using Project_Real;
 using System;
 using System.Collections.Generic;
@@ -40,8 +39,8 @@ public class CalculatorViewModel : ViewModelBase
 	}
 	public ObservableCollection<string> Evaluation => evaluation;
 	public static char Separator => Rational.Separator;
-	public static char ColumnSeparator => Matrix.ColumnSeparator;
-	public static char RowSeparator => Matrix.RowSeparator;
+	public static char ColumnSeparator => Model.EuclideanSpace.Matrix.ColumnSeparator;
+	public static char RowSeparator => Model.EuclideanSpace.Matrix.RowSeparator;
 
 	public DelegateCommand InputCommand { get; }
 	public DelegateCommand BackSpaceCommand { get; }

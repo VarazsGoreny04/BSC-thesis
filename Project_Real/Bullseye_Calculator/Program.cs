@@ -109,7 +109,7 @@ public class Program
 		Matrix m1 = new("1;2");
 		Matrix m2 = new("3;5");
 
-		Rational[,] r = Matrix.Add(Matrix.ToRationalMatrix(m1.Content), Matrix.ToRationalMatrix(m2.Content));
+		Rational[,] r = Matrix.Add(Matrix.ToRationalMatrix(m1.GetValue()), Matrix.ToRationalMatrix(m2.GetValue()));
 
 		Console.WriteLine(new Matrix(r));
 

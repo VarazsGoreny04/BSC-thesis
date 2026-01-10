@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model;
 
-public sealed class Parenthesized<T>(ValueHolder<T> value) : ValueHolder<T>
+public sealed class Parenthesized<T> : ValueHolder<T>
 {
-	private readonly ValueHolder<T> value = value;
+	private readonly ValueHolder<T> value;
 
 	public ValueHolder<T> Content => value;
+
+	public Parenthesized(ValueHolder<T> value) => this.value = value;
 
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
 	{

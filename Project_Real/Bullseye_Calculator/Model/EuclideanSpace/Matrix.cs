@@ -17,7 +17,6 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 	public static char ColumnSeparator => columnSeparator;
 	public static char RowSeparator => rowSeparator;
-	public ValueHolder<Rational>[,] Content => value;
 
 	public Matrix(string content)
 	{
@@ -194,7 +193,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	{
 		Rational result = Digit.ZERO;
 
-		for (int i = a.Length; i >= 0; --i)
+		for (int i = a.Length - 1; i >= 0; --i)
 			result += Rational.SecondPower(a[i]);
 
 		return ~result;
@@ -214,7 +213,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 		Rational result = Digit.ZERO;
 
-		for (int i = a.Length; i >= 0; --i)
+		for (int i = a.Length - 1; i >= 0; --i)
 			result += a[i] * b[i];
 
 		return result;
@@ -442,7 +441,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		int bRowCount = B.GetLength(0);
 		int bColCount = B.GetLength(1);
 
-		Rational[,] result = Zeros(Math.Max(aRowCount, bRowCount), aColCount + bColCount);
+		Rational[,] result = new Rational[Math.Max(aRowCount, bRowCount), aColCount + bColCount];
 
 		for (int i = 0; i < aRowCount; ++i)
 		{
@@ -452,8 +451,8 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 		for (int i = 0; i < bRowCount; ++i)
 		{
-			for (int j = aColCount + bColCount - 1; j >= aColCount; --j)
-				result[i, j] = B[i, j];
+			for (int j = 0; j < bColCount; ++j)
+				result[i, aRowCount + j] = B[i, j];
 		}
 
 		return result;
@@ -472,7 +471,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		int bRowCount = B.GetLength(0);
 		int bColCount = B.GetLength(1);
 
-		Rational[,] result = Zeros(aRowCount + bRowCount, Math.Max(aColCount, bColCount));
+		Rational[,] result = new Rational[aRowCount + bRowCount, Math.Max(aColCount, bColCount)];
 
 		for (int i = 0; i < aRowCount; ++i)
 		{
@@ -480,10 +479,10 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 				result[i, j] = A[i, j];
 		}
 
-		for (int i = aRowCount + bRowCount - 1; i >= aRowCount; --i)
+		for (int i = 0; i >= bRowCount; ++i)
 		{
 			for (int j = 0; j < bColCount; ++j)
-				result[i, j] = B[i, j];
+				result[aRowCount + i, j] = B[i, j];
 		}
 
 		return result;
@@ -598,40 +597,29 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		return result;
 	}
 
-	/// <summary>
-	/// Calculates the inverse of the given matrix using the 
-	/// Gauss-Jordan Method (<see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/>).
-	/// </summary>
-	/// <param name="A">The matrix to invert.</param>
-	/// <returns>The inverse of the given matrix.</returns>
-	public static Rational[,] Inverse(Rational[,] A)
+	public static (Rational[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(Rational[,] A)
 	{
-		// Initialize the augmented matrix B.
 		int n = A.GetLength(0);
-		Rational[,] B = new Rational[n, 2 * n];
-
-		// In the augmented matrix B, the first 3 columns are the original 
-		// matrix A, and the last 3 columns are the identity matrix C.
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-				B[i, j] = A[i, j];
-
-			for (int j = 2 * n - 1; j >= n; --j)
-			{
-				if (i == j - n)
-					B[i, j] = Digit.ONE;
-			}
-		}
+		Rational[,] B = Duplicate(A);
 
 		// Swap rows of the augmented matrix B.
-		for (int i = n - 1; i > 0; --i)
+		bool determinantSign = true;
+		for (int i = 0; i < n; ++i)
 		{
-			if (B[i - 1, 0] >= B[i, 0])
+			if (!B[i, i].IsZero)
 				continue;
 
-			for (int j = 0; j < 2 * n; ++j)
-				(B[i - 1, j], B[i, j]) = (B[i, j], B[i - 1, j]);
+			int rowToSwap = i + 1;
+			while (rowToSwap < n && B[rowToSwap, i].IsZero)
+				++rowToSwap;
+
+			if (rowToSwap >= n)
+				throw new ArgumentException();
+
+			for (int j = 2 * n - 1; j >= 0; --j)
+				(B[rowToSwap, j], B[i, j]) = (B[i, j], B[rowToSwap, j]);
+
+			determinantSign = !determinantSign;
 		}
 
 		// Subtract each row by a multiple of another row.
@@ -639,34 +627,54 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		{
 			for (int j = 0; j < n; ++j)
 			{
-				if (i == j)
-					continue;
+				if (i != j)
+				{
+					Rational temp = B[j, i] / B[i, i];
 
-				Rational temp = B[j, i] / B[i, i];
-
-				for (int k = 2 * n - 1; k >= 0; --k)
-					B[j, k] -= B[i, k] * temp;
+					for (int k = 2 * n - 1; k >= 0; --k)
+						B[j, k] -= B[i, k] * temp;
+				}
 			}
 		}
+
+		// Return the eliminated matrix B with the sign of the determinant.
+		return (B, determinantSign);
+	}
+
+	/// <summary>
+	/// Calculates the inverse of the given matrix using the Gauss-Jordan method.
+	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
+	/// <param name="A">The matrix to invert.</param>
+	/// <returns>The inverse of the given matrix.</returns>
+	/// <exception cref="DivideByZeroException">
+	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
+	/// </exception>
+	public static Rational[,] Inverse(Rational[,] A)
+	{
+		int n = A.GetLength(0);
+
+		if (n != A.GetLength(1))
+			throw new ArgumentException();
+
+		// Initialize the eliminated augmented matrix B.
+		Rational[,] B = GaussianElimination(HorizontalConcat(A, Identity(n, n))).EliminatedMatrix;
 
 		// Divide each row element by the diagonal element.
 		for (int i = 0; i < n; ++i)
 		{
 			Rational temp = B[i, i];
 
-			for (int j = 2 * n - 1; j >= 0; ++j)
+			for (int j = 2 * n - 1; j >= 0; --j)
 				B[i, j] = B[i, j] / temp;
 		}
 
-		// Strip the augmented matrix B of the first three columns
-		// to get the inverse matrix C of the original matrix A.
+		// Strip the augmented matrix B of the first n columns to get the inverse matrix C of the original matrix A.
 		Rational[,] C = new Rational[n, n];
 		for (int i = 0; i < n; ++i)
 		{
-			for (int j = n; j < 2 * n; j++)
-			{
+			for (int j = 2 * n - 1; j >= n; --j)
 				C[i, j - n] = B[i, j];
-			}
 		}
 
 		// Return the inverse matrix C.
@@ -674,15 +682,15 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	}
 
 	/// <summary>
-	/// Runs the QR algorithm to find the eigenvalues and eigenvectors 
-	/// of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_algorithm"/>).
+	/// Runs the Gauss-Jordan elimination to find the determinant of the given square matrix.
 	/// </summary>
-	/// <param name="A">The matrix for which eigenvalues and eigenvectors should be found.</param>
-	/// <returns>
-	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. 
-	/// The eigenvectors stored as columns in the Eigenvectors matrix.
-	/// </returns>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
+	/// <param name="A">The matrix for which the determinant should be found.</param>
+	/// <returns>The determinant of the matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
+	/// <exception cref="DivideByZeroException">
+	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
+	/// </exception>
 	public static Rational Determinant(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -690,56 +698,13 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		// Initialize the augmented matrix B.
-		Rational[,] B = new Rational[n, 2 * n];
-
-		// In the augmented matrix B, the first 3 columns are the original 
-		// matrix A, and the last 3 columns are the identity matrix C.
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-				B[i, j] = A[i, j];
-
-			for (int j = 2 * n - 1; j >= n; --j)
-			{
-				if (i == j - n)
-					B[i, j] = Digit.ONE;
-			}
-		}
-
-		// Swap rows of the augmented matrix B.
-		int swaps = 0;
-		for (int i = n - 1; i > 0; --i)
-		{
-			if (B[i - 1, 0] >= B[i, 0])
-				continue;
-
-			for (int j = 0; j < 2 * n; ++j)
-				(B[i - 1, j], B[i, j]) = (B[i, j], B[i - 1, j]);
-
-			++swaps;
-		}
-
-		// Subtract each row by a multiple of another row.
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-			{
-				if (i == j)
-					continue;
-
-				Rational temp = B[j, i] / B[i, i];
-
-				for (int k = 2 * n - 1; k >= 0; --k)
-					B[j, k] -= B[i, k] * temp;
-			}
-		}
+		(Rational[,] B, bool determinantSign) = GaussianElimination(A);
 
 		Rational result = Digit.ONE;
 		for (int i = 0; i < A.GetLength(0); ++i)
 			result *= B[i, i + n];
 
-		return result;
+		return determinantSign ? result : -result;
 	}
 
 	/// <summary>
@@ -757,33 +722,33 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	{
 		int n = A.GetLength(0);
 
-		if (n != A.GetLength(1))
-			throw new ArgumentException();
-
 		// Duplicate the original matrix A so it stays intact.
 		Rational[,] B = Duplicate(A);
 
 		// Initialize the eigenvector matrix C.
-		Rational[,] U = Identity(n, n);
+		Rational[,] C = Identity(n, n);
 
 		// Perform the QR decomposition and update the B and C matrixes each iteration.
 		for (int i = 0; i < iterations; ++i)
 		{
 			(Rational[,] Q, Rational[,] R) = QRDecomposition(B);
 			B = Product(R, Q);
-			U = Product(U, Q);
+			C = Product(C, Q);
 		}
 
-		return (B, U);
+		return (B, C);
 	}
 
 	/// <summary>
-	/// Calculates the inverse of the given matrix using the 
+	/// Calculates the LU decomposition of the given matrix using the 
 	/// Gauss-Jordan Method (<see href="https://en.wikipedia.org/wiki/LU_decomposition"/>).
 	/// </summary>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The two parts of the decomposition: L and U.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
+	/// <exception cref="DivideByZeroException">
+	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
+	/// </exception>
 	public static (Rational[,] L, Rational[,] U) LUDecomposition(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -792,31 +757,26 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 			throw new ArgumentException();
 
 		// Initialize the augmented matrix B.
-		Rational[,] B = new Rational[n, 2 * n];
 		Rational[,] L = Identity(n, n);
-
-		// In the augmented matrix B, the first 3 columns are the original 
-		// matrix A, and the last 3 columns are the identity matrix C.
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-				B[i, j] = A[i, j];
-
-			for (int j = 2 * n - 1; j >= n; --j)
-			{
-				if (i == j - n)
-					B[i, j] = Digit.ONE;
-			}
-		}
+		// In the augmented matrix B, the first n columns are the original 
+		// matrix A, and the last n columns are the identity matrix.
+		Rational[,] B = HorizontalConcat(A, L);
 
 		// Swap rows of the augmented matrix B.
-		for (int i = n - 1; i > 0; --i)
+		for (int i = 0; i < n; ++i)
 		{
-			if (B[i - 1, 0] >= B[i, 0])
+			if (!B[i, i].IsZero)
 				continue;
 
-			for (int j = 0; j < 2 * n; ++j)
-				(B[i - 1, j], B[i, j]) = (B[i, j], B[i - 1, j]);
+			int rowToSwap = i + 1;
+			while (rowToSwap < n && B[rowToSwap, i].IsZero)
+				++rowToSwap;
+
+			if (rowToSwap >= n)
+				throw new ArgumentException();
+
+			for (int j = 2 * n - 1; j >= 0; --j)
+				(B[rowToSwap, j], B[i, j]) = (B[i, j], B[rowToSwap, j]);
 		}
 
 		// Subtract each row by a multiple of another row.
@@ -824,17 +784,17 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		{
 			for (int j = 0; j < n; ++j)
 			{
-				if (i == j)
-					continue;
+				if (i != j)
+				{
+					L[j, i] = B[j, i] / B[i, i];
 
-				L[j, i] = B[j, i] / B[i, i];
-
-				for (int k = 2 * n - 1; k >= 0; --k)
-					B[j, k] -= B[i, k] * L[j, i];
+					for (int k = 2 * n - 1; k >= 0; --k)
+						B[j, k] -= B[i, k] * L[j, i];
+				}
 			}
 		}
 
-		Rational[,] U = Zeros(n, n);
+		Rational[,] U = new Rational[n, n];
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = i; j < n; ++j)

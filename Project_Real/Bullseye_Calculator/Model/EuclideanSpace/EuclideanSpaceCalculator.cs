@@ -10,7 +10,8 @@ public partial class EuclideanSpaceCalculator : Calculator
 
 	protected static readonly FunctionToken[] functionTokens =
 	[
-
+		new("diag", () => new Diagonalize()),
+		new("inv", () => new Inverse()),
 	];
 
 	public EuclideanSpaceCalculator() : base(

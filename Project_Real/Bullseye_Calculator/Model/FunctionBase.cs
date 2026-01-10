@@ -3,11 +3,13 @@ using System.Linq;
 
 namespace Bullseye_Calculator.Model;
 
-public abstract class FunctionBase<T>(int parameters) : ValueHolder<T>
+public abstract class FunctionBase<T> : ValueHolder<T>
 {
-	protected readonly ValueHolder<T>[] parameters = new ValueHolder<T>[parameters];
+	protected readonly ValueHolder<T>[] parameters;
 
 	public ValueHolder<T>[] Parameters => parameters;
+
+	public FunctionBase(int parameters) => this.parameters = new ValueHolder<T>[parameters];
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{

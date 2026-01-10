@@ -29,11 +29,11 @@ public abstract class Function<T>(int parameters) : FunctionBase<T>(parameters)
 
 	internal override void ToTree(ref Stack<Expression> result)
 	{
-		for (int i = 1; i <= Parameters.Length && result.Peek() is Parenthesized<T> parenthesized; ++i)
+		for (int i = 1; i <= parameters.Length && result.Peek() is Parenthesized<T> parenthesized; ++i)
 		{
 			result.Pop();
 
-			Parameters[^i] = parenthesized.Content;
+			parameters[^i] = parenthesized.Content;
 		}
 
 		result.Push(this);

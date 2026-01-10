@@ -131,8 +131,8 @@
 				<Button Grid.Row="1" Content="]" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="]" />
 				<Button Grid.Row="2" Content="{Binding ColumnSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="{Binding ColumnSeparator}" />
 				<Button Grid.Row="3" Content="{Binding RowSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="{Binding RowSeparator}" />
-				<Button Grid.Row="4" Content="|A|" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="det(" />
-				<Button Grid.Row="5" Content="A⁻¹" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="5" />
+				<Button Grid.Row="4" Content="|A|" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="diag(" />
+				<Button Grid.Row="5" Content="A⁻¹" Style="{StaticResource SpecialButton}" Command="{Binding InputCommand}" CommandParameter="inv(" />
 
 				<Grid.Style>
 					<Style TargetType="Grid">
