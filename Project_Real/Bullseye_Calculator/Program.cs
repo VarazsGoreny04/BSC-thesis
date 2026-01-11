@@ -1,11 +1,8 @@
 ﻿using Bullseye_Calculator.Model;
 using Bullseye_Calculator.Model.EuclideanSpace;
-using Bullseye_Calculator.Model.Polynomials;
 using Bullseye_Calculator.Model.Standard;
 using Project_Real;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bullseye_Calculator;
 
@@ -106,13 +103,33 @@ public class Program
 
 		Rational.WriteSign = false;
 
-		Matrix m1 = new("1;2");
-		Matrix m2 = new("3;5");
+		Matrix l0 = new(
+			"1;0;0&" +
+			"3;1;0&" +
+			"9;-4;1"
+			);
+		Matrix u0 = new(
+			"5;2;4&" +
+			"0;5;-2&" +
+			"0;0;2"
+			);
+		Matrix m = Matrix.Product(Matrix.ToRationalMatrix(l0.GetValue()), Matrix.ToRationalMatrix(u0.GetValue()));
+		//Matrix m = new Matrix(
+		//	"1;2;3&" +
+		//	"3;6;9&" +
+		//	"2;4;6"
+		//	);
 
-		Rational[,] r = Matrix.Add(Matrix.ToRationalMatrix(m1.GetValue()), Matrix.ToRationalMatrix(m2.GetValue()));
+		Console.WriteLine(Matrix.ToString(m.GetValue()));
 
-		Console.WriteLine(new Matrix(r));
+		Rational[,] lu = Matrix.GaussianElimination(Matrix.ToRationalMatrix(m.GetValue())).EliminatedMatrix;
+		(Rational[,] l, Rational[,] u) = Matrix.LUDecomposition(Matrix.ToRationalMatrix(m.GetValue()));
 
-		Console.WriteLine(m1 + m2);
+		Console.WriteLine($"{Matrix.ToString(lu)} = {Matrix.ToString(l)} * {Matrix.ToString(u)} = {Matrix.ToString(Matrix.Product(l, u))}");
+
+		Console.WriteLine(m.ToString());
+
+		Console.WriteLine(Matrix.Determinant(Matrix.ToRationalMatrix(m.GetValue())));
+
 	}
 }

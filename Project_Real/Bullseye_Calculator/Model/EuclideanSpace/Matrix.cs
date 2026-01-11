@@ -597,59 +597,66 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		return result;
 	}
 
+	/// <summary>
+	/// Runs the Gauss-Jordan elimination on the given matrix.
+	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
+	/// <param name="A">The given matrix.</param>
+	/// <returns>
+	/// The LU decomposed form of the matrix and the sign of the determinant.
+	/// The lower triangular matrix of the result contains the L matrix and the main diagonal and the upper triangular matrix contains the U matrix.
+	/// </returns>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
 	public static (Rational[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(Rational[,] A)
 	{
 		int n = A.GetLength(0);
-		Rational[,] B = Duplicate(A);
+		int m = A.GetLength(1);
+		Rational[,] LU = Duplicate(A);
 
-		// Swap rows of the augmented matrix B.
 		bool determinantSign = true;
-		for (int i = 0; i < n; ++i)
-		{
-			if (!B[i, i].IsZero)
-				continue;
-
-			int rowToSwap = i + 1;
-			while (rowToSwap < n && B[rowToSwap, i].IsZero)
-				++rowToSwap;
-
-			if (rowToSwap >= n)
-				throw new ArgumentException();
-
-			for (int j = 2 * n - 1; j >= 0; --j)
-				(B[rowToSwap, j], B[i, j]) = (B[i, j], B[rowToSwap, j]);
-
-			determinantSign = !determinantSign;
-		}
+		
 
 		// Subtract each row by a multiple of another row.
 		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < n; ++j)
+			for (int j = i + 1; j < n; ++j)
 			{
-				if (i != j)
+				// Swap rows of the augmented matrix.
+				if (LU[i, i].IsZero)
 				{
-					Rational temp = B[j, i] / B[i, i];
+					int rowToSwap = i + 1;
+					while (rowToSwap < n && LU[rowToSwap, i].IsZero)
+						++rowToSwap;
 
-					for (int k = 2 * n - 1; k >= 0; --k)
-						B[j, k] -= B[i, k] * temp;
+					if (rowToSwap >= n)
+						break;
+
+					for (int k = 0; k < m; ++k)
+						(LU[rowToSwap, k], LU[i, k]) = (LU[i, k], LU[rowToSwap, k]);
+
+					determinantSign = !determinantSign;
 				}
+
+				Rational temp = LU[j, i] / LU[i, i];
+
+				for (int k = i + 1; k < m; ++k)
+					LU[j, k] -= LU[i, k] * temp;
+
+				LU[j, i] = temp;
 			}
 		}
 
-		// Return the eliminated matrix B with the sign of the determinant.
-		return (B, determinantSign);
+		// Return the eliminated matrix with the sign of the determinant.
+		return (LU, determinantSign);
 	}
 
 	/// <summary>
-	/// Calculates the inverse of the given matrix using the Gauss-Jordan method.
+	/// Calculates the inverse of the given matrix using the Gauss-Jordan elimination.
 	/// </summary>
-	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination#Finding_the_inverse_of_a_matrix"/></remarks>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The inverse of the given matrix.</returns>
-	/// <exception cref="DivideByZeroException">
-	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
-	/// </exception>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
 	public static Rational[,] Inverse(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -684,13 +691,11 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <summary>
 	/// Runs the Gauss-Jordan elimination to find the determinant of the given square matrix.
 	/// </summary>
-	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants"/></remarks>
 	/// <param name="A">The matrix for which the determinant should be found.</param>
 	/// <returns>The determinant of the matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	/// <exception cref="DivideByZeroException">
-	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
-	/// </exception>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
 	public static Rational Determinant(Rational[,] A)
 	{
 		int n = A.GetLength(0);
@@ -701,48 +706,16 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		(Rational[,] B, bool determinantSign) = GaussianElimination(A);
 
 		Rational result = Digit.ONE;
-		for (int i = 0; i < A.GetLength(0); ++i)
-			result *= B[i, i + n];
+		for (int i = 0; i < n; ++i)
+			result *= B[i, i];
 
 		return determinantSign ? result : -result;
 	}
 
 	/// <summary>
-	/// Runs the QR algorithm to find the eigenvalues and eigenvectors 
-	/// of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_algorithm"/>).
+	/// Calculates the LU decomposition of the given matrix using the Gauss-Jordan method.
 	/// </summary>
-	/// <param name="A">The matrix for which eigenvalues and eigenvectors should be found.</param>
-	/// <param name="iterations">The number of iterations.</param>
-	/// <returns>
-	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. 
-	/// The eigenvectors stored as columns in the Eigenvectors matrix.
-	/// </returns>
-	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	public static (Rational[,] Eigenvalues, Rational[,] Eigenvectors) Diagonalize(Rational[,] A, int iterations)
-	{
-		int n = A.GetLength(0);
-
-		// Duplicate the original matrix A so it stays intact.
-		Rational[,] B = Duplicate(A);
-
-		// Initialize the eigenvector matrix C.
-		Rational[,] C = Identity(n, n);
-
-		// Perform the QR decomposition and update the B and C matrixes each iteration.
-		for (int i = 0; i < iterations; ++i)
-		{
-			(Rational[,] Q, Rational[,] R) = QRDecomposition(B);
-			B = Product(R, Q);
-			C = Product(C, Q);
-		}
-
-		return (B, C);
-	}
-
-	/// <summary>
-	/// Calculates the LU decomposition of the given matrix using the 
-	/// Gauss-Jordan Method (<see href="https://en.wikipedia.org/wiki/LU_decomposition"/>).
-	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/LU_decomposition"/></remarks>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The two parts of the decomposition: L and U.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
@@ -756,49 +729,22 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		// Initialize the augmented matrix B.
-		Rational[,] L = Identity(n, n);
 		// In the augmented matrix B, the first n columns are the original 
 		// matrix A, and the last n columns are the identity matrix.
-		Rational[,] B = HorizontalConcat(A, L);
+		Rational[,] B = GaussianElimination(A).EliminatedMatrix;
 
-		// Swap rows of the augmented matrix B.
+		Rational[,] L = Identity(n, n);
 		for (int i = 0; i < n; ++i)
 		{
-			if (!B[i, i].IsZero)
-				continue;
-
-			int rowToSwap = i + 1;
-			while (rowToSwap < n && B[rowToSwap, i].IsZero)
-				++rowToSwap;
-
-			if (rowToSwap >= n)
-				throw new ArgumentException();
-
-			for (int j = 2 * n - 1; j >= 0; --j)
-				(B[rowToSwap, j], B[i, j]) = (B[i, j], B[rowToSwap, j]);
+			for (int j = i + 1; j < n; ++j)
+				L[j, i] = B[j, i];
 		}
 
-		// Subtract each row by a multiple of another row.
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-			{
-				if (i != j)
-				{
-					L[j, i] = B[j, i] / B[i, i];
-
-					for (int k = 2 * n - 1; k >= 0; --k)
-						B[j, k] -= B[i, k] * L[j, i];
-				}
-			}
-		}
-
-		Rational[,] U = new Rational[n, n];
+		Rational[,] U = Zeros(n, n);
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = i; j < n; ++j)
-				U[i, j] = B[i, j + n];
+				U[i, j] = B[i, j];
 		}
 
 		return (L, U);
@@ -810,7 +756,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The matrix to decompose.</param>
 	/// <returns>The two parts of the decomposition: Q and R.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	private static (Rational[,] Q, Rational[,] R) QRDecomposition(Rational[,] A)
+	public static (Rational[,] Q, Rational[,] R) QRDecomposition(Rational[,] A)
 	{
 		int n = A.GetLength(0);
 
@@ -846,6 +792,36 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		}
 
 		return (U, Product(Transpose(U), A));
+	}
+
+	/// <summary>
+	/// Runs the QR algorithm to find the eigenvalues and eigenvectors of the given matrix.
+	/// </summary>
+	/// <param name="A">The matrix for which eigenvalues and eigenvectors should be found.</param>
+	/// <param name="iterations">The number of iterations.</param>
+	/// <returns>
+	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. The eigenvectors stored as columns in the Eigenvectors matrix.
+	/// </returns>
+	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
+	public static (Rational[,] Eigenvalues, Rational[,] Eigenvectors) Diagonalize(Rational[,] A, int iterations)
+	{
+		int n = A.GetLength(0);
+
+		// Duplicate the original matrix A so it stays intact.
+		Rational[,] B = Duplicate(A);
+
+		// Initialize the eigenvector matrix C.
+		Rational[,] C = Identity(n, n);
+
+		// Perform the QR decomposition and update the B and C matrixes each iteration.
+		for (int i = 0; i < iterations; ++i)
+		{
+			(Rational[,] Q, Rational[,] R) = QRDecomposition(B);
+			B = Product(R, Q);
+			C = Product(C, Q);
+		}
+
+		return (B, C);
 	}
 
 	/// <summary>
