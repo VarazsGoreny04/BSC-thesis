@@ -213,7 +213,7 @@ public class Natural
 	#region Public methods
 
 	/// <summary>
-	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Natural"/> number as a <see langword="string"/>.</returns>
 	public override string ToString()

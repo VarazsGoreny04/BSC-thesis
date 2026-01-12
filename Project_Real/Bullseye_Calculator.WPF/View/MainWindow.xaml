@@ -224,7 +224,7 @@
 				<Button Grid.Row="1" Grid.Column="2" Content="e" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="e" />
 
 				<Button Grid.Row="0" Grid.Column="3" Content="C" Style="{StaticResource DarkButton}" Command="{Binding ClearCommand}" />
-				<Button Grid.Row="1" Grid.Column="3" Content="⇦" Style="{StaticResource DarkButton}" Command="{Binding BackSpaceCommand}" />
+				<Button Grid.Row="1" Grid.Column="3" Content="⌫" Style="{StaticResource DarkButton}" Command="{Binding BackSpaceCommand}" />
 			</Grid>
 		</Grid>
 	</Grid>

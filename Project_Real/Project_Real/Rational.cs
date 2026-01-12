@@ -251,7 +251,7 @@ public class Rational
 	#region Public methods
 
 	/// <summary>
-	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Rational"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => fractionalFormat ? ToFractionString(this) : ToWritableString(this);
@@ -305,10 +305,10 @@ public class Rational
 	public static Integer Round(Rational value) => Writable.Round(GetValue(value).Value);
 
 	/// <summary>
-	/// Gets the absolut value of the given <see cref="Rational"/>.
+	/// Gets the absolute value of the given <see cref="Rational"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/>.</param>
-	/// <returns>The absolut value of the given <see cref="Rational"/>.</returns>
+	/// <returns>The absolute value of the given <see cref="Rational"/>.</returns>
 	public static Rational Abs(Rational value) => new(true, value.Numerator, value.denominator);
 
 	/// <summary>
@@ -887,22 +887,6 @@ public class Rational
 
 		return new Rational(r.T, r.Q);
 	}
-
-	/*
-		/// <summary>
-		/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
-		/// </summary>
-		/// <remarks>
-		/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
-		/// </remarks>
-		/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
-		/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-		/// <returns>The the exponential function for the given exponent.</returns>
-		public static Rational Fact(Rational x, int? fractionCalculationLength = null)
-		{
-
-		}
-	*/
 
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.

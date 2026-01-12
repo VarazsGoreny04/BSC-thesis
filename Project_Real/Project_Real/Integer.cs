@@ -135,7 +135,7 @@ public class Integer
 	#region Public methods
 
 	/// <summary>
-	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();

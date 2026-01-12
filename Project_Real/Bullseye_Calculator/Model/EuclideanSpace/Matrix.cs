@@ -609,15 +609,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
 	public static (Rational[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(Rational[,] A)
 	{
-		int n = A.GetLength(0);
-		int m = A.GetLength(1);
-		Rational[,] LU = Duplicate(A);
-
-		bool determinantSign = true;
-		
-
-		// Subtract each row by a multiple of another row.
-		for (int i = 0; i < n; ++i)
+		static void EliminateColumn(ref Rational[,] LU, int n, int m, int i, ref bool determinantSign)
 		{
 			for (int j = i + 1; j < n; ++j)
 			{
@@ -629,7 +621,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 						++rowToSwap;
 
 					if (rowToSwap >= n)
-						break;
+						return;
 
 					for (int k = 0; k < m; ++k)
 						(LU[rowToSwap, k], LU[i, k]) = (LU[i, k], LU[rowToSwap, k]);
@@ -645,6 +637,16 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 				LU[j, i] = temp;
 			}
 		}
+
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
+		Rational[,] LU = Duplicate(A);
+
+		bool determinantSign = true;
+
+		// Subtract each row by a multiple of another row.
+		for (int i = 0; i < n; ++i)
+			EliminateColumn(ref LU, n, m, i, ref determinantSign);
 
 		// Return the eliminated matrix with the sign of the determinant.
 		return (LU, determinantSign);
