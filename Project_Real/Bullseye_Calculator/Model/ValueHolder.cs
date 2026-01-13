@@ -1,5 +1,4 @@
 ﻿using Project_Real;
-using System;
 using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model;
@@ -7,8 +6,11 @@ namespace Bullseye_Calculator.Model;
 /// <summary>
 /// Represents a value holding node in an expression.
 /// </summary>
+/// <typeparam name="T">The type to hold.</typeparam>
 public abstract partial class ValueHolder<T> : Expression
 {
+	#region Protected methods
+
 	/// <summary>
 	/// Parenthesizes the given <see cref="Rational"/> value if it is signed.
 	/// </summary>
@@ -16,8 +18,12 @@ public abstract partial class ValueHolder<T> : Expression
 	/// <returns>The result as a <see cref="string"/>.</returns>
 	protected static string ParenthesizeIfSigned(Rational value) => Rational.WriteSign || !value.Sign ? $"({value})" : value.ToString();
 
+	#endregion
+
+	#region Public methods
+
 	/// <summary>
-	/// Evaluates <see langword="this"/> instance and returns the partial and the final result in a  
+	/// Evaluates <see langword="this"/> instance and returns the partial results in a list. The final result is in the last node of the list.
 	/// </summary>
 	/// <param name="partialValues">The result.</param>
 	/// <param name="root">The root node of the expression.</param>
@@ -29,4 +35,6 @@ public abstract partial class ValueHolder<T> : Expression
 	/// </summary>
 	/// <returns>The calculated value.</returns>
 	public abstract T GetValue();
+
+	#endregion
 }

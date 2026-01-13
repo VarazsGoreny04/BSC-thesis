@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
+﻿namespace Bullseye_Calculator.Model.Derivatives;
 
-namespace Bullseye_Calculator.Model.Derivatives;
-
-public class Derivative : Expression
+public class Derivative : Function<Variable>
 {
-	public override string ToStringByStep(ref int step)
+	public ValueHolder<Variable> Parameter
 	{
-		throw new System.NotImplementedException();
+		get => parameters[0];
+		set => parameters[0] = value;
 	}
 
-	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
-	{
-		throw new System.NotImplementedException();
-	}
+	public Derivative() : base(1) { }
 
-	internal override void ToTree(ref Stack<Expression> result)
-	{
-		throw new System.NotImplementedException();
-	}
+	public Derivative(ValueHolder<Variable> parameter) : base(1) => Parameter = parameter;
+
+	public override Variable GetValue() => null!;
+
+	public override string Sign() => "D";
 }

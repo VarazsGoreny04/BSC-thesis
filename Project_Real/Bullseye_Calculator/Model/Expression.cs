@@ -7,6 +7,8 @@ namespace Bullseye_Calculator.Model;
 /// </summary>
 public abstract class Expression
 {
+	#region Internal methods
+
 	/// <summary>
 	/// Turns the given <see cref="Expression"/> stack into a list containing the postfix form of the expressions.
 	/// </summary>
@@ -19,6 +21,10 @@ public abstract class Expression
 	/// </summary>
 	/// <param name="result">The given <see cref="Expression"/> stack.</param>
 	internal abstract void ToTree(ref Stack<Expression> result);
+
+	#endregion
+
+	#region Public methods
 
 	/// <summary>
 	/// Solves <see langword="this"/> instance until the given <paramref name="step"/> count and 
@@ -38,4 +44,6 @@ public abstract class Expression
 		int step = 1;
 		return ToStringByStep(ref step);
 	}
+
+	#endregion
 }
