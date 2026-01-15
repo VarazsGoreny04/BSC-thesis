@@ -12,7 +12,7 @@ public abstract class Operator<T> : FunctionBase<T>
 	#region Constructors
 
 	/// <summary>
-	/// Constructs an <see cref="Operator{T}"/> object with a given number of parameters.
+	/// Constructs an <see cref="Operator{T}"/> with a given number of parameters.
 	/// </summary>
 	/// <param name="parameters">The number of parameters used by the operator.</param>
 	protected Operator(int parameters) : base(parameters) { }

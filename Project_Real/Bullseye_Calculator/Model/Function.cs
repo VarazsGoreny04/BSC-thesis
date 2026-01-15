@@ -13,7 +13,7 @@ public abstract class Function<T> : FunctionBase<T>
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="FunctionBase{T}"/> object with a given number of parameters.
+	/// Constructs a <see cref="Function{T}"/> with a given number of parameters.
 	/// </summary>
 	/// <param name="parameters">The number of parameters used by the function.</param>
 	protected Function(int parameters) : base(parameters) { }
