@@ -9,11 +9,13 @@ namespace Bullseye_Calculator.Model.Polynomials;
 /// </summary>
 public static class Polynomial
 {
+	#region Public methods
+
 	/// <summary>
 	/// Calculates the value of a <paramref name="polynomial"/> at the given <paramref name="basePoint"/>.
 	/// </summary>
 	/// <param name="polynomial">The polynomial.</param>
-	/// <param name="basePoint">The point of the calculation.</param>
+	/// <param name="basePoint">The base point of the calculation.</param>
 	/// <returns>The value of a <paramref name="polynomial"/> at the given <paramref name="basePoint"/>.</returns>
 	public static Point2D Evaluate(Rational[] polynomial, Rational basePoint)
 	{
@@ -43,7 +45,7 @@ public static class Polynomial
 	/// Calculates the values of a <paramref name="polynomial"/> at the given <paramref name="basePoints"/>.
 	/// </summary>
 	/// <param name="polynomial">The polynomial.</param>
-	/// <param name="basePoints">The point of the calculation.</param>
+	/// <param name="basePoints">The base points of the calculation.</param>
 	/// <returns>The values of a <paramref name="polynomial"/> at the given <paramref name="basePoints"/>.</returns>
 	public static Point2D[] EvaluateRange(Rational[] polynomial, Rational[] basePoints)
 	{
@@ -56,7 +58,7 @@ public static class Polynomial
 	}
 
 	/// <summary>
-	/// Returns a string that represents the given <paramref name="polynomial"/>.
+	/// Returns a <see cref="string"/> that represents the given <paramref name="polynomial"/>.
 	/// </summary>
 	/// <returns>The <paramref name="polynomial"/> as a <see langword="string"/>.</returns>
 	public static string ToString(Rational[] polynomial)
@@ -74,4 +76,6 @@ public static class Polynomial
 
 		return string.Join('+', parts);
 	}
+
+	#endregion
 }

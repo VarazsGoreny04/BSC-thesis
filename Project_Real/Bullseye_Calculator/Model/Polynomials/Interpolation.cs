@@ -9,6 +9,8 @@ namespace Bullseye_Calculator.Model.Polynomials;
 /// </summary>
 public static class Interpolation
 {
+	#region Public methods
+
 	/// <summary>
 	/// Calculates the Lagrange-polynomial that crosses each point in the <paramref name="points"/> array.
 	/// </summary>
@@ -38,7 +40,7 @@ public static class Interpolation
 		for (int i = 0; i < points.Length; ++i)
 		{
 			Rational multiplier = points[i].Y;
-			Rational[] polynom = ["1"];
+			Rational[] polynomial = ["1"];
 
 			for (int j = 0; j < points.Length; ++j)
 			{
@@ -47,19 +49,21 @@ public static class Interpolation
 
 				multiplier /= points[i].X - points[j].X;
 
-				Rational[,] temp = Matrix.OuterProduct(polynom, [-points[j].X, "1"]);
-				polynom = Matrix.Zeros(temp.GetLength(0) + 1);
+				Rational[,] temp = Matrix.OuterProduct(polynomial, [-points[j].X, "1"]);
+				polynomial = Matrix.Zeros(temp.GetLength(0) + 1);
 
 				for (int k = temp.GetLength(0) - 1; k >= 0; --k)
 				{
 					for (int l = temp.GetLength(1) - 1; l >= 0; --l)
-						polynom[k + l] += temp[k, l];
+						polynomial[k + l] += temp[k, l];
 				}
 			}
 
-			result = Matrix.Add(result, Matrix.Scale(polynom, multiplier));
+			result = Matrix.Add(result, Matrix.Scale(polynomial, multiplier));
 		}
 
 		return result;
 	}
+
+	#endregion
 }

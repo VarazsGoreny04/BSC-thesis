@@ -30,14 +30,13 @@ public abstract class Expression
 	/// Solves <see langword="this"/> instance until the given <paramref name="step"/> count and 
 	/// gives back a <see cref="string"/> representing the partially solved expression.
 	/// </summary>
-	/// <param name="step"></param>
+	/// <param name="step">The number of finished calculations in the expression.</param>
 	/// <returns>The result of the calculation converted into a <see cref="string"/>.</returns>
 	public abstract string ToStringByStep(ref int step);
 
 	/// <summary>
 	/// Solves <see langword="this"/> instance and gives back a <see cref="string"/> representing the solved expression.
 	/// </summary>
-	/// <param name="step"></param>
 	/// <returns>The result of the calculation converted into a <see cref="string"/>.</returns>
 	public override string ToString()
 	{

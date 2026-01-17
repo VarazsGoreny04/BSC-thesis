@@ -118,7 +118,7 @@ public sealed class Add : BinaryOperator
 }
 
 /// <summary>
-/// 
+/// Represents the subtract operator in an expression.
 /// </summary>
 public sealed class Subtract : BinaryOperator
 {
@@ -151,7 +151,7 @@ public sealed class Subtract : BinaryOperator
 }
 
 /// <summary>
-/// 
+/// Represents the multiply operator in an expression.
 /// </summary>
 public sealed class Multiply : BinaryOperator
 {
@@ -187,7 +187,7 @@ public sealed class Multiply : BinaryOperator
 }
 
 /// <summary>
-/// 
+/// Represents the divide operator in an expression.
 /// </summary>
 public sealed class Divide : BinaryOperator
 {
@@ -223,7 +223,7 @@ public sealed class Divide : BinaryOperator
 }
 
 /// <summary>
-/// 
+/// Represents the power operator in an expression.
 /// </summary>
 public sealed class Power : BinaryOperator
 {
@@ -258,7 +258,7 @@ public sealed class Power : BinaryOperator
 }
 
 /// <summary>
-/// 
+/// Represents the root operator in an expression.
 /// </summary>
 public sealed class Root : BinaryOperator
 {

@@ -20,6 +20,7 @@ public sealed class Coma<T> : Expression
 	#region Internal methods
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
+
 	internal override void ToTree(ref Stack<Expression> result)
 	{
 		(new ClosingParenthesis<T>()).ToTree(ref result);
