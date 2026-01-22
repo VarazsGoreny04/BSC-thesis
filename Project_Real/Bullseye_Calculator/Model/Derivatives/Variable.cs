@@ -5,12 +5,21 @@ namespace Bullseye_Calculator.Model.Derivatives;
 public abstract class Variable : Term<Rational>
 {
 	protected readonly char sign;
-	protected readonly Term<Rational> coefficient;
-	protected readonly Term<Rational> power;
+	protected Term<Rational> coefficient;
+	protected Term<Rational> power;
 
 	public char Sign => sign;
-	public Term<Rational> Coefficient => coefficient;
-	public Term<Rational> Power => power;
+	public Term<Rational> Coefficient
+	{
+		get => coefficient;
+		set => coefficient = value;
+	}
+
+	public Term<Rational> Power
+	{
+		get => power;
+		set => power = value;
+	}
 
 	public Variable(char sign, Term<Rational> coefficient, Term<Rational> power)
 	{

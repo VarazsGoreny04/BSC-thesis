@@ -47,7 +47,6 @@ public class Derivative : Function<Variable>
 			new X(new Number(left.Coefficient.GetValue() * right.Coefficient.GetValue()), new Number(left.Power.GetValue() + right.Power.GetValue())) :
 			v;
 	}
-
 	public static ValueHolder<Rational> Simplify(Divide v)
 	{
 		v.Left = Simplify(v.Left);
@@ -57,14 +56,36 @@ public class Derivative : Function<Variable>
 			new X(new Number(left.Coefficient.GetValue() / right.Coefficient.GetValue()), new Number(left.Power.GetValue() - right.GetValue())) :
 			v;
 	}
-
-	/*public static ValueHolder<Rational> Simplify(Power v)
+	public static ValueHolder<Rational> Simplify(Power v)
 	{
 		v.Left = Simplify(v.Left);
 		v.Right = Simplify(v.Right);
 
-		return (v.Left is X left && v.Right is X right) ?
-			new X(new Number(left.Coefficient.GetValue() / right.Coefficient.GetValue()), new Number(left.Power.GetValue() - right.GetValue())) :
-			v;
-	}*/
+		if (v.Left is X left && v.Right is X right)
+		{
+			left.Power = new Number(left.Power.GetValue() * right.Coefficient.GetValue());
+			right.Coefficient = new Number(Digit.ONE);
+
+			if (right.Power.GetValue().IsZero)
+				return left;
+		}
+
+		return v;
+	}
+	public static ValueHolder<Rational> Simplify(Root v)
+	{
+		v.Left = Simplify(v.Left);
+		v.Right = Simplify(v.Right);
+
+		if (v.Left is X left && v.Right is X right)
+		{
+			left.Power = new Number(left.Power.GetValue() / right.Coefficient.GetValue());
+			right.Coefficient = new Number(Digit.ONE);
+
+			if (right.Power.GetValue().IsZero)
+				return left;
+		}
+
+		return v;
+	}
 }
