@@ -11,14 +11,20 @@ public sealed class Parenthesized<T> : ValueHolder<T>
 {
 	#region Fields
 
-	private readonly ValueHolder<T> value;
+	private ValueHolder<T> value;
 
 	#endregion
 
 	#region Properties
 
-	/// <returns>The value inside the parenthesized area.</returns>
-	public ValueHolder<T> Content => value;
+	/// <summary>
+	/// Gets or sets the value inside the parenthesized area.
+	/// </summary>
+	public ValueHolder<T> Content
+	{
+		get => value;
+		set => this.value = value;
+	}
 
 	#endregion
 
