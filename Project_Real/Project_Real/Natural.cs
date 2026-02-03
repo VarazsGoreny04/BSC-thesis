@@ -423,8 +423,9 @@ public class Natural
 	public static Natural SecondPower(Natural value) => value * value;
 
 	/// <summary>
-	/// Raises the given base to the given power.
+	/// Raises the given base to the given power using a squaring algorithm.
 	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Exponentiation#Efficient_computation_with_integer_exponents"/></remarks>
 	/// <param name="left">The <see cref="Natural"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Natural"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>

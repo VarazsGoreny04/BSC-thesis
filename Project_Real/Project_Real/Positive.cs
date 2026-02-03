@@ -324,8 +324,9 @@ public class Positive
 	}
 
 	/// <summary>
-	/// Raises the given radicand to the second degree.
+	/// Raises the given radicand to the second degree using the Viète technique.
 	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Nth_root#Using_the_Vi%C3%A8te_technique"/></remarks>
 	/// <param name="value">The <see cref="Positive"/> that represents the radicand.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
@@ -351,8 +352,9 @@ public class Positive
 	}
 
 	/// <summary>
-	/// Raises the given radicand to the given degree.
+	/// Raises the given radicand to the given degree using the Viète technique.
 	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Nth_root#Using_the_Vi%C3%A8te_technique"/></remarks>
 	/// <param name="left">The <see cref="Positive"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
