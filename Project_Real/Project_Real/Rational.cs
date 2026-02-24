@@ -505,53 +505,46 @@ public class Rational
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
-			Natural Pab, Qab;
-			Integer Tab;
+			Natural P, Q;
+			Integer T;
 
 			if (b == a + Digit.ONE)
 			{
-				// Directly compute P(a,a+1), Q(a,a+1) and T(a,a+1)
 				if (a.IsZero)
 				{
-					Pab = Digit.ONE;
-					Qab = Digit.ONE;
+					P = Digit.ONE;
+					Q = Digit.ONE;
 				}
 				else
 				{
-					Pab = (Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE);
-					Qab = a * a * a * "10939058860032000";
+					P = (Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE);
+					Q = a * a * a * "10939058860032000";
 				}
 
-				Tab = Pab * ("13591409" + "545140134" * a); // a(a) * p(a)
+				T = P * ("13591409" + "545140134" * a);
 
 				if (a[0] % Digit.TWO == Digit.ONE)
-					Tab = -Tab;
+					T = -T;
 			}
 			else
 			{
-				// Recursively compute P(a,b), Q(a,b) and T(a,b)
-				// m is the midpoint of a and b
 				Natural m = (a + b) / Digit.TWO;
 
-				// Recursively calculate P(a,m), Q(a,m) T(a,m) and P(m,b), Q(m,b), T(m,b)
-				(Natural Pam, Natural Qam, Integer Tam) = BinarySplitting(a, m);
-				(Natural Pmb, Natural Qmb, Integer Tmb) = BinarySplitting(m, b);
+				(Natural Pl, Natural Ql, Integer Tl) = BinarySplitting(a, m);
+				(Natural Pr, Natural Qr, Integer Tr) = BinarySplitting(m, b);
 
-				// Now combine
-				Pab = Pam * Pmb;
-				Qab = Qam * Qmb;
-				Tab = Qmb * Tam + Pam * Tmb;
+				P = Pl * Pr;
+				Q = Ql * Qr;
+				T = Qr * Tl + Pl * Tr;
 			}
-			return (Pab, Qab, Tab);
+			return (P, Q, T);
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
 
-		// how many terms to compute
 		Natural DIGITS_PER_TERM = "13";
-		Natural n = (new Natural((uint)fCL)) / DIGITS_PER_TERM + Digit.ONE;
+		Natural n = (new Natural((uint)fCL) / DIGITS_PER_TERM) + Digit.ONE;
 
-		// Calculate P(0,N) and Q(0,N)
 		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, n);
 
 		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
@@ -565,31 +558,31 @@ public class Rational
 	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
-		static Natural P(Natural a, Natural b)
+		static Natural P(long n1, long n2)
 		{
-			if (b == a + Digit.ONE)
+			if (n2 == n1 + 1)
 				return Digit.ONE;
 			else
 			{
-				Natural m = (a + b) / Digit.TWO;
-				return P(a, m) * Q(m, b) + P(m, b);
+				int nm = (int)((n1 + n2) / 2);
+				return P(n1, nm) * Q(nm, n2) + P(nm, n2);
 			}
 		}
 
-		static Natural Q(Natural a, Natural b)
+		static Natural Q(long n1, long n2)
 		{
-			if (b == a + Digit.ONE)
-				return b;
+			if (n2 == n1 + 1)
+				return new Natural(n2.ToString());
 			else
 			{
-				Natural m = (a + b) / Digit.TWO;
-				return Q(a, m) * Q(m, b);
+				int nm = (int)((n1 + n2) / 2);
+				return Q(n1, nm) * Q(nm, n2);
 			}
 		}
 
-		Natural n = new((uint)Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0));
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
 
-		return Digit.ONE + new Rational(true, P(Digit.ZERO, n), Q(Digit.ZERO, n));
+		return Digit.ONE + new Rational(true, P(0, n), Q(0, n));
 	}
 
 	/// <summary>
