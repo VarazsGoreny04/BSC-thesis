@@ -1,6 +1,7 @@
 ﻿using Project_Real;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bullseye_Calculator.Model.Standard;
 
@@ -244,6 +245,18 @@ public sealed class Power : BinaryOperator
 	#endregion
 
 	#region Internal methods
+
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
+	{
+		if (functions.FirstOrDefault() is FunctionBase<Rational> fB && fB.Order() > Order())    // > instead of >= for right associativity
+		{
+			functions.Pop();
+
+			result.Add(fB);
+		}
+
+		functions.Push(this);
+	}
 
 	internal override Priority Order() => Priority.BinaryOperatorThirdClass;
 

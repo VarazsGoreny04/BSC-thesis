@@ -19,7 +19,7 @@ public partial class StandardCalculator : Calculator
 	public StandardCalculator() : base(
 	[
 		// Rational number
-		new(new(new($"^\\p{{Nd}}+[{Rational.Separator}]?\\p{{Nd}}*$")), value => new Number(value)),
+		new(new(new($"^\\p{{Nd}}+\\{Rational.Separator}?\\p{{Nd}}*$")), value => new Number(value)),
 		// Function name
 		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
 		// Operators
