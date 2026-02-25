@@ -3,8 +3,13 @@ using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model.Standard;
 
+/// <summary>
+/// A calculator that understands the basic numbers, operations and trigonometric functions.
+/// </summary>
 public partial class StandardCalculator : Calculator
 {
+	#region Fields
+
 	protected static readonly FunctionToken[] functionTokens =
 	[
 		new("ceiling", () => new Ceiling()),
@@ -22,6 +27,13 @@ public partial class StandardCalculator : Calculator
 		new("e", () => new E()),
 	];
 
+	#endregion
+
+	#region Constructors
+
+	/// <summary>
+	/// Constructs a calculator that understands the basic numbers, operations and trigonometric functions.
+	/// </summary>
 	public StandardCalculator() : base(
 	[
 		// Rational number
@@ -42,5 +54,11 @@ public partial class StandardCalculator : Calculator
 	])
 	{ }
 
+	#endregion
+
+	#region Public methods
+
 	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Rational>(input, this));
+
+	#endregion
 }

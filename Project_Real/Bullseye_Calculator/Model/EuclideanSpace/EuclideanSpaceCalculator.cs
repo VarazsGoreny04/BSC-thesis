@@ -3,10 +3,19 @@ using System.Text.RegularExpressions;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
+/// <summary>
+/// A calculator that understands matrices and can perform operations with them.
+/// </summary>
 public partial class EuclideanSpaceCalculator : Calculator
 {
+	#region GeneratedRegex
+
 	[GeneratedRegex(@"^\[.*\]$")]
 	protected static partial Regex BracketedRegex();
+
+	#endregion
+
+	#region Fields
 
 	protected static readonly FunctionToken[] functionTokens =
 	[
@@ -14,6 +23,13 @@ public partial class EuclideanSpaceCalculator : Calculator
 		new("inv", () => new Inverse()),
 	];
 
+	#endregion
+
+	#region Constructors
+
+	/// <summary>
+	/// Constructs a calculator that understands matrices and can perform operations with them.
+	/// </summary>
 	public EuclideanSpaceCalculator() : base(
 	[
 		// Matrix
@@ -31,5 +47,11 @@ public partial class EuclideanSpaceCalculator : Calculator
 	])
 	{ }
 
+	#endregion
+
+	#region Public methods
+
 	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Matrix>(input, this));
+
+	#endregion
 }

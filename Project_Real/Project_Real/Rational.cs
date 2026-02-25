@@ -750,12 +750,12 @@ public class Rational
 	}
 
 	/// <summary>
-	/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the sine function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
 	/// </remarks>
-	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="x">The given <paramref name="x"/>.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Sin(Rational x, int? fractionCalculationLength = null)
@@ -816,12 +816,12 @@ public class Rational
 	}
 
 	/// <summary>
-	/// Calculates the sinus function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the cosine function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
 	/// </remarks>
-	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="x">The given <paramref name="x"/>.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Cos(Rational x, int? fractionCalculationLength = null)
