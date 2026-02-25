@@ -4,9 +4,9 @@ using System;
 
 namespace Bullseye_Calculator.Model.Derivatives;
 
-public class Derivative : Function<Variable>
+public class Derivative : Function<ValueHolder<Rational>>
 {
-	public ValueHolder<Variable> Parameter
+	public ValueHolder<ValueHolder<Rational>> Parameter
 	{
 		get => parameters[0];
 		set => parameters[0] = value;
@@ -14,9 +14,9 @@ public class Derivative : Function<Variable>
 
 	public Derivative() : base(1) { }
 
-	public Derivative(ValueHolder<Variable> parameter) : base(1) => Parameter = parameter;
+	public Derivative(ValueHolder<ValueHolder<Rational>> parameter) : base(1) => Parameter = parameter;
 
-	public override Variable GetValue() => null!;
+	public override ValueHolder<Rational> GetValue() => null!;
 
 	public override string Sign() => "D";
 
@@ -79,11 +79,11 @@ public class Derivative : Function<Variable>
 
 		if (v.Left is X left && v.Right is X right)
 		{
-			left.Power = new Number(left.Power.GetValue() / right.Coefficient.GetValue());
-			right.Coefficient = new Number(Digit.ONE);
+			right.Power = new Number(right.Power.GetValue() / left.Coefficient.GetValue());
+			left.Coefficient = new Number(Digit.ONE);
 
-			if (right.Power.GetValue().IsZero)
-				return left;
+			if (left.Power.GetValue().IsZero)
+				return right;
 		}
 
 		return v;

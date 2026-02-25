@@ -1,4 +1,5 @@
 ﻿using Bullseye_Calculator.Model;
+using Bullseye_Calculator.Model.Derivatives;
 using Bullseye_Calculator.Model.EuclideanSpace;
 using Bullseye_Calculator.Model.Standard;
 using Project_Real;
@@ -113,7 +114,7 @@ public class Program
 			"0;5;-2&" +
 			"0;0;2"
 			);
-		Matrix m = Matrix.Product(Matrix.ToRationalMatrix(l0.GetValue()), Matrix.ToRationalMatrix(u0.GetValue()));
+		/*Matrix m = Matrix.Product(Matrix.ToRationalMatrix(l0.GetValue()), Matrix.ToRationalMatrix(u0.GetValue()));
 		//Matrix m = new Matrix(
 		//	"1;2;3&" +
 		//	"3;6;9&" +
@@ -129,7 +130,11 @@ public class Program
 
 		Console.WriteLine(m.ToString());
 
-		Console.WriteLine(Matrix.Determinant(Matrix.ToRationalMatrix(m.GetValue())));
+		Console.WriteLine(Matrix.Determinant(Matrix.ToRationalMatrix(m.GetValue())));*/
 
+		/*ValueHolder<Rational> v = new Derivative(new Model.Standard.Add(new Multiply(new Number("5"), new X()), new Number("3")));
+		Calculator calc = new DerivativeCalculator();*/
+
+		
 	}
 }

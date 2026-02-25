@@ -11,7 +11,13 @@ public partial class StandardCalculator : Calculator
 		new("round", () => new Round()),
 		new("floor", () => new Floor()),
 		new("fact", () => new Fact()),
+		new("exp", () => new Exp()),
+		new("cos", () => new Cos()),
+		new("sin", () => new Sin()),
+		new("max", () => new Max()),
+		new("min", () => new Min()),
 		new("abs", () => new Abs()),
+		new("ln", () => new Ln()),
 		new("pi", () => new PI()),
 		new("e", () => new E()),
 	];

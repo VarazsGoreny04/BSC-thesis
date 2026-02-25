@@ -37,5 +37,7 @@ public sealed class X : Variable
 
 	public X(Term<Rational>? coefficient, Term<Rational>? power) : base('x', coefficient ?? new Standard.Number(Digit.ONE), power ?? new Standard.Number(Digit.ZERO)) { }
 
+	public X() : this(null, null) { }
+
 	public override Rational GetValue() => coefficient.GetValue() * (value ^ power.GetValue());
 }

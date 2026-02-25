@@ -67,24 +67,26 @@ public abstract partial class Calculator
 
 	#endregion
 
+	#region Fields
+
 	protected readonly RegexToken[] regexTokens;
+
+	#endregion
+
+	#region Constructors
 
 	protected Calculator(RegexToken[] regexTokens) => this.regexTokens = regexTokens;
 
-	public abstract List<(string Calculation, string State)> FullEvaluation(string input);
+	#endregion
 
-	public static ValueHolder<T> Evaluate<T>(string input, Calculator calculator)
-	{
-		input = RemoveWhitespaces(input);
-
-		ValueHolder<T> result = TreeForm<T>(PostfixForm(Parse(input, calculator)));
-
-		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
-	}
+	#region Protected methods
 
 	protected static string RemoveWhitespaces(string input) => WhitespaceRegex().Replace(input, "");
 
-	protected static Expression GetFunctionByName(FunctionToken[] functionTokens, string name) => functionTokens.First(f => f.Name == name).Function.Invoke();
+	protected static Expression GetFunctionByName(FunctionToken[] functionTokens, string name)
+	{
+		return functionTokens.FirstOrDefault(f => f.Name == name)?.Function.Invoke() ?? throw new FormatException("Unrecognizable function name found.");
+	}
 
 	protected static List<Expression> Parse(string whitespacelessInput, Calculator calculator)
 	{
@@ -147,7 +149,7 @@ public abstract partial class Calculator
 		return result.FirstOrDefault() as ValueHolder<T> ?? throw new FormatException();
 	}
 
-	public static List<(string Calculation, string State)> FullEvaluation<T>(ValueHolder<T> root)
+	protected static List<(string Calculation, string State)> FullEvaluation<T>(ValueHolder<T> root)
 	{
 		List<(string, string)> result = [];
 		int step = 1;
@@ -156,4 +158,25 @@ public abstract partial class Calculator
 
 		return result;
 	}
+
+	#endregion
+
+	#region Internal methods
+
+	internal static ValueHolder<T> Evaluate<T>(string input, Calculator calculator)
+	{
+		input = RemoveWhitespaces(input);
+
+		ValueHolder<T> result = TreeForm<T>(PostfixForm(Parse(input, calculator)));
+
+		return result.ToString() == input ? result : throw new FormatException("Could not understand input.");
+	}
+
+	#endregion
+
+	#region Public methods
+
+	public abstract List<(string Calculation, string State)> FullEvaluation(string input);
+
+	#endregion
 }
