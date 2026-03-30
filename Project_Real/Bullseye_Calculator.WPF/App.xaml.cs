@@ -1,5 +1,4 @@
-﻿using Bullseye_Calculator.Model.Standard;
-using Bullseye_Calculator.WPF.View;
+﻿using Bullseye_Calculator.WPF.View;
 using Bullseye_Calculator.WPF.ViewModel;
 using System.Windows;
 

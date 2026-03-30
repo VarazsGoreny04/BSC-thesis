@@ -7,9 +7,9 @@ namespace Bullseye_Calculator.Model;
 /// Represents a function in an expression.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
-public abstract class FunctionBase<T> : ValueHolder<T>
+public abstract partial class FunctionBase<T> : ValueHolder<T>
 {
-	#region Fields methods
+	#region Fields
 
 	protected readonly ValueHolder<T>[] parameters;
 
@@ -25,10 +25,10 @@ public abstract class FunctionBase<T> : ValueHolder<T>
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="FunctionBase{T}"/> object with a given number of parameters.
+	/// Constructs a <see cref="FunctionBase{T}"/> object with a given parameters.
 	/// </summary>
-	/// <param name="parameters">The number of parameters used by the function.</param>
-	protected FunctionBase(int parameters) => this.parameters = new ValueHolder<T>[parameters];
+	/// <param name="parameters">The parameters of the function.</param>
+	protected FunctionBase(ValueHolder<T>[] parameters) => this.parameters = parameters;
 
 	#endregion
 

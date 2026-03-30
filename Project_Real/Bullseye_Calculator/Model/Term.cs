@@ -6,7 +6,7 @@ namespace Bullseye_Calculator.Model;
 /// Represents a term node in an expression.
 /// </summary>
 /// <typeparam name="T">The type of the term.</typeparam>
-public abstract class Term<T> : ValueHolder<T>
+public abstract partial class Term<T> : ValueHolder<T>
 {
 	#region Internal methods
 
@@ -17,7 +17,7 @@ public abstract class Term<T> : ValueHolder<T>
 	#endregion
 
 	#region Public methods
-
+	
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step) { }
 
 	#endregion

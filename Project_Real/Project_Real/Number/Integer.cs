@@ -1,12 +1,30 @@
-﻿using System;
+﻿using Project_Real.NumberSet;
+using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents an integer number.
 /// </summary>
-public class Integer
+public class Integer : 
+	IComparisonOperators<Integer, Integer, bool>, 
+	IEqualityOperators<Integer, Integer, bool>, 
+	IIncrementOperators<Integer>, 
+	IDecrementOperators<Integer>,
+	IUnaryPlusOperators<Integer, Integer>,
+	IUnaryNegationOperators<Integer, Integer>,
+	IAdditionOperators<Integer, Integer, Integer>, 
+	ISubtractionOperators<Integer, Integer, Integer>, 
+	IMultiplyOperators<Integer, Integer, Integer>, 
+	IDivisionOperators<Integer, Integer, Integer>, 
+	IModulusOperators<Integer, Integer, Integer>,
+	IPowerOperations<Integer, Integer, Integer>,
+	IRootOperations<Integer, Integer, Integer>,
+	IAdditiveIdentity<Integer, Integer>, 
+	IMultiplicativeIdentity<Integer, Integer>
 {
 	#region Fields
 
@@ -18,6 +36,10 @@ public class Integer
 	#endregion
 
 	#region Properties
+
+	public static Integer AdditiveIdentity => Digit.ZERO;
+
+	public static Integer MultiplicativeIdentity => Digit.ONE;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
@@ -140,6 +162,28 @@ public class Integer
 	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
 
+	public static Integer Parse(string s, IFormatProvider? _) => new(s);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Integer result)
+	{
+		if (s is null)
+		{
+			result = null;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, provider);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = null;
+			return false;
+		}
+	}
+
 	/// <summary>
 	/// Returns an integer that represents the given <paramref name="value"/>.
 	/// </summary>
@@ -149,10 +193,10 @@ public class Integer
 	public static int ToInt32(Integer value) => Convert.ToInt32(value.ToString());
 
 	/// <summary>
-	/// Gets the absolut value of the given <see cref="Integer"/>.
+	/// Gets the absolute value of the given <see cref="Integer"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Integer"/>.</param>
-	/// <returns>The absolut value of the given <see cref="Integer"/>.</returns>
+	/// <returns>The absolute value of the given <see cref="Integer"/>.</returns>
 	public static Natural Abs(Integer value) => value.value;
 
 	/// <summary>
@@ -175,7 +219,7 @@ public class Integer
 	/// <see langword="true"/> if the value of <paramref name="left"/> is greater than the value of <paramref name="right"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public static bool GreaterThan(Integer left, Integer right) => left.sign != right.sign ? left.sign : (left.sign ? left.value > right.value : left.value < right.value);
+	public static bool GreaterThan(Integer left, Integer right) => left.sign != right.sign ? left.sign : left.sign ? left.value > right.value : left.value < right.value;
 
 	/// <summary>
 	/// Adds two <see cref="Integer"/>s.
@@ -204,7 +248,7 @@ public class Integer
 	/// <param name="left">The <see cref="Integer"/> that represents the minuend.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the subtrahend.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Integer Subtract(Integer left, Integer right) => left + (-right);
+	public static Integer Subtract(Integer left, Integer right) => left + -right;
 
 	/// <summary>
 	/// Multiplies two <see cref="Integer"/>s.
@@ -276,7 +320,7 @@ public class Integer
 	/// </exception>
 	public static (Integer Whole, Integer Remainder) Root(Integer left, Integer right)
 	{
-		if (!right.sign || !left.sign && (right[0] % Digit.TWO == Digit.ZERO))
+		if (!right.sign || !left.sign && right[0] % Digit.TWO == Digit.ZERO)
 			throw new NotImplementedException();
 
 		(Natural whole, Natural remainder) = Natural.Root(left.value, right.value);
@@ -307,13 +351,16 @@ public class Integer
 	public static implicit operator Integer(string value) => new(value);
 	public static implicit operator Integer(Digit value) => new(value);
 	public static implicit operator Integer(Natural value) => new(value);
-	public static bool operator ==(Integer left, Integer right) => Equals(left, right);
-	public static bool operator !=(Integer left, Integer right) => !Equals(left, right);
+	public static bool operator ==(Integer? left, Integer? right) => left is Integer l && right is Integer r && Equals(l, r);
+	public static bool operator !=(Integer? left, Integer? right) => !(left == right);
 	public static bool operator >(Integer left, Integer right) => GreaterThan(left, right);
 	public static bool operator <(Integer left, Integer right) => GreaterThan(right, left);
 	public static bool operator >=(Integer left, Integer right) => !GreaterThan(right, left);
 	public static bool operator <=(Integer left, Integer right) => !GreaterThan(left, right);
+	public static Integer operator +(Integer value) => value;
 	public static Integer operator -(Integer value) => new(!value.sign, value.value);
+	public static Integer operator ++(Integer value) => Add(value, Digit.ONE);
+	public static Integer operator --(Integer value) => Subtract(value, Digit.ONE);
 	public static Integer operator +(Integer left, Integer right) => Add(left, right);
 	public static Integer operator -(Integer left, Integer right) => Subtract(left, right);
 	public static Integer operator *(Integer left, Integer right) => Multiply(left, right);

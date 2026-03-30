@@ -13,7 +13,7 @@
 
 		<Setter Property="Visibility" Value="Hidden" />
 		<Style.Triggers>
-			<DataTrigger Binding="{Binding IsExpanded, ElementName=Steps}" Value="True">
+			<DataTrigger Binding="{Binding ShowSteps}" Value="True">
 				<Setter Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</Style.Triggers>

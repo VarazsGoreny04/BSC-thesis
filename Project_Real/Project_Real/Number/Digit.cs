@@ -1,11 +1,25 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents a decimal digit using the BCD format.
 /// </summary>
-public readonly struct Digit
+public readonly struct Digit :
+	IComparisonOperators<Digit, Digit, bool>,
+	IEqualityOperators<Digit, Digit, bool>,
+	IIncrementOperators<Digit>,
+	IDecrementOperators<Digit>,
+	IAdditionOperators<Digit, Digit, Digit>,
+	ISubtractionOperators<Digit, Digit, Digit>,
+	IMultiplyOperators<Digit, Digit, Digit>,
+	IDivisionOperators<Digit, Digit, Digit>,
+	IModulusOperators<Digit, Digit, Digit>,
+	IAdditiveIdentity<Digit, Digit>,
+	IMultiplicativeIdentity<Digit, Digit>,
+	IParsable<Digit>
 {
 	#region Exceptions
 
@@ -28,7 +42,7 @@ public readonly struct Digit
 	public static readonly Digit EIGHT = '8';
 	public static readonly Digit NINE = '9';
 
-	private const byte TEN = 0b1010;
+	private const byte TEN = 10;
 
 	#endregion
 
@@ -42,6 +56,10 @@ public readonly struct Digit
 
 	/// <returns>The <see cref="byte"/> that represents <see langword="this"/> <see cref="Digit"/> instance.</returns>
 	public readonly byte Bits => bits;
+
+	public static Digit AdditiveIdentity => ZERO;
+
+	public static Digit MultiplicativeIdentity => ONE;
 
 	#endregion
 
@@ -129,6 +147,28 @@ public readonly struct Digit
 	/// <returns>A character form 0 to 9.</returns>
 	public static char ToChar(Digit value) => (char)('0' + value.bits);
 
+	public static Digit Parse(string s, IFormatProvider? _) => s.Length == 1 ? new(s[0]) : throw new FormatException();
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Digit result)
+	{
+		if (s is null)
+		{
+			result = ZERO;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, null);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = ZERO;
+			return false;
+		}
+	}
+
 	/// <summary>
 	/// Compares two <see cref="Digit"/>s.
 	/// </summary>
@@ -160,7 +200,7 @@ public readonly struct Digit
 	/// <returns>The result value and if there was an overflow in a tuple.</returns>
 	public static (bool Overflow, Digit Digit) Add(Digit left, Digit right, bool carry = false)
 	{
-		int result = carry ? left.bits + right.bits + 0b0001 : left.bits + right.bits; 
+		int result = carry ? left.bits + right.bits + 1 : left.bits + right.bits; 
 		bool overflow = TEN <= result;
 
 		return (overflow, (byte)(overflow ? result - TEN : result));
@@ -175,7 +215,7 @@ public readonly struct Digit
 	/// <returns>The result value and if there was a borrow in a tuple.</returns>
 	public static (bool Borrow, Digit Digit) Subtract(Digit left, Digit right, bool carry = false)
 	{
-		int rightBitsPlusCarry = carry ? right.bits + 0b0001 : right.bits;
+		int rightBitsPlusCarry = carry ? right.bits + 1 : right.bits;
 		bool borrow = rightBitsPlusCarry > left.bits;
 
 		return (borrow, (byte)(borrow ? TEN - (rightBitsPlusCarry - left.bits) : left.bits - rightBitsPlusCarry));
@@ -239,6 +279,13 @@ public readonly struct Digit
 	public static bool operator <(Digit left, Digit right) => GreaterThan(right, left);
 	public static bool operator >=(Digit left, Digit right) => !GreaterThan(right, left);
 	public static bool operator <=(Digit left, Digit right) => !GreaterThan(left, right);
+	public static Digit operator ++(Digit value)
+	{
+		int result = value.bits + 1;
+
+		return (byte)(TEN <= result ? result - TEN : result);
+	}
+	public static Digit operator --(Digit value) => (byte)(value.bits == 0 ? 9 : value.bits - 1);
 	public static Digit operator +(Digit left, Digit right) => Add(left, right).Digit;
 	public static Digit operator -(Digit left, Digit right) => Subtract(left, right).Digit;
 	public static Digit operator *(Digit left, Digit right) => Multiply(left, right).Digit;

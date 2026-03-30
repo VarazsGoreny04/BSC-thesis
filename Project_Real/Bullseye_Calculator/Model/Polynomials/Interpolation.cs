@@ -1,13 +1,28 @@
 ﻿using Bullseye_Calculator.Model.EuclideanSpace;
-using Project_Real;
+using Project_Real.NumberSet;
 using System;
+using System.Numerics;
 
 namespace Bullseye_Calculator.Model.Polynomials;
 
 /// <summary>
 /// Contains methods for interpolation.
 /// </summary>
-public static class Interpolation
+public static class Interpolation<T>
+where T :
+	IComparisonOperators<T, T, bool>,
+	IEqualityOperators<T, T, bool>,
+	IUnaryPlusOperators<T, T>,
+	IUnaryNegationOperators<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
 	#region Public methods
 
@@ -21,7 +36,7 @@ public static class Interpolation
 	/// -or-
 	/// some of the <paramref name="points"/> have matching X coordinate.
 	/// </exception>
-	public static Rational[] Lagrange(Point2D[] points)
+	public static T[] Lagrange(Point2D<T>[] points)
 	{
 		if (points.Length < 1)
 			throw new ArgumentException();
@@ -35,12 +50,12 @@ public static class Interpolation
 			}
 		}
 
-		Rational[] result = Matrix.Zeros(points.Length);
+		T[] result = Matrix<T>.Zeros(points.Length);
 
 		for (int i = 0; i < points.Length; ++i)
 		{
-			Rational multiplier = points[i].Y;
-			Rational[] polynomial = ["1"];
+			T multiplier = points[i].Y;
+			T[] polynomial = [T.MultiplicativeIdentity];
 
 			for (int j = 0; j < points.Length; ++j)
 			{
@@ -49,8 +64,8 @@ public static class Interpolation
 
 				multiplier /= points[i].X - points[j].X;
 
-				Rational[,] temp = Matrix.OuterProduct(polynomial, [-points[j].X, "1"]);
-				polynomial = Matrix.Zeros(temp.GetLength(0) + 1);
+				T[,] temp = Matrix<T>.OuterProduct(polynomial, [-points[j].X, T.MultiplicativeIdentity]);
+				polynomial = Matrix<T>.Zeros(temp.GetLength(0) + 1);
 
 				for (int k = temp.GetLength(0) - 1; k >= 0; --k)
 				{
@@ -59,7 +74,7 @@ public static class Interpolation
 				}
 			}
 
-			result = Matrix.Add(result, Matrix.Scale(polynomial, multiplier));
+			result = Matrix<T>.Add(result, Matrix<T>.Scale(polynomial, multiplier));
 		}
 
 		return result;

@@ -1,5 +1,5 @@
 ﻿using System;
-using Project_Real;
+using Project_Real.Number;
 
 namespace Test;
 

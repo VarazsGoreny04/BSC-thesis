@@ -1,12 +1,28 @@
-﻿using System;
+﻿using Project_Real.NumberSet;
+using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents an unsigned number.
 /// </summary>
-public class Positive
+public class Positive :
+	IComparisonOperators<Positive, Positive, bool>,
+	IEqualityOperators<Positive, Positive, bool>,
+	IIncrementOperators<Positive>,
+	IDecrementOperators<Positive>,
+	IAdditionOperators<Positive, Positive, Positive>,
+	ISubtractionOperators<Positive, Positive, Positive>,
+	IMultiplyOperators<Positive, Positive, Positive>,
+	IDivisionOperators<Positive, Positive, Positive>,
+	IModulusOperators<Positive, Positive, Positive>,
+	IPowerOperations<Positive, Positive, Positive>,
+	IRootOperations<Positive, Positive, Positive>,
+	IAdditiveIdentity<Positive, Positive>,
+	IMultiplicativeIdentity<Positive, Positive>
 {
 	#region Fields
 
@@ -21,6 +37,10 @@ public class Positive
 
 	#region Properties
 
+	public static Positive AdditiveIdentity => Digit.ZERO;
+
+	public static Positive MultiplicativeIdentity => Digit.ONE;
+
 	/// <returns>The character the <see cref="ToString"/> method uses as separator.</returns>
 	public static char Separator => separator;
 
@@ -31,7 +51,7 @@ public class Positive
 	public static int FractionCalculationLength
 	{
 		get => fractionCalculationLength;
-		set => fractionCalculationLength = (value >= 0) ? value : throw new ArgumentException();
+		set => fractionCalculationLength = value >= 0 ? value : throw new ArgumentException();
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Positive"/>.</returns>
@@ -171,11 +191,33 @@ public class Positive
 	/// <returns>A <see cref="Positive"/> number as a <see langword="string"/>.</returns>
 	public override string ToString()
 	{
-		return (fractionLength == 0) ? value.ToString() :
+		return fractionLength == 0 ? value.ToString() :
 			(
-				(fractionLength < Digits.Length) ? value.ToString() :
+				fractionLength < Digits.Length ? value.ToString() :
 				new string('0', length - Digits.Length) + value.ToString()
 			).Insert(WholeLength, separator.ToString());
+	}
+
+	public static Positive Parse(string s, IFormatProvider? _) => new(s);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Positive result)
+	{
+		if (s is null)
+		{
+			result = null;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, provider);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = null;
+			return false;
+		}
 	}
 
 	/// <summary>
@@ -384,7 +426,7 @@ public class Positive
 
 		Natural degree = right.Value;
 		int degreeInt = (int)Natural.ToUInt32(degree);
-		int splicingLength = degreeInt - (left.fractionLength % degreeInt);
+		int splicingLength = degreeInt - left.fractionLength % degreeInt;
 
 		(Natural root, Natural remainder) = Natural.Root(new([.. Digit.CreateArray(splicingLength), .. left.Digits]), degree);
 
@@ -425,12 +467,14 @@ public class Positive
 	public static implicit operator Positive(string value) => new(value);
 	public static implicit operator Positive(Digit value) => new(value);
 	public static implicit operator Positive(Natural value) => new(value);
-	public static bool operator ==(Positive left, Positive right) => Equals(left, right);
-	public static bool operator !=(Positive left, Positive right) => !Equals(left, right);
+	public static bool operator ==(Positive? left, Positive? right) => left is Positive l && right is Positive r && Equals(l, r);
+	public static bool operator !=(Positive? left, Positive? right) => !(left == right);
 	public static bool operator >(Positive left, Positive right) => GreaterThan(left, right);
 	public static bool operator <(Positive left, Positive right) => GreaterThan(right, left);
 	public static bool operator >=(Positive left, Positive right) => !GreaterThan(right, left);
 	public static bool operator <=(Positive left, Positive right) => !GreaterThan(left, right);
+	public static Positive operator ++(Positive value) => Add(value, Digit.ONE);
+	public static Positive operator --(Positive value) => Subtract(value, Digit.ONE).Value;
 	public static Positive operator +(Positive left, Positive right) => Add(left, right);
 	public static Positive operator -(Positive left, Positive right) => Subtract(left, right).Value;
 	public static Positive operator *(Positive left, Positive right) => Multiply(left, right);

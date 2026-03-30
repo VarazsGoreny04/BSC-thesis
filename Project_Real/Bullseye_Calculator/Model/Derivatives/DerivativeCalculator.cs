@@ -1,14 +1,30 @@
-﻿using Bullseye_Calculator.Model.Standard;
-using Project_Real;
+﻿using Project_Real.NumberSet;
+using Project_Real.Number;
+using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace Bullseye_Calculator.Model.Derivatives;
 
-public partial class DerivativeCalculator : Calculator
+public partial class DerivativeCalculator<T> : Calculator
+where T :
+	IComparisonOperators<T, T, bool>,
+	IEqualityOperators<T, T, bool>,
+	IUnaryPlusOperators<T, T>,
+	IUnaryNegationOperators<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
 	[GeneratedRegex(@"^'$")]
-	protected static partial Regex DerivativeRegex();
+	internal static partial Regex DerivativeRegex();
 
 	protected static readonly FunctionToken[] functionTokens =
 	[
@@ -18,18 +34,18 @@ public partial class DerivativeCalculator : Calculator
 	public DerivativeCalculator() : base(
 	[
 		// Rational number
-		new(new(new($"^\\p{{Nd}}+[{Rational.Separator}]?\\p{{Nd}}*$")), value => new Number(value)),
+		new(NumberRegex(), value => new Number<T>(T.Parse(value, null))),
 		// Function name
 		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
 		// Derivative
-		new(DerivativeRegex(), _ => new Derivative()),
+		new(DerivativeRegex(), _ => new Derivative<T>()),
 		// Operators
-		new(AddRegex(), _ => new Add()),
-		new(SubtractRegex(), _ => new Subtract()),
-		new(MultiplyRegex(), _ => new Multiply()),
-		new(DivideRegex(), _ => new Divide()),
-		new(PowerRegex(), _ => new Power()),
-		new(RootRegex(), _ => new Root()),
+		new(AddRegex(), _ => new Add<T>()),
+		new(SubtractRegex(), _ => new Subtract<T>()),
+		new(MultiplyRegex(), _ => new Multiply<T>()),
+		new(DivideRegex(), _ => new Divide<T>()),
+		new(PowerRegex(), _ => new Power<T>()),
+		new(RootRegex(), _ => new Root<T>()),
 		// Separators
 		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
 		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Rational>()),
@@ -37,5 +53,5 @@ public partial class DerivativeCalculator : Calculator
 	])
 	{ }
 
-	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Rational>(input, this));
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<T>(input, this));
 }

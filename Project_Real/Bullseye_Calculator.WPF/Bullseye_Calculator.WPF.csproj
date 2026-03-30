@@ -5,6 +5,7 @@
 	<TargetFramework>net9.0-windows</TargetFramework>
 	<Nullable>enable</Nullable>
 	<UseWPF>true</UseWPF>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,18 +16,6 @@
 	<None Update="Icon\icon.ico">
 	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
-  </ItemGroup>
-
-  <ItemGroup>
-	<Page Update="Resources\ListViewStyle.xaml">
-	  <SubType>Designer</SubType>
-	</Page>
-	<Page Update="Resources\ExpanderStyle.xaml">
-	  <SubType>Designer</SubType>
-	</Page>
-	<Page Update="Resources\LabelStyle.xaml">
-	  <SubType>Designer</SubType>
-	</Page>
   </ItemGroup>
 
 </Project>

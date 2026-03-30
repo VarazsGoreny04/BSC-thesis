@@ -1,12 +1,30 @@
-﻿using System;
+﻿using Project_Real.NumberSet;
+using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents a signed number.
 /// </summary>
-public class Writable
+public class Writable :
+	IComparisonOperators<Writable, Writable, bool>,
+	IEqualityOperators<Writable, Writable, bool>,
+	IIncrementOperators<Writable>,
+	IDecrementOperators<Writable>,
+	IUnaryPlusOperators<Writable, Writable>,
+	IUnaryNegationOperators<Writable, Writable>,
+	IAdditionOperators<Writable, Writable, Writable>,
+	ISubtractionOperators<Writable, Writable, Writable>,
+	IMultiplyOperators<Writable, Writable, Writable>,
+	IDivisionOperators<Writable, Writable, Writable>,
+	IModulusOperators<Writable, Writable, Writable>,
+	IPowerOperations<Writable, Writable, Writable>,
+	IRootOperations<Writable, Writable, Writable>,
+	IAdditiveIdentity<Writable, Writable>,
+	IMultiplicativeIdentity<Writable, Writable>
 {
 	#region Fields
 
@@ -16,6 +34,10 @@ public class Writable
 	#endregion
 
 	#region Properties
+
+	public static Writable AdditiveIdentity => Digit.ZERO;
+
+	public static Writable MultiplicativeIdentity => Digit.ONE;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
@@ -160,7 +182,29 @@ public class Writable
 	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Writable"/> number as a <see langword="string"/>.</returns>
-	public override string ToString() => $"{(WriteSign || !sign ? (sign ? '+' : '-') : "")}{value}";
+	public override string ToString() => $"{(WriteSign || !sign ? sign ? '+' : '-' : "")}{value}";
+
+	public static Writable Parse(string s, IFormatProvider? _) => new(s);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Writable result)
+	{
+		if (s is null)
+		{
+			result = null;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, provider);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = null;
+			return false;
+		}
+	}
 
 	/// <summary>
 	/// Rounds down the given <see cref="Writable"/> instance.
@@ -212,7 +256,7 @@ public class Writable
 	/// </returns>
 	public static bool GreaterThan(Writable left, Writable right)
 	{
-		return left.Sign != right.Sign ? left.Sign : (left.Sign ? left.Value > right.Value : left.Value < right.Value);
+		return left.Sign != right.Sign ? left.Sign : left.Sign ? left.Value > right.Value : left.Value < right.Value;
 	}
 
 	/// <summary>
@@ -315,7 +359,7 @@ public class Writable
 	/// </exception>
 	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		if (!right.sign || (!left.sign && right[0] % Digit.TWO == Digit.ZERO))
+		if (!right.sign || !left.sign && right[0] % Digit.TWO == Digit.ZERO)
 			throw new NotImplementedException();
 
 		(Positive whole, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
@@ -348,13 +392,16 @@ public class Writable
 	public static implicit operator Writable(Natural value) => new(value);
 	public static implicit operator Writable(Integer value) => new(value);
 	public static implicit operator Writable(Positive value) => new(value);
-	public static bool operator ==(Writable left, Writable right) => Equals(left, right);
-	public static bool operator !=(Writable left, Writable right) => !Equals(left, right);
+	public static bool operator ==(Writable? left, Writable? right) => left is Writable l && right is Writable r && Equals(l, r);
+	public static bool operator !=(Writable? left, Writable? right) => !(left == right);
 	public static bool operator >(Writable left, Writable right) => GreaterThan(left, right);
 	public static bool operator <(Writable left, Writable right) => GreaterThan(right, left);
 	public static bool operator >=(Writable left, Writable right) => !GreaterThan(right, left);
 	public static bool operator <=(Writable left, Writable right) => !GreaterThan(left, right);
+	public static Writable operator +(Writable value) => value;
 	public static Writable operator -(Writable value) => new(!value.Sign, value.Value);
+	public static Writable operator ++(Writable value) => Add(value, Digit.ONE);
+	public static Writable operator --(Writable value) => Subtract(value, Digit.ONE).Value;
 	public static Writable operator +(Writable left, Writable right) => Add(left, right);
 	public static Writable operator -(Writable left, Writable right) => Subtract(left, right);
 	public static Writable operator *(Writable left, Writable right) => Multiply(left, right);

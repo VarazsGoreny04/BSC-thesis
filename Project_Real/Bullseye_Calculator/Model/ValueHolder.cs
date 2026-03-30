@@ -1,4 +1,4 @@
-﻿using Project_Real;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Bullseye_Calculator.Model;
@@ -12,11 +12,16 @@ public abstract partial class ValueHolder<T> : Expression
 	#region Protected methods
 
 	/// <summary>
-	/// Parenthesizes the given <see cref="Rational"/> value if it is signed.
+	/// Parenthesizes the given <see cref="T"/> value if it is signed.
 	/// </summary>
-	/// <param name="value">The given <see cref="Rational"/> value.</param>
+	/// <param name="value">The given <see cref="T"/> value.</param>
 	/// <returns>The result as a <see cref="string"/>.</returns>
-	protected static string ParenthesizeIfSigned(Rational value) => Rational.WriteSign || !value.Sign ? $"({value})" : value.ToString();
+	protected static string ParenthesizeIfSigned(T value)
+	{
+		string result = value?.ToString() ?? throw new FormatException();
+
+		return result.Length > 0 && (result[0] == '+' || result[0] == '-') ? $"({result})" : result;
+	}
 
 	#endregion
 

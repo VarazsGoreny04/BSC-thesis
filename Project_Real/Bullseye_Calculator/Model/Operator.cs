@@ -7,15 +7,15 @@ namespace Bullseye_Calculator.Model;
 /// Represents an operator in an expression.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
-public abstract class Operator<T> : FunctionBase<T>
+public abstract partial class Operator<T> : FunctionBase<T>
 {
 	#region Constructors
 
 	/// <summary>
-	/// Constructs an <see cref="Operator{T}"/> with a given number of parameters.
+	/// Constructs an <see cref="Operator{T}"/> with a given parameters.
 	/// </summary>
-	/// <param name="parameters">The number of parameters used by the operator.</param>
-	protected Operator(int parameters) : base(parameters) { }
+	/// <param name="parameters">The parameters of the operator.</param>
+	protected Operator(ValueHolder<T>[] parameters) : base(parameters) { }
 
 	#endregion
 
@@ -23,13 +23,13 @@ public abstract class Operator<T> : FunctionBase<T>
 
 	internal override void ToTree(ref Stack<Expression> result)
 	{
-		int length = Math.Min(Parameters.Length, result.Count);
+		int length = Math.Min(parameters.Length, result.Count);
 
 		for (int i = 1; i <= length && result.Peek() is ValueHolder<T> valueHolder; ++i)
 		{
 			result.Pop();
 
-			Parameters[^i] = valueHolder;
+			parameters[^i] = valueHolder;
 		}
 
 		result.Push(this);

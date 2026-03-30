@@ -1,17 +1,18 @@
-﻿using Project_Real;
+﻿using Project_Real.NumberSet;
 using System;
 using System.Linq;
+using System.Numerics;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
 /// <summary>
-/// Represents a point in the coordinate system.
+/// Represents a Point<T> in the coordinate system.
 /// </summary>
-public abstract class Point
+public abstract class Point<T> where T : IEqualityOperators<T, T, bool>
 {
 	#region Fields
 
-	protected readonly Rational[] values;
+	protected readonly T[] values;
 
 	#endregion
 
@@ -21,7 +22,7 @@ public abstract class Point
 	/// Constructs a <see cref="Point"/> by the given <paramref name="values"/>.
 	/// </summary>
 	/// <param name="values">The extent of the <see cref="Point"/> in the coordinate system.</param>
-	public Point(Rational[] values) => this.values = values;
+	public Point(T[] values) => this.values = values;
 
 	#endregion
 
@@ -31,25 +32,38 @@ public abstract class Point
 	/// Returns a string that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Point"/> as a <see langword="string"/>.</returns>
-	public override string ToString() => $"({string.Join(", ", values as object?[])})";
+	public override string ToString() => $"({string.Join(", ", values)})";
 
-	public static bool Equals(Point a, Point b) => a.values.Length == b.values.Length && a.values.Zip(b.values).All(x => x.First == x.Second);
+	public static bool Equals(Point<T> a, Point<T> b) => a.values.Length == b.values.Length && a.values.Zip(b.values).All(x => x.First == x.Second);
 
 	#endregion
 }
 
 /// <summary>
-/// Represents a 2D point in the coordinate system.
+/// Represents a 2D Point<T> in the coordinate system.
 /// </summary>
-public class Point2D : Point
+public class Point2D<T> : Point<T>
+where T :
+	IComparisonOperators<T, T, bool>,
+	IEqualityOperators<T, T, bool>,
+	IUnaryNegationOperators<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
 	#region Properties
 
 	/// <returns>The X value of <see langword="this"/> instance.</returns>
-	public Rational X => values[0];
+	public T X => values[0];
 
 	/// <returns>The Y value of <see langword="this"/> instance.</returns>
-	public Rational Y => values[1];
+	public T Y => values[1];
 
 	#endregion
 
@@ -60,20 +74,20 @@ public class Point2D : Point
 	/// </summary>
 	/// <param name="values">The extent of the <see cref="Point2D"/> in the coordinate system.</param>
 	/// <exception cref="ArgumentException">The length of <paramref name="values"/> is not 2.</exception>
-	protected Point2D(Rational[] values) : base(values) { if (values.Length != 2) throw new ArgumentException(); }
+	protected Point2D(T[] values) : base(values) { if (values.Length != 2) throw new ArgumentException(); }
 
 	/// <summary>
 	/// Constructs a <see cref="Point2D"/> by the given <paramref name="x"/> and <paramref name="y"/> coordinates.
 	/// </summary>
 	/// <param name="x">The extent of the <see cref="Point2D"/> on the X axis.</param>
 	/// <param name="y">The extent of the <see cref="Point2D"/> on the Y axis.</param>
-	public Point2D(Rational x, Rational y) : base([x, y]) { }
+	public Point2D(T x, T y) : base([x, y]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Point2D"/> by the coordinates of the given <paramref name="tuple"/>.
 	/// </summary>
 	/// <param name="tuple">The extent of the <see cref="Point2D"/>.</param>
-	public Point2D((Rational X, Rational Y) tuple) : base([tuple.X, tuple.Y]) { }
+	public Point2D((T X, T Y) tuple) : base([tuple.X, tuple.Y]) { }
 
 	#endregion
 
@@ -85,7 +99,7 @@ public class Point2D : Point
 	/// <param name="left">The first <see cref="Point2D"/> to add.</param>
 	/// <param name="right">The second <see cref="Point2D"/> to add.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Point2D Add(Point2D left, Point2D right) => new(Matrix.Add(left.values, right.values));
+	public static Point2D<T> Add(Point2D<T> left, Point2D<T> right) => new(Matrix<T>.Add(left.values, right.values));
 
 	/// <summary>
 	/// Subtracts two <see cref="Point2D"/>s.
@@ -93,7 +107,7 @@ public class Point2D : Point
 	/// <param name="left">The <see cref="Point2D"/> that represents the minuend.</param>
 	/// <param name="right">The <see cref="Point2D"/> that represents the subtrahend.</param>
 	/// <returns>The result value and if there was a swap in a tuple.</returns>
-	public static Point2D Subtract(Point2D left, Point2D right) => new(Matrix.Subtract(left.values, right.values));
+	public static Point2D<T> Subtract(Point2D<T> left, Point2D<T> right) => new(Matrix<T>.Subtract(left.values, right.values));
 
 	/// <summary>
 	/// Calculates the distance of two <see cref="Point2D"/>s.
@@ -101,9 +115,15 @@ public class Point2D : Point
 	/// <param name="a">The first <see cref="Point2D"/>.</param>
 	/// <param name="b">The second <see cref="Point2D"/>.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Rational Distance(Point2D a, Point2D b) => ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y));
+	public static T Distance(Point2D<T> a, Point2D<T> b)
+	{
+		T diffX = a.X - b.X;
+		T diffY = a.Y - b.Y;
 
-	public override bool Equals(object? obj) => obj is Point2D point && Equals(this, point);
+		return ~(diffX * diffX + diffY * diffY);
+	}
+
+	public override bool Equals(object? obj) => obj is Point2D<T> point && Equals(this, point);
 	
 	public override int GetHashCode() => throw new NotImplementedException();
 
@@ -111,24 +131,37 @@ public class Point2D : Point
 
 	#region Operators
 
-	public static implicit operator Point2D((Rational, Rational) tuple) => new(tuple);
-	public static bool operator ==(Point2D a, Point2D b) => a.Equals(b);
-	public static bool operator !=(Point2D a, Point2D b) => !a.Equals(b);
-	public static Point2D operator +(Point2D a, Point2D b) => Add(a, b);
-	public static Point2D operator -(Point2D a, Point2D b) => Subtract(a, b);
+	public static implicit operator Point2D<T>((T, T) tuple) => new(tuple);
+	public static bool operator ==(Point2D<T> a, Point2D<T> b) => a.Equals(b);
+	public static bool operator !=(Point2D<T> a, Point2D<T> b) => !a.Equals(b);
+	public static Point2D<T> operator +(Point2D<T> a, Point2D<T> b) => Add(a, b);
+	public static Point2D<T> operator -(Point2D<T> a, Point2D<T> b) => Subtract(a, b);
 
 	#endregion
 }
 
 /// <summary>
-/// Represents a 3D point in the coordinate system.
+/// Represents a 3D Point<T> in the coordinate system.
 /// </summary>
-public class Point3D : Point2D
+public class Point3D<T> : Point2D<T>
+where T :
+	IComparisonOperators<T, T, bool>,
+	IEqualityOperators<T, T, bool>,
+	IUnaryNegationOperators<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
 	#region Properties
 
 	/// <returns>The Z value of <see langword="this"/> instance.</returns>
-	public Rational Z => values[2];
+	public T Z => values[2];
 
 	#endregion
 
@@ -139,7 +172,7 @@ public class Point3D : Point2D
 	/// </summary>
 	/// <param name="values">The extent of the <see cref="Point3D"/> in the coordinate system.</param>
 	/// <exception cref="ArgumentException">The length of <paramref name="values"/> is not 3.</exception>
-	protected Point3D(Rational[] values) : base(values) { if (values.Length != 3) throw new ArgumentException(); }
+	protected Point3D(T[] values) : base(values) { if (values.Length != 3) throw new ArgumentException(); }
 
 	/// <summary>
 	/// Constructs a <see cref="Point3D"/> by the given <paramref name="x"/>, <paramref name="y"/> and <paramref name="z"/> coordinates.
@@ -147,13 +180,13 @@ public class Point3D : Point2D
 	/// <param name="x">The extent of the <see cref="Point3D"/> on the X axis.</param>
 	/// <param name="y">The extent of the <see cref="Point3D"/> on the Y axis.</param>
 	/// <param name="z">The extent of the <see cref="Point3D"/> on the Z axis.</param>
-	public Point3D(Rational x, Rational y, Rational z) : base([x, y, z]) { }
+	public Point3D(T x, T y, T z) : base([x, y, z]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Point3D"/> by the coordinates of the given <paramref name="tuple"/>.
 	/// </summary>
 	/// <param name="tuple">The extent of the <see cref="Point3D"/>.</param>
-	public Point3D((Rational X, Rational Y, Rational Z) tuple) : base([tuple.X, tuple.Y, tuple.Z]) { }
+	public Point3D((T X, T Y, T Z) tuple) : base([tuple.X, tuple.Y, tuple.Z]) { }
 
 	#endregion
 
@@ -165,7 +198,7 @@ public class Point3D : Point2D
 	/// <param name="left">The first <see cref="Point3D"/> to add.</param>
 	/// <param name="right">The second <see cref="Point3D"/> to add.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Point3D Add(Point3D a, Point3D b) => new(Matrix.Add(a.values, b.values));
+	public static Point3D<T> Add(Point3D<T> a, Point3D<T> b) => new(Matrix<T>.Add(a.values, b.values));
 
 	/// <summary>
 	/// Subtracts two <see cref="Point3D"/>s.
@@ -173,7 +206,7 @@ public class Point3D : Point2D
 	/// <param name="left">The <see cref="Point3D"/> that represents the minuend.</param>
 	/// <param name="right">The <see cref="Point3D"/> that represents the subtrahend.</param>
 	/// <returns>The result value and if there was a swap in a tuple.</returns>
-	public static Point3D Subtract(Point3D left, Point3D right) => new(Matrix.Subtract(left.values, right.values));
+	public static Point3D<T> Subtract(Point3D<T> left, Point3D<T> right) => new(Matrix<T>.Subtract(left.values, right.values));
 
 	/// <summary>
 	/// Calculates the distance of two <see cref="Point3D"/>s.
@@ -181,12 +214,16 @@ public class Point3D : Point2D
 	/// <param name="a">The first <see cref="Point3D"/>.</param>
 	/// <param name="b">The second <see cref="Point3D"/>.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Rational Distance(Point3D a, Point3D b)
+	public static T Distance(Point3D<T> a, Point3D<T> b)
 	{
-		return ~(Rational.SecondPower(a.X - b.X) + Rational.SecondPower(a.Y - b.Y) + Rational.SecondPower(a.Z - b.Z));
+		T diffX = a.X - b.X;
+		T diffY = a.Y - b.Y;
+		T diffZ = a.Z - b.Z;
+
+		return ~(diffX * diffX + diffY * diffY + diffZ * diffZ);
 	}
 
-	public override bool Equals(object? obj) => obj is Point3D point && Equals(this, point);
+	public override bool Equals(object? obj) => obj is Point3D<T> point && Equals(this, point);
 
 	public override int GetHashCode() => throw new NotImplementedException();
 
@@ -194,9 +231,9 @@ public class Point3D : Point2D
 
 	#region Operators
 
-	public static implicit operator Point3D((Rational, Rational, Rational) tuple) => new(tuple);
-	public static Point3D operator +(Point3D a, Point3D b) => Add(a, b);
-	public static Point3D operator -(Point3D a, Point3D b) => Subtract(a, b);
+	public static implicit operator Point3D<T>((T, T, T) tuple) => new(tuple);
+	public static Point3D<T> operator +(Point3D<T> a, Point3D<T> b) => Add(a, b);
+	public static Point3D<T> operator -(Point3D<T> a, Point3D<T> b) => Subtract(a, b);
 
 	#endregion
 }

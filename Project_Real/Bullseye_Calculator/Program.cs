@@ -1,9 +1,8 @@
 ﻿using Bullseye_Calculator.Model;
-using Bullseye_Calculator.Model.Derivatives;
-using Bullseye_Calculator.Model.EuclideanSpace;
 using Bullseye_Calculator.Model.Standard;
-using Project_Real;
+using Project_Real.Number;
 using System;
+using System.Collections.Generic;
 
 namespace Bullseye_Calculator;
 
@@ -11,7 +10,7 @@ public class Program
 {
 	public static void Main()
 	{
-		Calculator calculator = new StandardCalculator();
+		Calculator calculator = new StandardCalculator<Rational>();
 
 		/*Rational[,] a = new Rational[10, 10];
 
@@ -102,7 +101,7 @@ public class Program
 		/*Rational[] points = CoordinateSystem.LinSpace("1", "6", 100);
 		Console.WriteLine(Matrix.ToString(Polynomial.EvaluateRange(res, points)));*/
 
-		Rational.WriteSign = false;
+		/*Rational.WriteSign = false;
 
 		Matrix l0 = new(
 			"1;0;0&" +
@@ -113,7 +112,7 @@ public class Program
 			"5;2;4&" +
 			"0;5;-2&" +
 			"0;0;2"
-			);
+			);*/
 		/*Matrix m = Matrix.Product(Matrix.ToRationalMatrix(l0.GetValue()), Matrix.ToRationalMatrix(u0.GetValue()));
 		//Matrix m = new Matrix(
 		//	"1;2;3&" +
@@ -135,6 +134,12 @@ public class Program
 		/*ValueHolder<Rational> v = new Derivative(new Model.Standard.Add(new Multiply(new Number("5"), new X()), new Number("3")));
 		Calculator calc = new DerivativeCalculator();*/
 
-		
+		/*List<ValueHolder<Rational>> valueHolders =
+		[
+			new Parenthesized<Rational>(new Number(new Rational("3"))),
+			new Add(new Number(new Rational("7")), new Number(new Rational("4")))
+		];
+
+		valueHolders.ForEach(v => Console.WriteLine(v.Simplify()));*/
 	}
 }

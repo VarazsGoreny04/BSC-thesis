@@ -9,10 +9,11 @@ namespace Bullseye_Calculator.Model.EuclideanSpace;
 /// <summary>
 /// A calculator that understands matrices and can perform operations with them.
 /// </summary>
-public partial class EuclideanSpaceCalculator<T> : Calculator
+public partial class PolynomialCalculator<T> : Calculator
 where T :
 	IComparisonOperators<T, T, bool>,
 	IEqualityOperators<T, T, bool>,
+	IUnaryPlusOperators<T, T>,
 	IUnaryNegationOperators<T, T>,
 	IAdditionOperators<T, T, T>,
 	ISubtractionOperators<T, T, T>,
@@ -31,31 +32,15 @@ where T :
 
 	#endregion
 
-	#region Fields
-
-	protected static readonly FunctionToken[] functionTokens =
-	[
-		new("diag", () => new Diagonalize<T>()),
-		new("inv", () => new Inverse<T>()),
-	];
-
-	#endregion
-
 	#region Constructors
 
 	/// <summary>
 	/// Constructs a calculator that understands matrices and can perform operations with them.
 	/// </summary>
-	public EuclideanSpaceCalculator() : base(
+	public PolynomialCalculator() : base(
 	[
 		// Matrix
 		new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1]))),
-		// Function name
-		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
-		// Operators
-		new(AddRegex(), _ => new Add<T>()),
-		new(SubtractRegex(), _ => new Subtract<T>()),
-		new(MultiplyRegex(), _ => new Multiply<T>()),
 		// Separators
 		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
 		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 public class Program
 {

@@ -1,22 +1,58 @@
-﻿using Project_Real;
+﻿using Project_Real.NumberSet;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Bullseye_Calculator.Model.EuclideanSpace;
 
 /// <summary>
 /// Contains methods for operations with matrices.
 /// </summary>
-public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
+public class Matrix<T> :
+	IComparisonOperators<Matrix<T>, Matrix<T>, bool>,
+	IEqualityOperators<Matrix<T>, Matrix<T>, bool>,
+	IComparisonOperators<Matrix<T>, T, bool>,
+	IEqualityOperators<Matrix<T>, T, bool>,
+	IUnaryPlusOperators<Matrix<T>, Matrix<T>>,
+	IUnaryNegationOperators<Matrix<T>, Matrix<T>>,
+	IAdditionOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
+	ISubtractionOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
+	IMultiplyOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
+	IDivisionOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
+	IAdditionOperators<Matrix<T>, T, Matrix<T>>,
+	ISubtractionOperators<Matrix<T>, T, Matrix<T>>,
+	IMultiplyOperators<Matrix<T>, T, Matrix<T>>,
+	IDivisionOperators<Matrix<T>, T, Matrix<T>>,
+	IAdditiveIdentity<Matrix<T>, T>,
+	IMultiplicativeIdentity<Matrix<T>, T>
+	where T :
+		IComparisonOperators<T, T, bool>,
+		IEqualityOperators<T, T, bool>,
+		IUnaryNegationOperators<T, T>,
+		IAdditionOperators<T, T, T>,
+		ISubtractionOperators<T, T, T>,
+		IMultiplyOperators<T, T, T>,
+		IDivisionOperators<T, T, T>,
+		IPowerOperations<T, T, T>,
+		IRootOperations<T, T, T>,
+		IAdditiveIdentity<T, T>,
+		IMultiplicativeIdentity<T, T>,
+		IParsable<T>
 {
-	private const char columnSeparator = ';';
 	private const char rowSeparator = '&';
+	private const char columnSeparator = ';';
 
-	private readonly ValueHolder<Rational>[,] value;
+	private readonly ValueHolder<T>[,] value;
 
-	public static char ColumnSeparator => columnSeparator;
 	public static char RowSeparator => rowSeparator;
+	public static char ColumnSeparator => columnSeparator;
+	public static T AdditiveIdentity => T.AdditiveIdentity;
+	public static T MultiplicativeIdentity => T.MultiplicativeIdentity;
+
+	public int Rows => value.GetLength(0);
+	public int Columns => value.GetLength(1);
+	public ValueHolder<T>[,] Value => value;
+	public ValueHolder<T> this[int row, int column] => value[row, column];
 
 	public Matrix(string content)
 	{
@@ -29,15 +65,15 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 				throw new FormatException();
 		}
 
-		value = new ValueHolder<Rational>[tokenized.Length, tokenized[0].Length];
-		Standard.StandardCalculator standardCalculator = new();
+		value = new ValueHolder<T>[tokenized.Length, tokenized[0].Length];
+		Standard.StandardCalculator<T> standardCalculator = new();
 
 		try
 		{
 			for (int row = tokenized.Length - 1; row >= 0; --row)
 			{
 				for (int col = tokenized[row].Length - 1; col >= 0; --col)
-					value[row, col] = Calculator.Evaluate<Rational>(tokenized[row][col], standardCalculator);
+					value[row, col] = Calculator.Evaluate<T>(tokenized[row][col], standardCalculator);
 			}
 		}
 		catch (IndexOutOfRangeException)
@@ -46,7 +82,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		}
 	}
 
-	public Matrix(ValueHolder<Rational>[,] value)
+	public Matrix(ValueHolder<T>[,] value)
 	{
 		int rows = value.GetLength(0);
 		int cols = value.GetLength(1);
@@ -57,7 +93,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		this.value = value;
 	}
 
-	public Matrix(Rational[,] value)
+	public Matrix(T[,] value)
 	{
 		int rows = value.GetLength(0);
 		int cols = value.GetLength(1);
@@ -65,76 +101,90 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (rows < 1 || cols < 1)
 			throw new ArgumentException();
 
-		this.value = new ValueHolder<Rational>[rows, cols];
+		this.value = new ValueHolder<T>[rows, cols];
 
 		for (int i = 0; i < rows; ++i)
 		{
 			for (int j = 0; j < cols; ++j)
-				this.value[i, j] = new Standard.Number(value[i, j]);
+				this.value[i, j] = new Number<T>(value[i, j]);
 		}
 	}
 
-	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => throw new NotImplementedException();
-	internal override void ToTree(ref Stack<Expression> result) => throw new NotImplementedException();
-	public override string ToStringByStep(ref int step)
+	public static T[,] ToMatrix(Matrix<T> matrix)
 	{
-		int rowCount = value.GetLength(0);
-		int colCount = value.GetLength(1);
+		int rows = matrix.value.GetLength(0);
+		int cols = matrix.value.GetLength(1);
 
-		List<string> rows = [];
-
-		for (int i = 0; i < rowCount; ++i)
-		{
-			string row = $"{value[i, 0].ToStringByStep(ref step)}";
-
-			for (int j = 1; j < colCount; ++j)
-				row += $";{value[i, j].ToStringByStep(ref step)}";
-
-			rows.Add(row);
-		}
-
-		return "[" + string.Join("&", rows) + "]";
-	}
-
-	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<ValueHolder<Rational>[,]> root, ref int step)
-	{
-		int stepCopy = step;
-
-		foreach (ValueHolder<Rational> item in value)
-			item.FullEvaluation(ref partialValues, item, ref step);
-
-		if (stepCopy != step)
-		{
-			stepCopy = ++step;
-			int toRockBottom = int.MaxValue;
-
-			partialValues.Add(($"{ToString()} = {ToStringByStep(ref toRockBottom)}", root.ToStringByStep(ref stepCopy)));
-		}
-	}
-
-	public override ValueHolder<Rational>[,] GetValue() => value;
-
-	public static Rational[,] ToRationalMatrix(ValueHolder<Rational>[,] valueHolderMatrix)
-	{
-		int rows = valueHolderMatrix.GetLength(0);
-		int cols = valueHolderMatrix.GetLength(1);
-
-		Rational[,] result = new Rational[rows, cols];
+		T[,] result = new T[rows, cols];
 
 		for (int i = 0; i < rows; ++i)
 		{
 			for (int j = 0; j < cols; ++j)
-				result[i, j] = valueHolderMatrix[i, j].GetValue();
+				result[i, j] = matrix[i, j].GetValue();
 		}
 
 		return result;
 	}
 
-	public static implicit operator Matrix(ValueHolder<Rational>[,] value) => new(value);
-	public static implicit operator Matrix(Rational[,] value) => new(value);
-	public static Matrix operator +(Matrix left, Matrix right) => Add(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
-	public static Matrix operator -(Matrix left, Matrix right) => Subtract(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
-	public static Matrix operator *(Matrix left, Matrix right) => Product(ToRationalMatrix(left.value), ToRationalMatrix(right.value));
+	public static T[,] ToMatrix(int n, int m, T value)
+	{
+		T[,] id = Identity(n, m);
+
+		for (int i = 0; i < Math.Min(n, m); i++)
+			id[i, i] = value;
+
+		return id;
+	}
+
+	/// <summary>
+	/// Compares the given <see langword="object"/>? to this instance.
+	/// </summary>
+	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
+	/// <returns>
+	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Matrix{T}"/> and equal to the value of <see langword="this"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public override bool Equals(object? obj) => obj is Matrix<T> matrix && this == matrix;
+
+	/// <summary>
+	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
+	/// </summary>
+	public override int GetHashCode() => throw new NotImplementedException();
+
+	public static implicit operator Matrix<T>(ValueHolder<T>[,] value) => new(value);
+	public static implicit operator Matrix<T>(T[,] value) => new(value);
+	public static bool operator ==(Matrix<T>? left, Matrix<T>? right) => left is Matrix<T> l && right is Matrix<T> r && Equals(ToMatrix(l), ToMatrix(r));
+	public static bool operator !=(Matrix<T>? left, Matrix<T>? right) => !(left == right);
+	public static bool operator >(Matrix<T> left, Matrix<T> right) => GreaterThan(ToMatrix(left), ToMatrix(right));
+	public static bool operator <(Matrix<T> left, Matrix<T> right) => GreaterThan(ToMatrix(right), ToMatrix(left));
+	public static bool operator >=(Matrix<T> left, Matrix<T> right) => !(left < right);
+	public static bool operator <=(Matrix<T> left, Matrix<T> right) => !(left > right);
+	public static bool operator ==(Matrix<T>? left, T? right) => left is Matrix<T> l && right is T r && Equals(ToMatrix(l), ToMatrix(l.Rows, l.Columns, r));
+	public static bool operator !=(Matrix<T>? left, T? right) => !(left == right);
+	public static bool operator >(Matrix<T> left, T right) => GreaterThan(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
+	public static bool operator <(Matrix<T> left, T right) => GreaterThan(ToMatrix(left.Rows, left.Columns, right), ToMatrix(left));
+	public static bool operator >=(Matrix<T> left, T right) => !(left < right);
+	public static bool operator <=(Matrix<T> left, T right) => !(left > right);
+	public static bool operator ==(T? left, Matrix<T>? right) => right == left;
+	public static bool operator !=(T? left, Matrix<T>? right) => right != left;
+	public static bool operator >(T left, Matrix<T> right) => right < left;
+	public static bool operator <(T left, Matrix<T> right) => right > left;
+	public static bool operator >=(T left, Matrix<T> right) => !(right > left);
+	public static bool operator <=(T left, Matrix<T> right) => !(right < left);
+	public static Matrix<T> operator +(Matrix<T> value) => value;
+	public static Matrix<T> operator -(Matrix<T> value) => Scale(ToMatrix(value), -T.MultiplicativeIdentity);
+	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right) => Add(ToMatrix(left), ToMatrix(right));
+	public static Matrix<T> operator -(Matrix<T> left, Matrix<T> right) => Subtract(ToMatrix(left), ToMatrix(right));
+	public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right) => Product(ToMatrix(left), ToMatrix(right));
+	public static Matrix<T> operator /(Matrix<T> left, Matrix<T> right) => InverseProduct(ToMatrix(left), ToMatrix(right));
+	public static Matrix<T> operator +(Matrix<T> left, T right) => Add(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
+	public static Matrix<T> operator -(Matrix<T> left, T right) => Subtract(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
+	public static Matrix<T> operator *(Matrix<T> left, T right) => Scale(ToMatrix(left), right);
+	public static Matrix<T> operator /(Matrix<T> left, T right) => Scale(ToMatrix(left), T.MultiplicativeIdentity / right);
+	public static Matrix<T> operator +(T left, Matrix<T> right) => Add(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
+	public static Matrix<T> operator -(T left, Matrix<T> right) => Subtract(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
+	public static Matrix<T> operator *(T left, Matrix<T> right) => Scale(ToMatrix(right), left);
+	public static Matrix<T> operator /(T left, Matrix<T> right) => InverseProduct(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
 
 
 
@@ -145,10 +195,10 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <returns>The matrix with zeros.</returns>
-	public static Rational[] Zeros(int n)
+	public static T[] Zeros(int n)
 	{
-		Rational[] result = new Rational[n];
-		Array.Fill(result, Digit.ZERO);
+		T[] result = new T[n];
+		Array.Fill(result, T.AdditiveIdentity);
 
 		return result;
 	}
@@ -158,10 +208,10 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <returns>The matrix with ones.</returns>
-	public static Rational[] Ones(int n)
+	public static T[] Ones(int n)
 	{
-		Rational[] result = new Rational[n];
-		Array.Fill(result, Digit.ONE);
+		T[] result = new T[n];
+		Array.Fill(result, T.MultiplicativeIdentity);
 
 		return result;
 	}
@@ -172,10 +222,10 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="a">The vector to scale.</param>
 	/// <param name="s">The scalar.</param>
 	/// <returns>The scaled vector.</returns>
-	public static Rational[] Scale(Rational[] a, Rational s)
+	public static T[] Scale(T[] a, T s)
 	{
 		int n = a.Length;
-		Rational[] result = new Rational[n];
+		T[] result = new T[n];
 
 		for (int i = 0; i < n; ++i)
 			result[i] = s * a[i];
@@ -189,12 +239,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="a">The vector to compute the magnitude of.</param>
 	/// <returns>The magnitude.</returns>
 	/// 
-	public static Rational Magnitude(Rational[] a)
+	public static T Magnitude(T[] a)
 	{
-		Rational result = Digit.ZERO;
+		T result = T.AdditiveIdentity;
 
 		for (int i = a.Length - 1; i >= 0; --i)
-			result += Rational.SecondPower(a[i]);
+			result += a[i] * a[i];
 
 		return ~result;
 	}
@@ -206,12 +256,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="b">The second vector.</param>
 	/// <returns>The inner product value.</returns>
 	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
-	public static Rational InnerProduct(Rational[] a, Rational[] b)
+	public static T InnerProduct(T[] a, T[] b)
 	{
 		if (a.Length != b.Length)
 			throw new ArgumentException();
 
-		Rational result = Digit.ZERO;
+		T result = T.AdditiveIdentity;
 
 		for (int i = a.Length - 1; i >= 0; --i)
 			result += a[i] * b[i];
@@ -225,11 +275,11 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="a">The first vector.</param>
 	/// <param name="b">The second vector.</param>
 	/// <returns>The outer product matrix.</returns>
-	public static Rational[,] OuterProduct(Rational[] a, Rational[] b)
+	public static T[,] OuterProduct(T[] a, T[] b)
 	{
 		int aN = a.Length;
 		int bN = b.Length;
-		Rational[,] result = new Rational[aN, bN];
+		T[,] result = new T[aN, bN];
 
 		for (int i = 0; i < aN; ++i)
 		{
@@ -247,7 +297,49 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="b">The vector on which will be projected.</param>
 	/// <returns>The projection.</returns>
 	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
-	public static Rational[] Project(Rational[] a, Rational[] b) => Scale(a, InnerProduct(a, b) / InnerProduct(a, a));
+	public static T[] Project(T[] a, T[] b) => Scale(a, InnerProduct(a, b) / InnerProduct(a, a));
+
+	/// <summary>
+	/// Compares two vectors.
+	/// </summary>
+	/// <param name="a">The first vector to compare.</param>
+	/// <param name="b">The second vector to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the length and the value of <paramref name="a"/> is equal to the length and the value of <paramref name="b"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool Equals(T[] a, T[] b)
+	{
+		if (a.Length != b.Length)
+			return false;
+
+		int i = a.Length;
+
+		while (--i > 0 && a[i] == b[i]) { }
+
+		return i == 0 && a[0] == b[0];
+	}
+
+	/// <summary>
+	/// Compares two vectors.
+	/// </summary>
+	/// <param name="a">The first vector to compare.</param>
+	/// <param name="b">The second vector to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the length and the value of <paramref name="a"/> is greater than the length and the value of <paramref name="b"/>;
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool GreaterThan(T[] a, T[] b)
+	{
+		if (a.Length != b.Length)
+			return a.Length > b.Length;
+
+		int i = a.Length;
+
+		while (--i > 0 && a[i] == b[i]) { }
+
+		return a[i] > b[i];
+	}
 
 	/// <summary>
 	/// Adds vector <paramref name="b"/> from vector <paramref name="a"/>.
@@ -256,14 +348,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="b">The adding vector.</param>
 	/// <returns>The added vector.</returns>
 	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
-	public static Rational[] Add(Rational[] a, Rational[] b)
+	public static T[] Add(T[] a, T[] b)
 	{
 		int n = a.Length;
 
 		if (n != b.Length)
 			throw new ArgumentException();
 
-		Rational[] result = new Rational[n];
+		T[] result = new T[n];
 
 		for (int i = 0; i < n; ++i)
 			result[i] = a[i] + b[i];
@@ -278,14 +370,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="b">The subtracting vector.</param>
 	/// <returns>The subtracted vector.</returns>
 	/// <exception cref="ArgumentException">The length of the two vectors are not equal.</exception>
-	public static Rational[] Subtract(Rational[] a, Rational[] b)
+	public static T[] Subtract(T[] a, T[] b)
 	{
 		int n = a.Length;
 
 		if (n != b.Length)
 			throw new ArgumentException();
 
-		Rational[] result = new Rational[n];
+		T[] result = new T[n];
 
 		for (int i = 0; i < n; ++i)
 			result[i] = a[i] - b[i];
@@ -299,14 +391,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
 	/// <returns>The matrix with zeros.</returns>
-	public static Rational[,] Zeros(int n, int m)
+	public static T[,] Zeros(int n, int m)
 	{
-		Rational[,] result = new Rational[n, m];
+		T[,] result = new T[n, m];
 
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
-				result[i, j] = Digit.ZERO;
+				result[i, j] = T.AdditiveIdentity;
 		}
 
 		return result;
@@ -318,14 +410,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
 	/// <returns>The matrix with ones.</returns>
-	public static Rational[,] Ones(int n, int m)
+	public static T[,] Ones(int n, int m)
 	{
-		Rational[,] result = new Rational[n, m];
+		T[,] result = new T[n, m];
 
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
-				result[i, j] = Digit.ONE;
+				result[i, j] = T.MultiplicativeIdentity;
 		}
 
 		return result;
@@ -337,12 +429,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
 	/// <returns>The identity matrix.</returns>
-	public static Rational[,] Identity(int n, int m)
+	public static T[,] Identity(int n, int m)
 	{
-		Rational[,] result = Zeros(n, m);
+		T[,] result = Zeros(n, m);
 
 		for (int i = 0; i < Math.Min(n, m); ++i)
-			result[i, i] = Digit.ONE;
+			result[i, i] = T.MultiplicativeIdentity;
 
 		return result;
 	}
@@ -353,10 +445,10 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The matrix.</param>
 	/// <param name="j">The index of the column.</param>
 	/// <returns>The column vector.</returns>
-	public static Rational[] GetColumn(Rational[,] A, int j)
+	public static T[] GetColumn(T[,] A, int j)
 	{
 		int n = A.GetLength(0);
-		Rational[] result = new Rational[n];
+		T[] result = new T[n];
 
 		for (int i = 0; i < n; ++i)
 			result[i] = A[i, j];
@@ -369,12 +461,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// </summary>
 	/// <param name="A">The matrix to duplicate.</param>
 	/// <returns>The duplicated matrix.</returns>
-	public static Rational[,] Duplicate(Rational[,] A)
+	public static T[,] Duplicate(T[,] A)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
 
-		Rational[,] result = new Rational[rowCount, colCount];
+		T[,] result = new T[rowCount, colCount];
 
 		for (int i = 0; i < rowCount; ++i)
 		{
@@ -391,12 +483,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The matrix to scale.</param>
 	/// <param name="s">The scalar.</param>
 	/// <returns>The scaled matrix.</returns>
-	public static Rational[,] Scale(Rational[,] A, Rational s)
+	public static T[,] Scale(T[,] A, T s)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
 
-		Rational[,] result = new Rational[rowCount, colCount];
+		T[,] result = new T[rowCount, colCount];
 
 		for (int i = 0; i < rowCount; ++i)
 		{
@@ -412,12 +504,12 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// </summary>
 	/// <param name="A">The matrix to transpose.</param>
 	/// <returns>The transposed matrix.</returns>
-	public static Rational[,] Transpose(Rational[,] A)
+	public static T[,] Transpose(T[,] A)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
 
-		Rational[,] result = new Rational[colCount, rowCount];
+		T[,] result = new T[colCount, rowCount];
 
 		for (int i = rowCount - 1; i >= 0; --i)
 		{
@@ -434,14 +526,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>
 	/// <returns>The concatenated matrix.</returns>
-	public static Rational[,] HorizontalConcat(Rational[,] A, Rational[,] B)
+	public static T[,] HorizontalConcat(T[,] A, T[,] B)
 	{
 		int aRowCount = A.GetLength(0);
 		int aColCount = A.GetLength(1);
 		int bRowCount = B.GetLength(0);
 		int bColCount = B.GetLength(1);
 
-		Rational[,] result = new Rational[Math.Max(aRowCount, bRowCount), aColCount + bColCount];
+		T[,] result = new T[Math.Max(aRowCount, bRowCount), aColCount + bColCount];
 
 		for (int i = 0; i < aRowCount; ++i)
 		{
@@ -464,14 +556,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The original matrix.</param>
 	/// <param name="B">The matrix to be added.</param>
 	/// <returns>The concatenated matrix.</returns>
-	public static Rational[,] VerticalConcat(Rational[,] A, Rational[,] B)
+	public static T[,] VerticalConcat(T[,] A, T[,] B)
 	{
 		int aRowCount = A.GetLength(0);
 		int aColCount = A.GetLength(1);
 		int bRowCount = B.GetLength(0);
 		int bColCount = B.GetLength(1);
 
-		Rational[,] result = new Rational[aRowCount + bRowCount, Math.Max(aColCount, bColCount)];
+		T[,] result = new T[aRowCount + bRowCount, Math.Max(aColCount, bColCount)];
 
 		for (int i = 0; i < aRowCount; ++i)
 		{
@@ -489,13 +581,15 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	}
 
 	/// <summary>
-	/// Adds matrix <paramref name="B"/> to matrix <paramref name="A"/>.
+	/// Compares two matrices.
 	/// </summary>
-	/// <param name="A">The matrix to be added.</param>
-	/// <param name="B">The adding matrix.</param>
-	/// <returns>The added matrix.</returns>
-	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
-	public static Rational[,] Add(Rational[,] A, Rational[,] B)
+	/// <param name="A">The first matrix to compare.</param>
+	/// <param name="B">The second matrix to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the length and the value of <paramref name="A"/> is equal to the length and the value of <paramref name="B"/>; 
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool Equals(T[,] A, T[,] B)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
@@ -503,7 +597,61 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
 			throw new ArgumentException();
 
-		Rational[,] result = new Rational[rowCount, colCount];
+		for (int i = 0; i < rowCount; ++i)
+		{
+			for (int j = 0; j < colCount; ++j)
+			{
+				if (A[i, j] != B[i, j])
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Compares two matrices.
+	/// </summary>
+	/// <param name="A">The first matrix to compare.</param>
+	/// <param name="B">The second matrix to compare.</param>
+	/// <returns>
+	/// <see langword="true"/> if the length and the value of <paramref name="A"/> is greater than the length and the value of <paramref name="B"/>;
+	/// otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool GreaterThan(T[,] A, T[,] B)
+	{
+		T[,] C = Subtract(A, B);
+
+		if (Equals(C, Transpose(C)))
+			return false;
+
+		T[,] diagonalized = Diagonalize(C, 3).Eigenvalues;
+
+		for (int i = diagonalized.GetLength(0) - 1; i >= 0; --i)
+		{
+			if (diagonalized[i, i] <= T.AdditiveIdentity)
+				return false;
+		}
+
+		return true; 
+	}
+
+	/// <summary>
+	/// Adds matrix <paramref name="B"/> to matrix <paramref name="A"/>.
+	/// </summary>
+	/// <param name="A">The matrix to be added.</param>
+	/// <param name="B">The adding matrix.</param>
+	/// <returns>The added matrix.</returns>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
+	public static T[,] Add(T[,] A, T[,] B)
+	{
+		int rowCount = A.GetLength(0);
+		int colCount = A.GetLength(1);
+
+		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
+			throw new ArgumentException();
+
+		T[,] result = new T[rowCount, colCount];
 
 		for (int i = rowCount - 1; i >= 0; --i)
 		{
@@ -521,7 +669,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="B">Subtrahend.</param>
 	/// <returns>The added matrix.</returns>
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
-	public static Rational[,] Subtract(Rational[,] A, Rational[,] B)
+	public static T[,] Subtract(T[,] A, T[,] B)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
@@ -529,7 +677,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
 			throw new ArgumentException();
 
-		Rational[,] result = new Rational[rowCount, colCount];
+		T[,] result = new T[rowCount, colCount];
 
 		for (int i = rowCount - 1; i >= 0; --i)
 		{
@@ -547,7 +695,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="b">The vector.</param>
 	/// <returns>The resulting matrix.</returns>
 	/// <exception cref="ArgumentException">The column count of the matrices in not equal to the length of the vector.</exception>
-	public static Rational[] Product(Rational[,] A, Rational[] b)
+	public static T[] Product(T[,] A, T[] b)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
@@ -555,7 +703,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (colCount != b.Length)
 			throw new ArgumentException();
 
-		Rational[] result = new Rational[rowCount];
+		T[] result = new T[rowCount];
 
 		for (int i = 0; i < rowCount; ++i)
 		{
@@ -573,7 +721,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="B">The second matrix.</param>
 	/// <returns>The resulting matrix.</returns>
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
-	public static Rational[,] Product(Rational[,] A, Rational[,] B)
+	public static T[,] Product(T[,] A, T[,] B)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);
@@ -581,13 +729,13 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		if (rowCount != B.GetLength(1) || colCount != B.GetLength(0))
 			throw new ArgumentException();
 
-		Rational[,] result = new Rational[rowCount, rowCount];
+		T[,] result = new T[rowCount, rowCount];
 
 		for (int i = 0; i < rowCount; ++i)
 		{
 			for (int j = 0; j < rowCount; ++j)
 			{
-				result[i, j] = Digit.ZERO;
+				result[i, j] = T.AdditiveIdentity;
 
 				for (int k = 0; k < colCount; ++k)
 					result[i, j] += A[i, k] * B[k, j];
@@ -607,17 +755,17 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// The lower triangular matrix of the result contains the L matrix and the main diagonal and the upper triangular matrix contains the U matrix.
 	/// </returns>
 	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
-	public static (Rational[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(Rational[,] A)
+	public static (T[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(T[,] A)
 	{
-		static void EliminateColumn(ref Rational[,] LU, int n, int m, int i, ref bool determinantSign)
+		static void EliminateColumn(ref T[,] LU, int n, int m, int i, ref bool determinantSign)
 		{
 			for (int j = i + 1; j < n; ++j)
 			{
 				// Swap rows of the augmented matrix.
-				if (LU[i, i].IsZero)
+				if (LU[i, i] == T.AdditiveIdentity)
 				{
 					int rowToSwap = i + 1;
-					while (rowToSwap < n && LU[rowToSwap, i].IsZero)
+					while (rowToSwap < n && LU[rowToSwap, i] == T.AdditiveIdentity)
 						++rowToSwap;
 
 					if (rowToSwap >= n)
@@ -629,7 +777,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 					determinantSign = !determinantSign;
 				}
 
-				Rational temp = LU[j, i] / LU[i, i];
+				T temp = LU[j, i] / LU[i, i];
 
 				for (int k = i + 1; k < m; ++k)
 					LU[j, k] -= LU[i, k] * temp;
@@ -640,7 +788,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 
 		int n = A.GetLength(0);
 		int m = A.GetLength(1);
-		Rational[,] LU = Duplicate(A);
+		T[,] LU = Duplicate(A);
 
 		bool determinantSign = true;
 
@@ -648,7 +796,7 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		for (int i = 0; i < n; ++i)
 			EliminateColumn(ref LU, n, m, i, ref determinantSign);
 
-		// Return the eliminated matrix with the sign of the determinant.
+		// Return the eliminated Matrix<T> with the sign of the determinant.
 		return (LU, determinantSign);
 	}
 
@@ -659,34 +807,34 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The inverse of the given matrix.</returns>
 	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
-	public static Rational[,] Inverse(Rational[,] A)
+	public static T[,] Inverse(T[,] A)
 	{
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		// Initialize the eliminated augmented matrix B.
-		Rational[,] B = GaussianElimination(HorizontalConcat(A, Identity(n, n))).EliminatedMatrix;
+		// Initialize the eliminated augmented Matrix<T> B.
+		T[,] B = GaussianElimination(HorizontalConcat(A, Identity(n, n))).EliminatedMatrix;
 
 		// Divide each row element by the diagonal element.
 		for (int i = 0; i < n; ++i)
 		{
-			Rational temp = B[i, i];
+			T temp = B[i, i];
 
 			for (int j = 2 * n - 1; j >= 0; --j)
 				B[i, j] = B[i, j] / temp;
 		}
 
-		// Strip the augmented matrix B of the first n columns to get the inverse matrix C of the original matrix A.
-		Rational[,] C = new Rational[n, n];
+		// Strip the augmented Matrix<T> B of the first n columns to get the inverse Matrix<T> C of the original Matrix<T> A.
+		T[,] C = new T[n, n];
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 2 * n - 1; j >= n; --j)
 				C[i, j - n] = B[i, j];
 		}
 
-		// Return the inverse matrix C.
+		// Return the inverse Matrix<T> C.
 		return C;
 	}
 
@@ -698,16 +846,16 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <returns>The determinant of the matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
-	public static Rational Determinant(Rational[,] A)
+	public static T Determinant(T[,] A)
 	{
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		(Rational[,] B, bool determinantSign) = GaussianElimination(A);
+		(T[,] B, bool determinantSign) = GaussianElimination(A);
 
-		Rational result = Digit.ONE;
+		T result = T.MultiplicativeIdentity;
 		for (int i = 0; i < n; ++i)
 			result *= B[i, i];
 
@@ -715,34 +863,44 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	}
 
 	/// <summary>
+	/// Divides matrix <paramref name="A"/> with matrix <paramref name="B"/>.
+	/// </summary>
+	/// <param name="A">The first matrix.</param>
+	/// <param name="B">The second matrix.</param>
+	/// <returns>The resulting matrix.</returns>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
+	public static T[,] InverseProduct(T[,] A, T[,] B) => Product(A, Inverse(B));
+
+	/// <summary>
 	/// Calculates the LU decomposition of the given matrix using the Gauss-Jordan method.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/LU_decomposition"/></remarks>
 	/// <param name="A">The matrix to invert.</param>
-	/// <returns>The two parts of the decomposition: L and U.</returns>
+	/// <returns>The two parts of the decomposition: The lower (L) and upper (U) triangular matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	/// <exception cref="DivideByZeroException">
 	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
 	/// </exception>
-	public static (Rational[,] L, Rational[,] U) LUDecomposition(Rational[,] A)
+	public static (T[,] L, T[,] U) LUDecomposition(T[,] A)
 	{
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		// In the augmented matrix B, the first n columns are the original 
-		// matrix A, and the last n columns are the identity matrix.
-		Rational[,] B = GaussianElimination(A).EliminatedMatrix;
+		// In the augmented Matrix<T> B, the first n columns are the original 
+		// Matrix<T> A, and the last n columns are the identity matrix.
+		T[,] B = GaussianElimination(A).EliminatedMatrix;
 
-		Rational[,] L = Identity(n, n);
+		T[,] L = Identity(n, n);
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = i + 1; j < n; ++j)
 				L[j, i] = B[j, i];
 		}
 
-		Rational[,] U = Zeros(n, n);
+		T[,] U = Zeros(n, n);
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = i; j < n; ++j)
@@ -756,23 +914,23 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// Calculates the QR decomposition of the given matrix (<see href="https://en.wikipedia.org/wiki/QR_decomposition"/>). 
 	/// </summary>
 	/// <param name="A">The matrix to decompose.</param>
-	/// <returns>The two parts of the decomposition: Q and R.</returns>
+	/// <returns>The two parts of the decomposition: The quotient (Q) and the remainder (R) matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	public static (Rational[,] Q, Rational[,] R) QRDecomposition(Rational[,] A)
+	public static (T[,] Q, T[,] R) QRDecomposition(T[,] A)
 	{
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
 			throw new ArgumentException();
 
-		// Duplicate the original matrix A so it stays intact.
-		Rational[,] U = Duplicate(A);
+		// Duplicate the original Matrix<T> A so it stays intact.
+		T[,] U = Duplicate(A);
 
-		// Calculate the U matrix using the Gram–Schmidt process (see https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
+		// Calculate the U Matrix<T> using the Gram–Schmidt process (see https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
 		for (int j = 1; j < n; ++j)
 		{
-			Rational[] u = GetColumn(U, j);
-			Rational[] v = GetColumn(U, j);
+			T[] u = GetColumn(U, j);
+			T[] v = GetColumn(U, j);
 
 			for (int k = j - 1; k >= 0; --k)
 				u = Subtract(u, Project(GetColumn(U, k), v));
@@ -785,8 +943,8 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 		// Normalize the column vectors of U.
 		for (int j = 0; j < n; ++j)
 		{
-			Rational[] u = GetColumn(U, j);
-			Rational magnitude = Magnitude(u);
+			T[] u = GetColumn(U, j);
+			T magnitude = Magnitude(u);
 
 			// Update the column entries in U.
 			for (int i = 0; i < n; ++i)
@@ -805,20 +963,20 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// The eigenvalues stored as diagonal entries in the Eigenvalues matrix. The eigenvectors stored as columns in the Eigenvectors matrix.
 	/// </returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	public static (Rational[,] Eigenvalues, Rational[,] Eigenvectors) Diagonalize(Rational[,] A, int iterations)
+	public static (T[,] Eigenvalues, T[,] Eigenvectors) Diagonalize(T[,] A, int iterations)
 	{
 		int n = A.GetLength(0);
 
-		// Duplicate the original matrix A so it stays intact.
-		Rational[,] B = Duplicate(A);
+		// Duplicate the original Matrix<T> A so it stays intact.
+		T[,] B = Duplicate(A);
 
-		// Initialize the eigenvector matrix C.
-		Rational[,] C = Identity(n, n);
+		// Initialize the eigenvector Matrix<T> C.
+		T[,] C = Identity(n, n);
 
 		// Perform the QR decomposition and update the B and C matrixes each iteration.
 		for (int i = 0; i < iterations; ++i)
 		{
-			(Rational[,] Q, Rational[,] R) = QRDecomposition(B);
+			(T[,] Q, T[,] R) = QRDecomposition(B);
 			B = Product(R, Q);
 			C = Product(C, Q);
 		}
@@ -832,14 +990,14 @@ public class Matrix : ValueHolder<ValueHolder<Rational>[,]>
 	/// <param name="a">The vector to print.</param>
 	/// <returns>The string representation of the given vector.</returns>
 	/// <exception cref="ArgumentException">The vector</exception>
-	public static string ToString<T>(T[] a) => a.Length < 1 ? "[ ]" : $"[ {string.Join(",\t", a)} ]";
+	public static string ToString(T[] a) => a.Length < 1 ? "[ ]" : $"[ {string.Join(",\t", a)} ]";
 
 	/// <summary>
 	/// Prints the given matrix.
 	/// </summary>
 	/// <param name="A">The matrix to print.</param>
 	/// <returns>The string representation of the given matrix.</returns>
-	public static string ToString<T>(T[,] A)
+	public static string ToString(T[,] A)
 	{
 		int rowCount = A.GetLength(0);
 		int colCount = A.GetLength(1);

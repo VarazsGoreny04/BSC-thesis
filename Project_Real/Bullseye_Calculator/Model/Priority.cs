@@ -6,9 +6,9 @@
 internal enum Priority
 {
 	None,
-	BinaryOperatorFirstClass,
-	BinaryOperatorSecondClass,
-	BinaryOperatorThirdClass,
+	FirstClass,
+	SecondClass,
+	ThirdClass,
 	UnaryOperator,
 	Function
 }

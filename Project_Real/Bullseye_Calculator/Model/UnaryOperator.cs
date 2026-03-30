@@ -1,19 +1,19 @@
-﻿using Project_Real;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Bullseye_Calculator.Model.Standard;
+namespace Bullseye_Calculator.Model;
 
 /// <summary>
 /// Represents a unary operator in an expression.
 /// </summary>
-public abstract class UnaryOperator : Operator<Rational>
+public abstract class UnaryOperator<T> : Operator<T>
 {
 	#region Properties
 
 	/// <summary>
 	/// Gets or sets the parameter of the operator.
 	/// </summary>
-	public ValueHolder<Rational> Parameter
+	public ValueHolder<T> Parameter
 	{
 		get => parameters[0];
 		set => parameters[0] = value;
@@ -26,13 +26,13 @@ public abstract class UnaryOperator : Operator<Rational>
 	/// <summary>
 	/// Constructs a <see cref="UnaryOperator"/> with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public UnaryOperator() : base(1) { }
+	public UnaryOperator() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="UnaryOperator"/> with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the operator.</param>
-	public UnaryOperator(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public UnaryOperator(ValueHolder<T> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -44,14 +44,17 @@ public abstract class UnaryOperator : Operator<Rational>
 
 	#region Public methods
 
-	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<Rational> root, ref int step)
+	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
 	{
 		++step;
 		Parameter?.FullEvaluation(ref partialValues, root, ref step);
 
 		int stepCopy = step;
 
-		partialValues.Add(($"({Parameter?.GetValue()}){Sign()} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
+		ValueHolder<T> parameter = Parameter ?? throw new FormatException();
+
+		partialValues.Add(($"{Sign()}{ParenthesizeIfSigned(parameter.GetValue())} = {GetValue()}",
+			root.ToStringByStep(ref stepCopy)));
 	}
 
 	public override string ToStringByStep(ref int step)

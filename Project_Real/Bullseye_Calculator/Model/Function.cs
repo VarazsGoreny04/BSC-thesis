@@ -8,15 +8,15 @@ namespace Bullseye_Calculator.Model;
 /// Represents a function in an expression.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public abstract class Function<T> : FunctionBase<T>
+public abstract partial class Function<T> : FunctionBase<T>
 {
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Function{T}"/> with a given number of parameters.
+	/// Constructs a <see cref="Function{T}"/> with a given parameters.
 	/// </summary>
-	/// <param name="parameters">The number of parameters used by the function.</param>
-	protected Function(int parameters) : base(parameters) { }
+	/// <param name="parameters">The parameters of the function.</param>
+	protected Function(ValueHolder<T>[] parameters) : base(parameters) { }
 
 	#endregion
 
@@ -45,12 +45,13 @@ public abstract class Function<T> : FunctionBase<T>
 		++step;
 
 		foreach (ValueHolder<T> parameter in parameters)
-			parameter?.FullEvaluation(ref partialValues, root, ref step)/* ?? throw new FormatException()*/;
+			parameter.FullEvaluation(ref partialValues, root, ref step)/* ?? throw new FormatException()*/;
 
 		int stepCopy = step;
 
-		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(p => p.GetValue()))}) = {GetValue()}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(static p => p.GetValue()))}) = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
+
 	public override string ToStringByStep(ref int step)
 	{
 		string[] arguments = new string[parameters.Length];

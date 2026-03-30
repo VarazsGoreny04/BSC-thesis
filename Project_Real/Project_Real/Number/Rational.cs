@@ -1,11 +1,30 @@
-﻿using System;
+﻿using Project_Real.NumberSet;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents a rational number.
 /// </summary>
-public class Rational
+public class Rational :
+	IComparisonOperators<Rational, Rational, bool>,
+	IEqualityOperators<Rational, Rational, bool>,
+	IIncrementOperators<Rational>,
+	IDecrementOperators<Rational>,
+	IUnaryPlusOperators<Rational, Rational>,
+	IUnaryNegationOperators<Rational, Rational>,
+	IAdditionOperators<Rational, Rational, Rational>,
+	ISubtractionOperators<Rational, Rational, Rational>,
+	IMultiplyOperators<Rational, Rational, Rational>,
+	IDivisionOperators<Rational, Rational, Rational>,
+	IModulusOperators<Rational, Rational, Rational>,
+	IPowerOperations<Rational, Rational, Rational>,
+	IRootOperations<Rational, Rational, Rational>,
+	IAdditiveIdentity<Rational, Rational>,
+	IMultiplicativeIdentity<Rational, Rational>,
+	IParsable<Rational>
 {
 	#region Fields
 
@@ -17,6 +36,10 @@ public class Rational
 	#endregion
 
 	#region Properties
+
+	public static Rational AdditiveIdentity => Digit.ZERO;
+
+	public static Rational MultiplicativeIdentity => Digit.ONE;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the number in a fractional form or calculate the division.
@@ -148,7 +171,7 @@ public class Rational
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
 	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, (denominator is Positive d ? new Writable(true, d) : null)) { }
+	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, denominator is Positive d ? new Writable(true, d) : null) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <paramref name="sign"/>, <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -183,11 +206,24 @@ public class Rational
 
 	#region Private methods
 
+	/// <summary>
+	/// Container class for binary splitting results.
+	/// </summary>
+	/// <param name="P">The value of P.</param>
+	/// <param name="Q">The value of Q.</param>
+	/// <param name="B">The value of B.</param>
+	/// <param name="T">The value of T.</param>
 	private class ABPQSeriesResult(Writable P, Writable Q, Writable B, Writable T)
 	{
 		public Writable P = P, Q = Q, B = B, T = T;
 	}
 
+	/// <summary>
+	/// Approximates the minimum iterations needed for the given precision for the given value.
+	/// </summary>
+	/// <param name="x">The given value.</param>
+	/// <param name="fractionCalculationLength">The precision needed in digits.</param>
+	/// <returns>The number of iterations.</returns>
 	private static int IterationsNeededSinCos(Rational x, int fractionCalculationLength)
 	{
 		int divisor;
@@ -201,12 +237,8 @@ public class Rational
 		else
 			divisor = 2;
 
-		return ((fractionCalculationLength - 15) / divisor) + 22;
+		return (fractionCalculationLength - 15) / divisor + 22;
 	}
-
-	#endregion
-
-	#region Internal methods
 
 	/// <summary>
 	/// Finds the lowest common denominator for the two <see cref="Rational"/> numbers.
@@ -214,12 +246,12 @@ public class Rational
 	/// <param name="first">The first <see cref="Rational"/>.</param>
 	/// <param name="second">The second <see cref="Rational"/>.</param>
 	/// <returns>The two numerator values and the common denominator in a tuple.</returns>
-	internal static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational first, Rational second)
+	private static (Writable Numerator1, Writable Numerator2, Positive? Denominator) CommonDenominator(Rational first, Rational second)
 	{
 		Writable numerator1 = second.denominator is null ? first.numerator : new(first.numerator.Sign, first.numerator.Value * second.denominator);
 		Writable numerator2 = first.denominator is null ? second.numerator : new(second.numerator.Sign, second.numerator.Value * first.denominator);
 		Positive? denominator = first.denominator is null ? second.denominator :
-			(second.denominator is null ? first.denominator : first.denominator * second.denominator);
+			second.denominator is null ? first.denominator : first.denominator * second.denominator;
 
 		return (numerator1, numerator2, denominator);
 	}
@@ -240,7 +272,7 @@ public class Rational
 			Positive resultNumerator = new(numerator.Value.Value / gCD, Math.Max(numerator.FractionLength - denominatorValue.FractionLength, 0));
 			Positive resultDenominator = new(denominatorValue.Value / gCD, Math.Max(denominatorValue.FractionLength - numerator.FractionLength, 0));
 
-			return (new Writable(numerator.Sign, resultNumerator), (resultDenominator == Digit.ONE ? null : resultDenominator));
+			return (new Writable(numerator.Sign, resultNumerator), resultDenominator == Digit.ONE ? null : resultDenominator);
 		}
 		else
 			return (numerator, null);
@@ -271,6 +303,28 @@ public class Rational
 	/// <returns>An <see cref="Rational"/> number as a <see langword="string"/>.</returns>
 	public static string ToWritableString(Rational value) => GetValue(value).Value.ToString();
 
+	public static Rational Parse(string s, IFormatProvider? _) => new(s);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Rational result)
+	{
+		if (s is null)
+		{
+			result = null;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, provider);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = null;
+			return false;
+		}
+	}
+
 	/// <summary>
 	/// Gets the <see cref="Writable"/> value of the given <see cref="Rational"/>.
 	/// </summary>
@@ -279,7 +333,7 @@ public class Rational
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Writable Value, Writable Remainder) GetValue(Rational value, int? fractionCalculationLength = null)
 	{
-		return (value.denominator is Positive denominator) ? Writable.Divide(value.numerator, denominator, fractionCalculationLength) :
+		return value.denominator is Positive denominator ? Writable.Divide(value.numerator, denominator, fractionCalculationLength) :
 			(value.numerator, new Writable());
 	}
 
@@ -353,7 +407,7 @@ public class Rational
 	/// </exception>
 	public static Rational Reciprocal(Rational value)
 	{
-		return value.IsZero ? throw new DivideByZeroException() : new Rational(value.Sign, (value.denominator is Positive p ? p : Digit.ONE), value.Numerator);
+		return value.IsZero ? throw new DivideByZeroException() : new Rational(value.Sign, value.denominator is Positive p ? p : Digit.ONE, value.Numerator);
 	}
 
 	/// <summary>
@@ -390,7 +444,7 @@ public class Rational
 	/// <returns>The result of the calculation.</returns>
 	public static Rational Multiply(Rational left, Rational right)
 	{
-		Positive? denominator = left.denominator is null ? right.denominator : (right.denominator is null ? left.denominator : left.denominator * right.denominator);
+		Positive? denominator = left.denominator is null ? right.denominator : right.denominator is null ? left.denominator : left.denominator * right.denominator;
 
 		return new Rational(left.numerator * right.numerator, denominator);
 	}
@@ -441,9 +495,9 @@ public class Rational
 			throw new NotImplementedException();
 
 		if (right.Sign)
-			return new Rational(left.numerator ^ right.numerator, (left.denominator is Positive denominator ? denominator ^ right.Numerator : left.denominator));
+			return new Rational(left.numerator ^ right.numerator, left.denominator is Positive denominator ? denominator ^ right.Numerator : left.denominator);
 		else
-			return new Rational(new Writable(left.Sign, (left.denominator is Positive denominator ? denominator ^ right.Numerator : Digit.ONE)),
+			return new Rational(new Writable(left.Sign, left.denominator is Positive denominator ? denominator ^ right.Numerator : Digit.ONE),
 				left.Numerator ^ right.Numerator);
 	}
 
@@ -486,7 +540,7 @@ public class Rational
 		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ? 
 			Positive.Root(d, right.Numerator, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
 
-		return (right.Sign) ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) : 
+		return right.Sign ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) : 
 			(new Rational(true, denominator.Value, numerator.Value.Value), denominator.Remainder, numerator.Remainder.Value);
 	}
 
@@ -510,16 +564,8 @@ public class Rational
 
 			if (b == a + Digit.ONE)
 			{
-				if (a.IsZero)
-				{
-					P = Digit.ONE;
-					Q = Digit.ONE;
-				}
-				else
-				{
-					P = (Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE);
-					Q = a * a * a * "10939058860032000";
-				}
+				(P, Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
+					((Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE), a * a * a * "10939058860032000");
 
 				T = P * ("13591409" + "545140134" * a);
 
@@ -543,7 +589,7 @@ public class Rational
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
 
 		Natural DIGITS_PER_TERM = "13";
-		Natural n = (new Natural((uint)fCL) / DIGITS_PER_TERM) + Digit.ONE;
+		Natural n = new Natural((uint)fCL) / DIGITS_PER_TERM + Digit.ONE;
 
 		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, n);
 
@@ -780,7 +826,7 @@ public class Rational
 					) :
 					new(
 						P: tempP = -Writable.SecondPower(x.numerator),
-						Q: new Natural((uint)((2 * n1) * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+						Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
 						B: null!,
 						T: tempP
 					);
@@ -846,7 +892,7 @@ public class Rational
 					) :
 					new(
 						P: tempP = -Writable.SecondPower(x.numerator),
-						Q: new Natural((uint)((2 * n1) * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+						Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
 						B: null!,
 						T: tempP
 					);
@@ -907,13 +953,16 @@ public class Rational
 	public static implicit operator Rational(Integer value) => new(value);
 	public static implicit operator Rational(Positive value) => new(value);
 	public static implicit operator Rational(Writable value) => new(value);
-	public static bool operator ==(Rational left, Rational right) => Equals(left, right);
-	public static bool operator !=(Rational left, Rational right) => !Equals(left, right);
+	public static bool operator ==(Rational? left, Rational? right) => left is Rational l && right is Rational r && Equals(l, r);
+	public static bool operator !=(Rational? left, Rational? right) => !(left == right);
 	public static bool operator >(Rational left, Rational right) => GreaterThan(left, right);
 	public static bool operator <(Rational left, Rational right) => GreaterThan(right, left);
 	public static bool operator >=(Rational left, Rational right) => !GreaterThan(right, left);
 	public static bool operator <=(Rational left, Rational right) => !GreaterThan(left, right);
+	public static Rational operator +(Rational value) => value;
 	public static Rational operator -(Rational value) => new(!value.numerator.Sign, value.numerator.Value, value.denominator);
+	public static Rational operator ++(Rational value) => Add(value, Digit.ONE);
+	public static Rational operator --(Rational value) => Subtract(value, Digit.ONE);
 	public static Rational operator +(Rational left, Rational right) => Add(left, right);
 	public static Rational operator -(Rational left, Rational right) => Subtract(left, right);
 	public static Rational operator *(Rational left, Rational right) => Multiply(left, right);

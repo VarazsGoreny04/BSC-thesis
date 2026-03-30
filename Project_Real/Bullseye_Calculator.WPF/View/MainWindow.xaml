@@ -14,7 +14,7 @@
 			<RowDefinition Height="6*" />
 		</Grid.RowDefinitions>
 
-		<Border Style="{StaticResource RoundedBorderStyle}" >
+		<Border Grid.Row="0" Style="{StaticResource RoundedBorderStyle}" >
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="2*" />
@@ -36,7 +36,20 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Expander Grid.Column="0" x:Name="Steps" Header="Steps" ExpandDirection="Down" />
+			<Button Grid.Column="0" Command="{Binding ShowStepsCommand}">
+				<Button.Style>
+					<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding ShowSteps}" Value="False">
+								<Setter Property="Content" Value="🔽Steps" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding ShowSteps}" Value="True">
+								<Setter Property="Content" Value="🔼Steps" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Button.Style>
+			</Button>
 			<Button Grid.Column="1" Content="S" Command="{Binding StandardModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
@@ -213,12 +226,25 @@
 				<Button Grid.Row="0" Grid.Column="1" Content="(" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="(" />
 				<Button Grid.Row="0" Grid.Column="2" Content=")" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter=")" />
 
-				<Button Grid.Row="0" Grid.Column="0" Content="x²" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^2" />
-				<Button Grid.Row="1" Grid.Column="0" Content="xⁿ" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^" />
-				<Button Grid.Row="2" Grid.Column="0" Content="!x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="fact(" />
-				<Button Grid.Row="3" Grid.Column="0" Content="√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="2|" />
-				<Button Grid.Row="4" Grid.Column="0" Content="ⁿ√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="|" />
-				<Button Grid.Row="5" Grid.Column="0" Content="|x|" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="abs("/>
+				<Expander Grid.Row="0" Grid.Column="0" Header="⨍">
+					<StackPanel>
+						<Button Content="|x|" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="abs("/>
+						<Button Content="!x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="fact(" />
+					</StackPanel>
+				</Expander>
+				<Expander Grid.Row="1" Grid.Column="0" Header="📐">
+					<StackPanel>
+						<Button Content="sin" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="sin(" />
+						<Button Content="cos" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="cos(" />
+						<Button Content="eˣ" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="exp(" />
+						<Button Content="ln" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="ln(" />
+					</StackPanel>
+				</Expander>
+				
+				<Button Grid.Row="2" Grid.Column="0" Content="x²" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^2" />
+				<Button Grid.Row="3" Grid.Column="0" Content="xⁿ" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^" />
+				<Button Grid.Row="4" Grid.Column="0" Content="√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="2|" />
+				<Button Grid.Row="5" Grid.Column="0" Content="ⁿ√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="|" />
 
 				<Button Grid.Row="1" Grid.Column="1" Content="π" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="pi" />
 				<Button Grid.Row="1" Grid.Column="2" Content="e" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="e" />

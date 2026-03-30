@@ -1,13 +1,29 @@
-﻿using System;
+﻿using Project_Real.NumberSet;
+using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
-namespace Project_Real;
+namespace Project_Real.Number;
 
 /// <summary>
 /// Represents a natural number.
 /// </summary>
-public class Natural
+public class Natural : 
+	IComparisonOperators<Natural, Natural, bool>, 
+	IEqualityOperators<Natural, Natural, bool>, 
+	IIncrementOperators<Natural>,
+	IDecrementOperators<Natural>, 
+	IAdditionOperators<Natural, Natural, Natural>,
+	ISubtractionOperators<Natural, Natural, Natural>,
+	IMultiplyOperators<Natural, Natural, Natural>,
+	IDivisionOperators<Natural, Natural, Natural>, 
+	IModulusOperators<Natural, Natural, Natural>,
+	IPowerOperations<Natural, Natural, Natural>,
+	IRootOperations<Natural, Natural, Natural>,
+	IAdditiveIdentity<Natural, Natural>,
+	IMultiplicativeIdentity<Natural, Natural>
 {
 	#region Fields
 
@@ -18,6 +34,10 @@ public class Natural
 	#endregion
 
 	#region Properties
+
+	public static Natural AdditiveIdentity => Digit.ZERO;
+
+	public static Natural MultiplicativeIdentity => Digit.ONE;
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
 	public int Length => length;
@@ -224,6 +244,28 @@ public class Natural
 			number += digits[i];
 
 		return number;
+	}
+
+	public static Natural Parse(string s, IFormatProvider? _) => new(s);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Natural result)
+	{
+		if (s is null)
+		{
+			result = null;
+			return false;
+		}
+
+		try
+		{
+			result = Parse(s, provider);
+			return true;
+		}
+		catch (Exception)
+		{
+			result = null;
+			return false;
+		}
 	}
 
 	/// <summary>
@@ -484,7 +526,7 @@ public class Natural
 		Natural remainder = new();
 		Natural root = new();
 
-		for (int stepBack = value.length - (((value.Length - 1) & 1) + 1); stepBack >= 0; stepBack -= 2)
+		for (int stepBack = value.length - ((value.Length - 1 & 1) + 1); stepBack >= 0; stepBack -= 2)
 		{
 			remainder = new Natural([value[stepBack], (stepBack + 1 < value.Length ? value[stepBack + 1] : Digit.ZERO), .. remainder.digits]);
 
@@ -525,7 +567,7 @@ public class Natural
 			throw new NotSupportedException();
 
 		int degreeInt = (int)ToUInt32(right);
-		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - (left.Length % degreeInt))];
+		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - left.Length % degreeInt)];
 
 		Natural degreeFactorial = Factorial(right);
 		Natural root = new();
@@ -623,12 +665,14 @@ public class Natural
 	public static implicit operator Natural(string value) => new(value);
 	public static implicit operator Natural(Digit value) => new(value);
 	public static implicit operator Natural(Digit[] value) => new(value);
-	public static bool operator ==(Natural left, Natural right) => Equals(left, right);
-	public static bool operator !=(Natural left, Natural right) => !Equals(left, right);
+	public static bool operator ==(Natural? left, Natural? right) => left is Natural l && right is Natural r && Equals(l, r);
+	public static bool operator !=(Natural? left, Natural? right) => !(left == right);
 	public static bool operator >(Natural left, Natural right) => GreaterThan(left, right);
 	public static bool operator <(Natural left, Natural right) => GreaterThan(right, left);
 	public static bool operator >=(Natural left, Natural right) => !GreaterThan(right, left);
 	public static bool operator <=(Natural left, Natural right) => !GreaterThan(left, right);
+	public static Natural operator ++(Natural value) => Add(value, Digit.ONE);
+	public static Natural operator --(Natural value) => Subtract(value, Digit.ONE).Value;
 	public static Natural operator +(Natural left, Natural right) => Add(left, right);
 	public static Natural operator -(Natural left, Natural right) => Subtract(left, right).Value;
 	public static Natural operator *(Natural left, Natural right) => Multiply(left, right);

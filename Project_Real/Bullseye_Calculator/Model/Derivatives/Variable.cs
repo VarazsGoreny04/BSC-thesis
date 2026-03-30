@@ -1,43 +1,55 @@
-﻿using Project_Real;
+﻿using Project_Real.NumberSet;
+using System;
+using System.Numerics;
 
 namespace Bullseye_Calculator.Model.Derivatives;
 
-public abstract class Variable : Term<Rational>
+public abstract class Variable<T> : Function<T>
+where T : 
+	IAdditiveIdentity<T, T>, 
+	IMultiplicativeIdentity<T, T>, 
+	IMultiplyOperators<T, T, T>, 
+	IPowerOperations<T, T, T>, 
+	IParsable<T>
 {
 	protected readonly char sign;
-	protected Term<Rational> coefficient;
-	protected Term<Rational> power;
 
-	public char Sign => sign;
-	public Term<Rational> Coefficient
-	{
-		get => coefficient;
-		set => coefficient = value;
-	}
+	public ValueHolder<T> Coefficient => parameters[0] ?? new Number<T>(T.AdditiveIdentity);
+	public ValueHolder<T> Power => parameters[1] ?? new Number<T>(T.AdditiveIdentity);
 
-	public Term<Rational> Power
-	{
-		get => power;
-		set => power = value;
-	}
-
-	public Variable(char sign, Term<Rational> coefficient, Term<Rational> power)
+	public Variable(char sign, Term<T>? coefficient, Term<T>? power) : base(
+		[
+			coefficient ?? new Number<T>(T.MultiplicativeIdentity), 
+			power ?? new Number<T>(T.MultiplicativeIdentity)
+		]
+	)
 	{
 		this.sign = sign;
-		this.coefficient = coefficient;
-		this.power = power;
 	}
 
-	public override string ToStringByStep(ref int step) => $"{(coefficient is Term<Rational> c ? $"{c}*" : "")}{sign}{(power is Term<Rational> p ? $"^{p}" : "")}";
+	public override string ToStringByStep(ref int step) => $"{(Coefficient is Term<T> c ? $"{c}*" : "")}{sign}{(Power is Term<T> p ? $"^{p}" : "")}";
+
+	public static T CalculateValue(Variable<T> variable, T value)
+	{
+		T withoutCoefficient = variable.Power is Term<T> power ? value ^ power.GetValue() : value;
+
+		return variable.Coefficient is Term<T> coefficient ? coefficient.GetValue() * withoutCoefficient : withoutCoefficient;
+	}
 }
 
-public sealed class X : Variable
+public sealed class X<T> : Variable<T>
+where T : 
+	IMultiplyOperators<T, T, T>, 
+	IPowerOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
-	private static Rational value = Digit.ZERO;
+	private static T value = T.MultiplicativeIdentity;
 
-	public X(Term<Rational>? coefficient, Term<Rational>? power) : base('x', coefficient ?? new Standard.Number(Digit.ONE), power ?? new Standard.Number(Digit.ZERO)) { }
+	public X(Term<T>? coefficient, Term<T>? power) : base('x', coefficient, power) { }
 
-	public X() : this(null, null) { }
+	public override T GetValue() => CalculateValue(this, value);
 
-	public override Rational GetValue() => coefficient.GetValue() * (value ^ power.GetValue());
+	public override string Sign() => sign.ToString();
 }

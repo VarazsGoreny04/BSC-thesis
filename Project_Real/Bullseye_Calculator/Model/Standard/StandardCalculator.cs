@@ -1,12 +1,24 @@
-﻿using Project_Real;
+﻿using Project_Real.NumberSet;
+using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Bullseye_Calculator.Model.Standard;
 
 /// <summary>
 /// A calculator that understands the basic numbers, operations and trigonometric functions.
 /// </summary>
-public partial class StandardCalculator : Calculator
+public partial class StandardCalculator<T> : Calculator
+where T :
+	IAdditiveIdentity<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IUnaryNegationOperators<T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IParsable<T>
 {
 	#region Fields
 
@@ -36,21 +48,21 @@ public partial class StandardCalculator : Calculator
 	/// </summary>
 	public StandardCalculator() : base(
 	[
-		// Rational number
-		new(new(new($"^\\p{{Nd}}+\\{Rational.Separator}?\\p{{Nd}}*$")), value => new Number(value)),
+		// Number
+		new(NumberRegex(), value => new Number<T>(T.Parse(value, null))),
 		// Function name
 		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
 		// Operators
-		new(AddRegex(), _ => new Add()),
-		new(SubtractRegex(), _ => new Subtract()),
-		new(MultiplyRegex(), _ => new Multiply()),
-		new(DivideRegex(), _ => new Divide()),
-		new(PowerRegex(), _ => new Power()),
-		new(RootRegex(), _ => new Root()),
+		new(AddRegex(), _ => new Add<T>()),
+		new(SubtractRegex(), _ => new Subtract<T>()),
+		new(MultiplyRegex(), _ => new Multiply<T>()),
+		new(DivideRegex(), _ => new Divide<T>()),
+		new(PowerRegex(), _ => new Power<T>()),
+		new(RootRegex(), _ => new Root<T>()),
 		// Separators
 		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Rational>()),
-		new(ComaRegex(), _ => new Coma<Rational>())
+		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<T>()),
+		new(ComaRegex(), _ => new Coma<T>())
 	])
 	{ }
 
@@ -58,7 +70,7 @@ public partial class StandardCalculator : Calculator
 
 	#region Public methods
 
-	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Rational>(input, this));
+	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<T>(input, this));
 
 	#endregion
 }

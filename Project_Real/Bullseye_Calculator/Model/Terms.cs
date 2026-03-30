@@ -1,46 +1,33 @@
-﻿using Project_Real;
+﻿using Project_Real.Number;
 
-namespace Bullseye_Calculator.Model.Standard;
+namespace Bullseye_Calculator.Model;
 
 /// <summary>
 /// Represents a number in an expression.
 /// </summary>
-public sealed class Number : Term<Rational>
+public sealed class Number<T> : Term<T>
 {
 	#region Fields
 
-	private readonly string token;
-
-	#endregion
-
-	#region Properties
-
-	/// <returns>The token used to represent <see langword="this"/> object.</returns>
-	public string Token => token;
+	private readonly T value;
 
 	#endregion
 
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Number"/> by a <see cref="string"/>.
+	/// Constructs a <see cref="Number{T}"/> by a <paramref name="value"/>.
 	/// </summary>
-	/// <param name="token">The value of the <see cref="Number"/> as a text.</param>
-	public Number(string token) => this.token = token;
-
-	/// <summary>
-	/// Constructs a <see cref="Number"/> by a <see cref="Rational"/>.
-	/// </summary>
-	/// <param name="value">The <see cref="Rational"/> representation of the <see cref="Number"/>.</param>
-	public Number(Rational value) => token = value.ToString();
+	/// <param name="value">The representation of the <see cref="Number{T}"/>.</param>
+	public Number(T value) => this.value = value;
 
 	#endregion
 
 	#region Public methods
 
-	public override Rational GetValue() => new(token);
+	public override T GetValue() => value;
 
-	public override string ToStringByStep(ref int _) => ParenthesizeIfSigned(GetValue());
+	public override string ToStringByStep(ref int _) => ParenthesizeIfSigned(value);
 
 	#endregion
 }

@@ -1,5 +1,5 @@
 ﻿using Bullseye_Calculator.Model;
-using Project_Real;
+using Project_Real.Number;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,23 +9,21 @@ namespace Bullseye_Calculator.WPF.ViewModel;
 
 public class CalculatorViewModel : ViewModelBase
 {
+	#region Fields
+
 	private bool start;
-	private Mode currentMode;
-	private Calculator calculator;
 	private readonly List<string> input;
 	private string result;
 	private readonly ObservableCollection<string> evaluation;
+	
+	private bool showSteps;
+	private Mode currentMode;
+	private Calculator calculator;
 
-	public Mode CurrentMode
-	{
-		get => currentMode;
-		set
-		{
-			currentMode = value;
+	#endregion
 
-			OnPropertyChanged(nameof(CurrentMode));
-		}
-	}
+	#region Properties
+
 	public string Input => string.Join(string.Empty, input);
 	public string Result
 	{
@@ -38,14 +36,41 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 	public ObservableCollection<string> Evaluation => evaluation;
+
+	public bool ShowSteps
+	{
+		get => showSteps;
+		set
+		{
+			showSteps = value;
+
+			OnPropertyChanged(nameof(ShowSteps));
+		}
+	}
+	public Mode CurrentMode
+	{
+		get => currentMode;
+		set
+		{
+			currentMode = value;
+
+			OnPropertyChanged(nameof(CurrentMode));
+		}
+	}
 	public static char Separator => Rational.Separator;
-	public static char ColumnSeparator => Model.EuclideanSpace.Matrix.ColumnSeparator;
-	public static char RowSeparator => Model.EuclideanSpace.Matrix.RowSeparator;
+	public static char ColumnSeparator => Model.EuclideanSpace.Matrix<Rational>.ColumnSeparator;
+	public static char RowSeparator => Model.EuclideanSpace.Matrix<Rational>.RowSeparator;
+
+	#endregion
+
+	#region Commands
 
 	public DelegateCommand InputCommand { get; }
 	public DelegateCommand BackSpaceCommand { get; }
 	public DelegateCommand ClearCommand { get; }
 	public DelegateCommand EvaluateCommand { get; }
+
+	public DelegateCommand ShowStepsCommand { get; }
 
 	public DelegateCommand StandardModeCommand { get; }
 	public DelegateCommand EuclideanModeCommand { get; }
@@ -54,14 +79,19 @@ public class CalculatorViewModel : ViewModelBase
 
 	public DelegateCommand ShowOptionsCommand { get; }
 
+	#endregion
+
+	#region Constructors
+
 	public CalculatorViewModel()
 	{
 		Rational.WriteSign = false;
 		Rational.FractionalFormat = false;
 
 		start = true;
+		showSteps = false;
 		CurrentMode = Mode.Standard;
-		calculator = new Model.Standard.StandardCalculator();
+		calculator = new Model.Standard.StandardCalculator<Rational>();
 		input = [];
 		result = string.Empty;
 		evaluation = [];
@@ -71,13 +101,19 @@ public class CalculatorViewModel : ViewModelBase
 		ClearCommand = new DelegateCommand(_ => ClearInput());
 		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
 
-		StandardModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Standard));
-		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(new Model.EuclideanSpace.EuclideanSpaceCalculator(), Mode.Matrix));
-		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Interpolation));
-		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator(), Mode.Integral));
+		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
+
+		StandardModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator<Rational>(), Mode.Standard));
+		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(new Model.EuclideanSpace.EuclideanSpaceCalculator<Rational>(), Mode.Matrix));
+		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator<Rational>(), Mode.Interpolation));
+		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(new Model.Standard.StandardCalculator<Rational>(), Mode.Integral));
 
 		ShowOptionsCommand = new DelegateCommand(_ => { });
 	}
+
+	#endregion
+
+	#region Private methods
 
 	private void ChangeMode(Calculator calculator, Mode mode)
 	{
@@ -85,7 +121,7 @@ public class CalculatorViewModel : ViewModelBase
 		CurrentMode = mode;
 	}
 
-	public void PushInput(string text)
+	private void PushInput(string text)
 	{
 		input.Add(text);
 		OnPropertyChanged(nameof(Input));
@@ -101,7 +137,7 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 
-	public void PopInput()
+	private void PopInput()
 	{
 		if (input.Count > 0)
 		{
@@ -110,7 +146,7 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 
-	public void ClearInput()
+	private void ClearInput()
 	{
 		input.Clear();
 		OnPropertyChanged(nameof(Input));
@@ -118,7 +154,7 @@ public class CalculatorViewModel : ViewModelBase
 		start = true;
 	}
 
-	public void CalculateByInput()
+	private void CalculateByInput()
 	{
 		if (!start)
 		{
@@ -154,4 +190,6 @@ public class CalculatorViewModel : ViewModelBase
 			OnPropertyChanged(nameof(Evaluation));
 		}
 	}
+
+	#endregion
 }

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace Bullseye_Calculator.Model;
 
@@ -13,8 +12,8 @@ public abstract partial class Calculator
 {
 	#region GeneratedRegex
 
-	[GeneratedRegex(@"\s+")]
-	protected static partial Regex WhitespaceRegex();
+	[GeneratedRegex(@"^\p{Nd}+\.?\p{Nd}*$")]
+	protected static partial Regex NumberRegex();
 
 	[GeneratedRegex(@"^\w+$")]
 	protected static partial Regex FunctionNameRegex();
@@ -151,7 +150,7 @@ public abstract partial class Calculator
 	/// </summary>
 	/// <param name="input">The <see cref="string"/> to remove the characters from.</param>
 	/// <returns>The <paramref name="input"/> without whitespaces.</returns>
-	protected static string RemoveWhitespaces(string input) => WhitespaceRegex().Replace(input, "");
+	protected static string RemoveWhitespaces(string input) => new([.. input.Where(c => !char.IsWhiteSpace(c))]);
 
 	/// <summary>
 	/// Searches for the function in the <paramref name="functionTokens"/> by the given function <paramref name="name"/>.

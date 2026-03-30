@@ -1,4 +1,4 @@
-﻿using Project_Real;
+﻿using Project_Real.Number;
 using System;
 
 namespace Bullseye_Calculator.Model.Standard;
@@ -26,13 +26,13 @@ public sealed class Abs : Function<Rational>
 	/// <summary>
 	/// Constructs an <see cref="Abs"/> function with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public Abs() : base(1) { }
+	public Abs() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs an <see cref="Abs"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Abs(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Abs(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -68,13 +68,13 @@ public sealed class Floor : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Floor"/> function with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public Floor() : base(1) { }
+	public Floor() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Floor"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Floor(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Floor(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -110,13 +110,13 @@ public sealed class Round : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Round"/> function with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public Round() : base(1) { }
+	public Round() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Round"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Round(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Round(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -152,13 +152,13 @@ public sealed class Ceiling : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Ceiling"/> function with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public Ceiling() : base(1) { }
+	public Ceiling() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Ceiling"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Ceiling(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Ceiling(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -194,13 +194,13 @@ public sealed class Fact : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Fact"/> function with the parameter set to <see langword="null"/>.
 	/// </summary>
-	public Fact() : base(1) { }
+	public Fact() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Fact"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Fact(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Fact(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -245,18 +245,14 @@ public sealed class Max : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Max"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Max() : base(2) { }
+	public Max() : base([null!, null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Max"/> function with the <paramref name="first"/> and <paramref name="second"/> values.
 	/// </summary>
 	/// <param name="first">The first parameter of the function.</param>
 	/// <param name="second">The second parameter of the function.</param>
-	public Max(ValueHolder<Rational> first, ValueHolder<Rational> second) : base(2)
-	{
-		First = first;
-		Second = second;
-	}
+	public Max(ValueHolder<Rational> first, ValueHolder<Rational> second) : base([first, second]) { }
 
 	#endregion
 
@@ -301,18 +297,14 @@ public sealed class Min : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Min"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Min() : base(2) { }
+	public Min() : base([null!, null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Min"/> function with the <paramref name="first"/> and <paramref name="second"/> values.
 	/// </summary>
 	/// <param name="first">The first parameter of the function.</param>
 	/// <param name="second">The second parameter of the function.</param>
-	public Min(ValueHolder<Rational> first, ValueHolder<Rational> second) : base(2)
-	{
-		First = first;
-		Second = second;
-	}
+	public Min(ValueHolder<Rational> first, ValueHolder<Rational> second) : base([first!, second!]) { }
 
 	#endregion
 
@@ -348,13 +340,13 @@ public sealed class Sin : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Sin"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Sin() : base(1) { }
+	public Sin() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Sin"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Sin(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Sin(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -390,13 +382,13 @@ public sealed class Cos : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Cos"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Cos() : base(1) { }
+	public Cos() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Cos"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Cos(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Cos(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -433,13 +425,13 @@ public sealed class Exp : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Exp"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Exp() : base(1) { }
+	public Exp() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Exp"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Exp(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Exp(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 
@@ -475,13 +467,13 @@ public sealed class Ln : Function<Rational>
 	/// <summary>
 	/// Constructs a <see cref="Ln"/> function with the parameters set to <see langword="null"/>.
 	/// </summary>
-	public Ln() : base(1) { }
+	public Ln() : base([null!]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Ln"/> function with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the function.</param>
-	public Ln(ValueHolder<Rational> parameter) : base(1) => Parameter = parameter;
+	public Ln(ValueHolder<Rational> parameter) : base([parameter]) { }
 
 	#endregion
 

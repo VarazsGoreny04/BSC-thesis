@@ -7,14 +7,6 @@ namespace Bullseye_Calculator.WPF.View;
 
 public partial class MainWindow : Window
 {
-	public static readonly DependencyProperty GreetingProperty = DependencyProperty.Register(nameof(Greeting), typeof(string), typeof(MainWindow));
-
-	public string Greeting
-	{
-		get => (string)GetValue(GreetingProperty);
-		set => SetValue(GreetingProperty, value);
-	}
-
 	public MainWindow()
 	{
 		InitializeComponent();
@@ -22,11 +14,11 @@ public partial class MainWindow : Window
 		Uri iconUri = new("./Icon/icon.ico", UriKind.Relative);
 		Icon = BitmapFrame.Create(iconUri);
 
-		int TitlebarColor = 0x232323;
-		DwmSetWindowAttribute(new System.Windows.Interop.WindowInteropHelper(this).EnsureHandle(), 35, ref TitlebarColor, Marshal.SizeOf(TitlebarColor));
+		int titlebarColor = 0x232323;
+		_ = DwmSetWindowAttribute(new System.Windows.Interop.WindowInteropHelper(this).EnsureHandle(), 35, ref titlebarColor, Marshal.SizeOf(titlebarColor));
 	}
 
 
-	[DllImport("dwmapi.dll")]
-	private static extern int DwmSetWindowAttribute(IntPtr windowHandle, int attributeID, ref int attributeValue, int attributeSize);
+	[LibraryImport("dwmapi.dll")]
+	private static partial int DwmSetWindowAttribute(IntPtr windowHandle, int attributeID, ref int attributeValue, int attributeSize);
 }
