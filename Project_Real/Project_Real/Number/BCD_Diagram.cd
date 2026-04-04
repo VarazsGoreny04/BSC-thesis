@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Project_Real.Number.Natural" Collapsed="true">
+    <Position X="3.5" Y="2.75" Width="1.5" />
+    <Members>
+      <Method Name="Add" Hidden="true" />
+      <Method Name="CalculateNRootDigits" Hidden="true" />
+      <Method Name="CalculateTwoRootDigits" Hidden="true" />
+      <Property Name="Digits" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Method Name="Factorial" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Method Name="GreatestCommonDivisor" Hidden="true" />
+      <Property Name="IsZero" Hidden="true" />
+      <Property Name="Length" Hidden="true" />
+      <Method Name="Log" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Method Name="operator -" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator ^" Hidden="true" />
+      <Method Name="operator |" Hidden="true" />
+      <Method Name="operator ~" Hidden="true" />
+      <Method Name="operator +" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Power" Hidden="true" />
+      <Method Name="Root" Hidden="true" />
+      <Method Name="SecondPower" Hidden="true" />
+      <Method Name="SquareRoot" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="ToUInt32" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BKogICAAAQAAACIE6E2DIgFIAAoBAIIDAAAAAgAAB2A=</HashCode>
+      <FileName>Number\Natural.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Project_Real.Number.Integer" Collapsed="true">
+    <Position X="7.5" Y="3" Width="1.5" />
+    <Members>
+      <Method Name="Abs" Hidden="true" />
+      <Method Name="Add" Hidden="true" />
+      <Property Name="Digits" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Property Name="IsZero" Hidden="true" />
+      <Property Name="Length" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator ^" Hidden="true" />
+      <Method Name="operator |" Hidden="true" />
+      <Method Name="operator ~" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Power" Hidden="true" />
+      <Method Name="Root" Hidden="true" />
+      <Method Name="SecondPower" Hidden="true" />
+      <Property Name="Sign" Hidden="true" />
+      <Method Name="SquareRoot" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+      <Method Name="ToInt32" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Property Name="Value" Hidden="true" />
+      <Property Name="WriteSign" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BKIgAAAAAQAAADIE6A2TIgFBAAIAAKIDAAAgIAAAB2A=</HashCode>
+      <FileName>Number\Integer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="value" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Project_Real.Number.Writable" Collapsed="true">
+    <Position X="11.5" Y="6" Width="1.5" />
+    <Members>
+      <Method Name="Abs" Hidden="true" />
+      <Method Name="Add" Hidden="true" />
+      <Property Name="Digits" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Property Name="FractionCalculationLength" Hidden="true" />
+      <Property Name="FractionLength" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Property Name="IsZero" Hidden="true" />
+      <Property Name="Length" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator ^" Hidden="true" />
+      <Method Name="operator |" Hidden="true" />
+      <Method Name="operator ~" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Power" Hidden="true" />
+      <Method Name="Root" Hidden="true" />
+      <Method Name="Round" Hidden="true" />
+      <Method Name="RoundDown" Hidden="true" />
+      <Method Name="RoundUp" Hidden="true" />
+      <Method Name="SecondPower" Hidden="true" />
+      <Property Name="Separator" Hidden="true" />
+      <Property Name="Sign" Hidden="true" />
+      <Method Name="SquareRoot" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Property Name="Value" Hidden="true" />
+      <Property Name="WholeLength" Hidden="true" />
+      <Property Name="WriteSign" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BKIgAAAoAQAAEDIE6A2TIgFIAAIAALIDAEAgAAIAB2A=</HashCode>
+      <FileName>Number\Writable.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="value" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Project_Real.Number.Positive" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <Members>
+      <Method Name="Add" Hidden="true" />
+      <Property Name="Digits" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Property Name="FractionCalculationLength" Hidden="true" />
+      <Property Name="FractionLength" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Property Name="IsZero" Hidden="true" />
+      <Property Name="Length" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Method Name="operator -" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator ^" Hidden="true" />
+      <Method Name="operator |" Hidden="true" />
+      <Method Name="operator ~" Hidden="true" />
+      <Method Name="operator +" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Power" Hidden="true" />
+      <Method Name="Root" Hidden="true" />
+      <Method Name="Round" Hidden="true" />
+      <Method Name="RoundDown" Hidden="true" />
+      <Method Name="RoundUp" Hidden="true" />
+      <Method Name="SecondPower" Hidden="true" />
+      <Property Name="Separator" Hidden="true" />
+      <Method Name="SquareRoot" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="TrimStart" Hidden="true" />
+      <Property Name="Value" Hidden="true" />
+      <Property Name="WholeLength" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BKIgAAAoAQAACCIE+E2DIgFIEAIAALIDAEAgAAJAB2A=</HashCode>
+      <FileName>Number\Positive.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="value" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Project_Real.Number.Rational" Collapsed="true">
+    <Position X="15.5" Y="7.5" Width="1.5" />
+    <Members>
+      <Method Name="Abs" Hidden="true" />
+      <Method Name="Add" Hidden="true" />
+      <Method Name="CommonDenominator" Hidden="true" />
+      <Method Name="Cos" Hidden="true" />
+      <Property Name="Denominator" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Method Name="E" Hidden="true" />
+      <Method Name="Exp" Hidden="true" />
+      <Property Name="FractionalFormat" Hidden="true" />
+      <Property Name="FractionCalculationLength" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GetValue" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Property Name="IsZero" Hidden="true" />
+      <Method Name="IterationsNeededSinCos" Hidden="true" />
+      <Method Name="Ln" Hidden="true" />
+      <Method Name="LnFast" Hidden="true" />
+      <Method Name="Modulo" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Property Name="Numerator" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator ^" Hidden="true" />
+      <Method Name="operator |" Hidden="true" />
+      <Method Name="operator ~" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Pi" Hidden="true" />
+      <Method Name="Power" Hidden="true" />
+      <Method Name="Reciprocal" Hidden="true" />
+      <Method Name="Root" Hidden="true" />
+      <Method Name="Round" Hidden="true" />
+      <Method Name="RoundDown" Hidden="true" />
+      <Method Name="RoundUp" Hidden="true" />
+      <Method Name="SecondPower" Hidden="true" />
+      <Property Name="Separator" Hidden="true" />
+      <Property Name="Sign" Hidden="true" />
+      <Method Name="Simplify" Hidden="true" />
+      <Method Name="Sin" Hidden="true" />
+      <Method Name="SquareRoot" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Method Name="ToFractionString" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="ToWritableString" Hidden="true" />
+      <Property Name="WriteSign" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="Project_Real.Number.Rational.ABPQSeriesResult" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Number\Rational.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <AssociationLine Name="numerator" Type="Project_Real.Number.Writable" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.5" Y="7.812" />
+        <Point X="12.25" Y="7.812" />
+        <Point X="12.25" Y="6.562" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="denominator" Type="Project_Real.Number.Positive" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="16.188" Y="8.062" />
+        <Point X="16.188" Y="8.437" />
+        <Point X="8.25" Y="8.437" />
+        <Point X="8.25" Y="6.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>BaIiCAAgISgAADIE4A2HIgAAABMAAJITIECACisAB2A=</HashCode>
+      <FileName>Number\Rational.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="numerator" />
+      <Field Name="denominator" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Project_Real.Number.Digit" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <Members>
+      <Method Name="Add" Hidden="true" />
+      <Property Name="Bits" Hidden="true" />
+      <Method Name="Divide" Hidden="true" />
+      <Method Name="GetHashCode" Hidden="true" />
+      <Method Name="GreaterThan" Hidden="true" />
+      <Method Name="Multiply" Hidden="true" />
+      <Method Name="operator -" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator %" Hidden="true" />
+      <Method Name="operator *" Hidden="true" />
+      <Method Name="operator /" Hidden="true" />
+      <Method Name="operator +" Hidden="true" />
+      <Method Name="operator &lt;" Hidden="true" />
+      <Method Name="operator &lt;=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+      <Method Name="operator &gt;" Hidden="true" />
+      <Method Name="operator &gt;=" Hidden="true" />
+      <Method Name="Subtract" Hidden="true" />
+      <Method Name="ToChar" Hidden="true" />
+      <Method Name="ToString" Hidden="true" />
+      <Method Name="TrimEnd" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="Project_Real.Number.Digit.ValueOutOfRangeException" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Number\Digit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Project_Real.Number.Digit.UnmatchingArrayLengthException" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Number\Digit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Project_Real.Number.Digit.SecondValueGreaterException" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Number\Digit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BKImAAAAARABAAsE6AWDIgAAIAACAIIAAABAQABAByA=</HashCode>
+      <FileName>Number\Digit.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

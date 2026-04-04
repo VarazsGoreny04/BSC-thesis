@@ -23,7 +23,8 @@ public class Natural :
 	IPowerOperations<Natural, Natural, Natural>,
 	IRootOperations<Natural, Natural, Natural>,
 	IAdditiveIdentity<Natural, Natural>,
-	IMultiplicativeIdentity<Natural, Natural>
+	IMultiplicativeIdentity<Natural, Natural>,
+	IParsable<Natural>
 {
 	#region Fields
 
@@ -246,7 +247,7 @@ public class Natural :
 		return number;
 	}
 
-	public static Natural Parse(string s, IFormatProvider? _) => new(s);
+	public static Natural Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Natural result)
 	{

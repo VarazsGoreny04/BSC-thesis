@@ -24,7 +24,8 @@ public class Writable :
 	IPowerOperations<Writable, Writable, Writable>,
 	IRootOperations<Writable, Writable, Writable>,
 	IAdditiveIdentity<Writable, Writable>,
-	IMultiplicativeIdentity<Writable, Writable>
+	IMultiplicativeIdentity<Writable, Writable>,
+	IParsable<Writable>
 {
 	#region Fields
 
@@ -184,7 +185,7 @@ public class Writable :
 	/// <returns>A <see cref="Writable"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => $"{(WriteSign || !sign ? sign ? '+' : '-' : "")}{value}";
 
-	public static Writable Parse(string s, IFormatProvider? _) => new(s);
+	public static Writable Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Writable result)
 	{

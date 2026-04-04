@@ -24,7 +24,8 @@ public class Integer :
 	IPowerOperations<Integer, Integer, Integer>,
 	IRootOperations<Integer, Integer, Integer>,
 	IAdditiveIdentity<Integer, Integer>, 
-	IMultiplicativeIdentity<Integer, Integer>
+	IMultiplicativeIdentity<Integer, Integer>,
+	IParsable<Integer>
 {
 	#region Fields
 
@@ -162,7 +163,7 @@ public class Integer :
 	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
 
-	public static Integer Parse(string s, IFormatProvider? _) => new(s);
+	public static Integer Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Integer result)
 	{

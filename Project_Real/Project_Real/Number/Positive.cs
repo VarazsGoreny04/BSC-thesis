@@ -22,7 +22,8 @@ public class Positive :
 	IPowerOperations<Positive, Positive, Positive>,
 	IRootOperations<Positive, Positive, Positive>,
 	IAdditiveIdentity<Positive, Positive>,
-	IMultiplicativeIdentity<Positive, Positive>
+	IMultiplicativeIdentity<Positive, Positive>,
+	IParsable<Positive>
 {
 	#region Fields
 
@@ -198,7 +199,7 @@ public class Positive :
 			).Insert(WholeLength, separator.ToString());
 	}
 
-	public static Positive Parse(string s, IFormatProvider? _) => new(s);
+	public static Positive Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Positive result)
 	{

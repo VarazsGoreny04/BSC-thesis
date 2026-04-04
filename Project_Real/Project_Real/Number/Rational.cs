@@ -303,7 +303,7 @@ public class Rational :
 	/// <returns>An <see cref="Rational"/> number as a <see langword="string"/>.</returns>
 	public static string ToWritableString(Rational value) => GetValue(value).Value.ToString();
 
-	public static Rational Parse(string s, IFormatProvider? _) => new(s);
+	public static Rational Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Rational result)
 	{
