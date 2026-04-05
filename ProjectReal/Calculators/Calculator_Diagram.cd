@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Calculators.Expression" Collapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Expression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Coma&lt;T&gt;" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Coma.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Parenthesis" Collapsed="true">
+    <Position X="13.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.OpeningParenthesis" Collapsed="true">
+    <Position X="14.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.ClosingParenthesis&lt;T&gt;" Collapsed="true">
+    <Position X="12.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Operator&lt;T&gt;" Collapsed="true">
+    <Position X="5.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Operator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.ValueHolder&lt;T&gt;" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Model\ValueHolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Term&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+      <FileName>Model\Term.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Parenthesized&lt;T&gt;" Collapsed="true">
+    <Position X="2.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIABAIgAAABAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+      <FileName>Model\Parenthesized.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.FunctionBase&lt;T&gt;" Collapsed="true">
+    <Position X="5.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAE=</HashCode>
+      <FileName>Model\FunctionBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.UnaryOperator&lt;T&gt;" Collapsed="true">
+    <Position X="3.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIAAAAAAAAAAAAAAAAAAAAAAQAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Model\UnaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.BinaryOperator&lt;T&gt;" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAACACCAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Add&lt;T&gt;" Collapsed="true">
+    <Position X="3.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAIAAAABAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Subtract&lt;T&gt;" Collapsed="true">
+    <Position X="5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAIAAAABAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Multiply&lt;T&gt;" Collapsed="true">
+    <Position X="6.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Divide&lt;T&gt;" Collapsed="true">
+    <Position X="8.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Power&lt;T&gt;" Collapsed="true">
+    <Position X="10.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Root&lt;T&gt;" Collapsed="true">
+    <Position X="12" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\BinaryOperator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Function&lt;T&gt;" Collapsed="true">
+    <Position X="8.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Model\Function.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Number&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAIAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Number.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

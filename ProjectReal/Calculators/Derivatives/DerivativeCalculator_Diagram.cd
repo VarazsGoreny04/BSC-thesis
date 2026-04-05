@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Calculators.Expression" Collapsed="true">
+	<Position X="11.5" Y="0.5" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Expression.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.ValueHolder&lt;T&gt;" Collapsed="true">
+	<Position X="6.5" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+	  <FileName>Model\ValueHolder.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Coma&lt;T&gt;" Collapsed="true">
+	<Position X="11.5" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Coma.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Parenthesized&lt;T&gt;" Collapsed="true">
+	<Position X="6.5" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAIgAAAAAAAAAAAAAAAAAAACAAAAACAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesized.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Term&lt;T&gt;" Collapsed="true">
+	<Position X="2.25" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAE=</HashCode>
+	  <FileName>Model\Term.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Parenthesis" Collapsed="true">
+	<Position X="16.75" Y="1.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.OpeningParenthesis" Collapsed="true">
+	<Position X="17.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.ClosingParenthesis&lt;T&gt;" Collapsed="true">
+	<Position X="15.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+	  <FileName>Model\Parenthesis.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.FunctionBase&lt;T&gt;" Collapsed="true">
+	<Position X="10.75" Y="3" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIAAAACAAAE=</HashCode>
+	  <FileName>Model\FunctionBase.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Operator&lt;T&gt;" Collapsed="true">
+	<Position X="7.25" Y="4.25" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Operator.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Function&lt;T&gt;" Collapsed="true">
+	<Position X="15" Y="4.25" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAEAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+	  <FileName>Model\Function.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Derivatives.Derivative" Collapsed="true">
+	<Position X="15" Y="5.75" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAAAAAIAAAABAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Derivatives\Derivative.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Derivatives.Variable" Collapsed="true">
+	<Position X="2.25" Y="4.25" Width="1.5" />
+	<TypeIdentifier>
+	  <HashCode>AAAAIAAAAAAAABAAAAAQQAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+	  <FileName>Model\Derivatives\Variable.cs</FileName>
+	</TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
