@@ -1,4 +1,4 @@
-﻿using Calculators;
+﻿using Calculators.Standard;
 using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
@@ -91,8 +91,9 @@ public class Matrix<T> :
 	/// Constructs a <see cref="Matrix{T}"/> by the given <see cref="string"/>.
 	/// </summary>
 	/// <param name="content">The matrix in <see cref="string"/> format.</param>
+	/// <param name="standardCalculator">The calculator for the elements of the matrix.</param>
 	/// <exception cref="FormatException">The rows of the matrix must have the the same number of elements.</exception>
-	public Matrix(string content)
+	public Matrix(string content, StandardCalculator<T> standardCalculator)
 	{
 		string[] rows = content.Split(rowSeparator, StringSplitOptions.TrimEntries);
 		string[][] tokenized = [.. rows.Select(row => row.Split(columnSeparator, StringSplitOptions.TrimEntries))];
@@ -104,7 +105,6 @@ public class Matrix<T> :
 		}
 
 		value = new ValueHolder<T>[tokenized.Length, tokenized[0].Length];
-		Standard.StandardCalculator<T> standardCalculator = new();
 
 		try
 		{
@@ -121,11 +121,18 @@ public class Matrix<T> :
 	}
 
 	/// <summary>
+	/// Constructs a <see cref="Matrix{T}"/> by the given <see cref="string"/>
+	/// using the <see cref="StandardCalculator{T}"/> without any functions.
+	/// </summary>
+	/// <param name="content">The matrix in <see cref="string"/> format.</param>
+	/// <exception cref="FormatException">The rows of the matrix must have the the same number of elements.</exception>
+	//public Matrix(string content) : this(content, new StandardCalculator<T>([])) { }
+
+	/// <summary>
 	/// Creates a <see cref="Matrix{T}"/> by the given <see cref="ValueHolder{T}"/> matrix.
 	/// </summary>
 	/// <param name="value">The given <see cref="ValueHolder{T}"/> matrix.</param>	
 	/// /// <exception cref="ArgumentException">The given matrix must have at least one element.</exception>
-
 	public Matrix(ValueHolder<T>[,] value)
 	{
 		int rows = value.GetLength(0);

@@ -1,4 +1,5 @@
 ﻿using Calculators;
+using Calculators.EuclideanSpace;
 using Calculators.Standard;
 using ProjectReal.Number;
 using System;
@@ -11,7 +12,12 @@ public class Program
 {
 	public static void Main()
 	{
-		Calculator calculator = new StandardCalculator<Rational>();
+		Calculator.FunctionToken<Matrix<Rational>>[] euclideanSpaceFunctionTokens = [
+			new("diag", () => new Diagonalize<Rational>()),
+			new("inv", () => new Inverse<Rational>())
+		];
+
+		Calculator calculator = new StandardCalculator<Rational>([]);
 
 		/*Rational[,] a = new Rational[10, 10];
 

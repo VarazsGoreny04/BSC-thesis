@@ -6,12 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using BullseyeCalculator.Model;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
 public class CalculatorViewModel : ViewModelBase
 {
 	#region Fields
+
+	private readonly Calculator.FunctionToken<Rational>[] standardFunctionTokens;
+	private readonly Calculator.FunctionToken<Matrix<Rational>>[] euclideanSpaceFunctionTokens;
+
+	private readonly StandardCalculator<Rational> standardCalculator;
+	private readonly EuclideanSpaceCalculator<Rational> euclideanSpaceCalculator;
+	private readonly EuclideanSpaceCalculator<Rational> polynomialCalculator;
 
 	private bool start;
 	private readonly List<string> input;
@@ -89,10 +97,35 @@ public class CalculatorViewModel : ViewModelBase
 		Rational.WriteSign = false;
 		Rational.FractionalFormat = false;
 
+		standardFunctionTokens = [
+			new("ceiling", () => new Ceiling()),
+			new("round", () => new Round()),
+			new("floor", () => new Floor()),
+			new("fact", () => new Fact()),
+			new("exp", () => new Exp()),
+			new("cos", () => new Cos()),
+			new("sin", () => new Sin()),
+			new("max", () => new Max()),
+			new("min", () => new Min()),
+			new("abs", () => new Abs()),
+			new("ln", () => new Ln()),
+			new("pi", () => new PI()),
+			new("e", () => new E())
+		];
+		euclideanSpaceFunctionTokens = [
+			new("diag", () => new Diagonalize<Rational>()),
+			new("inv", () => new Inverse<Rational>())
+		];
+
+		standardCalculator = new StandardCalculator<Rational>(standardFunctionTokens);
+		euclideanSpaceCalculator = new EuclideanSpaceCalculator<Rational>(euclideanSpaceFunctionTokens, standardCalculator);
+		polynomialCalculator = new EuclideanSpaceCalculator<Rational>([], standardCalculator);
+
+		calculator = standardCalculator;
+
 		start = true;
 		showSteps = false;
 		CurrentMode = Mode.Standard;
-		calculator = new StandardCalculator<Rational>();
 		input = [];
 		result = string.Empty;
 		evaluation = [];
@@ -104,10 +137,10 @@ public class CalculatorViewModel : ViewModelBase
 
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
 
-		StandardModeCommand = new DelegateCommand(_ => ChangeMode(new StandardCalculator<Rational>(), Mode.Standard));
-		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(new EuclideanSpaceCalculator<Rational>(), Mode.Matrix));
-		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(new StandardCalculator<Rational>(), Mode.Interpolation));
-		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(new StandardCalculator<Rational>(), Mode.Integral));
+		StandardModeCommand = new DelegateCommand(_ => ChangeMode(standardCalculator, Mode.Standard));
+		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(euclideanSpaceCalculator, Mode.Matrix));
+		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(polynomialCalculator, Mode.Interpolation));
+		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(standardCalculator, Mode.Integral));
 
 		ShowOptionsCommand = new DelegateCommand(_ => { });
 	}
@@ -157,28 +190,28 @@ public class CalculatorViewModel : ViewModelBase
 
 	private void CalculateByInput()
 	{
-		if (!start)
+		if (start)
+			return;
+
+		try
 		{
-			try
-			{
-				List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
+			List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
 
-				ShowFullEvaluation(fullEvaluation);
+			ShowFullEvaluation(fullEvaluation);
 
-				string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : Input;
+			string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : Input;
 
-				Result = $"={result}";
+			Result = $"={result}";
 
-				input.Clear();
-				input.Add(result);
-			}
-			catch (FormatException e)
-			{
-				Result = e.Message;
-			}
-
-			start = true;
+			input.Clear();
+			input.Add(result);
 		}
+		catch (FormatException e)
+		{
+			Result = e.Message;
+		}
+
+		start = true;
 	}
 
 	private void ShowFullEvaluation(List<(string Calculation, string State)> evaluation)

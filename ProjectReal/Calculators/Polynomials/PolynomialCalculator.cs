@@ -1,11 +1,12 @@
 ﻿using Calculators.EuclideanSpace;
+using Calculators.Standard;
 using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-namespace Calculators.EuclideanSpace;
+namespace Calculators.Polynomials;
 
 /// <summary>
 /// A calculator that understands matrices and can perform operations with them.
@@ -38,16 +39,22 @@ where T :
 	/// <summary>
 	/// Constructs a calculator that understands matrices and can perform operations with them.
 	/// </summary>
-	public PolynomialCalculator() : base(
-	[
-		// Matrix
-		new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1]))),
-		// Separators
-		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),
-		new(ComaRegex(), _ => new Coma<Matrix<T>>())
-	])
-	{ }
+	public PolynomialCalculator(StandardCalculator<T> standardCalculator) : base(
+		[
+			// Matrix
+			new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1], standardCalculator))),
+			// Separators
+			new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
+			new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),
+			new(ComaRegex(), _ => new Coma<Matrix<T>>())
+		]
+	) { }
+
+	#endregion
+
+	#region Protected methods
+
+	protected override string[] GetFunctions() => [];
 
 	#endregion
 

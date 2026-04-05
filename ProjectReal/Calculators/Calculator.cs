@@ -90,7 +90,7 @@ public abstract partial class Calculator
 	/// <summary>
 	/// Basically a tuple with two components: a <see cref="Regex"/> pattern and a function.
 	/// </summary>
-	protected sealed class FunctionToken<T>
+	public sealed class FunctionToken<T>
 	{
 		#region Fields
 
@@ -133,6 +133,12 @@ public abstract partial class Calculator
 
 	#endregion
 
+	#region Properties
+
+	public string[] Functions => GetFunctions();
+
+	#endregion
+
 	#region Constructors
 
 	/// <summary>
@@ -144,6 +150,12 @@ public abstract partial class Calculator
 	#endregion
 
 	#region Protected methods
+
+	/// <summary>
+	/// Returns the names of the functions that the calculator can recognize.
+	/// </summary>
+	/// <returns>The function names in an array.</returns>
+	protected abstract string[] GetFunctions();
 
 	/// <summary>
 	/// Removes every whitespace character from the given <paramref name="input"/>.

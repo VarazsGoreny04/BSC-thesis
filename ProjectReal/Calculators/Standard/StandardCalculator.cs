@@ -2,6 +2,7 @@
 using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Calculators.Standard;
@@ -23,22 +24,7 @@ where T :
 {
 	#region Fields
 
-	protected static readonly FunctionToken<T>[] functionTokens =
-	[
-		/*new("ceiling", () => new Ceiling()),
-		new("round", () => new Round()),
-		new("floor", () => new Floor()),
-		new("fact", () => new Fact()),
-		new("exp", () => new Exp()),
-		new("cos", () => new Cos()),
-		new("sin", () => new Sin()),
-		new("max", () => new Max()),
-		new("min", () => new Min()),
-		new("abs", () => new Abs()),
-		new("ln", () => new Ln()),
-		new("pi", () => new PI()),
-		new("e", () => new E()),*/
-	];
+	protected readonly FunctionToken<T>[] functionTokens = [];
 
 	#endregion
 
@@ -47,25 +33,31 @@ where T :
 	/// <summary>
 	/// Constructs a calculator that understands the basic numbers, operations and trigonometric functions.
 	/// </summary>
-	public StandardCalculator() : base(
-	[
-		// Number
-		new(NumberRegex(), value => new Number<T>(T.Parse(value, null))),
-		// Function name
-		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
-		// Operators
-		new(AddRegex(), _ => new Add<T>()),
-		new(SubtractRegex(), _ => new Subtract<T>()),
-		new(MultiplyRegex(), _ => new Multiply<T>()),
-		new(DivideRegex(), _ => new Divide<T>()),
-		new(PowerRegex(), _ => new Power<T>()),
-		new(RootRegex(), _ => new Root<T>()),
-		// Separators
-		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<T>()),
-		new(ComaRegex(), _ => new Coma<T>())
-	])
-	{ }
+	public StandardCalculator(FunctionToken<T>[] functionTokens) : base(
+		[
+			// Number
+			new(NumberRegex(), value => new Number<T>(T.Parse(value, null))),
+			// Function name
+			new(FunctionNameRegex(), name => GetFunctionByName(functionTokens ?? [], name)),
+			// Operators
+			new(AddRegex(), _ => new Add<T>()),
+			new(SubtractRegex(), _ => new Subtract<T>()),
+			new(MultiplyRegex(), _ => new Multiply<T>()),
+			new(DivideRegex(), _ => new Divide<T>()),
+			new(PowerRegex(), _ => new Power<T>()),
+			new(RootRegex(), _ => new Root<T>()),
+			// Separators
+			new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
+			new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<T>()),
+			new(ComaRegex(), _ => new Coma<T>())
+		]
+	) => this.functionTokens = functionTokens;
+
+	#endregion
+
+	#region Protected methods
+
+	protected override string[] GetFunctions() => [.. functionTokens.Select(t => t.Name)];
 
 	#endregion
 

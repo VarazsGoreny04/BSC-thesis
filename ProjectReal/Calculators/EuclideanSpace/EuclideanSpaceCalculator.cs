@@ -1,7 +1,8 @@
-﻿using Calculators.EuclideanSpace;
+﻿using Calculators.Standard;
 using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
@@ -34,11 +35,7 @@ where T :
 
 	#region Fields
 
-	protected static readonly FunctionToken<Matrix<T>>[] functionTokens =
-	[
-		new("diag", () => new Diagonalize<T>()),
-		new("inv", () => new Inverse<T>()),
-	];
+	protected readonly FunctionToken<Matrix<T>>[] functionTokens = [];
 
 	#endregion
 
@@ -47,23 +44,29 @@ where T :
 	/// <summary>
 	/// Constructs a calculator that understands matrices and can perform operations with them.
 	/// </summary>
-	public EuclideanSpaceCalculator() : base(
-	[
-		// Matrix
-		new(BracketedRegex(), value => new MatrixHolder<T>(new Matrix<T>(value[1..^1]))),
-		// Function name
-		new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
-		// Operators
-		new(AddRegex(), _ => new Add<Matrix<T>>()),
-		new(SubtractRegex(), _ => new Subtract<Matrix<T>>()),
-		new(MultiplyRegex(), _ => new Multiply<Matrix<T>>()),
-		new(DivideRegex(), _ => new Divide<Matrix<T>>()),
-		// Separators
-		new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-		new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),
-		new(ComaRegex(), _ => new Coma<Matrix<T>>())
-	])
-	{ }
+	public EuclideanSpaceCalculator(FunctionToken<Matrix<T>>[] functionTokens, StandardCalculator<T> standardCalculator) : base(
+		[
+			// Matrix
+			new(BracketedRegex(), value => new MatrixHolder<T>(new Matrix<T>(value[1..^1], standardCalculator))),
+			// Function name
+			new(FunctionNameRegex(), name => GetFunctionByName(functionTokens, name)),
+			// Operators
+			new(AddRegex(), _ => new Add<Matrix<T>>()),
+			new(SubtractRegex(), _ => new Subtract<Matrix<T>>()),
+			new(MultiplyRegex(), _ => new Multiply<Matrix<T>>()),
+			new(DivideRegex(), _ => new Divide<Matrix<T>>()),
+			// Separators
+			new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
+			new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),
+			new(ComaRegex(), _ => new Coma<Matrix<T>>())
+		]
+	) => this.functionTokens = functionTokens;
+
+	#endregion
+
+	#region Protected methods
+
+	protected override string[] GetFunctions() => [.. functionTokens.Select(t => t.Name)];
 
 	#endregion
 
