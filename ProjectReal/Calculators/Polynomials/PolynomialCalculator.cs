@@ -34,6 +34,12 @@ where T :
 
 	#endregion
 
+	#region Fields
+
+	protected EuclideanSpaceCalculator<T> euclideanSpaceCalculator;
+
+	#endregion
+
 	#region Constructors
 
 	/// <summary>
@@ -42,13 +48,9 @@ where T :
 	public PolynomialCalculator(StandardCalculator<T> standardCalculator) : base(
 		[
 			// Matrix
-			new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1], standardCalculator))),
-			// Separators
-			new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
-			new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),
-			new(ComaRegex(), _ => new Coma<Matrix<T>>())
+			new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1], standardCalculator)))
 		]
-	) { }
+	) => euclideanSpaceCalculator = new EuclideanSpaceCalculator<T>([], standardCalculator);
 
 	#endregion
 
@@ -56,11 +58,49 @@ where T :
 
 	protected override string[] GetFunctions() => [];
 
+	protected Point2D<T>[] GetPoints(ValueHolder<Matrix<T>> expressionTree)
+	{
+		Matrix<T> matrix = expressionTree.GetValue();
+
+		if (matrix.Columns != 2)
+			throw new ArgumentException();
+
+
+		Point2D<T>[] points = new Point2D<T>[matrix.Rows];
+
+		for (int i = matrix.Rows - 1; i >= 0; --i)
+			points[i] = new Point2D<T>(matrix[i, 0].GetValue(), matrix[i, 1].GetValue());
+
+		return points;
+	}
+
 	#endregion
 
 	#region Public methods
 
-	public override List<(string Calculation, string State)> FullEvaluation(string input) => FullEvaluation(Evaluate<Matrix<T>>(input, this));
+	public override List<(string Calculation, string State)> FullEvaluation(string input)
+	{
+		ValueHolder<Matrix<T>> expressionTree = Evaluate<Matrix<T>>(input, euclideanSpaceCalculator);
+
+		List<(string, string)> result = FullEvaluation(expressionTree);
+		Point2D<T>[] points = GetPoints(expressionTree);
+
+		Interpolation<T>.CheckXDifference(points);
+
+		List<T[]> lagrangeBasisPolynomials = [];
+
+		for (int i = 0; i < points.Length; ++i)
+		{
+			T[] lagrangeBasisPolynomial = Interpolation<T>.LagrangeBasis(points, i);
+
+			lagrangeBasisPolynomials.Add(lagrangeBasisPolynomial);
+			result.Add(($"l({i})", Polynomial<T>.ToString(lagrangeBasisPolynomial)));
+		}
+
+		result.Add(($"L=∑{{k=0..{points.Length}}}y(k)l(k)", Polynomial<T>.ToString(Interpolation<T>.Lagrange(points, [.. lagrangeBasisPolynomials]))));
+
+		return result;
+	}
 
 	#endregion
 }

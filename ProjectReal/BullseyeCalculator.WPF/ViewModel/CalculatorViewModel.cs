@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using BullseyeCalculator.Model;
+using Calculators.Polynomials;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
@@ -19,7 +20,7 @@ public class CalculatorViewModel : ViewModelBase
 
 	private readonly StandardCalculator<Rational> standardCalculator;
 	private readonly EuclideanSpaceCalculator<Rational> euclideanSpaceCalculator;
-	private readonly EuclideanSpaceCalculator<Rational> polynomialCalculator;
+	private readonly PolynomialCalculator<Rational> polynomialCalculator;
 
 	private bool start;
 	private readonly List<string> input;
@@ -119,7 +120,7 @@ public class CalculatorViewModel : ViewModelBase
 
 		standardCalculator = new StandardCalculator<Rational>(standardFunctionTokens);
 		euclideanSpaceCalculator = new EuclideanSpaceCalculator<Rational>(euclideanSpaceFunctionTokens, standardCalculator);
-		polynomialCalculator = new EuclideanSpaceCalculator<Rational>([], standardCalculator);
+		polynomialCalculator = new PolynomialCalculator<Rational>(standardCalculator);
 
 		calculator = standardCalculator;
 

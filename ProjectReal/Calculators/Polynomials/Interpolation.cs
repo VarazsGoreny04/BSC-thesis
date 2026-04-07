@@ -27,16 +27,15 @@ where T :
 	#region Public methods
 
 	/// <summary>
-	/// Calculates the Lagrange-polynomial that crosses each point in the <paramref name="points"/> array.
+	/// Checks if there are matching bases amongst the coordinates.
 	/// </summary>
-	/// <param name="points"></param>
-	/// <returns>The coefficients of the polynomial in an array.</returns>
+	/// <param name="points">The points to check.</param>
 	/// <exception cref="ArgumentException">
 	/// <paramref name="points"/> is empty
 	/// -or-
 	/// some of the <paramref name="points"/> have matching X coordinate.
 	/// </exception>
-	public static T[] Lagrange(Point2D<T>[] points)
+	public static void CheckXDifference(Point2D<T>[] points)
 	{
 		if (points.Length < 1)
 			throw new ArgumentException();
@@ -49,33 +48,74 @@ where T :
 					throw new ArgumentException();
 			}
 		}
+	}
 
-		T[] result = Matrix<T>.Zeros(points.Length);
+	/// <summary>
+	/// Calculates the Lagrange basis polynomial for one point of the <paramref name="points"/> array.
+	/// </summary>
+	/// <param name="points">The fix points of the polynomial.</param>
+	/// <param name="index">The index of the point in the <paramref name="points"/> array.</param>
+	/// <returns>The created Lagrange basis polynomial.</returns>
+	/// <exception cref="ArgumentException">
+	/// The <paramref name="points"/> array cannot be empty and the <paramref name="index"/> must be within the bounds of the array.
+	/// </exception>
+	public static T[] LagrangeBasis(Point2D<T>[] points, int index)
+	{
+		if (index < 0 || index > (points.Length - 1))
+			throw new ArgumentException();
+
+		T denominator = T.MultiplicativeIdentity;
+		T[] numerator = [T.MultiplicativeIdentity];
 
 		for (int i = 0; i < points.Length; ++i)
 		{
-			T multiplier = points[i].Y;
-			T[] polynomial = [T.MultiplicativeIdentity];
+			if (index == i)
+				continue;
 
-			for (int j = 0; j < points.Length; ++j)
+			denominator /= points[index].X - points[i].X;
+
+			T[,] temp = Matrix<T>.OuterProduct(numerator, [-points[i].X, T.MultiplicativeIdentity]);
+			int tempLength = temp.GetLength(0);
+			numerator = Matrix<T>.Zeros(tempLength + 1);
+
+			for (int j = tempLength - 1; j >= 0; --j)
 			{
-				if (i == j)
-					continue;
-
-				multiplier /= points[i].X - points[j].X;
-
-				T[,] temp = Matrix<T>.OuterProduct(polynomial, [-points[j].X, T.MultiplicativeIdentity]);
-				polynomial = Matrix<T>.Zeros(temp.GetLength(0) + 1);
-
-				for (int k = temp.GetLength(0) - 1; k >= 0; --k)
-				{
-					for (int l = temp.GetLength(1) - 1; l >= 0; --l)
-						polynomial[k + l] += temp[k, l];
-				}
+				for (int k = 0; k < 2; ++k)
+					numerator[j + k] += temp[j, k];
 			}
-
-			result = Matrix<T>.Add(result, Matrix<T>.Scale(polynomial, multiplier));
 		}
+
+		return Matrix<T>.Scale(numerator, denominator);
+	}
+
+	/// <summary>
+	/// Calculates the Lagrange interpolating polynomial that crosses each point in the <paramref name="points"/> array.
+	/// </summary>
+	/// <param name="points">The points the polynomial needs to cross.</param>
+	/// <returns>The coefficients of the polynomial in an array.</returns>
+	public static T[] Lagrange(Point2D<T>[] points)
+	{
+		T[] result = Matrix<T>.Zeros(points.Length);
+
+		for (int i = 0; i < points.Length; ++i)
+			result = Matrix<T>.Add(result, Matrix<T>.Scale(LagrangeBasis(points, i), points[i].Y));
+
+		return result;
+	}
+
+	/// <summary>
+	/// Calculates the Lagrange interpolating polynomial using the precalculated Lagrange basis polynomials.
+	/// </summary>
+	/// <param name="points">The points the polynomial needs to cross.</param>
+	/// <param name="lagrangeBasisPolynomials">An array of corresponding Lagrange basis polynomials.</param>
+	/// <returns>The coefficients of the polynomial in an array.</returns>
+	/// <exception cref="ArgumentException">Make sure to give the corresponding points and basis polynomials to this method.</exception>
+	public static T[] Lagrange(Point2D<T>[] points, T[][] lagrangeBasisPolynomials)
+	{
+		T[] result = Matrix<T>.Zeros(points.Length);
+
+		for (int i = points.Length - 1; i >= 0; --i)
+			result = Matrix<T>.Add(result, Matrix<T>.Scale(lagrangeBasisPolynomials[i], points[i].Y));
 
 		return result;
 	}

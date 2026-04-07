@@ -38,17 +38,12 @@ where T :
 		T result = T.AdditiveIdentity;
 
 		if (polynomial.Length < 1)
-			return new Point2D<T>(result, basePoint);
+			return new Point2D<T>(basePoint, result);
 
+		T x = T.MultiplicativeIdentity;
 		result += polynomial[0];
 
-		if (polynomial.Length < 2)
-			return new Point2D<T>(result, basePoint);
-
-		T x = basePoint;
-		result += polynomial[1] * x;
-
-		for (int i = 2; i < polynomial.Length; ++i)
+		for (int i = 1; i < polynomial.Length; ++i)
 		{
 			x *= basePoint;
 			result += polynomial[i] * x;
@@ -81,11 +76,14 @@ where T :
 	{
 		List<string> parts = [];
 
-		for (int i = polynomial.Length - 1; i > 0; --i)
+		for (int i = polynomial.Length - 1; i > 1; --i)
 		{
 			if (polynomial[i] != T.AdditiveIdentity)
-				parts.Add($"({polynomial[i]})x^{i}");
+				parts.Add($"{(polynomial[i] != T.MultiplicativeIdentity ? $"({polynomial[i]})" : "")}x^{i}");
 		}
+
+		if (polynomial.Length >= 2 && polynomial[1] != T.AdditiveIdentity)
+			parts.Add($"{(polynomial[1] != T.MultiplicativeIdentity ? $"({polynomial[1]})" : "")}x");
 
 		if (polynomial[0] != T.AdditiveIdentity)
 			parts.Add($"({polynomial[0]})");
