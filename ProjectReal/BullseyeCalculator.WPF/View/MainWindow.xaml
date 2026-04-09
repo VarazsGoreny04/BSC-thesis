@@ -14,6 +14,66 @@
 			<RowDefinition Height="6*" />
 		</Grid.RowDefinitions>
 
+		<Grid x:Name="Options" Background="{StaticResource BackgroundBrush}" Panel.ZIndex="2" Grid.Row="0" Grid.RowSpan="3">
+			<Grid.Style>
+				<Style TargetType="Grid">
+					<Setter Property="Visibility" Value="Hidden" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding ShowOptions}" Value="True">
+							<Setter Property="Visibility" Value="Visible" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
+			
+			<Grid.RowDefinitions>
+				<RowDefinition Height="2*" />
+				<RowDefinition />
+				<RowDefinition Height="2*" />
+				<RowDefinition />
+				<RowDefinition Height="2*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition Width="auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use fractional format " />
+			<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding FractionalFormat}"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+			<Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Fractional accuracy " />
+			<Grid Grid.Row="2" Grid.Column="2" MinWidth="30">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<Button Content="▲" Grid.Row="0" Style="{StaticResource LightButton}" Command="{Binding IncreaseFractionCalculationLengthCommand}" />
+				
+				<Border BorderThickness="1" BorderBrush="Gray" Margin="2,2,2,2" Grid.Row="1" 
+					VerticalAlignment="Center" HorizontalAlignment="Stretch">
+
+					<!--Bind the TextBlock to the Value property-->
+					<Label Content="{Binding FractionCalculationLength}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+				</Border>
+
+				<Button Content="▼" Grid.Row="2" Style="{StaticResource LightButton}" Command="{Binding DecreaseFractionCalculationLengthCommand}" />
+			</Grid>
+
+			<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Button Grid.Column="1" Content="Apply" Style="{StaticResource SpecialButton}" Command="{Binding ShowOptionsCommand}" />
+			</Grid>
+		</Grid>
+
 		<Border Grid.Row="0" Style="{StaticResource RoundedBorderStyle}" >
 			<Grid>
 				<Grid.RowDefinitions>
@@ -50,7 +110,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="1" Content="S" Command="{Binding StandardModeCommand}">
+			<Button Grid.Column="2" Content="S" Command="{Binding StandardModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -61,7 +121,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="2" Content="[]" Command="{Binding EuclideanModeCommand}">
+			<Button Grid.Column="3" Content="[]" Command="{Binding EuclideanModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -72,7 +132,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="3" Content="I" Command="{Binding InterpolationModeCommand}">
+			<Button Grid.Column="4" Content="I" Command="{Binding InterpolationModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -83,34 +143,23 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="4" Content="∫" Command="{Binding IntegralModeCommand}">
+			<Button Grid.Column="5" Content="⚙️" Command="{Binding ShowOptionsCommand}">
 				<Button.Style>
-					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
+					<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
+						<Setter Property="IsEnabled" Value="True" />
 						<Style.Triggers>
-							<DataTrigger Binding="{Binding CurrentMode}" Value="Integral">
+							<DataTrigger Binding="{Binding CurrentMode}" Value="Options">
 								<Setter Property="IsEnabled" Value="False" />
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="5" Content="⚙️" Command="{Binding ShowOptionsCommand}">
-				<Button.Style>
-				<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
-					<Setter Property="IsEnabled" Value="True" />
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding CurrentMode}" Value="Options">
-							<Setter Property="IsEnabled" Value="False" />
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-				</Button.Style>
-			</Button>
 		</Grid>
 
 		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" />
 
-		<Grid Grid.Row="2" x:Name="Keys">
+		<Grid x:Name="Keys" Grid.Row="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition>
 					<ColumnDefinition.Style>
@@ -130,7 +179,7 @@
 				<ColumnDefinition Width="5*" />
 			</Grid.ColumnDefinitions>
 
-			<Grid Grid.Column="0" x:Name="MatrixKeys">
+			<Grid x:Name="MatrixKeys" Grid.Column="0">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition />
@@ -159,7 +208,7 @@
 				</Grid.Style>
 			</Grid>
 
-			<Grid Grid.Column="0" x:Name="InterpolationKeys">
+			<Grid x:Name="InterpolationKeys" Grid.Column="0">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition />
@@ -184,7 +233,7 @@
 				</Grid.Style>
 			</Grid>
 
-			<Grid Grid.Column="1" x:Name="StandardKeys">
+			<Grid x:Name="StandardKeys" Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition />
@@ -240,7 +289,7 @@
 						<Button Content="ln" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="ln(" />
 					</StackPanel>
 				</Expander>
-				
+
 				<Button Grid.Row="2" Grid.Column="0" Content="x²" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^2" />
 				<Button Grid.Row="3" Grid.Column="0" Content="xⁿ" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="^" />
 				<Button Grid.Row="4" Grid.Column="0" Content="√x" Style="{StaticResource DarkButton}" Command="{Binding InputCommand}" CommandParameter="2|" />

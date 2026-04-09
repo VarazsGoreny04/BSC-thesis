@@ -32,7 +32,12 @@ public class CalculatorData
 	public Mode Mode => mode;
 	public string Input => string.Concat(input);
 
-	public int FractionCalculationLength { get => Rational.FractionCalculationLength; set => Rational.FractionCalculationLength = value; }
+	public static char Separator => Rational.Separator;
+	public static char RowSeparator => Matrix<Rational>.RowSeparator;
+	public static char ColumnSeparator => Matrix<Rational>.ColumnSeparator;
+
+	public static bool FractionalFormat { get => Rational.FractionalFormat; set => Rational.FractionalFormat = value; }
+	public static int FractionCalculationLength { get => Rational.FractionCalculationLength; set => Rational.FractionCalculationLength = value; }
 
 	#endregion
 

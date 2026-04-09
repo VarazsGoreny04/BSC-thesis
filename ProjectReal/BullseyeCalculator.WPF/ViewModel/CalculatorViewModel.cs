@@ -1,10 +1,8 @@
-﻿using ProjectReal.Number;
-using Calculators.EuclideanSpace;
+﻿using BullseyeCalculator.Model;
+using BullseyeCalculator.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using BullseyeCalculator.Model;
-using BullseyeCalculator.Persistence;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
@@ -18,6 +16,7 @@ public class CalculatorViewModel : ViewModelBase
 	private readonly ObservableCollection<string> evaluation;
 
 	private bool showSteps;
+	private bool showOptions;
 
 	#endregion
 
@@ -45,6 +44,16 @@ public class CalculatorViewModel : ViewModelBase
 			OnPropertyChanged(nameof(ShowSteps));
 		}
 	}
+	public bool ShowOptions
+	{
+		get => showOptions;
+		set
+		{
+			showOptions = value;
+
+			OnPropertyChanged(nameof(ShowOptions));
+		}
+	}
 	public Mode CurrentMode
 	{
 		get => model.Data.Mode;
@@ -55,9 +64,29 @@ public class CalculatorViewModel : ViewModelBase
 			OnPropertyChanged(nameof(CurrentMode));
 		}
 	}
-	public static char Separator => Rational.Separator;
-	public static char ColumnSeparator => Matrix<Rational>.ColumnSeparator;
-	public static char RowSeparator => Matrix<Rational>.RowSeparator;
+	public static char Separator => CalculatorData.Separator;
+	public static char ColumnSeparator => CalculatorData.ColumnSeparator;
+	public static char RowSeparator => CalculatorData.RowSeparator;
+	public bool FractionalFormat
+	{
+		get => CalculatorData.FractionalFormat;
+		set
+		{
+			CalculatorData.FractionalFormat = value;
+
+			OnPropertyChanged(nameof(FractionalFormat));
+		}
+	}
+	public int FractionCalculationLength
+	{
+		get => CalculatorData.FractionCalculationLength;
+		set
+		{
+			CalculatorData.FractionCalculationLength = value;
+
+			OnPropertyChanged(nameof(FractionCalculationLength));
+		}
+	}
 
 	#endregion
 
@@ -69,13 +98,14 @@ public class CalculatorViewModel : ViewModelBase
 	public DelegateCommand EvaluateCommand { get; }
 
 	public DelegateCommand ShowStepsCommand { get; }
+	public DelegateCommand ShowOptionsCommand { get; }
 
 	public DelegateCommand StandardModeCommand { get; }
 	public DelegateCommand EuclideanModeCommand { get; }
 	public DelegateCommand InterpolationModeCommand { get; }
-	public DelegateCommand IntegralModeCommand { get; }
 
-	public DelegateCommand ShowOptionsCommand { get; }
+	public DelegateCommand IncreaseFractionCalculationLengthCommand { get; }
+	public DelegateCommand DecreaseFractionCalculationLengthCommand { get; }
 
 	#endregion
 
@@ -83,12 +113,14 @@ public class CalculatorViewModel : ViewModelBase
 
 	public CalculatorViewModel()
 	{
-		Rational.WriteSign = false;
-		Rational.FractionalFormat = false;
+		FractionalFormat = false;
+		FractionCalculationLength = 10;
 
 		model = new CalculatorModel();
 
 		showSteps = false;
+		showOptions = false;
+
 		CurrentMode = Mode.Standard;
 		result = string.Empty;
 		evaluation = [];
@@ -99,13 +131,14 @@ public class CalculatorViewModel : ViewModelBase
 		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
 
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
+		ShowOptionsCommand = new DelegateCommand(_ => ShowOptions = !showOptions);
 
 		StandardModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Standard);
 		EuclideanModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Matrix);
 		InterpolationModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Interpolation);
-		IntegralModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Integral);
 
-		ShowOptionsCommand = new DelegateCommand(_ => { });
+		IncreaseFractionCalculationLengthCommand = new DelegateCommand(_ => ++FractionCalculationLength);
+		DecreaseFractionCalculationLengthCommand = new DelegateCommand(_ => --FractionCalculationLength);
 	}
 
 	#endregion
@@ -142,6 +175,11 @@ public class CalculatorViewModel : ViewModelBase
 	{
 		if (Input.Length < 1)
 			return;
+
+		OnPropertyChanged(nameof(Input));
+
+		evaluation.Clear();
+		OnPropertyChanged(nameof(Evaluation));
 
 		try
 		{

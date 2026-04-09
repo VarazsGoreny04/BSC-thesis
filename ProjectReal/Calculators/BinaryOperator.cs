@@ -58,11 +58,8 @@ public abstract class BinaryOperator<T> : Operator<T>
 
 		int stepCopy = ++step;
 
-		if (Left is ValueHolder<T> left)
-		{
-			partialValues.Add(($"{ParenthesizeIfSigned(left.GetValue())}{Sign()}{ParenthesizeIfSigned(Right.GetValue())} = {GetValue()}",
-				root.ToStringByStep(ref stepCopy)));
-		}
+		partialValues.Add(($"{ParenthesizeIfSigned(Left.GetValue())}{Sign()}{ParenthesizeIfSigned(Right.GetValue())} = {GetValue()}",
+			root.ToStringByStep(ref stepCopy)));
 	}
 
 	public override string ToStringByStep(ref int step)
@@ -110,6 +107,20 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 
 	public override string Sign() => "+";
 
+	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
+	{
+		if (Left.Equals(initialLeft))
+		{
+			Right.FullEvaluation(ref partialValues, root, ref step);
+
+			int stepCopy = ++step;
+
+			partialValues.Add(($"{Sign()}{ParenthesizeIfSigned(Right.GetValue())} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
+		}
+		else
+			base.FullEvaluation(ref partialValues, root, ref step);
+	}
+
 	public override string ToStringByStep(ref int step)
 	{
 		string left = Left.Equals(initialLeft) ? "" : Left.ToStringByStep(ref step);
@@ -154,6 +165,20 @@ public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity
 	public override T GetValue() => Left.GetValue() - Right.GetValue();
 
 	public override string Sign() => "-";
+
+	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
+	{
+		if (Left.Equals(initialLeft))
+		{
+			Right.FullEvaluation(ref partialValues, root, ref step);
+
+			int stepCopy = ++step;
+
+			partialValues.Add(($"{Sign()}{ParenthesizeIfSigned(Right.GetValue())} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
+		}
+		else
+			base.FullEvaluation(ref partialValues, root, ref step);
+	}
 
 	public override string ToStringByStep(ref int step)
 	{
