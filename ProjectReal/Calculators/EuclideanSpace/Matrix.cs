@@ -191,23 +191,6 @@ public class Matrix<T> :
 	}
 
 	/// <summary>
-	/// Creates a diagonal matrix by the given lengths and value.
-	/// </summary>
-	/// <param name="n">The number of rows.</param>
-	/// <param name="m">The number of columns.</param>
-	/// <param name="value">The value of the diagonal elements.</param>
-	/// <returns>The created diagonal matrix.</returns>
-	public static T[,] ToMatrix(int n, int m, T value)
-	{
-		T[,] id = Identity(n, m);
-
-		for (int i = 0; i < Math.Min(n, m); i++)
-			id[i, i] = value;
-
-		return id;
-	}
-
-	/// <summary>
 	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Matrix{T}"/> as a <see langword="string"/>.</returns>
@@ -255,10 +238,10 @@ public class Matrix<T> :
 	public static bool operator <(Matrix<T> left, Matrix<T> right) => GreaterThan(ToMatrix(right), ToMatrix(left));
 	public static bool operator >=(Matrix<T> left, Matrix<T> right) => !(left < right);
 	public static bool operator <=(Matrix<T> left, Matrix<T> right) => !(left > right);
-	public static bool operator ==(Matrix<T>? left, T? right) => left is Matrix<T> l && right is T r && Equals(ToMatrix(l), ToMatrix(l.Rows, l.Columns, r));
+	public static bool operator ==(Matrix<T>? left, T? right) => left is Matrix<T> l && right is T r && Equals(ToMatrix(l), Diagonal(l.Rows, l.Columns, r));
 	public static bool operator !=(Matrix<T>? left, T? right) => !(left == right);
-	public static bool operator >(Matrix<T> left, T right) => GreaterThan(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
-	public static bool operator <(Matrix<T> left, T right) => GreaterThan(ToMatrix(left.Rows, left.Columns, right), ToMatrix(left));
+	public static bool operator >(Matrix<T> left, T right) => GreaterThan(ToMatrix(left), Diagonal(left.Rows, left.Columns, right));
+	public static bool operator <(Matrix<T> left, T right) => GreaterThan(Diagonal(left.Rows, left.Columns, right), ToMatrix(left));
 	public static bool operator >=(Matrix<T> left, T right) => !(left < right);
 	public static bool operator <=(Matrix<T> left, T right) => !(left > right);
 	public static bool operator ==(T? left, Matrix<T>? right) => right == left;
@@ -269,42 +252,50 @@ public class Matrix<T> :
 	public static bool operator <=(T left, Matrix<T> right) => !(right < left);
 	public static Matrix<T> operator +(Matrix<T> value) => value;
 	public static Matrix<T> operator -(Matrix<T> value) => Scale(ToMatrix(value), -T.MultiplicativeIdentity);
-	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)
+	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)  // TODO: Computing with identity matrix is not correct
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Rows, right.Columns, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Rows, left.Columns, right[0, 0].GetValue())) : right;
-
-		return Add(ToMatrix(left), ToMatrix(right));
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() + right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left + right[0, 0].GetValue(),
+			_ => Add(ToMatrix(left), ToMatrix(right))
+		};
 	}
 	public static Matrix<T> operator -(Matrix<T> left, Matrix<T> right)
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Rows, right.Columns, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Rows, left.Columns, right[0, 0].GetValue())) : right;
-
-		return Subtract(ToMatrix(left), ToMatrix(right));
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() - right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left - right[0, 0].GetValue(),
+			_ => Subtract(ToMatrix(left), ToMatrix(right))
+		};
 	}
 	public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Columns, right.Rows, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Columns, left.Rows, right[0, 0].GetValue())) : right;
-
-		return Product(ToMatrix(left), ToMatrix(right));
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() * right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left * right[0, 0].GetValue(),
+			_ => Product(ToMatrix(left), ToMatrix(right))
+		};
 	}
 	public static Matrix<T> operator /(Matrix<T> left, Matrix<T> right)
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Columns, right.Rows, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Columns, left.Rows, right[0, 0].GetValue())) : right;
-
-		return InverseProduct(ToMatrix(left), ToMatrix(right));
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() / right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left / right[0, 0].GetValue(),
+			_ => InverseProduct(ToMatrix(left), ToMatrix(right))
+		};
 	}
-	public static Matrix<T> operator +(Matrix<T> left, T right) => Add(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
-	public static Matrix<T> operator -(Matrix<T> left, T right) => Subtract(ToMatrix(left), ToMatrix(left.Rows, left.Columns, right));
+	public static Matrix<T> operator +(Matrix<T> left, T right) => Add(ToMatrix(left), Full(left.Rows, left.Columns, right));
+	public static Matrix<T> operator -(Matrix<T> left, T right) => Subtract(ToMatrix(left), Full(left.Rows, left.Columns, right));
 	public static Matrix<T> operator *(Matrix<T> left, T right) => Scale(ToMatrix(left), right);
 	public static Matrix<T> operator /(Matrix<T> left, T right) => Scale(ToMatrix(left), T.MultiplicativeIdentity / right);
-	public static Matrix<T> operator +(T left, Matrix<T> right) => Add(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
-	public static Matrix<T> operator -(T left, Matrix<T> right) => Subtract(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
-	public static Matrix<T> operator *(T left, Matrix<T> right) => Scale(ToMatrix(right), left);
-	public static Matrix<T> operator /(T left, Matrix<T> right) => InverseProduct(ToMatrix(right.Rows, right.Columns, left), ToMatrix(right));
+	public static Matrix<T> operator +(T left, Matrix<T> right) => right + left;
+	public static Matrix<T> operator -(T left, Matrix<T> right) => (-right) + left;
+	public static Matrix<T> operator *(T left, Matrix<T> right) => right * left;
+	public static Matrix<T> operator /(T left, Matrix<T> right) => right / left;
 
 	#endregion
 
@@ -506,23 +497,32 @@ public class Matrix<T> :
 	}
 
 	/// <summary>
-	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix full of zeros.
+	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix by the given <paramref name="value"/>.
 	/// </summary>
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
-	/// <returns>The matrix with zeros.</returns>
-	public static T[,] Zeros(int n, int m)
+	/// <param name="value">The value of the elements.</param>
+	/// <returns>The matrix.</returns>
+	public static T[,] Full(int n, int m, T value)
 	{
 		T[,] result = new T[n, m];
 
 		for (int i = 0; i < n; ++i)
 		{
 			for (int j = 0; j < m; ++j)
-				result[i, j] = T.AdditiveIdentity;
+				result[i, j] = value;
 		}
 
 		return result;
 	}
+
+	/// <summary>
+	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix full of zeros.
+	/// </summary>
+	/// <param name="n">The number of rows in the matrix.</param>
+	/// <param name="m">The number of columns in the matrix.</param>
+	/// <returns>The matrix with zeros.</returns>
+	public static T[,] Zeros(int n, int m) => Full(n, m, T.AdditiveIdentity);
 
 	/// <summary>
 	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> matrix full of ones.
@@ -530,18 +530,7 @@ public class Matrix<T> :
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
 	/// <returns>The matrix with ones.</returns>
-	public static T[,] Ones(int n, int m)
-	{
-		T[,] result = new T[n, m];
-
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < m; ++j)
-				result[i, j] = T.MultiplicativeIdentity;
-		}
-
-		return result;
-	}
+	public static T[,] Ones(int n, int m) => Full(n, m, T.MultiplicativeIdentity);
 
 	/// <summary>
 	/// Constructs an <paramref name="n"/>-by-<paramref name="m"/> diagonal matrix by the given <paramref name="value"/>.
@@ -566,15 +555,7 @@ public class Matrix<T> :
 	/// <param name="n">The number of rows in the matrix.</param>
 	/// <param name="m">The number of columns in the matrix.</param>
 	/// <returns>The identity matrix.</returns>
-	public static T[,] Identity(int n, int m)
-	{
-		T[,] result = Zeros(n, m);
-
-		for (int i = 0; i < Math.Min(n, m); ++i)
-			result[i, i] = T.MultiplicativeIdentity;
-
-		return result;
-	}
+	public static T[,] Identity(int n, int m) => Diagonal(n, m, T.MultiplicativeIdentity);
 
 	/// <summary>
 	/// Gets the <paramref name="j"/>-th column of the given matrix.

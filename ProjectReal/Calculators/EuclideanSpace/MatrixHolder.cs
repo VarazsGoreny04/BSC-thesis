@@ -64,14 +64,13 @@ where T :
 
 		if (stepCopy != step)
 		{
-			stepCopy = ++step;
-			int toRockBottom = int.MaxValue;
+			stepCopy = step;
 
-			partialValues.Add(($"{ToString()} = {ToStringByStep(ref toRockBottom)}", root.ToStringByStep(ref stepCopy)));
+			partialValues.Add(($"{ToString()} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 		}
 	}
 
-	public override Matrix<T> GetValue() => value;
+	public override Matrix<T> GetValue() => new(Matrix<T>.ToMatrix(value));
 
 	#endregion
 }

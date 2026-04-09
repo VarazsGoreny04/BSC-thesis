@@ -14,7 +14,6 @@ public class CalculatorViewModel : ViewModelBase
 
 	private readonly CalculatorModel model;
 
-	private bool start;
 	private string result;
 	private readonly ObservableCollection<string> evaluation;
 
@@ -89,7 +88,6 @@ public class CalculatorViewModel : ViewModelBase
 
 		model = new CalculatorModel();
 
-		start = true;
 		showSteps = false;
 		CurrentMode = Mode.Standard;
 		result = string.Empty;
@@ -119,14 +117,12 @@ public class CalculatorViewModel : ViewModelBase
 		model.PushInput(text);
 		OnPropertyChanged(nameof(Input));
 
-		if (start)
+		if (evaluation.Count > 0)
 		{
 			Result = string.Empty;
 
 			evaluation.Clear();
 			OnPropertyChanged(nameof(Evaluation));
-
-			start = false;
 		}
 	}
 
@@ -134,31 +130,27 @@ public class CalculatorViewModel : ViewModelBase
 	{
 		model.PopInput();
 		OnPropertyChanged(nameof(Input));
-
-		start = false;
 	}
 
 	private void ClearInput()
 	{
 		model.ClearInput();
 		OnPropertyChanged(nameof(Input));
-
-		start = true;
 	}
 
 	private void CalculateByInput()
 	{
-		if (start)
+		if (Input.Length < 1)
 			return;
 
 		try
 		{
 			(List<string> evaluation, string result) = model.CalculateByInput();
 
-			evaluation.ForEach(Evaluation.Add);
-			Result = $"={result}";
-
+			evaluation.ForEach(this.evaluation.Add);
 			OnPropertyChanged(nameof(Evaluation));
+
+			Result = $"={result}";
 
 			model.ClearInput();
 			model.PushInput(result);
@@ -167,8 +159,6 @@ public class CalculatorViewModel : ViewModelBase
 		{
 			Result = e.Message;
 		}
-
-		start = true;
 	}
 
 	#endregion
