@@ -1,5 +1,4 @@
-﻿using Calculators;
-using ProjectReal.NumberSet;
+﻿using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
 using System.Linq;

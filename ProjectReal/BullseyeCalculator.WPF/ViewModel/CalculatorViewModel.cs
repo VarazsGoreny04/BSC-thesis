@@ -1,13 +1,10 @@
 ﻿using ProjectReal.Number;
-using Calculators;
-using Calculators.Standard;
 using Calculators.EuclideanSpace;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using BullseyeCalculator.Model;
-using Calculators.Polynomials;
+using BullseyeCalculator.Persistence;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
@@ -15,27 +12,19 @@ public class CalculatorViewModel : ViewModelBase
 {
 	#region Fields
 
-	private readonly Calculator.FunctionToken<Rational>[] standardFunctionTokens;
-	private readonly Calculator.FunctionToken<Matrix<Rational>>[] euclideanSpaceFunctionTokens;
-
-	private readonly StandardCalculator<Rational> standardCalculator;
-	private readonly EuclideanSpaceCalculator<Rational> euclideanSpaceCalculator;
-	private readonly PolynomialCalculator<Rational> polynomialCalculator;
+	private readonly CalculatorModel model;
 
 	private bool start;
-	private readonly List<string> input;
 	private string result;
 	private readonly ObservableCollection<string> evaluation;
 
 	private bool showSteps;
-	private Mode currentMode;
-	private Calculator calculator;
 
 	#endregion
 
 	#region Properties
 
-	public string Input => string.Concat(input);
+	public string Input => model.Data.Input;
 	public string Result
 	{
 		get => result;
@@ -59,10 +48,10 @@ public class CalculatorViewModel : ViewModelBase
 	}
 	public Mode CurrentMode
 	{
-		get => currentMode;
+		get => model.Data.Mode;
 		set
 		{
-			currentMode = value;
+			model.SwitchMode(value);
 
 			OnPropertyChanged(nameof(CurrentMode));
 		}
@@ -98,36 +87,11 @@ public class CalculatorViewModel : ViewModelBase
 		Rational.WriteSign = false;
 		Rational.FractionalFormat = false;
 
-		standardFunctionTokens = [
-			new("ceiling", () => new Ceiling()),
-			new("round", () => new Round()),
-			new("floor", () => new Floor()),
-			new("fact", () => new Fact()),
-			new("exp", () => new Exp()),
-			new("cos", () => new Cos()),
-			new("sin", () => new Sin()),
-			new("max", () => new Max()),
-			new("min", () => new Min()),
-			new("abs", () => new Abs()),
-			new("ln", () => new Ln()),
-			new("pi", () => new PI()),
-			new("e", () => new E())
-		];
-		euclideanSpaceFunctionTokens = [
-			new("diag", () => new Diagonalize<Rational>()),
-			new("inv", () => new Inverse<Rational>())
-		];
-
-		standardCalculator = new StandardCalculator<Rational>(standardFunctionTokens);
-		euclideanSpaceCalculator = new EuclideanSpaceCalculator<Rational>(euclideanSpaceFunctionTokens, standardCalculator);
-		polynomialCalculator = new PolynomialCalculator<Rational>(standardCalculator);
-
-		calculator = standardCalculator;
+		model = new CalculatorModel();
 
 		start = true;
 		showSteps = false;
 		CurrentMode = Mode.Standard;
-		input = [];
 		result = string.Empty;
 		evaluation = [];
 
@@ -138,10 +102,10 @@ public class CalculatorViewModel : ViewModelBase
 
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
 
-		StandardModeCommand = new DelegateCommand(_ => ChangeMode(standardCalculator, Mode.Standard));
-		EuclideanModeCommand = new DelegateCommand(_ => ChangeMode(euclideanSpaceCalculator, Mode.Matrix));
-		InterpolationModeCommand = new DelegateCommand(_ => ChangeMode(polynomialCalculator, Mode.Interpolation));
-		IntegralModeCommand = new DelegateCommand(_ => ChangeMode(standardCalculator, Mode.Integral));
+		StandardModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Standard);
+		EuclideanModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Matrix);
+		InterpolationModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Interpolation);
+		IntegralModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Integral);
 
 		ShowOptionsCommand = new DelegateCommand(_ => { });
 	}
@@ -150,15 +114,9 @@ public class CalculatorViewModel : ViewModelBase
 
 	#region Private methods
 
-	private void ChangeMode(Calculator calculator, Mode mode)
-	{
-		this.calculator = calculator;
-		CurrentMode = mode;
-	}
-
 	private void PushInput(string text)
 	{
-		input.Add(text);
+		model.PushInput(text);
 		OnPropertyChanged(nameof(Input));
 
 		if (start)
@@ -174,16 +132,15 @@ public class CalculatorViewModel : ViewModelBase
 
 	private void PopInput()
 	{
-		if (input.Count > 0)
-		{
-			input.RemoveAt(input.Count - 1);
-			OnPropertyChanged(nameof(Input));
-		}
+		model.PopInput();
+		OnPropertyChanged(nameof(Input));
+
+		start = false;
 	}
 
 	private void ClearInput()
 	{
-		input.Clear();
+		model.ClearInput();
 		OnPropertyChanged(nameof(Input));
 
 		start = true;
@@ -196,16 +153,15 @@ public class CalculatorViewModel : ViewModelBase
 
 		try
 		{
-			List<(string Calculation, string State)> fullEvaluation = calculator.FullEvaluation(Input);
+			(List<string> evaluation, string result) = model.CalculateByInput();
 
-			ShowFullEvaluation(fullEvaluation);
-
-			string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : Input;
-
+			evaluation.ForEach(Evaluation.Add);
 			Result = $"={result}";
 
-			input.Clear();
-			input.Add(result);
+			OnPropertyChanged(nameof(Evaluation));
+
+			model.ClearInput();
+			model.PushInput(result);
 		}
 		catch (FormatException e)
 		{
@@ -213,17 +169,6 @@ public class CalculatorViewModel : ViewModelBase
 		}
 
 		start = true;
-	}
-
-	private void ShowFullEvaluation(List<(string Calculation, string State)> evaluation)
-	{
-		if (evaluation.Count > 0)
-		{
-			int maxLength = evaluation.Max(step => step.Calculation.Length);
-			evaluation.ForEach(step => this.evaluation.Add($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}  ─→  {step.State}"));
-
-			OnPropertyChanged(nameof(Evaluation));
-		}
 	}
 
 	#endregion

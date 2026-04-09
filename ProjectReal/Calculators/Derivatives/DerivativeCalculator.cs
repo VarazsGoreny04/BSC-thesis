@@ -1,5 +1,4 @@
-﻿using Calculators.EuclideanSpace;
-using ProjectReal.Number;
+﻿using ProjectReal.Number;
 using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;

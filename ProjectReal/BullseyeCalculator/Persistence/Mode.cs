@@ -1,4 +1,4 @@
-﻿namespace BullseyeCalculator.WPF.ViewModel;
+﻿namespace BullseyeCalculator.Persistence;
 
 public enum Mode
 {

@@ -121,12 +121,11 @@ public class Matrix<T> :
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Matrix{T}"/> by the given <see cref="string"/>
-	/// using the <see cref="StandardCalculator{T}"/> without any functions.
+	/// Constructs a <see cref="Matrix{T}"/> by the given <see cref="string"/> using the <see cref="StandardCalculator{T}"/> without any functions.
 	/// </summary>
 	/// <param name="content">The matrix in <see cref="string"/> format.</param>
 	/// <exception cref="FormatException">The rows of the matrix must have the the same number of elements.</exception>
-	//public Matrix(string content) : this(content, new StandardCalculator<T>([])) { }
+	public Matrix(string content) : this(content, new StandardCalculator<T>([])) { }
 
 	/// <summary>
 	/// Creates a <see cref="Matrix{T}"/> by the given <see cref="ValueHolder{T}"/> matrix.
@@ -286,15 +285,15 @@ public class Matrix<T> :
 	}
 	public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Rows, right.Columns, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Rows, left.Columns, right[0, 0].GetValue())) : right;
+		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Columns, right.Rows, left[0, 0].GetValue())) : left;
+		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Columns, left.Rows, right[0, 0].GetValue())) : right;
 
 		return Product(ToMatrix(left), ToMatrix(right));
 	}
 	public static Matrix<T> operator /(Matrix<T> left, Matrix<T> right)
 	{
-		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Rows, right.Columns, left[0, 0].GetValue())) : left;
-		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Rows, left.Columns, right[0, 0].GetValue())) : right;
+		left = left.Rows == 1 && left.Columns == 1 ? new Matrix<T>(Diagonal(right.Columns, right.Rows, left[0, 0].GetValue())) : left;
+		right = right.Rows == 1 && right.Columns == 1 ? new Matrix<T>(Diagonal(left.Columns, left.Rows, right[0, 0].GetValue())) : right;
 
 		return InverseProduct(ToMatrix(left), ToMatrix(right));
 	}

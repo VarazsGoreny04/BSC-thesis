@@ -43,7 +43,7 @@ where T :
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a calculator that understands matrices and can perform operations with them.
+	/// Constructs a calculator that is capable of doing interpolations.
 	/// </summary>
 	public PolynomialCalculator(StandardCalculator<T> standardCalculator) : base(
 		[
