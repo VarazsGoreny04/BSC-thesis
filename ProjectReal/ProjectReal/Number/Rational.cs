@@ -590,10 +590,10 @@ public class Rational :
 			return (P, Q, T);
 		}
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0) + 1;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1) + 1;
 		int n = fCL / 13 + 1;
 
-		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, new Natural((uint)n));
+		(_, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, new Natural((uint)n));
 
 		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
 	}
@@ -605,41 +605,6 @@ public class Rational :
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
-	{
-		static Natural P(long n1, long n2)
-		{
-			if (n2 <= n1 + 1)
-				return Digit.ONE;
-			else
-			{
-				long nm = (n1 + n2) / 2;
-				return P(n1, nm) * Q(nm, n2) + P(nm, n2);
-			}
-		}
-
-		static Natural Q(long n1, long n2)
-		{
-			if (n2 <= n1 + 1)
-				return new Natural(n2.ToString());
-			else
-			{
-				long nm = (n1 + n2) / 2;
-				return Q(n1, nm) * Q(nm, n2);
-			}
-		}
-
-		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
-
-		return Digit.ONE + new Rational(true, P(0, n), Q(0, n));
-	}
-
-	/// <summary>
-	/// Calculates the number e until the given <paramref name="fractionCalculationLength"/> using binary splitting.
-	/// </summary>
-	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns>The number e.</returns>
-	public static Rational E_E(int? fractionCalculationLength = null)
 	{
 		static ABPQSeriesResult SumABPQ(int n1, int n2)
 		{
@@ -682,7 +647,7 @@ public class Rational :
 			return r;
 		}
 
-		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 0) + 23;
+		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1) + 23;
 
 		ABPQSeriesResult r = SumABPQ(0, n);
 
@@ -742,50 +707,11 @@ public class Rational :
 			return r;
 		}
 
-		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		ABPQSeriesResult r = SumABPQ(0, n + 1, x);
+		ABPQSeriesResult r = SumABPQ(0, n, x);
 
 		return new Rational(r.T, r.Q);
-	}
-
-	/// <summary>
-	/// Calculates the exponential function for the given exponent until the given <paramref name="fractionCalculationLength"/> using binary splitting.
-	/// </summary>
-	/// <remarks>
-	/// <see href="https://ginac.de/CLN/binsplit.pdf"/><br/>
-	/// <see href="https://stackoverflow.com/questions/57510825/binary-splitting-in-pari-gp"/>
-	/// </remarks>
-	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
-	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns>The the exponential function for the given exponent.</returns>
-	public static Rational Exp_E(Rational x, int? fractionCalculationLength = null)
-	{
-		static Rational P(Rational x, long n1, long n2)
-		{
-			if (n2 <= n1 + 1)
-				return Power(x, new Natural(n2.ToString()));
-			else
-			{
-				long nm = (n1 + n2) / 2;
-				return P(x, n1, nm) * Q(nm, n2) + P(x, nm, n2);
-			}
-		}
-
-		static Natural Q(long n1, long n2)
-		{
-			if (n2 <= n1 + 1)
-				return new Natural(n2.ToString());
-			else
-			{
-				long nm = (n1 + n2) / 2;
-				return Q(n1, nm) * Q(nm, n2);
-			}
-		}
-
-		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
-
-		return Digit.ONE + (P(x, 0, n) / Q(0, n));
 	}
 
 	/// <summary>
@@ -850,7 +776,7 @@ public class Rational :
 			return result + 1;
 		}
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
 		int n = IterationsNeeded(x, fCL);
 
@@ -871,7 +797,7 @@ public class Rational :
 
 		twoToTheNth /= Digit.TWO;
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
 		Natural r2 = RoundUp(SecondPower((x - "1") / (x + "1"))).Value; // r^2 where r is (x−1)/(x+1)
 		Natural log10r2 = Natural.Log(r2, "10"); // log10(r^2)
@@ -945,7 +871,7 @@ public class Rational :
 			return r;
 		}
 
-		int fCL = fractionCalculationLength ?? FractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
 		if (Abs(x) > Digit.SIX)
 			x %= Digit.TWO * Pi(fCL);
@@ -1011,7 +937,7 @@ public class Rational :
 			return r;
 		}
 
-		int fCL = fractionCalculationLength ?? FractionCalculationLength;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
 		if (Abs(x) > Digit.SIX)
 			x %= Digit.TWO * Pi(fCL);
