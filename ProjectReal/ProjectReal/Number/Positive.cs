@@ -464,7 +464,6 @@ public class Positive :
 
 	#region Operators
 
-	public static implicit operator Positive(char value) => new(value.ToString());
 	public static implicit operator Positive(string value) => new(value);
 	public static implicit operator Positive(Digit value) => new(value);
 	public static implicit operator Positive(Natural value) => new(value);

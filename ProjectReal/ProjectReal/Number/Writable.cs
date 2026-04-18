@@ -387,7 +387,6 @@ public class Writable :
 
 	#region Operators
 
-	public static implicit operator Writable(char value) => new(value.ToString());
 	public static implicit operator Writable(string value) => new(value);
 	public static implicit operator Writable(Digit value) => new(value);
 	public static implicit operator Writable(Natural value) => new(value);

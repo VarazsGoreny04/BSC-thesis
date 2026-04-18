@@ -299,6 +299,18 @@ public class Program
 		//Console.Write(Rational.ToWritableString(Rational.Sin(-Rational.Pi() * "4")));
 		//Test(new Func<Rational>(() => Rational.Sin("0.6")), 100, 150);
 		//Test(new Func<Rational>(() => Rational.Cos(pi)), 1, 100);
+
+		Rational.FractionalFormat = false;
+
+		//Performance(i => Rational.Exp("13.37", i), 30, 150);
+
+		//Performance(i => Rational.E_E(i), 30, 150);
+		//Performance(i => Rational.E(i), 30, 150);
+
+		//Performance(i => Rational.E_E(i).ToString()[^Math.Min(30, i)..], 30, 150);
+
+		//Validate(i => Rational.E_E(i), 0, 500);
+		Validate(i => Rational.Pi(i), 0, 500);
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)
@@ -324,7 +336,7 @@ public class Program
 
 		Stopwatch timer = new();
 
-		for (int i = from; i <= to; i+=2)
+		for (int i = from; i <= to; i += 2)
 		{
 			timer.Restart();
 
@@ -333,5 +345,62 @@ public class Program
 			timer.Stop();
 			Console.WriteLine($" - {timer}");
 		}
+	}
+
+	private static void Performance(Func<int, Rational> func, int from, int to)
+	{
+		Stopwatch timer = new();
+
+		timer.Start();
+
+		for (int i = from; i <= to; ++i)
+		{
+			Rational.FractionCalculationLength = i;
+
+			Console.Write(Rational.ToWritableString(func.Invoke(i)));
+		}
+
+		timer.Stop();
+		Console.WriteLine($" - {timer}");
+	}
+
+	private static void Validate(Func<int, Rational> func, int from, int to)
+	{
+		Rational.FractionCalculationLength = 0;
+		Rational.FractionalFormat = false;
+
+		Stopwatch timer = new();
+		timer.Start();
+
+		string last = func.Invoke(0).ToString();
+		string now;
+
+		for (int i = 1; i < 500; ++i)
+		{
+			Rational.FractionCalculationLength = i;
+
+			now = func.Invoke(i).ToString();
+
+			if (!Compare(last, now))
+				Console.WriteLine($"{i}: {last}\n{now}");
+
+			last = now;
+		}
+
+		timer.Stop();
+		Console.WriteLine($" - {timer}");
+	}
+
+	private static bool Compare(string shorter, string longer)
+	{
+		int sLength = shorter.Length;
+
+		for (int i = 0; i < sLength; ++i)
+		{
+			if (shorter[i] != longer[i])
+				return false;
+		}
+
+		return true;
 	}
 }

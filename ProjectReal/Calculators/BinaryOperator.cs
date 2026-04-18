@@ -8,7 +8,7 @@ namespace Calculators;
 /// <summary>
 /// Represents a binary operator in an expression.
 /// </summary>
-public abstract class BinaryOperator<T> : Operator<T>
+public abstract partial class BinaryOperator<T> : Operator<T>
 {
 	#region Properties
 

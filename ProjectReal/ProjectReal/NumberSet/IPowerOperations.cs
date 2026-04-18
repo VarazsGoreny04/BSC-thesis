@@ -6,7 +6,7 @@
 /// <typeparam name="TResult">
 /// The type that contains the result of <typeparamref name="TSelf" /> raised to <typeparamref name="TOther" />.
 /// </typeparam>
-public interface IPowerOperations<TSelf, TOther, TResult> where TSelf : IPowerOperations<TSelf, TOther, TResult>?
+public interface IPowerOperations<TSelf, TOther, TResult> where TSelf : IPowerOperations<TSelf, TOther, TResult>
 {
 	/// <summary>Computes the power of the two values. The operator is left associative.</summary>
 	/// <param name="left">The base value.</param>

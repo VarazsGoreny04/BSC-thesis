@@ -6,7 +6,7 @@
 /// <typeparam name="TResult">
 /// The type that contains the result of the root of <typeparamref name="TSelf" /> raised to <typeparamref name="TOther" />.
 /// </typeparam>
-public interface IRootOperations<TSelf, TOther, TResult> where TSelf : IRootOperations<TSelf, TOther, TResult>?
+public interface IRootOperations<TSelf, TOther, TResult> where TSelf : IRootOperations<TSelf, TOther, TResult>
 {
 	/// <summary>Computes the square root of the given value.</summary>
 	/// <param name="left">The base value.</param>

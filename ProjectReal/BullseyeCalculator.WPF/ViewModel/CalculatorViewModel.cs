@@ -181,6 +181,8 @@ public class CalculatorViewModel : ViewModelBase
 		evaluation.Clear();
 		OnPropertyChanged(nameof(Evaluation));
 
+		Result = "Calculating...";
+
 		try
 		{
 			(List<string> evaluation, string result) = model.CalculateByInput();

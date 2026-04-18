@@ -53,8 +53,8 @@ public class CalculatorData
 			new("exp", () => new Exp()),
 			new("cos", () => new Cos()),
 			new("sin", () => new Sin()),
-			new("max", () => new Max()),
-			new("min", () => new Min()),
+			new("max", () => new Max<Rational>()),
+			new("min", () => new Min<Rational>()),
 			new("abs", () => new Abs()),
 			new("ln", () => new Ln()),
 			new("pi", () => new PI()),
@@ -64,7 +64,9 @@ public class CalculatorData
 			new("diag", () => new Diagonalize<Rational>()),
 			new("inv", () => new Inverse<Rational>())
 		];
-		
+
+		Rational.WriteSign = false;
+
 		standardCalculator = new StandardCalculator<Rational>(standardFunctionTokens);
 		euclideanSpaceCalculator = new EuclideanSpaceCalculator<Rational>(euclideanSpaceFunctionTokens, standardCalculator);
 		polynomialCalculator = new PolynomialCalculator<Rational>(standardCalculator);

@@ -548,10 +548,14 @@ public class Rational :
 	/// Calculates π until the given <paramref name="fractionCalculationLength"/> using the Chudnovsky-formula with binary splitting.
 	/// </summary>
 	/// <remarks>
+	/// <para>
 	/// I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers
 	/// - David and Gregory Chudnovsky - for developing a generalisation to Ramanujan's formula.
-	/// <para><see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/></para>
-	/// <para><see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
+	/// </para>
+	/// <para>
+	/// <see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/><br/>
+	/// <see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/>
+	/// </para>
 	/// </remarks>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The number π.</returns>
@@ -562,7 +566,7 @@ public class Rational :
 			Natural P, Q;
 			Integer T;
 
-			if (b == a + Digit.ONE)
+			if (b <= a + Digit.ONE)
 			{
 				(P, Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
 					((Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE), a * a * a * "10939058860032000");
@@ -586,12 +590,10 @@ public class Rational :
 			return (P, Q, T);
 		}
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0) + 1;
+		int n = fCL / 13 + 1;
 
-		Natural DIGITS_PER_TERM = "13";
-		Natural n = new Natural((uint)fCL) / DIGITS_PER_TERM + Digit.ONE;
-
-		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, n);
+		(Natural _, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, new Natural((uint)n));
 
 		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
 	}
@@ -606,22 +608,22 @@ public class Rational :
 	{
 		static Natural P(long n1, long n2)
 		{
-			if (n2 == n1 + 1)
+			if (n2 <= n1 + 1)
 				return Digit.ONE;
 			else
 			{
-				int nm = (int)((n1 + n2) / 2);
+				long nm = (n1 + n2) / 2;
 				return P(n1, nm) * Q(nm, n2) + P(nm, n2);
 			}
 		}
 
 		static Natural Q(long n1, long n2)
 		{
-			if (n2 == n1 + 1)
+			if (n2 <= n1 + 1)
 				return new Natural(n2.ToString());
 			else
 			{
-				int nm = (int)((n1 + n2) / 2);
+				long nm = (n1 + n2) / 2;
 				return Q(n1, nm) * Q(nm, n2);
 			}
 		}
@@ -632,11 +634,66 @@ public class Rational :
 	}
 
 	/// <summary>
+	/// Calculates the number e until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/E_(mathematical_constant)#Computing_the_digits"/></remarks>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>The number e.</returns>
+	public static Rational E_E(int? fractionCalculationLength = null)
+	{
+		static ABPQSeriesResult SumABPQ(int n1, int n2)
+		{
+			ABPQSeriesResult r;
+
+			switch (n2 - n1)
+			{
+				case 0:
+					throw new Exception();
+				case 1:
+					r = n1 == 0 ?
+					new(
+						P: null!,
+						Q: Digit.ONE,
+						B: null!,
+						T: Digit.ONE
+					) :
+					new(
+						P: null!,
+						Q: new Natural((uint)n1),
+						B: null!,
+						T: Digit.ONE
+					);
+					break;
+				default:
+					int nm = (n1 + n2) / 2;
+
+					ABPQSeriesResult L = SumABPQ(n1, nm);
+					ABPQSeriesResult R = SumABPQ(nm, n2);
+
+					r = new(
+						P: null!,
+						Q: L.Q * R.Q,
+						B: null!,
+						T: R.Q * L.T + R.T
+					);
+					break;
+			}
+
+			return r;
+		}
+
+		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 0) + 23;
+
+		ABPQSeriesResult r = SumABPQ(0, n);
+
+		return new Rational(r.T, r.Q);
+	}
+
+	/// <summary>
 	/// Calculates the exponential function for the given exponent until the given <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
-	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
-	/// <br />
+	/// <see href="https://ginac.de/CLN/binsplit.pdf"/><br/>
 	/// <see href="https://stackoverflow.com/questions/57510825/binary-splitting-in-pari-gp"/>
 	/// </remarks>
 	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
@@ -662,7 +719,7 @@ public class Rational :
 					) :
 					new(
 						P: x.numerator,
-						Q: new Natural((uint)n1) * (x.denominator ?? Digit.ONE),
+						Q: x.denominator is not null ? new Natural((uint)n1) * x.denominator : new Natural((uint)n1),
 						B: null!,
 						T: x.numerator
 					);
@@ -690,6 +747,45 @@ public class Rational :
 		ABPQSeriesResult r = SumABPQ(0, n + 1, x);
 
 		return new Rational(r.T, r.Q);
+	}
+
+	/// <summary>
+	/// Calculates the exponential function for the given exponent until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// </summary>
+	/// <remarks>
+	/// <see href="https://ginac.de/CLN/binsplit.pdf"/><br/>
+	/// <see href="https://stackoverflow.com/questions/57510825/binary-splitting-in-pari-gp"/>
+	/// </remarks>
+	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>The the exponential function for the given exponent.</returns>
+	public static Rational Exp_E(Rational x, int? fractionCalculationLength = null)
+	{
+		static Rational P(Rational x, long n1, long n2)
+		{
+			if (n2 <= n1 + 1)
+				return Power(x, new Natural(n2.ToString()));
+			else
+			{
+				long nm = (n1 + n2) / 2;
+				return P(x, n1, nm) * Q(nm, n2) + P(x, nm, n2);
+			}
+		}
+
+		static Natural Q(long n1, long n2)
+		{
+			if (n2 <= n1 + 1)
+				return new Natural(n2.ToString());
+			else
+			{
+				long nm = (n1 + n2) / 2;
+				return Q(n1, nm) * Q(nm, n2);
+			}
+		}
+
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 0);
+
+		return Digit.ONE + (P(x, 0, n) / Q(0, n));
 	}
 
 	/// <summary>
@@ -946,7 +1042,6 @@ public class Rational :
 
 	#region Operators
 
-	public static implicit operator Rational(char value) => new(value.ToString());
 	public static implicit operator Rational(string value) => new(value);
 	public static implicit operator Rational(Digit value) => new(value);
 	public static implicit operator Rational(Natural value) => new(value);
