@@ -309,8 +309,8 @@ public class Program
 
 		//Performance(i => Rational.E_E(i).ToString()[^Math.Min(30, i)..], 30, 150);
 
-		//Validate(i => Rational.E_E(i), 0, 500);
-		Validate(i => Rational.Pi(i), 0, 500);
+		Validate(i => Rational.E(i), 0, 500);
+		//Validate(i => Rational.Pi(i), 0, 500);
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)
