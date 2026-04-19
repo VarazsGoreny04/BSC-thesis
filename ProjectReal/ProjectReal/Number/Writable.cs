@@ -331,12 +331,13 @@ public class Writable :
 	/// <param name="right">The <see cref="Writable"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
+	/// <exception cref="NotSupportedException">
+	/// Absolut value of <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive.
+	/// </exception>
 	public static Writable Power(Writable left, Writable right)
 	{
-		if (!right.sign)
+		return right.sign ? new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value) :
 			throw new NotImplementedException();
-
-		return new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value);
 	}
 
 	/// <summary>

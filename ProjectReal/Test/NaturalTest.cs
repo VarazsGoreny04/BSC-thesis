@@ -30,8 +30,8 @@ public class NaturalTest
 	[TestMethod]
 	public void StringConstructor() // Leading zero is not tested
 	{
-		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => new Natural(nullString));
+		Assert.ThrowsException<NullReferenceException>(() => new Natural((null as string)!));
+
 		Assert.ThrowsException<ArgumentException>(() => new Natural(""));
 		Assert.ThrowsException<ArgumentException>(() => new Natural("a123"));
 		Assert.ThrowsException<ArgumentException>(() => new Natural("123a"));
@@ -56,7 +56,7 @@ public class NaturalTest
 	public void DigitConstructor() // Leading zero is not tested
 	{
 		Digit[] nullArray = null!;
-		Assert.ThrowsException<ArgumentException>(() => new Natural(nullArray));
+		Assert.ThrowsException<NullReferenceException>(() => new Natural(nullArray));
 		Assert.ThrowsException<ArgumentException>(() => new Natural([]));
 
 		Digit[] digits1, digits2;
@@ -256,7 +256,7 @@ public class NaturalTest
 			natural2 = new(item.Number2);
 
 			if (item.Root == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Natural.Root(natural1, natural2));
+				Assert.ThrowsException<DivideByZeroException>(() => Natural.Root(natural1, natural2));
 			else if (item.Root != "BIG")
 			{
 				(whole, remainder) = Natural.Root(natural1, natural2);

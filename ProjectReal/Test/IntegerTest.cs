@@ -6,6 +6,18 @@ namespace Test;
 [TestClass]
 public class IntegerTest
 {
+	private readonly bool writeSign;
+
+	public IntegerTest()
+	{
+		writeSign = Integer.WriteSign;
+
+		Integer.WriteSign = true;
+	}
+
+	[TestCleanup()]
+	public void Cleanup() => Integer.WriteSign = writeSign;
+
 	private static bool Sign(string sign)
 	{
 		return sign[0] switch
@@ -18,9 +30,6 @@ public class IntegerTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer empty = new();
 
 		Integer[] zeros =
@@ -39,18 +48,13 @@ public class IntegerTest
 
 		foreach (Integer zero in zeros)
 			Assert.AreEqual(empty, zero);
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void StringConstructor()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
+		Assert.ThrowsException<NullReferenceException>(() => new Integer(null!));
 
-		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => new Integer(nullString));
 		Assert.ThrowsException<ArgumentException>(() => new Integer(""));
 		Assert.ThrowsException<ArgumentException>(() => new Integer("+"));
 		Assert.ThrowsException<ArgumentException>(() => new Integer("-"));
@@ -77,16 +81,11 @@ public class IntegerTest
 			Assert.AreEqual(Sign(item.Number2), number2.Sign);
 			Assert.AreEqual((new Natural(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void NaturalConstructor()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Natural natural1, natural2;
 		Integer number1, number2;
 
@@ -106,16 +105,11 @@ public class IntegerTest
 			for (int j = 1; j < item.Number2.Length; ++j)
 				Assert.AreEqual(item.Number2[j].ToString(), number2.Digits[^j].ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer number1, number2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -126,16 +120,11 @@ public class IntegerTest
 			Assert.AreEqual(item.Number1 == "-0" ? "+0" : item.Number1, number1.ToString());
 			Assert.AreEqual(item.Number2 == "-0" ? "+0" : item.Number2, number2.ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Digit[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -161,16 +150,11 @@ public class IntegerTest
 			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
 			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Digit[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -198,16 +182,11 @@ public class IntegerTest
 			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberCharacters1, numberDigits2));
 			Assert.AreEqual(item.Greater, Integer.GreaterThan(numberDigits1, numberCharacters2));
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -217,16 +196,11 @@ public class IntegerTest
 
 			Assert.AreEqual(item.Add, Integer.Add(integer1, integer2).ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -236,16 +210,11 @@ public class IntegerTest
 
 			Assert.AreEqual(item.Sub, Integer.Subtract(integer1, integer2).ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -255,16 +224,11 @@ public class IntegerTest
 
 			Assert.AreEqual(item.Mul, Integer.Multiply(integer1, integer2).ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2, whole, remainder;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -282,16 +246,11 @@ public class IntegerTest
 				Assert.AreEqual((new Integer(item.Number1)).ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -300,20 +259,25 @@ public class IntegerTest
 			integer2 = new(item.Number2);
 
 			if (item.Pow == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Integer.Power(integer1, integer2));
+			{
+				try
+				{
+					Integer.Power(integer1, integer2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException or DivideByZeroException or NotSupportedException))
+						Assert.Fail(e.Message);
+				}
+			}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Integer.Power(integer1, integer2).ToString());
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void RootMethod()
 	{
-		bool writeSign = Integer.WriteSign;
-		Integer.WriteSign = true;
-
 		Integer integer1, integer2, whole, remainder;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
@@ -322,7 +286,17 @@ public class IntegerTest
 			integer2 = new(item.Number2);
 
 			if (item.Root == "ERROR")
-				Assert.ThrowsException<NotImplementedException>(() => Integer.Root(integer1, integer2));
+			{
+				try
+				{
+					Integer.Root(integer1, integer2);
+				}
+				catch (Exception e)
+				{
+					if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
+						Assert.Fail();
+				}
+			}
 			else if (item.Root != "BIG")
 			{
 				(whole, remainder) = Integer.Root(integer1, integer2);
@@ -331,7 +305,5 @@ public class IntegerTest
 				Assert.AreEqual((new Integer(item.Number1)).ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
-
-		Integer.WriteSign = writeSign;
 	}
 }

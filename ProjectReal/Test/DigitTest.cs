@@ -22,8 +22,8 @@ public class DigitTest
 	[TestMethod]
 	public void CharConstructor()
 	{
-		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(ToChar(-1)); });
-		Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(ToChar(10)); });
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(ToChar(-1)); });
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(ToChar(10)); });
 
 		for (int i = 0; i < 10; ++i)
 		{
@@ -42,7 +42,7 @@ public class DigitTest
 			Assert.AreEqual(binary[i], (new Digit(binary[i])).Bits);
 
 		for (; i < binary.Length; ++i)
-			Assert.ThrowsException<Digit.ValueOutOfRangeException>(() => { _ = new Digit(binary[i]); });
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(binary[i]); });
 
 	}
 

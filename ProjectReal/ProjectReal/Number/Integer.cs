@@ -293,6 +293,10 @@ public class Integer :
 	/// <param name="right">The <see cref="Integer"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="left"/> cannot be 0 while <paramref name="right"/> is negative.</exception>
+	/// <exception cref="NotSupportedException">
+	/// Absolut value of <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
+	/// </exception>
 	public static Integer Power(Integer left, Integer right)
 	{
 		return !right.sign ? Digit.ONE / Power(left, right.Value) :

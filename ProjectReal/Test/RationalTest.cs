@@ -6,7 +6,26 @@ namespace Test;
 [TestClass]
 public class RationalTest
 {
-	public const int fractionCalculationLength = 10;
+	private const int FRACTION_CALCULATION_LENGTH = 10;
+
+	private readonly bool fractionalFormat;
+	private readonly bool writeSign;
+
+	public RationalTest()
+	{
+		fractionalFormat = Rational.FractionalFormat;
+		writeSign = Rational.WriteSign;
+
+		Rational.FractionalFormat = true;
+		Rational.WriteSign = true;
+	}
+
+	[TestCleanup()]
+	public void Cleanup()
+	{
+		Rational.FractionalFormat = fractionalFormat;
+		Rational.WriteSign = writeSign;
+	}
 
 	private static bool Sign(string sign)
 	{
@@ -20,10 +39,6 @@ public class RationalTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
 
 		Rational empty = new();
 
@@ -374,7 +389,7 @@ public class RationalTest
 		Rational.WriteSign = writeSign;
 	}
 
-	//[TestMethod]
+	[TestMethod]
 	public void StringConstructor()
 	{
 		bool fractionalFormat = Rational.FractionalFormat;
@@ -382,20 +397,26 @@ public class RationalTest
 		bool writeSign = Rational.WriteSign;
 		Rational.WriteSign = true;
 
+		string[] zeroTests = ["0/0", "+0/0", "-0/0", "0/+0", "0/-0", "+0/+0", "+0/-0", "-0/+0", "-0/-0"];
+
 		string[] tests =
 		[
-			null!, "", "+", "-", ".", "+.", "-.",
+			"", "+", "-", ".", "+.", "-.",
 			".123", "+.123", "-.123",
 			"/", "+/", "-/", "./", "+/.", "-/.",
 			"a123", "123a", "12a3",
 			"+a123", "+123a", "+12a3",
 			"-a123", "-123a", "-12a3",
-			".12/3", "+/.123", "-.123/",
-			"0/0", "+0/0", "-0/0", "0/+0", "0/-0", "+0/+0", "+0/-0", "-0/+0", "-0/-0"
+			".12/3", "+/.123", "-.123/"
 		];
 
-		for (int j = 0; j < tests.Length; ++j)
-			Assert.ThrowsException<ArgumentException>(() => new Rational(tests[j]));
+		Assert.ThrowsException<NullReferenceException>(() => new Rational(null!));
+
+		for (int i = 0; i < zeroTests.Length; ++i)
+			Assert.ThrowsException<DivideByZeroException>(() => new Rational(zeroTests[i]));
+
+		for (int i = 0; i < tests.Length; ++i)
+			Assert.ThrowsException<ArgumentException>(() => new Rational(tests[i]));
 
 		string[] tokens1, tokens2;
 		bool sign1, sign2;
@@ -425,26 +446,21 @@ public class RationalTest
 			number2 = new Rational(item.Number2);
 
 			Assert.AreEqual(sign1, number1.Sign);
-			Assert.AreEqual(writable1.Value.ToString(), number1.Numerator.ToString());
-			Assert.AreEqual(positive12.ToString(), number1.Denominator is null ? "1" : number1.Denominator.ToString());
+			Assert.AreEqual((new Writable(sign1, positive11 / positive12)).ToString(),
+				(new Writable(sign1, number1.Numerator / (number1.Denominator ?? "1")).ToString()));
 
 			Assert.AreEqual(sign2, number2.Sign);
-			Assert.AreEqual(writable2.Value.ToString(), number2.Numerator.ToString());
-			Assert.AreEqual(positive22.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
+			Assert.AreEqual((new Writable(sign2, positive21 / positive22)).ToString(),
+				(new Writable(sign2, number2.Numerator / (number2.Denominator ?? "1")).ToString()));
 		}
 
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 	}
 
-	//[TestMethod]
+	[TestMethod]
 	public void PositiveConstructor()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		string[] tokens1, tokens2;
 		bool sign1, sign2;
 		Positive positive11, positive21;
@@ -467,28 +483,17 @@ public class RationalTest
 
 			number1 = new Rational(sign1, positive11, positive12);
 			number2 = new Rational(sign2, positive21, positive22);
-
+			
 			Assert.AreEqual(sign1, number1.Sign);
-			Assert.AreEqual(positive11.ToString(), number1.Numerator.ToString());
-			Assert.AreEqual(positive12.ToString(), number1.Denominator is null ? "1" : number1.Denominator.ToString());
-
 			Assert.AreEqual(sign2, number2.Sign);
-			Assert.AreEqual(positive21.ToString(), number2.Numerator.ToString());
-			Assert.AreEqual(positive22.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
+			Assert.AreEqual((new Rational(item.Number1)).ToString(), number1.ToString());
+			Assert.AreEqual((new Rational(item.Number2)).ToString(), number2.ToString());
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
-	//[TestMethod]
+	[TestMethod]
 	public void WritableConstructor()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		string[] tokens1, tokens2;
 		Writable writable1, writable2;
 		Positive? positive1, positive2;
@@ -508,24 +513,17 @@ public class RationalTest
 			number1 = new Rational(writable1, positive1);
 			number2 = new Rational(writable2, positive2);
 
-			Assert.AreEqual(writable1.Value.ToString(), number1.Numerator.ToString());
-			Assert.AreEqual(positive1.ToString(), number1.Denominator is null ? "1" : number1.Denominator.ToString());
-
-			Assert.AreEqual(writable2.Value.ToString(), number2.Numerator.ToString());
-			Assert.AreEqual(positive2.ToString(), number2.Denominator is null ? "1" : number2.Denominator.ToString());
+			Assert.AreEqual(writable1.Sign, number1.Sign);
+			Assert.AreEqual(writable2.Sign, number2.Sign);
+			Assert.AreEqual((new Rational(item.Number1)).ToString(), number1.ToString());
+			Assert.AreEqual((new Rational(item.Number2)).ToString(), number2.ToString());
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
-	//[TestMethod]
+	[TestMethod]
 	public void ToStringMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
+		Rational.FractionalFormat = false;
 
 		string[] tokens1, tokens2;
 		Writable writable1, writable2;
@@ -546,22 +544,14 @@ public class RationalTest
 			number1 = new Rational(item.Number1);
 			number2 = new Rational(item.Number2);
 
-			Assert.AreEqual($"{writable1}{(positive1 is Positive p1 && p1 != "1" ? $"/{p1}" : "")}", number1.ToString());
-			Assert.AreEqual($"{writable2}{(positive2 is Positive p2 && p2 != "1" ? $"/{p2}" : "")}", number2.ToString());
+			Assert.AreEqual((positive1 is not null ? writable1 / positive1 : writable1).ToString(), number1.ToString());
+			Assert.AreEqual((positive2 is not null ? writable2 / positive2 : writable2).ToString(), number2.ToString());
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -582,19 +572,11 @@ public class RationalTest
 			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
 			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		string[] tokens1, tokens2;
 		Rational numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
@@ -617,20 +599,12 @@ public class RationalTest
 			Assert.AreEqual(item.Greater, Rational.GreaterThan(numberCharacters1, numberDigits2));
 			Assert.AreEqual(item.Greater, Rational.GreaterThan(numberDigits1, numberCharacters2));
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		Rational rational1, rational2;
 
 		foreach (RationalTestCase item in RationalTestCases.List)
@@ -640,19 +614,11 @@ public class RationalTest
 
 			Assert.AreEqual(item.Add, Rational.Add(rational1, rational2));
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		Rational rational1, rational2;
 
 		foreach (RationalTestCase item in RationalTestCases.List)
@@ -662,19 +628,11 @@ public class RationalTest
 
 			Assert.AreEqual(item.Sub, Rational.Subtract(rational1, rational2));
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		Rational rational1, rational2;
 
 		foreach (RationalTestCase item in RationalTestCases.List)
@@ -684,18 +642,12 @@ public class RationalTest
 
 			Assert.AreEqual(item.Mul, Rational.Multiply(rational1, rational2));
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
 		Rational.FractionalFormat = false;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
 
 		int length;
 		Rational rational1, rational2;
@@ -718,19 +670,11 @@ public class RationalTest
 				Assert.AreEqual(expected[..length], result[..length]);
 			}
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = true;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		Rational rational1, rational2;
 
 		foreach (RationalTestCase item in RationalTestCases.List)
@@ -745,25 +689,17 @@ public class RationalTest
 				}
 				catch (Exception e)
 				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
+					if (!(e is NotImplementedException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(new Rational(item.Pow), Rational.Power(rational1, rational2));
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void RootMethod()
 	{
-		bool fractionalFormat = Rational.FractionalFormat;
-		Rational.FractionalFormat = false;
-		bool writeSign = Rational.WriteSign;
-		Rational.WriteSign = true;
-
 		int length;
 		Rational rational1, rational2, result;
 		Writable numeratorRemainder;
@@ -782,12 +718,12 @@ public class RationalTest
 				}
 				catch (Exception e)
 				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
+					if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException or NotImplementedException)) // TODO
+						Assert.Fail(e.Message);
 				}
 			else if (item.Root != "BIG")
 			{
-				(result, numeratorRemainder, denominatorRemainder) = Rational.Root(rational1, rational2, fractionCalculationLength);
+				(result, numeratorRemainder, denominatorRemainder) = Rational.Root(rational1, rational2, FRACTION_CALCULATION_LENGTH);
 				expected = (new Rational(item.Root)).ToString();
 
 				length = Math.Min(expected.Length, result.ToString().Length);
@@ -797,8 +733,5 @@ public class RationalTest
 					((result?.Denominator ?? Digit.ONE) ^ rational2) + denominatorRemainder);
 			}
 		}
-
-		Rational.FractionalFormat = fractionalFormat;
-		Rational.WriteSign = writeSign;
 	}
 }

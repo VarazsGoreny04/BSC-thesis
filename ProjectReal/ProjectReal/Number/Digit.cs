@@ -71,7 +71,7 @@ public readonly struct Digit :
 	{
 		sbyte number = (sbyte)(character - '0');
 
-		if (number < 0 || number > 9)
+		if (number is < 0 or > 9)
 			throw new ArgumentOutOfRangeException(nameof(character), character, "The given parameter must be a number character!");
 
 		bits = (byte)number;

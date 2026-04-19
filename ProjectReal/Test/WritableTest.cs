@@ -6,7 +6,19 @@ namespace Test;
 [TestClass]
 public class WritableTest
 {
-	public const int fractionCalculationLength = 10;
+	private const int FRACTION_CALCULATION_LENGTH = 10;
+
+	private readonly bool writeSign;
+
+	public WritableTest()
+	{
+		writeSign = Writable.WriteSign;
+
+		Writable.WriteSign = true;
+	}
+
+	[TestCleanup()]
+	public void Cleanup() => Writable.WriteSign = writeSign;
 
 	private static bool Sign(string sign)
 	{
@@ -20,9 +32,6 @@ public class WritableTest
 	[TestMethod]
 	public void ZeroConstructor()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable empty = new();
 
 		Writable[] zeros =
@@ -67,19 +76,15 @@ public class WritableTest
 
 		foreach (Writable zero in zeros)
 			Assert.AreEqual(empty, zero);
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void StringConstructor()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
+		Assert.ThrowsException<NullReferenceException>(() => new Writable(null!));
 
 		string[] tests =
 		[
-			null!,
 			"", "+", "-", ".", "+.", "-.",
 			".123", "+.123", "-.123",
 			"a123", "123a", "12a3"
@@ -109,16 +114,11 @@ public class WritableTest
 			Assert.AreEqual(Sign(item.Number2), number2.Sign);
 			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void PositiveConstructor()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Positive positive1, positive2;
 		Writable number1, number2;
 
@@ -136,16 +136,11 @@ public class WritableTest
 			Assert.AreEqual(Sign(item.Number2), number2.Sign);
 			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void ToStringMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Positive positive1, positive2;
 		Writable number1, number2;
 
@@ -160,16 +155,11 @@ public class WritableTest
 			Assert.AreEqual(positive1.IsZero ? "+0" : $"{(Sign(item.Number1) ? '+' : '-')}{positive1}", number1.ToString());
 			Assert.AreEqual(positive2.IsZero ? "+0" : $"{(Sign(item.Number2) ? '+' : '-')}{positive2}", number2.ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -186,16 +176,11 @@ public class WritableTest
 			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
 			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -214,17 +199,12 @@ public class WritableTest
 			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberCharacters1, numberDigits2));
 			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberDigits1, numberCharacters2));
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 
 	[TestMethod]
 	public void AddMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable writable1, writable2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -234,16 +214,11 @@ public class WritableTest
 
 			Assert.AreEqual(item.Add, Writable.Add(writable1, writable2).ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable writable1, writable2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -253,16 +228,11 @@ public class WritableTest
 
 			Assert.AreEqual(item.Sub, Writable.Subtract(writable1, writable2).ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable writable1, writable2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -272,16 +242,11 @@ public class WritableTest
 
 			Assert.AreEqual(item.Mul, Writable.Multiply(writable1, writable2).ToString());
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void DivideMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		int length;
 		Writable writable1, writable2, whole, remainder;
 
@@ -294,7 +259,7 @@ public class WritableTest
 				Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide(writable1, writable2));
 			else if (item.Div != "BIG")
 			{
-				(whole, remainder) = Writable.Divide(writable1, writable2, fractionCalculationLength);
+				(whole, remainder) = Writable.Divide(writable1, writable2, FRACTION_CALCULATION_LENGTH);
 
 				length = Math.Min(whole.ToString().Length, item.Div.Length);
 
@@ -302,16 +267,11 @@ public class WritableTest
 				Assert.AreEqual(writable1.ToString(), ((whole * item.Number2) + remainder).ToString());
 			}
 		}
-
-		Writable.WriteSign = writeSign;
 	}
 
 	[TestMethod]
 	public void PowerMethod()
 	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
 		Writable writable1, writable2;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
@@ -323,58 +283,51 @@ public class WritableTest
 			{
 				try
 				{
-					Writable.Power(writable1, writable2);	
+					Writable.Power(writable1, writable2);
 				}
 				catch (Exception e)
 				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
+					if (!(e is NotImplementedException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
 			}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Writable.Power(writable1, writable2).ToString());
+			}
 		}
 
-		Writable.WriteSign = writeSign;
-	}
-
-	[TestMethod]
-	public void RootMethod()
-	{
-		bool writeSign = Writable.WriteSign;
-		Writable.WriteSign = true;
-
-		int length;
-		Writable writable1, writable2, whole, remainder;
-
-		foreach (WritableTestCase item in WritableTestCases.List)
+		[TestMethod]
+		public void RootMethod()
 		{
-			writable1 = new(item.Number1);
-			writable2 = new(item.Number2);
+			int length;
+			Writable writable1, writable2, whole, remainder;
 
-			if (item.Root == "ERROR")
+			foreach (WritableTestCase item in WritableTestCases.List)
 			{
-				try
-				{
-					Writable.Root(writable1, writable2);
-				}
-				catch (Exception e)
-				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
-				}
-			}
-			else if (item.Root != "BIG")
-			{
-				(whole, remainder) = Writable.Root(writable1, writable2, fractionCalculationLength);
+				writable1 = new(item.Number1);
+				writable2 = new(item.Number2);
 
-				length = Math.Min(whole.ToString().Length, item.Root.Length);
+				if (item.Root == "ERROR")
+				{
+					try
+					{
+						Writable.Root(writable1, writable2);
+					}
+					catch (Exception e)
+					{
+						if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
+							Assert.Fail(e.Message);
+					}
+				}
+				else if (item.Root != "BIG")
+				{
+					(whole, remainder) = Writable.Root(writable1, writable2, FRACTION_CALCULATION_LENGTH);
 
-				Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
-				Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
+					length = Math.Min(whole.ToString().Length, item.Root.Length);
+
+					Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
+					Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
+				}
 			}
 		}
-
-		Writable.WriteSign = writeSign;
 	}
-}

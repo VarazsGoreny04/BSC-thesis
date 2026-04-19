@@ -6,7 +6,7 @@ namespace Test;
 [TestClass]
 public class PositiveTest
 {
-	public const int fractionCalculationLength = 10;
+	private const int FRACTION_CALCULATION_LENGTH = 10;
 
 	[TestMethod]
 	public void ZeroConstructor()
@@ -38,8 +38,8 @@ public class PositiveTest
 	[TestMethod]
 	public void StringConstructor()
 	{
-		string nullString = null!;
-		Assert.ThrowsException<ArgumentException>(() => new Positive(nullString));
+		Assert.ThrowsException<NullReferenceException>(() => new Positive(null!));
+
 		Assert.ThrowsException<ArgumentException>(() => new Positive(""));
 		Assert.ThrowsException<ArgumentException>(() => new Positive("."));
 
@@ -94,8 +94,8 @@ public class PositiveTest
 	[TestMethod]
 	public void NaturalConstructor()
 	{
-		Assert.ThrowsException<ArgumentException>(() => new Positive(new Natural(), -1));
-		Assert.ThrowsException<ArgumentException>(() => new Positive(new Natural(), -2));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Positive(new Natural(), -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Positive(new Natural(), -2));
 
 		int temp, fractionLength1, fractionLength2;
 		string characters1, characters2;
@@ -357,8 +357,8 @@ public class PositiveTest
 				}
 				catch (Exception e)
 				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
+					if (!(e is NotImplementedException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
 			}
 			else if (item.Pow != "BIG")
@@ -385,13 +385,13 @@ public class PositiveTest
 				}
 				catch (Exception e)
 				{
-					if (!(e is NotImplementedException || e is NotSupportedException))
-						Assert.Fail();
+					if (!(e is DivideByZeroException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
 			}
 			else if (item.Root != "BIG")
 			{
-				(whole, remainder) = Positive.Root(positive1, positive2, fractionCalculationLength);
+				(whole, remainder) = Positive.Root(positive1, positive2, FRACTION_CALCULATION_LENGTH);
 
 				length = Math.Min(whole.ToString().Length, item.Root.Length);
 

@@ -493,7 +493,7 @@ public class Rational :
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
 	/// <exception cref="NotSupportedException">
-	/// <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
+	/// Absolut value of <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
 	/// </exception>
 	public static Rational Power(Rational left, Rational right)
 	{
