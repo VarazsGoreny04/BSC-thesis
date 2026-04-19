@@ -129,7 +129,7 @@ public class Writable :
 			{
 				'+' => true,
 				'-' => false,
-				_ => throw new ArgumentException("The given string parameter can only start with a sign (+/-) or number characters (0-9)!", nameof(number[0]))
+				_ => throw new ArgumentException("The given string parameter can only start with a sign (+/-) or number characters (0-9)!", nameof(number))
 			};
 
 			start = 1;
@@ -367,7 +367,7 @@ public class Writable :
 	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
 		if (!right.sign)
-			throw new ArgumentOutOfRangeException(nameof(right), nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
+			throw new ArgumentOutOfRangeException(nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
 		else if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
 			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
