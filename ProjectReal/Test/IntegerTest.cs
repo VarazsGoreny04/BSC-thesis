@@ -137,7 +137,7 @@ public class IntegerTest
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Natural(digits1));
 
-			digits2 = new Digit[item.Number2.Length- 1];
+			digits2 = new Digit[item.Number2.Length - 1];
 			for (int j = item.Number2.Length - 2; j >= 0; --j)
 				digits2[j] = new Digit(item.Number2[^(j + 1)]);
 

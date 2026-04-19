@@ -293,41 +293,41 @@ public class WritableTest
 			}
 			else if (item.Pow != "BIG")
 				Assert.AreEqual(item.Pow, Writable.Power(writable1, writable2).ToString());
-			}
 		}
+	}
 
-		[TestMethod]
-		public void RootMethod()
+	[TestMethod]
+	public void RootMethod()
+	{
+		int length;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
 		{
-			int length;
-			Writable writable1, writable2, whole, remainder;
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
 
-			foreach (WritableTestCase item in WritableTestCases.List)
+			if (item.Root == "ERROR")
 			{
-				writable1 = new(item.Number1);
-				writable2 = new(item.Number2);
-
-				if (item.Root == "ERROR")
+				try
 				{
-					try
-					{
-						Writable.Root(writable1, writable2);
-					}
-					catch (Exception e)
-					{
-						if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
-							Assert.Fail(e.Message);
-					}
+					Writable.Root(writable1, writable2);
 				}
-				else if (item.Root != "BIG")
+				catch (Exception e)
 				{
-					(whole, remainder) = Writable.Root(writable1, writable2, FRACTION_CALCULATION_LENGTH);
-
-					length = Math.Min(whole.ToString().Length, item.Root.Length);
-
-					Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
-					Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
+					if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
+			}
+			else if (item.Root != "BIG")
+			{
+				(whole, remainder) = Writable.Root(writable1, writable2, FRACTION_CALCULATION_LENGTH);
+
+				length = Math.Min(whole.ToString().Length, item.Root.Length);
+
+				Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
+				Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 	}
+}
