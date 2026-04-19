@@ -21,14 +21,6 @@ public readonly struct Digit :
 	IMultiplicativeIdentity<Digit, Digit>,
 	IParsable<Digit>
 {
-	#region Exceptions
-
-	public class ValueOutOfRangeException() : Exception() { }
-	public class UnmatchingArrayLengthException() : Exception() { }
-	public class SecondValueGreaterException() : Exception() { }
-
-	#endregion
-
 	#region Constants
 
 	public static readonly Digit ZERO = new();
@@ -74,13 +66,13 @@ public readonly struct Digit :
 	/// Constructs a <see cref="Digit"/> by the given <paramref name="character"/>.
 	/// </summary>
 	/// <param name="character">A number character.</param>
-	/// <exception cref="ValueOutOfRangeException"><paramref name="character"/> must be a number character.</exception>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="character"/> must be a number character.</exception>
 	public Digit(char character)
 	{
 		sbyte number = (sbyte)(character - '0');
 
 		if (number < 0 || number > 9)
-			throw new ValueOutOfRangeException();
+			throw new ArgumentOutOfRangeException(nameof(character), character, "The given parameter must be a number character!");
 
 		bits = (byte)number;
 	}
@@ -89,8 +81,12 @@ public readonly struct Digit :
 	/// Constructs a <see cref="Digit"/> by the given <paramref name="bits"/>.
 	/// </summary>
 	/// <param name="bits">The binary representation of the number, where the first index represents the lowest value.</param>
-	/// <exception cref="ValueOutOfRangeException"><paramref name="bits"/> cannot represent a number more than 9.</exception>
-	public Digit(byte bits) => this.bits = TEN > bits ? bits : throw new ValueOutOfRangeException();
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> cannot represent a number more than 9.</exception>
+	public Digit(byte bits)
+	{
+		this.bits = TEN > bits ? bits :
+			throw new ArgumentOutOfRangeException(nameof(bits), bits, "The given parameter cannot represent a number more than 9!");
+	}
 
 	#endregion
 
@@ -147,7 +143,18 @@ public readonly struct Digit :
 	/// <returns>A character form 0 to 9.</returns>
 	public static char ToChar(Digit value) => (char)('0' + value.bits);
 
-	public static Digit Parse(string s, IFormatProvider? _) => s.Length == 1 ? new(s[0]) : throw new FormatException();
+	/// <summary>
+	/// Parses a <see cref="string"/> into a <see cref="Digit"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="FormatException">The length of the given <see cref="string"/> cannot be more than 1!</exception>
+	/// <exception cref="ArgumentOutOfRangeException">The <see cref="string"/> must be accepted by the constructor.</exception>
+	public static Digit Parse(string s, IFormatProvider? _ = null)
+	{
+		return s.Length == 1 ? new(s[0]) : throw new FormatException($"The length of the given string (${s}) cannot be more than 1!");
+	}
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Digit result)
 	{

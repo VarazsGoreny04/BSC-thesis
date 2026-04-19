@@ -52,7 +52,7 @@ public class Positive :
 	public static int FractionCalculationLength
 	{
 		get => fractionCalculationLength;
-		set => fractionCalculationLength = value >= 0 ? value : throw new ArgumentException();
+		set => fractionCalculationLength = value >= 0 ? value : throw new ArgumentException("The given value cannot be less than 0!");
 	}
 
 	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Positive"/>.</returns>
@@ -105,8 +105,10 @@ public class Positive :
 	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Positive(string number)
 	{
-		if (number is null || number.Length < 1 || number[0] == separator)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
+		else if (number[0] == separator)
+			throw new ArgumentException("The given string parameter cannot start with the separator!", nameof(number));
 
 		number = number.TrimStart('0');
 
@@ -131,10 +133,11 @@ public class Positive :
 	/// </summary>
 	/// <param name="value">The value of the number without a decimal separator.</param>
 	/// <param name="fractionLength">Indicates the number of fraction characters in <see langword="this"/> <see cref="Positive"/>.</param>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="fractionLength"/> cannot be less than 0.</exception>
 	public Positive(Natural value, int fractionLength)
 	{
 		if (fractionLength < 0)
-			throw new ArgumentException();
+			throw new ArgumentOutOfRangeException(nameof(fractionLength), fractionLength, "The given value cannot be less than 0!");
 
 		if (value.IsZero)
 		{
@@ -199,6 +202,13 @@ public class Positive :
 			).Insert(WholeLength, separator.ToString());
 	}
 
+	/// <summary>
+	/// Parses a <see cref="string"/> into a <see cref="Positive"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="ArgumentException">The <see cref="string"/> must be accepted by the constructor.</exception>
 	public static Positive Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Positive result)
@@ -363,7 +373,7 @@ public class Positive :
 	public static Positive Power(Positive left, Positive right)
 	{
 		return right.fractionLength == 0 ?
-			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) : throw new NotSupportedException();
+			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) : throw new NotSupportedException(); // TODO
 	}
 
 	/// <summary>
@@ -402,21 +412,19 @@ public class Positive :
 	/// <param name="right">The <see cref="Positive"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as it is not mathematically meaningful.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as it is not mathematically meaningful.</exception>
 	/// <exception cref="NotSupportedException">
 	/// <paramref name="right"/> cannot be a fraction or higher than 99 as it would be too computationally expensive.
 	/// </exception>
 	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
-		if (right.IsZero)
-			throw new NotImplementedException();
 		if (right.fractionLength != 0)
-			throw new NotSupportedException();
+			throw new NotSupportedException(); // TODO
 		else if (right.value < Digit.THREE)
 		{
 			return Digit.ToChar(right[0]) switch
 			{
-				'0' => throw new NotImplementedException(),
+				'0' => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
 				'1' => (left, Digit.ZERO),
 				_ => SquareRoot(left)
 			};
@@ -458,7 +466,10 @@ public class Positive :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

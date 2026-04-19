@@ -77,8 +77,8 @@ public class Natural :
 	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Natural(string number)
 	{
-		if (number is null || number.Length < 1)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
 
 		number = number.TrimStart('0');
 
@@ -95,9 +95,9 @@ public class Natural :
 			for (int i = 0; i < length; ++i)
 				digits[i] = new Digit(number[^(i + 1)]);
 		}
-		catch (Digit.ValueOutOfRangeException)
+		catch (ArgumentOutOfRangeException)
 		{
-			throw new ArgumentException();
+			throw new ArgumentException("The given string parameter can only contain number characters of 0-9!", nameof(number));
 		}
 
 		this.digits = ImmutableArray.Create(digits);
@@ -110,8 +110,8 @@ public class Natural :
 	/// <exception cref="ArgumentException"><paramref name="number"/> cannot be null or empty.</exception>
 	public Natural(Digit[] number)
 	{
-		if (number is null || number.Length < 1)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given array parameter must not be empty!", nameof(number));
 
 		digits = ImmutableArray.Create(Digit.TrimEnd(number));
 		length = digits.Length;
@@ -212,7 +212,7 @@ public class Natural :
 		return new Natural([xTry, .. root.Digits]);
 	}
 
-	internal static Natural Log(Natural left, Natural right)
+	internal static Natural Log(Natural left, Natural right) // TODO
 	{
 		if (left.isZero || right.isZero)
 			throw new NotImplementedException();
@@ -247,6 +247,13 @@ public class Natural :
 		return number;
 	}
 
+	/// <summary>
+	/// Parses a <see cref="string"/> into a <see cref="Natural"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="ArgumentException">The <see cref="string"/> must be accepted by the constructor.</exception>
 	public static Natural Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Natural result)
@@ -423,7 +430,7 @@ public class Natural :
 	public static (Natural Whole, Natural Remainder) Divide(Natural left, Natural right)
 	{
 		if (right.isZero)
-			throw new DivideByZeroException();
+			throw new DivideByZeroException("The divisor cannot be 0, as it is not mathematically meaningful!");
 		else if (left.Length < right.Length)
 			return (Digit.ZERO, left);
 		else if (right == Digit.ONE)
@@ -483,7 +490,7 @@ public class Natural :
 		{
 			return right.ToString() switch
 			{
-				"0" => /*left.IsZero ? throw new NotImplementedException() :*/ result,
+				"0" => result,
 				"1" => left,
 				_ => left * left
 			};
@@ -493,7 +500,7 @@ public class Natural :
 			return left;
 
 		if (right.length > 3)
-			throw new NotSupportedException();
+			throw new NotSupportedException("The exponent cannot be higher than 999 as it would be too computationally expensive!");
 
 		Natural lastPowerCalculated = left;
 
@@ -543,7 +550,7 @@ public class Natural :
 	/// <param name="left">The <see cref="Natural"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Natural"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
 	/// <exception cref="NotSupportedException">
 	/// <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.
 	/// </exception>
@@ -555,7 +562,7 @@ public class Natural :
 		{
 			return Digit.ToChar(right[0]) switch
 			{
-				'0' => throw new NotImplementedException(),
+				'0' => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
 				'1' => (left, remainder),
 				_ => SquareRoot(left)
 			};
@@ -565,7 +572,7 @@ public class Natural :
 			return (left, remainder);
 
 		if (right.length > 2)
-			throw new NotSupportedException();
+			throw new NotSupportedException("The exponent cannot be higher than 99 as it would be too computationally expensive!");
 
 		int degreeInt = (int)ToUInt32(right);
 		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - left.Length % degreeInt)];
@@ -657,7 +664,10 @@ public class Natural :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

@@ -96,18 +96,18 @@ public class Integer :
 	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Integer(string number)
 	{
-		if (number is null || number.Length < 1)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
 
 		int start = 0;
 
-		if (!(number[0] >= '0' && number[0] <= '9'))
+		if (!(number[0] is >= '0' and <= '9'))
 		{
 			sign = number[0] switch
 			{
 				'+' => true,
 				'-' => false,
-				_ => throw new ArgumentException()
+				_ => throw new ArgumentException("The given string parameter can only start with a sign (+/-) or number characters (0-9)!", nameof(number))
 			};
 
 			start = 1;
@@ -163,6 +163,13 @@ public class Integer :
 	/// <returns>An <see cref="Integer"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => writeSign ? $"{(sign ? '+' : '-')}{value}" : value.ToString();
 
+	/// <summary>
+	/// Parses a <see cref="string"/> into an <see cref="Integer"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="ArgumentException">The <see cref="string"/> must be accepted by the constructor.</exception>
 	public static Integer Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Integer result)
@@ -288,10 +295,8 @@ public class Integer :
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
 	public static Integer Power(Integer left, Integer right)
 	{
-		if (!right.sign)
-			throw new NotImplementedException();
-
-		return new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value);
+		return !right.sign ? Digit.ONE / Power(left, right.Value) :
+			new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value);
 	}
 
 	/// <summary>
@@ -302,10 +307,8 @@ public class Integer :
 	/// <exception cref="NotImplementedException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
 	public static (Integer Whole, Integer Remainder) SquareRoot(Integer value)
 	{
-		if (!value.sign)
-			throw new NotImplementedException();
-
-		return Natural.SquareRoot(value.value);
+		return value.sign ? Natural.SquareRoot(value.value) :
+			throw new ArgumentOutOfRangeException(nameof(value), value, "The radicand cannot be negative as it is not mathematically meaningful!");
 	}
 
 	/// <summary>
@@ -314,15 +317,20 @@ public class Integer :
 	/// <param name="left">The <see cref="Integer"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException">
-	/// <paramref name="right"/> being negative or 0
-	/// -or-
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
+	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
+	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
+	/// <exception cref="NotSupportedException">
+	/// <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.
 	/// </exception>
 	public static (Integer Whole, Integer Remainder) Root(Integer left, Integer right)
 	{
-		if (!right.sign || !left.sign && right[0] % Digit.TWO == Digit.ZERO)
-			throw new NotImplementedException();
+		if (!right.sign)
+			throw new ArgumentOutOfRangeException(nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
+		else if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
 		(Natural whole, Natural remainder) = Natural.Root(left.value, right.value);
 
@@ -342,7 +350,10 @@ public class Integer :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

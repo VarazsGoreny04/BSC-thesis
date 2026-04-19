@@ -55,9 +55,7 @@ public class Writable :
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.
 	/// </summary>
-	/// <exception cref="ArgumentException">
-	/// <param name="value"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="ArgumentException"><param name="value"/> cannot be less than 0.</exception>
 	public static int FractionCalculationLength
 	{
 		get => Positive.FractionCalculationLength;
@@ -120,8 +118,8 @@ public class Writable :
 	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
 	public Writable(string number)
 	{
-		if (number is null || number.Length < 1)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
 
 		int start = 0;
 
@@ -131,7 +129,7 @@ public class Writable :
 			{
 				'+' => true,
 				'-' => false,
-				_ => throw new ArgumentException()
+				_ => throw new ArgumentException("The given string parameter can only start with a sign (+/-) or number characters (0-9)!", nameof(number[0]))
 			};
 
 			start = 1;
@@ -185,6 +183,13 @@ public class Writable :
 	/// <returns>A <see cref="Writable"/> number as a <see langword="string"/>.</returns>
 	public override string ToString() => $"{(WriteSign || !sign ? sign ? '+' : '-' : "")}{value}";
 
+	/// <summary>
+	/// Parses a <see cref="string"/> into a <see cref="Writable"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="ArgumentException">The <see cref="string"/> must be accepted by the constructor.</exception>
 	public static Writable Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Writable result)
@@ -353,15 +358,18 @@ public class Writable :
 	/// <param name="right">The <see cref="Writable"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException">
-	/// <paramref name="right"/> being negative or 0
-	/// -or-
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
+	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
+	/// <exception cref="NotSupportedException"><paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		if (!right.sign || !left.sign && right[0] % Digit.TWO == Digit.ZERO)
-			throw new NotImplementedException();
+		if (!right.sign)
+			throw new ArgumentOutOfRangeException(nameof(right), nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
+		else if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
 		(Positive whole, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
 
@@ -381,7 +389,10 @@ public class Writable :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

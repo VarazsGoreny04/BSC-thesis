@@ -69,9 +69,7 @@ public class Rational :
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.
 	/// </summary>
-	/// <exception cref="ArgumentException">
-	/// <param name="value"/> cannot be less than 0.
-	/// </exception>
+	/// <exception cref="ArgumentException"><param name="value"/> cannot be less than 0.</exception>
 	public static int FractionCalculationLength
 	{
 		get => Writable.FractionCalculationLength;
@@ -118,10 +116,11 @@ public class Rational :
 	/// two <see cref="string"/>s of <see cref="Writable"/> format with a division character in between them. Just like a fraction.
 	/// </param>
 	/// <exception cref="ArgumentException"><paramref name="number"/> is not a valid number format.</exception>
+	/// <exception cref="DivideByZeroException">The denominator cannot be 0, as it is not mathematically meaningful.</exception>
 	public Rational(string number)
 	{
-		if (number is null)
-			throw new ArgumentException();
+		if (number.Length < 1)
+			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
 
 		string[] parts = number.Split('/');
 
@@ -134,12 +133,12 @@ public class Rational :
 				(Writable numerator, Writable denominator) temp = (parts[0], parts[1]);
 
 				if (temp.denominator.IsZero)
-					throw new ArgumentException();
+					throw new DivideByZeroException("The denominator cannot be 0, as it is not mathematically meaningful!");
 
 				(numerator, denominator) = Simplify(new Writable(temp.numerator.Sign == temp.denominator.Sign, temp.numerator.Value), temp.denominator.Value);
 				break;
 			default:
-				throw new ArgumentException();
+				throw new ArgumentException("The given string parameter must be a valid number format.");
 		}
 	}
 
@@ -148,13 +147,13 @@ public class Rational :
 	/// </summary>
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
-	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public Rational(Writable numerator, Writable? denominator)
 	{
 		if (denominator is Writable denominatorValue)
 		{
 			if (denominatorValue.IsZero)
-				throw new ArgumentException();
+				throw new DivideByZeroException("The denominator cannot be 0, as it is not mathematically meaningful!");
 
 			(this.numerator, this.denominator) = Simplify(new Writable(numerator.Sign == denominatorValue.Sign, numerator.Value), denominatorValue.Value);
 		}
@@ -170,7 +169,7 @@ public class Rational :
 	/// </summary>
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
-	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public Rational(Writable numerator, Positive? denominator = null) : this(numerator, denominator is Positive d ? new Writable(true, d) : null) { }
 
 	/// <summary>
@@ -179,7 +178,7 @@ public class Rational :
 	/// <param name="sign">The <paramref name="sign"/> of the number.</param>
 	/// <param name="numerator">The value of the <paramref name="numerator"/>.</param>
 	/// <param name="denominator">The value of the <paramref name="denominator"/>.</param>
-	/// <exception cref="ArgumentException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
+	/// <exception cref="DivideByZeroException"><paramref name="denominator"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public Rational(bool sign, Positive numerator, Positive? denominator = null) : this(new Writable(sign, numerator), denominator) { }
 
 	/// <summary>
@@ -226,16 +225,13 @@ public class Rational :
 	/// <returns>The number of iterations.</returns>
 	private static int IterationsNeededSinCos(Rational x, int fractionCalculationLength)
 	{
-		int divisor;
-
-		if (x < "0.7")
-			divisor = 6;
-		else if (x < "1.5")
-			divisor = 4;
-		else if (x < "3.1")
-			divisor = 3;
-		else
-			divisor = 2;
+		int divisor = x switch
+		{
+			Rational when x < "0.7" => 6,
+			Rational when x < "1.5" => 4,
+			Rational when x < "3.1" => 4,
+			_ => 2
+		};
 
 		return (fractionCalculationLength - 15) / divisor + 22;
 	}
@@ -303,6 +299,14 @@ public class Rational :
 	/// <returns>An <see cref="Rational"/> number as a <see langword="string"/>.</returns>
 	public static string ToWritableString(Rational value) => GetValue(value).Value.ToString();
 
+	/// <summary>
+	/// Parses a <see cref="string"/> into a <see cref="Rational"/> instance.
+	/// </summary>
+	/// <param name="s">The <see cref="string"/> to parse.</param>
+	/// <param name="_">This parameter is unused.</param>
+	/// <returns>The created instance.</returns>
+	/// <exception cref="ArgumentException">The <see cref="string"/> must be accepted by the constructor.</exception>
+	/// <exception cref="DivideByZeroException">The denominator cannot be 0, as it is not mathematically meaningful.</exception>
 	public static Rational Parse(string s, IFormatProvider? _ = null) => new(s);
 
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Rational result)
@@ -407,7 +411,9 @@ public class Rational :
 	/// </exception>
 	public static Rational Reciprocal(Rational value)
 	{
-		return value.IsZero ? throw new DivideByZeroException() : new Rational(value.Sign, value.denominator is Positive p ? p : Digit.ONE, value.Numerator);
+		return value.IsZero ?
+			throw new DivideByZeroException("The denominator cannot be 0, as it is not mathematically meaningful to calculate its reciprocal!")
+			: new Rational(value.Sign, value.denominator is Positive p ? p : Digit.ONE, value.Numerator);
 	}
 
 	/// <summary>
@@ -487,18 +493,15 @@ public class Rational :
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
 	/// <exception cref="NotSupportedException">
-	/// <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive.
+	/// <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
 	/// </exception>
 	public static Rational Power(Rational left, Rational right)
 	{
 		if (right.denominator is not null)
-			throw new NotImplementedException();
+			throw new NotImplementedException(); // TODO
 
-		if (right.Sign)
-			return new Rational(left.numerator ^ right.numerator, left.denominator is Positive denominator ? denominator ^ right.Numerator : left.denominator);
-		else
-			return new Rational(new Writable(left.Sign, left.denominator is Positive denominator ? denominator ^ right.Numerator : Digit.ONE),
-				left.Numerator ^ right.Numerator);
+		return right.Sign ? new Rational(left.numerator ^ right.numerator, left.denominator is not null ? left.denominator ^ right.Numerator : left.denominator) :
+			new Rational(new Writable(left.Sign, left.denominator is not null ? left.denominator ^ right.Numerator : Digit.ONE), left.Numerator ^ right.Numerator);
 	}
 
 	/// <summary>
@@ -523,24 +526,22 @@ public class Rational :
 	/// <param name="right">The <see cref="Rational"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException">
-	/// <paramref name="right"/> being a fraction, negative or 0
-	/// -or-
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
+	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
-	/// <exception cref="NotSupportedException">
-	/// <paramref name="right"/> cannot be a fraction or higher than 99 as it would be too computationally expensive.
-	/// </exception>
+	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
+	/// <exception cref="NotSupportedException"> <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
 		if (right.denominator is not null)
-			throw new NotImplementedException();
+			throw new NotImplementedException(); // TODO
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
-		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ? 
+		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ?
 			Positive.Root(d, right.Numerator, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
 
-		return right.Sign ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) : 
+		return right.Sign ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) :
 			(new Rational(true, denominator.Value, numerator.Value.Value), denominator.Remainder, numerator.Remainder.Value);
 	}
 
@@ -548,14 +549,10 @@ public class Rational :
 	/// Calculates π until the given <paramref name="fractionCalculationLength"/> using the Chudnovsky-formula with binary splitting.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers
-	/// - David and Gregory Chudnovsky - for developing a generalisation to Ramanujan's formula.
-	/// </para>
-	/// <para>
-	/// <see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/><br/>
-	/// <see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/>
-	/// </para>
+	/// <para>I wanted to make a tribute to Srinivasa Ramanujan who came up with this method and to the Chudnovsky brothers<br/>
+	/// - David and Gregory Chudnovsky - for developing a generalisation to Ramanujan's formula.</para>
+	/// <para><see href="https://en.wikipedia.org/wiki/Chudnovsky_algorithm"/><br/>
+	/// <see href="https://www.craig-wood.com/nick/articles/pi-chudnovsky/"/></para>
 	/// </remarks>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The number π.</returns>
@@ -566,7 +563,7 @@ public class Rational :
 			Natural P, Q;
 			Integer T;
 
-			if (b <= a + Digit.ONE)
+			if (a + Digit.ONE >= b)
 			{
 				(P, Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
 					((Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE), a * a * a * "10939058860032000");
@@ -610,38 +607,35 @@ public class Rational :
 		{
 			ABPQSeriesResult r;
 
-			switch (n2 - n1)
+			if (n1 + 1 >= n2)
 			{
-				case 0:
-					throw new Exception();
-				case 1:
-					r = n1 == 0 ?
-					new(
-						P: null!,
-						Q: Digit.ONE,
-						B: null!,
-						T: Digit.ONE
-					) :
-					new(
-						P: null!,
-						Q: new Natural((uint)n1),
-						B: null!,
-						T: Digit.ONE
-					);
-					break;
-				default:
-					int nm = (n1 + n2) / 2;
+				r = n1 == 0 ?
+				new(
+					P: null!,
+					Q: Digit.ONE,
+					B: null!,
+					T: Digit.ONE
+				) :
+				new(
+					P: null!,
+					Q: new Natural((uint)n1),
+					B: null!,
+					T: Digit.ONE
+				);
+			}
+			else
+			{
+				int nm = (n1 + n2) / 2;
 
-					ABPQSeriesResult L = SumABPQ(n1, nm);
-					ABPQSeriesResult R = SumABPQ(nm, n2);
+				ABPQSeriesResult L = SumABPQ(n1, nm);
+				ABPQSeriesResult R = SumABPQ(nm, n2);
 
-					r = new(
-						P: null!,
-						Q: L.Q * R.Q,
-						B: null!,
-						T: R.Q * L.T + R.T
-					);
-					break;
+				r = new(
+					P: null!,
+					Q: L.Q * R.Q,
+					B: null!,
+					T: R.Q * L.T + R.T
+				);
 			}
 
 			return r;
@@ -670,38 +664,35 @@ public class Rational :
 		{
 			ABPQSeriesResult r;
 
-			switch (n2 - n1)
+			if (n1 + 1 >= n2)
 			{
-				case 0:
-					throw new Exception();
-				case 1:
-					r = n1 == 0 ?
-					new(
-						P: Digit.ONE,
-						Q: Digit.ONE,
-						B: null!,
-						T: Digit.ONE
-					) :
-					new(
-						P: x.numerator,
-						Q: x.denominator is not null ? new Natural((uint)n1) * x.denominator : new Natural((uint)n1),
-						B: null!,
-						T: x.numerator
-					);
-					break;
-				default:
-					int nm = (n1 + n2) / 2;
+				r = n1 == 0 ?
+				new(
+					P: Digit.ONE,
+					Q: Digit.ONE,
+					B: null!,
+					T: Digit.ONE
+				) :
+				new(
+					P: x.numerator,
+					Q: x.denominator is not null ? new Natural((uint)n1) * x.denominator : new Natural((uint)n1),
+					B: null!,
+					T: x.numerator
+				);
+			}
+			else
+			{
+				int nm = (n1 + n2) / 2;
 
-					ABPQSeriesResult L = SumABPQ(n1, nm, x);
-					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				ABPQSeriesResult L = SumABPQ(n1, nm, x);
+				ABPQSeriesResult R = SumABPQ(nm, n2, x);
 
-					r = new(
-						P: L.P * R.P,
-						Q: L.Q * R.Q,
-						B: null!,
-						T: R.Q * L.T + L.P * R.T
-					);
-					break;
+				r = new(
+					P: L.P * R.P,
+					Q: L.Q * R.Q,
+					B: null!,
+					T: R.Q * L.T + L.P * R.T
+				);
 			}
 
 			return r;
@@ -727,34 +718,31 @@ public class Rational :
 		{
 			ABPQSeriesResult r;
 
-			switch (n2 - n1)
+			if (n1 + 1 >= n2)
 			{
-				case 0:
-					throw new Exception();
-				case 1:
-					Natural denominator = new(2 * (uint)n1 + 1);
-					Rational a = Power(x, denominator);
+				Natural denominator = new(2 * (uint)n1 + 1);
+				Rational a = Power(x, denominator);
 
-					r = new(
-						P: null!,
-						Q: a.denominator ?? Digit.ONE,
-						B: denominator,
-						T: a.numerator
-					);
-					break;
-				default:
-					int nm = (n1 + n2) / 2;
+				r = new(
+					P: null!,
+					Q: a.denominator ?? Digit.ONE,
+					B: denominator,
+					T: a.numerator
+				);
+			}
+			else
+			{
+				int nm = (n1 + n2) / 2;
 
-					ABPQSeriesResult L = SumABPQ(n1, nm, x);
-					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				ABPQSeriesResult L = SumABPQ(n1, nm, x);
+				ABPQSeriesResult R = SumABPQ(nm, n2, x);
 
-					r = new(
-						P: null!,
-						Q: L.Q * R.Q,
-						B: L.B * R.B,
-						T: R.B * R.Q * L.T + L.B * L.Q * R.T
-					);
-					break;
+				r = new(
+					P: null!,
+					Q: L.Q * R.Q,
+					B: L.B * R.B,
+					T: R.B * R.Q * L.T + L.B * L.Q * R.T
+				);
 			}
 
 			return r;
@@ -762,16 +750,12 @@ public class Rational :
 
 		static int IterationsNeeded(Rational x, int fractionCalculationLength)
 		{
-			int result;
-
-			if (x < "1.1")
-				result = fractionCalculationLength * 3 / 8;
-			else if (x < "1.5")
-				result = fractionCalculationLength * 13 / 18;
-			else if (x >= "1.5")
-				result = fractionCalculationLength * 11 / 10;
-			else
-				throw new Exception(); // TODO
+			int result = x switch
+			{
+				Rational when x < "1.1" => fractionCalculationLength * 3 / 8,
+				Rational when x < "1.5" => fractionCalculationLength * 13 / 18,
+				_ => fractionCalculationLength * 3 / 8
+			};
 
 			return result + 1;
 		}
@@ -832,40 +816,37 @@ public class Rational :
 		{
 			ABPQSeriesResult r;
 
-			switch (n2 - n1)
+			if (n1 + 1 >= n2)
 			{
-				case 0:
-					throw new Exception();
-				case 1:
-					Writable tempP;
+				Writable tempP;
 
-					r = n1 == 0 ?
-					new(
-						P: x.numerator,
-						Q: x.denominator ?? Digit.ONE,
-						B: null!,
-						T: x.numerator
-					) :
-					new(
-						P: tempP = -Writable.SecondPower(x.numerator),
-						Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
-						B: null!,
-						T: tempP
-					);
-					break;
-				default:
-					int nm = (n1 + n2) / 2;
+				r = n1 == 0 ?
+				new(
+					P: x.numerator,
+					Q: x.denominator ?? Digit.ONE,
+					B: null!,
+					T: x.numerator
+				) :
+				new(
+					P: tempP = -Writable.SecondPower(x.numerator),
+					Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+					B: null!,
+					T: tempP
+				);
+			}
+			else
+			{
+				int nm = (n1 + n2) / 2;
 
-					ABPQSeriesResult L = SumABPQ(n1, nm, x);
-					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				ABPQSeriesResult L = SumABPQ(n1, nm, x);
+				ABPQSeriesResult R = SumABPQ(nm, n2, x);
 
-					r = new(
-						P: L.P * R.P,
-						Q: L.Q * R.Q,
-						B: null!,
-						T: R.Q * L.T + L.P * R.T
-					);
-					break;
+				r = new(
+					P: L.P * R.P,
+					Q: L.Q * R.Q,
+					B: null!,
+					T: R.Q * L.T + L.P * R.T
+				);
 			}
 
 			return r;
@@ -898,40 +879,37 @@ public class Rational :
 		{
 			ABPQSeriesResult r;
 
-			switch (n2 - n1)
+			if (n1 + 1 >= n2)
 			{
-				case 0:
-					throw new Exception();
-				case 1:
-					Writable tempP;
+				Writable tempP;
 
-					r = n1 == 0 ?
-					new(
-						P: Digit.ONE,
-						Q: Digit.ONE,
-						B: null!,
-						T: Digit.ONE
-					) :
-					new(
-						P: tempP = -Writable.SecondPower(x.numerator),
-						Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
-						B: null!,
-						T: tempP
-					);
-					break;
-				default:
-					int nm = (n1 + n2) / 2;
+				r = n1 == 0 ?
+				new(
+					P: Digit.ONE,
+					Q: Digit.ONE,
+					B: null!,
+					T: Digit.ONE
+				) :
+				new(
+					P: tempP = -Writable.SecondPower(x.numerator),
+					Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
+					B: null!,
+					T: tempP
+				);
+			}
+			else
+			{
+				int nm = (n1 + n2) / 2;
 
-					ABPQSeriesResult L = SumABPQ(n1, nm, x);
-					ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				ABPQSeriesResult L = SumABPQ(n1, nm, x);
+				ABPQSeriesResult R = SumABPQ(nm, n2, x);
 
-					r = new(
-						P: L.P * R.P,
-						Q: L.Q * R.Q,
-						B: null!,
-						T: R.Q * L.T + L.P * R.T
-					);
-					break;
+				r = new(
+					P: L.P * R.P,
+					Q: L.Q * R.Q,
+					B: null!,
+					T: R.Q * L.T + L.P * R.T
+				);
 			}
 
 			return r;
@@ -962,7 +940,10 @@ public class Rational :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

@@ -300,7 +300,7 @@ public class Program
 		//Test(new Func<Rational>(() => Rational.Sin("0.6")), 100, 150);
 		//Test(new Func<Rational>(() => Rational.Cos(pi)), 1, 100);
 
-		Rational.FractionalFormat = false;
+		//Rational.FractionalFormat = false;
 
 		//Performance(i => Rational.Exp("13.37", i), 30, 150);
 
@@ -309,7 +309,7 @@ public class Program
 
 		//Performance(i => Rational.E_E(i).ToString()[^Math.Min(30, i)..], 30, 150);
 
-		Validate(i => Rational.E(i), 0, 500);
+		//Validate(i => Rational.E(i), 0, 500);
 		//Validate(i => Rational.Pi(i), 0, 500);
 	}
 
