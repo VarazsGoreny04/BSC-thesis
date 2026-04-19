@@ -1,6 +1,7 @@
 ﻿using ProjectReal.NumberSet;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 
 namespace ProjectReal.Number;
@@ -212,7 +213,7 @@ public class Rational :
 	/// <param name="Q">The value of Q.</param>
 	/// <param name="B">The value of B.</param>
 	/// <param name="T">The value of T.</param>
-	private class ABPQSeriesResult(Writable P, Writable Q, Writable B, Writable T)
+	private class PQBTSeriesResult(Writable P, Writable Q, Writable B, Writable T)
 	{
 		public Writable P = P, Q = Q, B = B, T = T;
 	}
@@ -227,13 +228,12 @@ public class Rational :
 	{
 		int divisor = x switch
 		{
-			Rational when x < "0.7" => 6,
-			Rational when x < "1.5" => 4,
-			Rational when x < "3.1" => 4,
-			_ => 2
+			Rational when x <= "0.7" => 7,
+			Rational when x <= "1.5" => 5,
+			_ => 4
 		};
 
-		return (fractionCalculationLength - 15) / divisor + 22;
+		return (fractionCalculationLength * 2 / divisor) + 20;
 	}
 
 	/// <summary>
@@ -587,12 +587,12 @@ public class Rational :
 			return (P, Q, T);
 		}
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1) + 1;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 		int n = fCL / 13 + 1;
 
 		(_, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, new Natural((uint)n));
 
-		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL).Value * "426880", T.Value);
+		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL + 2).Value * "426880", T.Value);
 	}
 
 	/// <summary>
@@ -603,9 +603,9 @@ public class Rational :
 	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2)
+		static PQBTSeriesResult SumABPQ(int n1, int n2)
 		{
-			ABPQSeriesResult r;
+			PQBTSeriesResult r;
 
 			if (n1 + 1 >= n2)
 			{
@@ -627,8 +627,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				ABPQSeriesResult L = SumABPQ(n1, nm);
-				ABPQSeriesResult R = SumABPQ(nm, n2);
+				PQBTSeriesResult L = SumABPQ(n1, nm);
+				PQBTSeriesResult R = SumABPQ(nm, n2);
 
 				r = new(
 					P: null!,
@@ -643,13 +643,14 @@ public class Rational :
 
 		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1) + 23;
 
-		ABPQSeriesResult r = SumABPQ(0, n);
+		PQBTSeriesResult r = SumABPQ(0, n);
 
 		return new Rational(r.T, r.Q);
 	}
 
 	/// <summary>
-	/// Calculates the exponential function for the given exponent until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the exponential function for the given exponent
+	/// until the given <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/><br/>
@@ -660,9 +661,9 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
 		{
-			ABPQSeriesResult r;
+			PQBTSeriesResult r;
 
 			if (n1 + 1 >= n2)
 			{
@@ -684,8 +685,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				ABPQSeriesResult L = SumABPQ(n1, nm, x);
-				ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumABPQ(n1, nm, x);
+				PQBTSeriesResult R = SumABPQ(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -700,109 +701,60 @@ public class Rational :
 
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		ABPQSeriesResult r = SumABPQ(0, n, x);
+		PQBTSeriesResult r = SumABPQ(0, n, x);
 
 		return new Rational(r.T, r.Q);
 	}
 
 	/// <summary>
-	/// Calculates the natural logarithm for the given anti-logarithm until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the natural logarithm for the given anti-logarithm until
+	/// the given <paramref name="fractionCalculationLength"/> using Halley's method.
 	/// </summary>
-	/// <remarks><see href="https://ginac.de/CLN/binsplit.pdf"/></remarks>
+	/// <remarks><see href="https://en.wikipedia.org/wiki/Natural_logarithm#High_precision"/></remarks>
 	/// <param name="x">The anti-logarithm in ln(<paramref name="x"/>).</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The natural logarithm of the given parameter.</returns>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static (Natural N, Rational ReducedX) DeconstructToMultiplication(Rational x)
 		{
-			ABPQSeriesResult r;
+			Natural n = Digit.ZERO;
+			Natural twoToTheNth = Digit.ONE;
 
-			if (n1 + 1 >= n2)
-			{
-				Natural denominator = new(2 * (uint)n1 + 1);
-				Rational a = Power(x, denominator);
+			while ((twoToTheNth *= Digit.TWO) <= x)
+				n += Digit.ONE;
 
-				r = new(
-					P: null!,
-					Q: a.denominator ?? Digit.ONE,
-					B: denominator,
-					T: a.numerator
-				);
-			}
-			else
-			{
-				int nm = (n1 + n2) / 2;
-
-				ABPQSeriesResult L = SumABPQ(n1, nm, x);
-				ABPQSeriesResult R = SumABPQ(nm, n2, x);
-
-				r = new(
-					P: null!,
-					Q: L.Q * R.Q,
-					B: L.B * R.B,
-					T: R.B * R.Q * L.T + L.B * L.Q * R.T
-				);
-			}
-
-			return r;
+			return (n, x / (twoToTheNth / Digit.TWO));
 		}
 
-		static int IterationsNeeded(Rational x, int fractionCalculationLength)
+		static int NeededFractionCalculationLength(Rational x, int fractionCalculationLength) // TODO leírni hogy működik
 		{
-			int result = x switch
-			{
-				Rational when x < "1.1" => fractionCalculationLength * 3 / 8,
-				Rational when x < "1.5" => fractionCalculationLength * 13 / 18,
-				_ => fractionCalculationLength * 3 / 8
-			};
+			Natural r2 = RoundUp(SecondPower((x - "1") / (x + "1"))).Value; // r^2 where r is (x−1)/(x+1)
+			Natural log10r2 = Natural.Log(r2, "10"); // log10(r^2)
+			
+			return fractionCalculationLength * 2 / (int)Natural.ToUInt32(log10r2.IsZero ? Digit.ONE : log10r2); // p / log10(r^2) where p is the precision (10^-p); a kettes szorzót én tartom szükségesnek
+		}
 
-			return result + 1;
+		static Rational Ln(Rational x, Rational guess, int iterations, int fractionCalculationLength)
+		{
+			if (iterations <= 0)
+				return x;
+
+			Writable expX = GetValue(Exp(x, fractionCalculationLength), fractionCalculationLength).Value;
+			return Ln(x + (Digit.TWO * (guess - expX) / (guess + expX)), guess, iterations - 1, fractionCalculationLength);
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		int n = IterationsNeeded(x, fCL);
+		(Natural n, Rational reducedX) = DeconstructToMultiplication(x);
+		int ln2n = NeededFractionCalculationLength(x, fCL);
 
-		Rational y = (x - Digit.ONE) / (x + Digit.ONE);
-
-		ABPQSeriesResult r = SumABPQ(0, n, y);
-
-		return new Rational(r.T * Digit.TWO, r.B * r.Q);
-	}
-
-	public static Rational LnFast(Rational x, int? fractionCalculationLength = null)
-	{
-		Natural n = Digit.ZERO;
-		Natural twoToTheNth = Digit.ONE;
-
-		while ((twoToTheNth *= Digit.TWO) <= x)
-			n += Digit.ONE;
-
-		twoToTheNth /= Digit.TWO;
-
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
-
-		Natural r2 = RoundUp(SecondPower((x - "1") / (x + "1"))).Value; // r^2 where r is (x−1)/(x+1)
-		Natural log10r2 = Natural.Log(r2, "10"); // log10(r^2)
-		int ln2n = fCL / (int)Natural.ToUInt32(log10r2.IsZero ? Digit.ONE : log10r2); // p / log10(r^2) where p is the precision (10^-p)
-
-		/*{
-			Rational ln2 = Ln(Digit.TWO, ln2n);
-			Rational lnLt2 = Ln(x / twoToTheNth, IterationsNeededSinCos("1", fCL));
-
-			Console.WriteLine($"{fractionCalculationLength} -");
-			Console.WriteLine(GetValue(ln2).Value);
-			Console.WriteLine(GetValue(lnLt2).Value);
-
-			return lnLt2 + n * ln2;
-		}*/
-
-		return Ln(x / twoToTheNth, ln2n) + n * Ln(Digit.TWO, ln2n);
+		return Ln(reducedX, reducedX, 3, ln2n) + n * Ln(Digit.TWO, Digit.TWO, 3, ln2n);
 	}
 
 	/// <summary>
-	/// Calculates the sine function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the sine function for the given <paramref name="x"/> value until the given
+	/// <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
@@ -812,9 +764,9 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Sin(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
 		{
-			ABPQSeriesResult r;
+			PQBTSeriesResult r;
 
 			if (n1 + 1 >= n2)
 			{
@@ -838,8 +790,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				ABPQSeriesResult L = SumABPQ(n1, nm, x);
-				ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumABPQ(n1, nm, x);
+				PQBTSeriesResult R = SumABPQ(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -859,13 +811,14 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		ABPQSeriesResult r = SumABPQ(0, n, x);
+		PQBTSeriesResult r = SumABPQ(0, n, x);
 
 		return new Rational(r.T, r.Q);
 	}
 
 	/// <summary>
-	/// Calculates the cosine function for the given <paramref name="x"/> value until the given <paramref name="fractionCalculationLength"/> using binary splitting.
+	/// Calculates the cosine function for the given <paramref name="x"/> value until the given
+	/// <paramref name="fractionCalculationLength"/> using binary splitting.
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/>
@@ -875,9 +828,9 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Cos(Rational x, int? fractionCalculationLength = null)
 	{
-		static ABPQSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
 		{
-			ABPQSeriesResult r;
+			PQBTSeriesResult r;
 
 			if (n1 + 1 >= n2)
 			{
@@ -901,8 +854,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				ABPQSeriesResult L = SumABPQ(n1, nm, x);
-				ABPQSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumABPQ(n1, nm, x);
+				PQBTSeriesResult R = SumABPQ(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -922,7 +875,7 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		ABPQSeriesResult r = SumABPQ(0, n, x);
+		PQBTSeriesResult r = SumABPQ(0, n, x);
 
 		return new Rational(r.T, r.Q);
 	}

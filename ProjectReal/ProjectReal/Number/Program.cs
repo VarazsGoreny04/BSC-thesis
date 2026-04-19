@@ -300,7 +300,7 @@ public class Program
 		//Test(new Func<Rational>(() => Rational.Sin("0.6")), 100, 150);
 		//Test(new Func<Rational>(() => Rational.Cos(pi)), 1, 100);
 
-		//Rational.FractionalFormat = false;
+		Rational.FractionalFormat = false;
 
 		//Performance(i => Rational.Exp("13.37", i), 30, 150);
 
@@ -311,6 +311,12 @@ public class Program
 
 		//Validate(i => Rational.E(i), 0, 500);
 		//Validate(i => Rational.Pi(i), 0, 500);
+
+		//Rational.FractionCalculationLength = 1;
+		//Validate(i => Rational.Cos("+3.6393"), 1, 500);
+		//Console.WriteLine(Rational.Cos("3.09", 0));
+		//Console.WriteLine(Rational.Cos("3.09", 1));
+		Console.WriteLine(Rational.Ln("3186.257", 10));
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)
@@ -375,14 +381,14 @@ public class Program
 		string last = func.Invoke(0).ToString();
 		string now;
 
-		for (int i = 1; i < 500; ++i)
+		for (int i = from; i < to; ++i)
 		{
 			Rational.FractionCalculationLength = i;
 
 			now = func.Invoke(i).ToString();
 
 			if (!Compare(last, now))
-				Console.WriteLine($"{i}: {last}\n{now}");
+				Console.WriteLine($"{i}:\n{last}\n{now}");
 
 			last = now;
 		}
