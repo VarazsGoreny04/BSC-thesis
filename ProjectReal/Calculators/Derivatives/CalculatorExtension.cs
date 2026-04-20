@@ -68,10 +68,10 @@ public partial class Add<T> where T : IAdditiveIdentity<T, T>, IAdditionOperator
 
 	public override FunctionBase<R> Simplify<R>()
 	{
-		return Left is X<R> leftX && Right is X<R> rightX && leftX.Power.GetValue() == rightX.Power.GetValue() ?
+		return Left is X<R> leftX && Right is X<R> rightX && leftX.Exponent.GetValue() == rightX.Exponent.GetValue() ?
 			new X<R>(
 				new Number<R>(leftX.Coefficient.GetValue() + rightX.Coefficient.GetValue()),
-				leftX.Power is Term<R> power ? power : throw new ArgumentException()
+				leftX.Exponent is Term<R> exponent ? exponent : throw new ArgumentException()
 			) :
 			new Add<R>(
 	}

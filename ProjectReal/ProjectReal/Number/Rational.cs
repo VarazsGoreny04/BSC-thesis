@@ -490,15 +490,20 @@ public class Rational :
 	/// </summary>
 	/// <param name="left">The <see cref="Rational"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Rational"/> that represents the exponent.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
 	/// <exception cref="NotSupportedException">
 	/// Absolut value of <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
 	/// </exception>
-	public static Rational Power(Rational left, Rational right)
+	public static Rational Power(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
-		if (right.denominator is not null)
-			throw new NotImplementedException(); // TODO
+		if (right.denominator is not null || right.numerator.FractionLength > 0)
+		{
+			int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+
+			return Exp(right * Ln(left, fCL + (right.numerator.WholeLength - right.denominator?.WholeLength) + 1), fCL);
+		}
 
 		return right.Sign ? new Rational(left.numerator ^ right.numerator, left.denominator is not null ? left.denominator ^ right.Numerator : left.denominator) :
 			new Rational(new Writable(left.Sign, left.denominator is not null ? left.denominator ^ right.Numerator : Digit.ONE), left.Numerator ^ right.Numerator);
@@ -535,7 +540,7 @@ public class Rational :
 	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
 		if (right.denominator is not null)
-			throw new NotImplementedException(); // TODO
+			return (Power(left, Reciprocal(right), fractionCalculationLength), Digit.ZERO, Digit.ZERO);
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
 		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ?
@@ -716,40 +721,44 @@ public class Rational :
 	/// <returns>The natural logarithm of the given parameter.</returns>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
-		static (Natural N, Rational ReducedX) DeconstructToMultiplication(Rational x)
+		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x, int fractionCalculationLength)
 		{
-			Natural n = Digit.ZERO;
-			Natural twoToTheNth = Digit.ONE;
+			Integer n = Digit.ZERO;
 
-			while ((twoToTheNth *= Digit.TWO) <= x)
-				n += Digit.ONE;
+			if (x >= Digit.TWO)
+			{
+				Natural twoToTheNth = Digit.ONE;
 
-			return (n, x / (twoToTheNth / Digit.TWO));
+				while ((twoToTheNth *= Digit.TWO) <= x)
+					n += Digit.ONE;
+
+				return (n, GetValue(Divide(x.numerator, twoToTheNth / Digit.TWO)).Value);
+			}
+			else
+			{
+				Positive twoToTheNth = Digit.ONE;
+
+				while ((twoToTheNth /= Digit.TWO) >= x)
+					n -= Digit.ONE;
+
+				return (n - Digit.ONE, GetValue(Divide(x.numerator, twoToTheNth)).Value);
+			}
 		}
 
-		static int NeededFractionCalculationLength(Rational x, int fractionCalculationLength) // TODO leírni hogy működik
-		{
-			Natural r2 = RoundUp(SecondPower((x - "1") / (x + "1"))).Value; // r^2 where r is (x−1)/(x+1)
-			Natural log10r2 = Natural.Log(r2, "10"); // log10(r^2)
-			
-			return fractionCalculationLength * 2 / (int)Natural.ToUInt32(log10r2.IsZero ? Digit.ONE : log10r2); // p / log10(r^2) where p is the precision (10^-p); a kettes szorzót én tartom szükségesnek
-		}
-
-		static Rational Ln(Rational x, Rational guess, int iterations, int fractionCalculationLength)
+		static Writable Ln(Writable y, Writable x, int iterations, int fractionCalculationLength)
 		{
 			if (iterations <= 0)
-				return x;
+				return y;
 
-			Writable expX = GetValue(Exp(x, fractionCalculationLength), fractionCalculationLength).Value;
-			return Ln(x + (Digit.TWO * (guess - expX) / (guess + expX)), guess, iterations - 1, fractionCalculationLength);
+			Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
+			return Ln(y + (Digit.TWO * (x - expY) / (x + expY)), x, iterations - 1, fractionCalculationLength);
 		}
+		
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 10);
 
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, fCL);
 
-		(Natural n, Rational reducedX) = DeconstructToMultiplication(x);
-		int ln2n = NeededFractionCalculationLength(x, fCL);
-
-		return Ln(reducedX, reducedX, 3, ln2n) + n * Ln(Digit.TWO, Digit.TWO, 3, ln2n);
+		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, fCL) + exponent * Ln("0.693", Digit.TWO, 3, fCL);
 	}
 
 	/// <summary>

@@ -316,7 +316,15 @@ public class Program
 		//Validate(i => Rational.Cos("+3.6393"), 1, 500);
 		//Console.WriteLine(Rational.Cos("3.09", 0));
 		//Console.WriteLine(Rational.Cos("3.09", 1));
-		Console.WriteLine(Rational.Ln("3186.257", 10));
+
+		//Validate(i => Rational.Ln("4095.43", i), 1, 50);
+
+		Rational.FractionCalculationLength = 10;
+		Rational a = Rational.Ln("0.001");
+		Console.WriteLine(a);
+		// Rational b = "2.4" * a;
+		// Rational c = Rational.Exp(b);
+		// Console.WriteLine($"{a}\n{b}\n{c}");
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)
