@@ -3,9 +3,9 @@
 namespace Calculators.Standard;
 
 /// <summary>
-/// Represents a maximum value function in an expression.
+/// Represents a maximum value function.
 /// </summary>
-/// <typeparam name="T"></typeparam> // TODO: Mindenhol meg kell csinálni (BinaryOperator, UnaryOperator, stb...)
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
 public sealed class Max<T> : Function<T> where T : IComparisonOperators<T, T, bool>
 {
 	#region Properties
@@ -33,12 +33,12 @@ public sealed class Max<T> : Function<T> where T : IComparisonOperators<T, T, bo
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Max"/> function with the parameters set to <see langword="null"/>.
+	/// Constructs a maximum function with the parameters set to <see langword="null"/>.
 	/// </summary>
 	public Max() : base([null!, null!]) { }
 
 	/// <summary>
-	/// Constructs a <see cref="Max"/> function with the <paramref name="first"/> and <paramref name="second"/> values.
+	/// Constructs a maximum function with the <paramref name="first"/> and <paramref name="second"/> values.
 	/// </summary>
 	/// <param name="first">The first parameter of the function.</param>
 	/// <param name="second">The second parameter of the function.</param>
@@ -56,8 +56,9 @@ public sealed class Max<T> : Function<T> where T : IComparisonOperators<T, T, bo
 }
 
 /// <summary>
-/// Represents a minimum value function in an expression.
+/// Represents a minimum value function.
 /// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
 public sealed class Min<T> : Function<T> where T : IComparisonOperators<T, T, bool>
 {
 	#region Properties
@@ -85,12 +86,12 @@ public sealed class Min<T> : Function<T> where T : IComparisonOperators<T, T, bo
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Min"/> function with the parameters set to <see langword="null"/>.
+	/// Constructs a minimum function with the parameters set to <see langword="null"/>.
 	/// </summary>
 	public Min() : base([null!, null!]) { }
 
 	/// <summary>
-	/// Constructs a <see cref="Min"/> function with the <paramref name="first"/> and <paramref name="second"/> values.
+	/// Constructs a minimum function with the <paramref name="first"/> and <paramref name="second"/> values.
 	/// </summary>
 	/// <param name="first">The first parameter of the function.</param>
 	/// <param name="second">The second parameter of the function.</param>

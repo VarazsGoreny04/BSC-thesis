@@ -4,7 +4,5 @@ public enum Mode
 {
 	Standard,
 	Matrix,
-	Interpolation,
-	Integral,
-	Options
+	Interpolation
 }

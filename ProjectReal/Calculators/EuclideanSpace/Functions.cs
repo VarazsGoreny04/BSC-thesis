@@ -4,6 +4,10 @@ using System.Numerics;
 
 namespace Calculators.EuclideanSpace;
 
+/// <summary>
+/// Represents a diagonalization function.
+/// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the matrix.</typeparam>
 public class Diagonalize<T> : Function<Matrix<T>>
 where T :
 	IComparisonOperators<T, T, bool>,
@@ -19,21 +23,47 @@ where T :
 	IMultiplicativeIdentity<T, T>,
 	IParsable<T>
 {
+	#region Properties
+
+	/// <summary>
+	/// Gets or sets the first matrix to diagonalize.
+	/// </summary>
 	public ValueHolder<Matrix<T>> Parameter
 	{
 		get => parameters[0];
 		set => parameters[0] = value;
 	}
 
+	#endregion
+
+	#region Constructors
+
+	/// <summary>
+	/// Constructs an diagonalizer function with the parameter set to <see langword="null"/>.
+	/// </summary>
 	public Diagonalize() : base([null!]) { }
 
+	/// <summary>
+	/// Constructs an diagonalizer function with the given <paramref name="parameter"/> matrix.
+	/// </summary>
+	/// <param name="parameter">The matrix to diagonalize.</param>
 	public Diagonalize(ValueHolder<Matrix<T>> parameter) : base([parameter]) { }
 
-	public override Matrix<T> GetValue() => Matrix<T>.Diagonalize(Matrix<T>.ToMatrix(Parameter?.GetValue().Value ?? throw new FormatException()), 3).Eigenvalues;
+	#endregion
+
+	#region Public methods
+
+	public override Matrix<T> GetValue() => MatrixOperations<T>.Diagonalize(Matrix<T>.ToMatrix(Parameter.GetValue().Value), 3).Eigenvalues;
 
 	public override string Sign() => "diag";
+
+	#endregion
 }
 
+/// <summary>
+/// Represents a inverse function.
+/// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the matrix.</typeparam>
 public class Inverse<T> : Function<Matrix<T>>
 where T :
 	IComparisonOperators<T, T, bool>,
@@ -49,17 +79,39 @@ where T :
 	IMultiplicativeIdentity<T, T>,
 	IParsable<T>
 {
+	#region Properties
+
+	/// <summary>
+	/// Gets or sets the matrix to invert.
+	/// </summary>
 	public ValueHolder<Matrix<T>> Parameter
 	{
 		get => parameters[0];
 		set => parameters[0] = value;
 	}
 
+	#endregion
+
+	#region Constructors
+
+	/// <summary>
+	/// Constructs an inverse function with the parameter set to <see langword="null"/>.
+	/// </summary>
 	public Inverse() : base([null!]) { }
 
+	/// <summary>
+	/// Constructs an inverse function with the given <paramref name="parameter"/> matrix.
+	/// </summary>
+	/// <param name="parameter">The matrix to invert.</param>
 	public Inverse(ValueHolder<Matrix<T>> parameter) : base([parameter]) { }
 
-	public override Matrix<T> GetValue() => Matrix<T>.Inverse(Matrix<T>.ToMatrix(Parameter?.GetValue().Value ?? throw new FormatException()));
+	#endregion
+
+	#region Public methods
+
+	public override Matrix<T> GetValue() => MatrixOperations<T>.Inverse(Matrix<T>.ToMatrix(Parameter.GetValue().Value));
 
 	public override string Sign() => "inv";
+
+	#endregion
 }

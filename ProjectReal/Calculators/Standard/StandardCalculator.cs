@@ -9,6 +9,7 @@ namespace Calculators.Standard;
 /// <summary>
 /// A calculator that understands the basic numbers, operations and trigonometric functions.
 /// </summary>
+/// <typeparam name="T">The type to calculate with.</typeparam>
 public class StandardCalculator<T> : Calculator
 where T :
 	IAdditiveIdentity<T, T>,

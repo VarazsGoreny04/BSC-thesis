@@ -11,6 +11,7 @@ namespace Calculators.EuclideanSpace;
 /// <summary>
 /// A calculator that understands matrices and can perform operations with them.
 /// </summary>
+/// <typeparam name="T">The type to calculate with.</typeparam>
 public partial class EuclideanSpaceCalculator<T> : Calculator
 where T :
 	IComparisonOperators<T, T, bool>,

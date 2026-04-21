@@ -1,8 +1,9 @@
 ﻿namespace Calculators;
 
 /// <summary>
-/// Represents a number in an expression.
+/// Represents a number.
 /// </summary>
+/// <typeparam name="T">The type of the term.</typeparam>
 public sealed class Number<T> : Term<T>
 {
 	#region Fields

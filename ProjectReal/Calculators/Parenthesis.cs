@@ -5,12 +5,12 @@ using System.Linq;
 namespace Calculators;
 
 /// <summary>
-/// Represents a parenthesis in an expression.
+/// Represents a parenthesis.
 /// </summary>
 public abstract class Parenthesis : Expression { }
 
 /// <summary>
-/// Represents an opening parenthesis in an expression.
+/// Represents an opening parenthesis.
 /// </summary>
 public sealed class OpeningParenthesis : Parenthesis
 {
@@ -42,8 +42,9 @@ public sealed class OpeningParenthesis : Parenthesis
 }
 
 /// <summary>
-/// Represents a closing parenthesis in an expression.
+/// Represents a closing parenthesis.
 /// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parenthesis.</typeparam>
 public sealed class ClosingParenthesis<T> : Parenthesis
 {
 	#region Constructors

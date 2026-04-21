@@ -4,8 +4,9 @@ using System.Collections.Generic;
 namespace Calculators;
 
 /// <summary>
-/// Represents a unary operator in an expression.
+/// Represents a unary operator.
 /// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameter.</typeparam>
 public abstract class UnaryOperator<T> : Operator<T>
 {
 	#region Properties

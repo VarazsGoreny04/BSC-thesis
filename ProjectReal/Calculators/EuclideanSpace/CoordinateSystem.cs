@@ -6,6 +6,7 @@ namespace Calculators.EuclideanSpace;
 /// <summary>
 /// Contains methods for basic operations with the Cartesian 2D coordinate system.
 /// </summary>
+/// <typeparam name="T">The type to calculate with.</typeparam>
 public class CoordinateSystem<T>
 where T : 
 	IMultiplicativeIdentity<T, T>,
@@ -14,6 +15,8 @@ where T :
 	IDivisionOperators<T, T, T>,
 	IParsable<T>
 {
+	#region Public methods
+
 	/// <summary>
 	/// Divides the space between the <paramref name="start"/> and <paramref name="end"/> points to the given number of points.
 	/// </summary>
@@ -32,4 +35,6 @@ where T :
 
 		return result;
 	}
+
+	#endregion
 }

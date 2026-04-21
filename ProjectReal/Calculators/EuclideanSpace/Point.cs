@@ -6,8 +6,9 @@ using System.Numerics;
 namespace Calculators.EuclideanSpace;
 
 /// <summary>
-/// Represents a Point<T> in the coordinate system.
+/// Represents a point in the coordinate system.
 /// </summary>
+/// <typeparam name="T">The type of values within the point.</typeparam>
 public abstract class Point<T> where T : IEqualityOperators<T, T, bool>
 {
 	#region Fields
@@ -40,8 +41,9 @@ public abstract class Point<T> where T : IEqualityOperators<T, T, bool>
 }
 
 /// <summary>
-/// Represents a 2D Point<T> in the coordinate system.
+/// Represents a 2D point in the coordinate system.
 /// </summary>
+/// <typeparam name="T">The type of values within the point.</typeparam>
 public class Point2D<T> : Point<T>
 where T :
 	IComparisonOperators<T, T, bool>,
@@ -99,7 +101,7 @@ where T :
 	/// <param name="left">The first <see cref="Point2D"/> to add.</param>
 	/// <param name="right">The second <see cref="Point2D"/> to add.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Point2D<T> Add(Point2D<T> left, Point2D<T> right) => new(Matrix<T>.Add(left.values, right.values));
+	public static Point2D<T> Add(Point2D<T> left, Point2D<T> right) => new(VectorOperations<T>.Add(left.values, right.values));
 
 	/// <summary>
 	/// Subtracts two <see cref="Point2D"/>s.
@@ -107,7 +109,7 @@ where T :
 	/// <param name="left">The <see cref="Point2D"/> that represents the minuend.</param>
 	/// <param name="right">The <see cref="Point2D"/> that represents the subtrahend.</param>
 	/// <returns>The result value and if there was a swap in a tuple.</returns>
-	public static Point2D<T> Subtract(Point2D<T> left, Point2D<T> right) => new(Matrix<T>.Subtract(left.values, right.values));
+	public static Point2D<T> Subtract(Point2D<T> left, Point2D<T> right) => new(VectorOperations<T>.Subtract(left.values, right.values));
 
 	/// <summary>
 	/// Calculates the distance of two <see cref="Point2D"/>s.
@@ -141,8 +143,9 @@ where T :
 }
 
 /// <summary>
-/// Represents a 3D Point<T> in the coordinate system.
+/// Represents a 3D point in the coordinate system.
 /// </summary>
+/// <typeparam name="T">The type of values within the point.</typeparam>
 public class Point3D<T> : Point2D<T>
 where T :
 	IComparisonOperators<T, T, bool>,
@@ -198,7 +201,7 @@ where T :
 	/// <param name="left">The first <see cref="Point3D"/> to add.</param>
 	/// <param name="right">The second <see cref="Point3D"/> to add.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static Point3D<T> Add(Point3D<T> a, Point3D<T> b) => new(Matrix<T>.Add(a.values, b.values));
+	public static Point3D<T> Add(Point3D<T> a, Point3D<T> b) => new(VectorOperations<T>.Add(a.values, b.values));
 
 	/// <summary>
 	/// Subtracts two <see cref="Point3D"/>s.
@@ -206,7 +209,7 @@ where T :
 	/// <param name="left">The <see cref="Point3D"/> that represents the minuend.</param>
 	/// <param name="right">The <see cref="Point3D"/> that represents the subtrahend.</param>
 	/// <returns>The result value and if there was a swap in a tuple.</returns>
-	public static Point3D<T> Subtract(Point3D<T> left, Point3D<T> right) => new(Matrix<T>.Subtract(left.values, right.values));
+	public static Point3D<T> Subtract(Point3D<T> left, Point3D<T> right) => new(VectorOperations<T>.Subtract(left.values, right.values));
 
 	/// <summary>
 	/// Calculates the distance of two <see cref="Point3D"/>s.

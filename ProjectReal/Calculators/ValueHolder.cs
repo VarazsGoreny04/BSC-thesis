@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Calculators;
 
 /// <summary>
-/// Represents a value holding node in an expression.
+/// Represents a value holding node.
 /// </summary>
 /// <typeparam name="T">The type to hold.</typeparam>
 public abstract partial class ValueHolder<T> : Expression

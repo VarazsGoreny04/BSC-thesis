@@ -3,7 +3,7 @@
 namespace Calculators;
 
 /// <summary>
-/// Represents a term node in an expression.
+/// Represents a term node.
 /// </summary>
 /// <typeparam name="T">The type of the term.</typeparam>
 public abstract partial class Term<T> : ValueHolder<T>

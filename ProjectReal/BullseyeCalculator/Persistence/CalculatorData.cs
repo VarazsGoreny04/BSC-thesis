@@ -5,6 +5,7 @@ using Calculators.Polynomials;
 using Calculators.Standard;
 using ProjectReal.Number;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BullseyeCalculator.Persistence;
 
@@ -24,6 +25,9 @@ public class CalculatorData
 
 	internal readonly List<string> input;
 
+	internal readonly ObservableCollection<string> evaluation;
+	internal string result;
+
 	#endregion
 
 	#region Properties
@@ -38,6 +42,9 @@ public class CalculatorData
 
 	public static bool FractionalFormat { get => Rational.FractionalFormat; set => Rational.FractionalFormat = value; }
 	public static int FractionCalculationLength { get => Rational.FractionCalculationLength; set => Rational.FractionCalculationLength = value; }
+
+	public ObservableCollection<string> Evaluation => evaluation;
+	public string Result => result;
 
 	#endregion
 
@@ -75,6 +82,9 @@ public class CalculatorData
 		calculator = standardCalculator;
 
 		input = [];
+
+		evaluation = [];
+		result = string.Empty;
 	}
 
 	#endregion

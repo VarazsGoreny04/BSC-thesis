@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Calculators;
 
 /// <summary>
-/// Represents an operator in an expression.
+/// Represents an operator.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
 public abstract partial class Operator<T> : FunctionBase<T>

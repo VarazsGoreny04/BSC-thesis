@@ -9,8 +9,9 @@ using System.Text.RegularExpressions;
 namespace Calculators.Polynomials;
 
 /// <summary>
-/// A calculator that understands matrices and can perform operations with them.
+/// A calculator that understands 2×N matrices as (X, Y) coordinate pairs and can perform interpolations with them.
 /// </summary>
+/// <typeparam name="T">The type to calculate with.</typeparam>
 public partial class PolynomialCalculator<T> : Calculator
 where T :
 	IComparisonOperators<T, T, bool>,

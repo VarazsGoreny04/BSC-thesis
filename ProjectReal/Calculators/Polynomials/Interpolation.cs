@@ -8,6 +8,7 @@ namespace Calculators.Polynomials;
 /// <summary>
 /// Contains methods for interpolation.
 /// </summary>
+/// <typeparam name="T">The type to calculate with.</typeparam>
 public static class Interpolation<T>
 where T :
 	IComparisonOperators<T, T, bool>,
@@ -74,9 +75,9 @@ where T :
 
 			denominator /= points[index].X - points[i].X;
 
-			T[,] temp = Matrix<T>.OuterProduct(numerator, [-points[i].X, T.MultiplicativeIdentity]);
+			T[,] temp = VectorOperations<T>.OuterProduct(numerator, [-points[i].X, T.MultiplicativeIdentity]);
 			int tempLength = temp.GetLength(0);
-			numerator = Matrix<T>.Zeros(tempLength + 1);
+			numerator = VectorOperations<T>.Zeros(tempLength + 1);
 
 			for (int j = tempLength - 1; j >= 0; --j)
 			{
@@ -85,7 +86,7 @@ where T :
 			}
 		}
 
-		return Matrix<T>.Scale(numerator, denominator);
+		return VectorOperations<T>.Scale(numerator, denominator);
 	}
 
 	/// <summary>
@@ -95,10 +96,10 @@ where T :
 	/// <returns>The coefficients of the polynomial in an array.</returns>
 	public static T[] Lagrange(Point2D<T>[] points)
 	{
-		T[] result = Matrix<T>.Zeros(points.Length);
+		T[] result = VectorOperations<T>.Zeros(points.Length);
 
 		for (int i = 0; i < points.Length; ++i)
-			result = Matrix<T>.Add(result, Matrix<T>.Scale(LagrangeBasis(points, i), points[i].Y));
+			result = VectorOperations<T>.Add(result, VectorOperations<T>.Scale(LagrangeBasis(points, i), points[i].Y));
 
 		return result;
 	}
@@ -112,10 +113,10 @@ where T :
 	/// <exception cref="ArgumentException">Make sure to give the corresponding points and basis polynomials to this method.</exception>
 	public static T[] Lagrange(Point2D<T>[] points, T[][] lagrangeBasisPolynomials)
 	{
-		T[] result = Matrix<T>.Zeros(points.Length);
+		T[] result = VectorOperations<T>.Zeros(points.Length);
 
 		for (int i = points.Length - 1; i >= 0; --i)
-			result = Matrix<T>.Add(result, Matrix<T>.Scale(lagrangeBasisPolynomials[i], points[i].Y));
+			result = VectorOperations<T>.Add(result, VectorOperations<T>.Scale(lagrangeBasisPolynomials[i], points[i].Y));
 
 		return result;
 	}

@@ -9,6 +9,7 @@ namespace Calculators.Polynomials;
 /// <summary>
 /// Contains methods for basic operations with polynomials.
 /// </summary>
+/// <typeparam name="T">The type of the coefficients.</typeparam>
 public static class Polynomial<T>
 where T :
 	IComparisonOperators<T, T, bool>,

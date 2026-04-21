@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Calculators;
 
 /// <summary>
-/// Represents a parenthesized section in an expression.
+/// Represents a parenthesized section.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> inside.</typeparam>
 public sealed partial class Parenthesized<T> : FunctionBase<T>

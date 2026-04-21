@@ -1,7 +1,6 @@
 ﻿using BullseyeCalculator.Model;
 using BullseyeCalculator.Persistence;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace BullseyeCalculator.WPF.ViewModel;
@@ -12,9 +11,6 @@ public class CalculatorViewModel : ViewModelBase
 
 	private readonly CalculatorModel model;
 
-	private string result;
-	private readonly ObservableCollection<string> evaluation;
-
 	private bool showSteps;
 	private bool showOptions;
 
@@ -23,17 +19,8 @@ public class CalculatorViewModel : ViewModelBase
 	#region Properties
 
 	public string Input => model.Data.Input;
-	public string Result
-	{
-		get => result;
-		set
-		{
-			result = value;
-
-			OnPropertyChanged(nameof(Result));
-		}
-	}
-	public ObservableCollection<string> Evaluation => evaluation;
+	public ObservableCollection<string> Evaluation => model.Data.Evaluation;
+	public string Result => model.Data.Result;
 	public bool ShowSteps
 	{
 		get => showSteps;
@@ -92,9 +79,9 @@ public class CalculatorViewModel : ViewModelBase
 
 	#region Commands
 
-	public DelegateCommand InputCommand { get; }
-	public DelegateCommand BackSpaceCommand { get; }
-	public DelegateCommand ClearCommand { get; }
+	public DelegateCommand PushInputCommand { get; }
+	public DelegateCommand PopInputCommand { get; }
+	public DelegateCommand ClearInputCommand { get; }
 	public DelegateCommand EvaluateCommand { get; }
 
 	public DelegateCommand ShowStepsCommand { get; }
@@ -109,6 +96,15 @@ public class CalculatorViewModel : ViewModelBase
 
 	#endregion
 
+	#region Events
+
+	public event EventHandler<ParamEventArgs>? PushInputEvent;
+	public event EventHandler? PopInputEvent;
+	public event EventHandler? ClearInputEvent;
+	public event EventHandler? EvaluateEvent;
+
+	#endregion
+
 	#region Constructors
 
 	public CalculatorViewModel()
@@ -117,18 +113,26 @@ public class CalculatorViewModel : ViewModelBase
 		FractionCalculationLength = 10;
 
 		model = new CalculatorModel();
+		model.InputChange += new EventHandler((_, _) => OnPropertyChanged(nameof(Input)));
+		model.EvaluationChange += new EventHandler((_, _) => OnPropertyChanged(nameof(Evaluation)));
+		model.ResultChange += new EventHandler((_, _) => OnPropertyChanged(nameof(Result)));
 
 		showSteps = false;
 		showOptions = false;
 
 		CurrentMode = Mode.Standard;
-		result = string.Empty;
-		evaluation = [];
 
-		InputCommand = new DelegateCommand(param => PushInput(param?.ToString() ?? throw new FormatException()));
-		BackSpaceCommand = new DelegateCommand(_ => PopInput());
-		ClearCommand = new DelegateCommand(_ => ClearInput());
-		EvaluateCommand = new DelegateCommand(_ => CalculateByInput());
+		PushInputEvent += new EventHandler<ParamEventArgs>(
+			(_, e) => model.PushInput(e.Param?.ToString() ?? throw new FormatException("Input format is invalid!"))
+		);
+		PopInputEvent += new EventHandler((_, _) => model.PopInput());
+		ClearInputEvent += new EventHandler((_, _) => model.ClearInput());
+		EvaluateEvent += new EventHandler((_, _) => model.Evaluate());
+
+		PushInputCommand = new DelegateCommand(param => PushInputEvent?.Invoke(this, new ParamEventArgs(param)));
+		PopInputCommand = new DelegateCommand(_ => PopInputEvent?.Invoke(this, EventArgs.Empty));
+		ClearInputCommand = new DelegateCommand(_ => ClearInputEvent?.Invoke(this, EventArgs.Empty));
+		EvaluateCommand = new DelegateCommand(_ => EvaluateEvent?.Invoke(this, EventArgs.Empty));
 
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
 		ShowOptionsCommand = new DelegateCommand(_ => ShowOptions = !showOptions);
@@ -139,66 +143,6 @@ public class CalculatorViewModel : ViewModelBase
 
 		IncreaseFractionCalculationLengthCommand = new DelegateCommand(_ => ++FractionCalculationLength);
 		DecreaseFractionCalculationLengthCommand = new DelegateCommand(_ => --FractionCalculationLength);
-	}
-
-	#endregion
-
-	#region Private methods
-
-	private void PushInput(string text)
-	{
-		model.PushInput(text);
-		OnPropertyChanged(nameof(Input));
-
-		if (evaluation.Count > 0)
-		{
-			Result = string.Empty;
-
-			evaluation.Clear();
-			OnPropertyChanged(nameof(Evaluation));
-		}
-	}
-
-	private void PopInput()
-	{
-		model.PopInput();
-		OnPropertyChanged(nameof(Input));
-	}
-
-	private void ClearInput()
-	{
-		model.ClearInput();
-		OnPropertyChanged(nameof(Input));
-	}
-
-	private void CalculateByInput()
-	{
-		if (Input.Length < 1)
-			return;
-
-		OnPropertyChanged(nameof(Input));
-
-		evaluation.Clear();
-		OnPropertyChanged(nameof(Evaluation));
-
-		Result = "Calculating...";
-
-		try
-		{
-			(List<string> evaluation, string result) = model.CalculateByInput();
-
-			evaluation.ForEach(this.evaluation.Add);
-			OnPropertyChanged(nameof(Evaluation));
-
-			Result = $"={result}";
-
-			model.ClearInput();
-			model.PushInput(result);
-		}
-		catch (FormatException e)
-		{
-			Result = e.Message;
-		}
 	}
 
 	#endregion

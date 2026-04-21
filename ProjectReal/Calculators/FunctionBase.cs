@@ -4,7 +4,7 @@ using System.Linq;
 namespace Calculators;
 
 /// <summary>
-/// Represents a function in an expression.
+/// Represents a function.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
 public abstract partial class FunctionBase<T> : ValueHolder<T>

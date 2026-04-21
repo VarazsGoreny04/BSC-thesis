@@ -5,6 +5,10 @@ using System.Numerics;
 
 namespace Calculators.EuclideanSpace;
 
+/// <summary>
+/// Represents a matrix holding node.
+/// </summary>
+/// <typeparam name="T">The type of the values in the matrix to hold.</typeparam>
 public class MatrixHolder<T> : Term<Matrix<T>>
 where T :
 	IComparisonOperators<T, T, bool>,
