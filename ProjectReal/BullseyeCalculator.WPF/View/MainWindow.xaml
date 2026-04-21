@@ -6,7 +6,7 @@
 		xmlns:viewmodel="clr-namespace:BullseyeCalculator.WPF.ViewModel"
 		d:DataContext="{d:DesignInstance Type=viewmodel:CalculatorViewModel}"
 		mc:Ignorable="d"
-		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260" >
+		Title="Bullseye Calculator" Height="340" Width="260" MinHeight="340" MinWidth="260">
 	<Grid Background="{StaticResource BackgroundBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="3*" />
@@ -27,23 +27,26 @@
 			</Grid.Style>
 			
 			<Grid.RowDefinitions>
+				<RowDefinition Height="4*" />
 				<RowDefinition Height="2*" />
+				<RowDefinition Height="4*" />
 				<RowDefinition />
 				<RowDefinition Height="2*" />
-				<RowDefinition />
-				<RowDefinition Height="2*" />
+				<RowDefinition Height="4*" />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition Width="auto" />
-				<ColumnDefinition Width="auto" />
+				<ColumnDefinition MinWidth="30" MaxWidth="150" />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use fractional format " />
-			<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding FractionalFormat}"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+			<Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use fractional format " FontSize="{DynamicResource ControlFontSize}" />
+			<Viewbox Grid.Row="1" Grid.Column="2" Width="{DynamicResource ControlFontSize}" Height="{DynamicResource ControlFontSize}" >
+				<CheckBox IsChecked="{Binding FractionalFormat}" />
+			</Viewbox>
 
-			<Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Fractional accuracy " />
+			<Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Fractional accuracy " FontSize="{DynamicResource ControlFontSize}" />
 			<Grid Grid.Row="2" Grid.Column="2" MinWidth="30">
 				<Grid.RowDefinitions>
 					<RowDefinition/>
@@ -51,26 +54,26 @@
 					<RowDefinition/>
 				</Grid.RowDefinitions>
 
-				<Button Content="▲" Grid.Row="0" Style="{StaticResource LightButton}" Command="{Binding IncreaseFractionCalculationLengthCommand}" />
+				<Button Content="▲" Grid.Row="0" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding IncreaseFractionCalculationLengthCommand}" />
 				
 				<Border BorderThickness="1" BorderBrush="Gray" Margin="2,2,2,2" Grid.Row="1" 
 					VerticalAlignment="Center" HorizontalAlignment="Stretch">
 
 					<!--Bind the TextBlock to the Value property-->
-					<Label Content="{Binding FractionCalculationLength}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+					<Label Content="{Binding FractionCalculationLength}" FontSize="{DynamicResource ControlFontSize}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Border>
 
-				<Button Content="▼" Grid.Row="2" Style="{StaticResource LightButton}" Command="{Binding DecreaseFractionCalculationLengthCommand}" />
+				<Button Content="▼" Grid.Row="2" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding DecreaseFractionCalculationLengthCommand}" />
 			</Grid>
 
-			<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" >
+			<Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" >
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="auto" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="3*" />
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="3*" />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Column="1" Content="Apply" Style="{StaticResource SpecialButton}" Command="{Binding ShowOptionsCommand}" />
+				<Button Grid.Column="1" Content="Apply" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding ShowOptionsCommand}" />
 			</Grid>
 		</Grid>
 
@@ -81,8 +84,8 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<Label Grid.Row="0" Content="{Binding Input}" />
-				<Label Grid.Row="1" Content="{Binding Result}" />
+				<Label Grid.Row="0" FontSize="{DynamicResource ControlFontSize}" Content="{Binding Input}" />
+				<Label Grid.Row="1" FontSize="{DynamicResource ControlFontSize}" Content="{Binding Result}" />
 			</Grid>
 		</Border>
 
@@ -96,7 +99,7 @@
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="0" Command="{Binding ShowStepsCommand}">
+			<Button Grid.Column="0" FontSize="{DynamicResource ControlFontSize}" Command="{Binding ShowStepsCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
 						<Style.Triggers>
@@ -110,7 +113,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="2" Content="S" Command="{Binding StandardModeCommand}">
+			<Button Grid.Column="2" Content="S" FontSize="{DynamicResource ControlFontSize}" Command="{Binding StandardModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -121,7 +124,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="3" Content="[]" Command="{Binding EuclideanModeCommand}">
+			<Button Grid.Column="3" Content="[]" FontSize="{DynamicResource ControlFontSize}" Command="{Binding EuclideanModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -132,7 +135,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="4" Content="I" Command="{Binding InterpolationModeCommand}">
+			<Button Grid.Column="4" Content="I" FontSize="{DynamicResource ControlFontSize}" Command="{Binding InterpolationModeCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource LightButton}">
 						<Style.Triggers>
@@ -143,7 +146,7 @@
 					</Style>
 				</Button.Style>
 			</Button>
-			<Button Grid.Column="5" Content="⚙️" Command="{Binding ShowOptionsCommand}">
+			<Button Grid.Column="5" Content="⚙️" FontSize="{DynamicResource ControlFontSize}" Command="{Binding ShowOptionsCommand}">
 				<Button.Style>
 					<Style TargetType="Button" BasedOn="{StaticResource SpecialButton}">
 						<Setter Property="IsEnabled" Value="True" />
@@ -189,12 +192,12 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<Button Grid.Row="0" Content="[" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="[" />
-				<Button Grid.Row="1" Content="]" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="]" />
-				<Button Grid.Row="2" Content="{Binding ColumnSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding ColumnSeparator}" />
-				<Button Grid.Row="3" Content="{Binding RowSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding RowSeparator}" />
-				<Button Grid.Row="4" Content="[⋱]" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="diag(" />
-				<Button Grid.Row="5" Content="[]⁻¹" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="inv(" />
+				<Button Grid.Row="0" Content="[" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="[" />
+				<Button Grid.Row="1" Content="]" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="]" />
+				<Button Grid.Row="2" Content="{Binding ColumnSeparator}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding ColumnSeparator}" />
+				<Button Grid.Row="3" Content="{Binding RowSeparator}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding RowSeparator}" />
+				<Button Grid.Row="4" Content="[⋱]" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="diag(" />
+				<Button Grid.Row="5" Content="[]⁻¹" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="inv(" />
 
 				<Grid.Style>
 					<Style TargetType="Grid">
@@ -216,10 +219,10 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<Button Grid.Row="0" Content="[" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="[" />
-				<Button Grid.Row="1" Content="]" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="]" />
-				<Button Grid.Row="2" Content="{Binding ColumnSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding ColumnSeparator}" />
-				<Button Grid.Row="3" Content="{Binding RowSeparator}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding RowSeparator}" />
+				<Button Grid.Row="0" Content="[" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="[" />
+				<Button Grid.Row="1" Content="]" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="]" />
+				<Button Grid.Row="2" Content="{Binding ColumnSeparator}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding ColumnSeparator}" />
+				<Button Grid.Row="3" Content="{Binding RowSeparator}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding PushInputCommand}" CommandParameter="{Binding RowSeparator}" />
 
 				<Grid.Style>
 					<Style TargetType="Grid">
@@ -250,56 +253,56 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Row="5" Grid.Column="2" Content="0" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="0" />
-				<Button Grid.Row="4" Grid.Column="1" Content="1" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="1" />
-				<Button Grid.Row="4" Grid.Column="2" Content="2" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="2" />
-				<Button Grid.Row="4" Grid.Column="3" Content="3" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="3" />
-				<Button Grid.Row="3" Grid.Column="1" Content="4" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="4" />
-				<Button Grid.Row="3" Grid.Column="2" Content="5" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="5" />
-				<Button Grid.Row="3" Grid.Column="3" Content="6" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="6" />
-				<Button Grid.Row="2" Grid.Column="1" Content="7" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="7" />
-				<Button Grid.Row="2" Grid.Column="2" Content="8" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="8" />
-				<Button Grid.Row="2" Grid.Column="3" Content="9" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="9" />
+				<Button Grid.Row="5" Grid.Column="2" Content="0" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="0" />
+				<Button Grid.Row="4" Grid.Column="1" Content="1" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="1" />
+				<Button Grid.Row="4" Grid.Column="2" Content="2" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="2" />
+				<Button Grid.Row="4" Grid.Column="3" Content="3" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="3" />
+				<Button Grid.Row="3" Grid.Column="1" Content="4" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="4" />
+				<Button Grid.Row="3" Grid.Column="2" Content="5" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="5" />
+				<Button Grid.Row="3" Grid.Column="3" Content="6" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="6" />
+				<Button Grid.Row="2" Grid.Column="1" Content="7" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="7" />
+				<Button Grid.Row="2" Grid.Column="2" Content="8" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="8" />
+				<Button Grid.Row="2" Grid.Column="3" Content="9" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="9" />
 
-				<Button Grid.Row="0" Grid.Column="5" Content="%" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="%" />
-				<Button Grid.Row="1" Grid.Column="5" Content="/" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="/" />
-				<Button Grid.Row="2" Grid.Column="5" Content="×" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="*" />
-				<Button Grid.Row="3" Grid.Column="5" Content="–" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="-" />
-				<Button Grid.Row="4" Grid.Column="5" Content="+" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="+" />
-				<Button Grid.Row="5" Grid.Column="5" Content="=" Style="{StaticResource SpecialButton}" Command="{Binding EvaluateCommand}" />
+				<Button Grid.Row="0" Grid.Column="5" Content="%" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="%" />
+				<Button Grid.Row="1" Grid.Column="5" Content="/" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="/" />
+				<Button Grid.Row="2" Grid.Column="5" Content="×" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="*" />
+				<Button Grid.Row="3" Grid.Column="5" Content="–" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="-" />
+				<Button Grid.Row="4" Grid.Column="5" Content="+" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="+" />
+				<Button Grid.Row="5" Grid.Column="5" Content="=" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding EvaluateCommand}" />
 
-				<Button Grid.Row="5" Grid.Column="1" Content="␣" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter=" " />
-				<Button Grid.Row="5" Grid.Column="3" Content="{Binding Separator}" Command="{Binding PushInputCommand}" Style="{StaticResource LightButton}" 
+				<Button Grid.Row="5" Grid.Column="1" Content="␣" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter=" " />
+				<Button Grid.Row="5" Grid.Column="3" Content="{Binding Separator}" Command="{Binding PushInputCommand}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" 
 				CommandParameter="{Binding Separator}" />
 
-				<Button Grid.Row="0" Grid.Column="1" Content="(" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="(" />
-				<Button Grid.Row="0" Grid.Column="2" Content=")" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=")" />
+				<Button Grid.Row="0" Grid.Column="1" Content="(" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="(" />
+				<Button Grid.Row="0" Grid.Column="2" Content=")" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=")" />
 
 				<Expander Grid.Row="0" Grid.Column="0" Header="⨍">
 					<StackPanel>
-						<Button Content="|x|" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="abs("/>
-						<Button Content="!x" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="fact(" />
+						<Button Content="|x|" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="abs("/>
+						<Button Content="!x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="fact(" />
 					</StackPanel>
 				</Expander>
 				<Expander Grid.Row="1" Grid.Column="0" Header="📐">
 					<StackPanel>
-						<Button Content="sin" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="sin(" />
-						<Button Content="cos" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
-						<Button Content="eˣ" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="exp(" />
-						<Button Content="ln" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ln(" />
+						<Button Content="sin" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="sin(" />
+						<Button Content="cos" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
+						<Button Content="eˣ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="exp(" />
+						<Button Content="ln" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ln(" />
 					</StackPanel>
 				</Expander>
 
-				<Button Grid.Row="2" Grid.Column="0" Content="x²" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^2" />
-				<Button Grid.Row="3" Grid.Column="0" Content="xⁿ" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^" />
-				<Button Grid.Row="4" Grid.Column="0" Content="√x" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="2|" />
-				<Button Grid.Row="5" Grid.Column="0" Content="ⁿ√x" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="|" />
+				<Button Grid.Row="2" Grid.Column="0" Content="x²" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^2" />
+				<Button Grid.Row="3" Grid.Column="0" Content="xⁿ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^" />
+				<Button Grid.Row="4" Grid.Column="0" Content="√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="2|" />
+				<Button Grid.Row="5" Grid.Column="0" Content="ⁿ√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="|" />
 
-				<Button Grid.Row="1" Grid.Column="1" Content="π" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="pi" />
-				<Button Grid.Row="1" Grid.Column="2" Content="e" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="e" />
+				<Button Grid.Row="1" Grid.Column="1" Content="π" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="pi" />
+				<Button Grid.Row="1" Grid.Column="2" Content="e" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="e" />
 
-				<Button Grid.Row="0" Grid.Column="3" Content="C" Style="{StaticResource DarkButton}" Command="{Binding ClearInputCommand}" />
-				<Button Grid.Row="1" Grid.Column="3" Content="⌫" Style="{StaticResource DarkButton}" Command="{Binding PopInputCommand}" />
+				<Button Grid.Row="0" Grid.Column="3" Content="C" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding ClearInputCommand}" />
+				<Button Grid.Row="1" Grid.Column="3" Content="⌫" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PopInputCommand}" />
 			</Grid>
 		</Grid>
 	</Grid>

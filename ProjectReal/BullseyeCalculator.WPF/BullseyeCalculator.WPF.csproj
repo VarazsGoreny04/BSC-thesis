@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+ <PropertyGroup>
 	<OutputType>WinExe</OutputType>
 	<TargetFramework>net9.0-windows</TargetFramework>
 	<Nullable>enable</Nullable>
 	<UseWPF>true</UseWPF>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+ </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BullseyeCalculator\BullseyeCalculator.csproj" />
-  </ItemGroup>
+ <ItemGroup>
+  <ProjectReference Include="..\BullseyeCalculator\BullseyeCalculator.csproj" />
+ </ItemGroup>
 
-  <ItemGroup>
+ <ItemGroup>
 	<None Update="Icon\icon.ico">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	 <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
-  </ItemGroup>
+ </ItemGroup>
 
 </Project>
