@@ -12,7 +12,7 @@ public class CalculatorModel
 	#region Fields
 
 	private readonly CalculatorData data;
-	private readonly Lock collectionLock;
+	private CancellationTokenSource? tokenSource;
 
 	#endregion
 
@@ -31,8 +31,7 @@ public class CalculatorModel
 	public CalculatorModel()
 	{
 		data = new CalculatorData();
-
-		collectionLock = new Lock();
+		tokenSource = null;
 	}
 
 	#endregion
@@ -40,7 +39,6 @@ public class CalculatorModel
 	#region Private methods
 
 	private async Task<List<(string Calculation, string State)>> FullEvaluationAsync(string input) => await Task.Run(() => data.Calculator.FullEvaluation(input));
-
 	private static List<string> FormatEvaluation(List<(string Calculation, string State)> evaluation)
 	{
 		List<string> result = [];
@@ -78,7 +76,8 @@ public class CalculatorModel
 
 	public void PushInput(string text)
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		data.input.Add(text);
 		OnInputChange();
@@ -88,51 +87,45 @@ public class CalculatorModel
 
 		if (data.result.Length > 0)
 			ChangeResult(string.Empty);
-
-		collectionLock.Exit();
 	}
 
 	public void PopInput()
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		if (data.input.Count > 0)
 		{
 			data.input.RemoveAt(data.input.Count - 1);
 			OnInputChange();
 		}
-
-		collectionLock.Exit();
 	}
 
 	public void ClearInput()
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		data.input.Clear();
 		OnInputChange();
-
-		collectionLock.Exit();
 	}
 
 	public void AddEvaluation(List<string> evaluation)
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		evaluation.ForEach(data.evaluation.Add);
 		OnEvaluationChange();
-
-		collectionLock.Exit();
 	}
 
 	public void ClearEvaluation()
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		data.evaluation.Clear();
 		OnEvaluationChange();
-
-		collectionLock.Exit();
 	}
 
 	public void ChangeResult(string result)
@@ -143,7 +136,8 @@ public class CalculatorModel
 
 	public async void Evaluate()
 	{
-		collectionLock.TryEnter(0);
+		if (tokenSource is not null)
+			return;
 
 		string input = data.Input;
 
@@ -154,7 +148,11 @@ public class CalculatorModel
 
 			try
 			{
+				tokenSource = new CancellationTokenSource();
+
 				List<(string Calculation, string State)> fullEvaluation = await FullEvaluationAsync(input);
+
+				tokenSource = null;
 
 				string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : input;
 
@@ -169,8 +167,6 @@ public class CalculatorModel
 				ChangeResult(e.Message);
 			}
 		}
-
-		collectionLock.Exit();
 	}
 
 	#endregion

@@ -2,6 +2,7 @@
 using BullseyeCalculator.Persistence;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 

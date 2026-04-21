@@ -278,13 +278,13 @@
 				<Button Grid.Row="0" Grid.Column="1" Content="(" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="(" />
 				<Button Grid.Row="0" Grid.Column="2" Content=")" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=")" />
 
-				<Expander Grid.Row="0" Grid.Column="0" Header="⨍">
+				<Expander Grid.Row="0" Grid.Column="0" Header="⨍" FontSize="{DynamicResource ControlFontSize}">
 					<StackPanel>
 						<Button Content="|x|" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="abs("/>
 						<Button Content="!x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="fact(" />
 					</StackPanel>
 				</Expander>
-				<Expander Grid.Row="1" Grid.Column="0" Header="📐">
+				<Expander Grid.Row="1" Grid.Column="0" Header="📐" FontSize="{DynamicResource ControlFontSize}">
 					<StackPanel>
 						<Button Content="sin" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="sin(" />
 						<Button Content="cos" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
