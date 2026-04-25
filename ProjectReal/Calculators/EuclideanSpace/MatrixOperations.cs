@@ -1,5 +1,6 @@
 ﻿using ProjectReal.NumberSet;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Calculators.EuclideanSpace;
@@ -87,18 +88,35 @@ where T :
 	public static T[,] Identity(int n, int m) => Diagonal(n, m, T.MultiplicativeIdentity);
 
 	/// <summary>
-	/// Gets the <paramref name="j"/>-th column of the given matrix.
+	/// Gets the <paramref name="n"/>-th row of the given matrix.
 	/// </summary>
 	/// <param name="A">The matrix.</param>
-	/// <param name="j">The index of the column.</param>
+	/// <param name="n">The index of the row.</param>
+	/// <returns>The row vector.</returns>
+	public static T[] GetRow(T[,] A, int n)
+	{
+		int m = A.GetLength(1);
+		T[] result = new T[m];
+
+		for (int i = 0; i < m; ++i)
+			result[i] = A[n, i];
+
+		return result;
+	}
+
+	/// <summary>
+	/// Gets the <paramref name="m"/>-th column of the given matrix.
+	/// </summary>
+	/// <param name="A">The matrix.</param>
+	/// <param name="m">The index of the column.</param>
 	/// <returns>The column vector.</returns>
-	public static T[] GetColumn(T[,] A, int j)
+	public static T[] GetColumn(T[,] A, int m)
 	{
 		int n = A.GetLength(0);
 		T[] result = new T[n];
 
 		for (int i = 0; i < n; ++i)
-			result[i] = A[i, j];
+			result[i] = A[i, m];
 
 		return result;
 	}
@@ -110,14 +128,14 @@ where T :
 	/// <returns>The duplicated matrix.</returns>
 	public static T[,] Duplicate(T[,] A)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		T[,] result = new T[rowCount, colCount];
+		T[,] result = new T[n, m];
 
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < colCount; ++j)
+			for (int j = 0; j < m; ++j)
 				result[i, j] = A[i, j];
 		}
 
@@ -132,14 +150,14 @@ where T :
 	/// <returns>The scaled matrix.</returns>
 	public static T[,] Scale(T[,] A, T s)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		T[,] result = new T[rowCount, colCount];
+		T[,] result = new T[n, m];
 
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < colCount; ++j)
+			for (int j = 0; j < m; ++j)
 				result[i, j] = s * A[i, j];
 		}
 
@@ -153,14 +171,14 @@ where T :
 	/// <returns>The transposed matrix.</returns>
 	public static T[,] Transpose(T[,] A)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		T[,] result = new T[colCount, rowCount];
+		T[,] result = new T[m, n];
 
-		for (int i = rowCount - 1; i >= 0; --i)
+		for (int i = n - 1; i >= 0; --i)
 		{
-			for (int j = colCount - 1; j >= 0; --j)
+			for (int j = m - 1; j >= 0; --j)
 				result[i, j] = A[j, i];
 		}
 
@@ -175,23 +193,23 @@ where T :
 	/// <returns>The concatenated matrix.</returns>
 	public static T[,] HorizontalConcat(T[,] A, T[,] B)
 	{
-		int aRowCount = A.GetLength(0);
-		int aColCount = A.GetLength(1);
-		int bRowCount = B.GetLength(0);
-		int bColCount = B.GetLength(1);
+		int an = A.GetLength(0);
+		int am = A.GetLength(1);
+		int bn = B.GetLength(0);
+		int bm = B.GetLength(1);
 
-		T[,] result = Zeros(Math.Max(aRowCount, bRowCount), aColCount + bColCount);
+		T[,] result = Zeros(Math.Max(an, bn), am + bm);
 
-		for (int i = 0; i < aRowCount; ++i)
+		for (int i = 0; i < an; ++i)
 		{
-			for (int j = 0; j < aColCount; ++j)
+			for (int j = 0; j < am; ++j)
 				result[i, j] = A[i, j];
 		}
 
-		for (int i = 0; i < bRowCount; ++i)
+		for (int i = 0; i < bn; ++i)
 		{
-			for (int j = 0; j < bColCount; ++j)
-				result[i, aRowCount + j] = B[i, j];
+			for (int j = 0; j < bm; ++j)
+				result[i, an + j] = B[i, j];
 		}
 
 		return result;
@@ -205,23 +223,23 @@ where T :
 	/// <returns>The concatenated matrix.</returns>
 	public static T[,] VerticalConcat(T[,] A, T[,] B)
 	{
-		int aRowCount = A.GetLength(0);
-		int aColCount = A.GetLength(1);
-		int bRowCount = B.GetLength(0);
-		int bColCount = B.GetLength(1);
+		int an = A.GetLength(0);
+		int am = A.GetLength(1);
+		int bn = B.GetLength(0);
+		int bm = B.GetLength(1);
 
-		T[,] result = Zeros(aRowCount + bRowCount, Math.Max(aColCount, bColCount));
+		T[,] result = Zeros(an + bn, Math.Max(am, bm));
 
-		for (int i = 0; i < aRowCount; ++i)
+		for (int i = 0; i < an; ++i)
 		{
-			for (int j = 0; j < aColCount; ++j)
+			for (int j = 0; j < am; ++j)
 				result[i, j] = A[i, j];
 		}
 
-		for (int i = 0; i >= bRowCount; ++i)
+		for (int i = 0; i < bn; ++i)
 		{
-			for (int j = 0; j < bColCount; ++j)
-				result[aRowCount + i, j] = B[i, j];
+			for (int j = 0; j < bm; ++j)
+				result[an + i, j] = B[i, j];
 		}
 
 		return result;
@@ -238,15 +256,15 @@ where T :
 	/// </returns>
 	public static bool Equals(T[,] A, T[,] B)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
+		if (n != B.GetLength(0) || m != B.GetLength(1))
 			throw new ArgumentException();
 
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < colCount; ++j)
+			for (int j = 0; j < m; ++j)
 			{
 				if (A[i, j] != B[i, j])
 					return false;
@@ -262,7 +280,7 @@ where T :
 	/// <param name="A">The first matrix to compare.</param>
 	/// <param name="B">The second matrix to compare.</param>
 	/// <returns>
-	/// <see langword="true"/> if the length and the value of <paramref name="A"/> is greater than the length and the value of <paramref name="B"/>;
+	/// <see langword="true"/> if <paramref name="A"/> minus <paramref name="B"/> is a positive definite matrix;
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
 	public static bool GreaterThan(T[,] A, T[,] B)
@@ -292,17 +310,17 @@ where T :
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static T[,] Add(T[,] A, T[,] B)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
+		if (n != B.GetLength(0) || m != B.GetLength(1))
 			throw new ArgumentException();
 
-		T[,] result = new T[rowCount, colCount];
+		T[,] result = new T[n, m];
 
-		for (int i = rowCount - 1; i >= 0; --i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = colCount - 1; j >= 0; --j)
+			for (int j = 0; j < m; ++j)
 				result[i, j] = A[i, j] + B[i, j];
 		}
 
@@ -318,17 +336,17 @@ where T :
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static T[,] Subtract(T[,] A, T[,] B)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (rowCount != B.GetLength(0) || colCount != B.GetLength(1))
+		if (n != B.GetLength(0) || m != B.GetLength(1))
 			throw new ArgumentException();
 
-		T[,] result = new T[rowCount, colCount];
+		T[,] result = new T[n, m];
 
-		for (int i = rowCount - 1; i >= 0; --i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = colCount - 1; j >= 0; --j)
+			for (int j = 0; j < m; ++j)
 				result[i, j] = A[i, j] - B[i, j];
 		}
 
@@ -344,17 +362,17 @@ where T :
 	/// <exception cref="ArgumentException">The column count of the matrices in not equal to the length of the vector.</exception>
 	public static T[] Product(T[,] A, T[] b)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (colCount != b.Length)
+		if (m != b.Length)
 			throw new ArgumentException();
 
-		T[] result = new T[rowCount];
+		T[] result = new T[n];
 
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < colCount; ++j)
+			for (int j = 0; j < m; ++j)
 				result[i] += A[i, j] * b[j];
 		}
 
@@ -370,21 +388,21 @@ where T :
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static T[,] Product(T[,] A, T[,] B)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (rowCount != B.GetLength(1) || colCount != B.GetLength(0))
+		if (n != B.GetLength(1) || m != B.GetLength(0))
 			throw new ArgumentException();
 
-		T[,] result = new T[rowCount, rowCount];
+		T[,] result = new T[n, n];
 
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < rowCount; ++j)
+			for (int j = 0; j < n; ++j)
 			{
 				result[i, j] = T.AdditiveIdentity;
 
-				for (int k = 0; k < colCount; ++k)
+				for (int k = 0; k < m; ++k)
 					result[i, j] += A[i, k] * B[k, j];
 			}
 		}
@@ -393,7 +411,7 @@ where T :
 	}
 
 	/// <summary>
-	/// Runs the Gauss-Jordan elimination on the given matrix.
+	/// Runs the Gaussian elimination on the given matrix.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination"/></remarks>
 	/// <param name="A">The given matrix.</param>
@@ -401,38 +419,9 @@ where T :
 	/// The LU decomposed form of the matrix and the sign of the determinant.
 	/// The lower triangular matrix of the result contains the L matrix and the main diagonal and the upper triangular matrix contains the U matrix.
 	/// </returns>
-	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gaussian eliminated because of a zero value in the main diagonal.</exception>
 	public static (T[,] EliminatedMatrix, bool DeterminantSign) GaussianElimination(T[,] A)
 	{
-		static void EliminateColumn(ref T[,] LU, int n, int m, int i, ref bool determinantSign)
-		{
-			for (int j = i + 1; j < n; ++j)
-			{
-				// Swap rows of the augmented matrix.
-				if (LU[i, i] == T.AdditiveIdentity)
-				{
-					int rowToSwap = i + 1;
-					while (rowToSwap < n && LU[rowToSwap, i] == T.AdditiveIdentity)
-						++rowToSwap;
-
-					if (rowToSwap >= n)
-						return;
-
-					for (int k = 0; k < m; ++k)
-						(LU[rowToSwap, k], LU[i, k]) = (LU[i, k], LU[rowToSwap, k]);
-
-					determinantSign = !determinantSign;
-				}
-
-				T temp = LU[j, i] / LU[i, i];
-
-				for (int k = i + 1; k < m; ++k)
-					LU[j, k] -= LU[i, k] * temp;
-
-				LU[j, i] = temp;
-			}
-		}
-
 		int n = A.GetLength(0);
 		int m = A.GetLength(1);
 		T[,] LU = Duplicate(A);
@@ -440,8 +429,33 @@ where T :
 		bool determinantSign = true;
 
 		// Subtract each row by a multiple of another row.
-		for (int i = 0; i < n; ++i)
-			EliminateColumn(ref LU, n, m, i, ref determinantSign);
+		for (int k = 0; k < n - 1; ++k)
+		{
+			if (LU[k, k] == T.AdditiveIdentity)
+			{
+				int rowToSwap = k + 1;
+				while (rowToSwap < n && LU[rowToSwap, k] == T.AdditiveIdentity)
+					++rowToSwap;
+
+				if (rowToSwap >= n)
+					throw new DivideByZeroException("The matrix cannot be Gaussian eliminated!");
+
+				for (int i = 0; i < m; ++i)
+					(LU[k, i], LU[rowToSwap, i]) = (LU[rowToSwap, i], LU[k, i]);
+
+				determinantSign = !determinantSign;
+			}
+
+			for (int i = k + 1; i < n; ++i)
+			{
+				T temp = LU[i, k] / LU[k, k];
+
+				for (int j = k; j < m; ++j)
+					LU[i, j] -= j != k ? LU[k, j] * temp : T.AdditiveIdentity;
+
+				LU[i, k] = temp;
+			}
+		}
 
 		// Return the eliminated Matrix<T> with the sign of the determinant.
 		return (LU, determinantSign);
@@ -486,13 +500,13 @@ where T :
 	}
 
 	/// <summary>
-	/// Runs the Gauss-Jordan elimination to find the determinant of the given square matrix.
+	/// Runs the Gaussian elimination to find the determinant of the given square matrix.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants"/></remarks>
 	/// <param name="A">The matrix for which the determinant should be found.</param>
 	/// <returns>The determinant of the matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
-	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gaussian eliminated because of a zero value in the main diagonal.</exception>
 	public static T Determinant(T[,] A)
 	{
 		int n = A.GetLength(0);
@@ -515,19 +529,19 @@ where T :
 	/// <param name="A">The first matrix.</param>
 	/// <param name="B">The second matrix.</param>
 	/// <returns>The resulting matrix.</returns>
-	/// <exception cref="DivideByZeroException">The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.</exception>
+	/// <exception cref="DivideByZeroException">The matrix cannot be Gaussian eliminated because of a zero value in the main diagonal.</exception>
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static T[,] InverseProduct(T[,] A, T[,] B) => Product(A, Inverse(B));
 
 	/// <summary>
-	/// Calculates the LU decomposition of the given matrix using the Gauss-Jordan method.
+	/// Calculates the LU decomposition of the given matrix using the Gaussian method.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/LU_decomposition"/></remarks>
 	/// <param name="A">The matrix to invert.</param>
 	/// <returns>The two parts of the decomposition: The lower (L) and upper (U) triangular matrix.</returns>
 	/// <exception cref="ArgumentException"><paramref name="A"/> is not a square matrix.</exception>
 	/// <exception cref="DivideByZeroException">
-	/// The matrix cannot be Gauss-Jordan eliminated because of a zero value in the main diagonal.
+	/// The matrix cannot be Gaussian eliminated because of a zero value in the main diagonal.
 	/// </exception>
 	public static (T[,] L, T[,] U) LUDecomposition(T[,] A)
 	{
@@ -638,25 +652,22 @@ where T :
 	/// <returns>The string representation of the given matrix.</returns>
 	public static string ToString(T[,] A)
 	{
-		int rowCount = A.GetLength(0);
-		int colCount = A.GetLength(1);
+		int n = A.GetLength(0);
+		int m = A.GetLength(1);
 
-		if (rowCount < 1 || colCount < 1)
-			return "[ ]";
+		List<string> rows = [];
 
-		string text = "";
-
-		for (int i = 0; i < rowCount; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			text += $"\t{A[i, 0]}";
+			List<string> row = [];
 
-			for (int j = 1; j < colCount; ++j)
-				text += $"{Matrix<T>.ColumnSeparator}\t{A[i, j]}";
+			for (int j = 0; j < m; ++j)
+				row.Add($"{A[i, j]}");
 
-			text += $"{Matrix<T>.RowSeparator}\n";
+			rows.Add(string.Join(Matrix<T>.ColumnSeparator, row));
 		}
 
-		return $"[\n{text}]";
+		return $"[{string.Join(Matrix<T>.RowSeparator, rows)}]";
 	}
 
 	#endregion

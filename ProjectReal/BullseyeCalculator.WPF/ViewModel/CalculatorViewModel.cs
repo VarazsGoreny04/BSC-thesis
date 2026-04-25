@@ -2,7 +2,6 @@
 using BullseyeCalculator.Persistence;
 using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
@@ -70,6 +69,9 @@ public class CalculatorViewModel : ViewModelBase
 		get => CalculatorData.FractionCalculationLength;
 		set
 		{
+			if (value < 0)
+				return;
+
 			CalculatorData.FractionCalculationLength = value;
 
 			OnPropertyChanged(nameof(FractionCalculationLength));

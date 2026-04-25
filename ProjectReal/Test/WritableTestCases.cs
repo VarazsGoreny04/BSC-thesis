@@ -2,7 +2,7 @@
 
 namespace Test;
 
-public class WritableTestCase(
+public readonly struct WritableTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, string sub,

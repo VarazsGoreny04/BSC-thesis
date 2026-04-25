@@ -225,7 +225,7 @@ public partial class Power<T> : BinaryOperator<T> where T : IPowerOperations<T, 
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{
-		if (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() > Order())   // > instead of >= for right associativity
+		if (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() > Order())
 		{
 			functions.Pop();
 

@@ -212,23 +212,6 @@ public class Natural :
 		return new Natural([xTry, .. root.Digits]);
 	}
 
-	internal static Natural Log(Natural left, Natural right) // TODO
-	{
-		if (left.isZero || right.isZero)
-			throw new NotImplementedException();
-
-		Natural one = Digit.ONE;
-		Natural result = new();
-
-		while (right <= left)
-		{
-			left /= right;
-			result += one;
-		}
-
-		return result;
-	}
-
 	#endregion
 
 	#region Public methods
@@ -488,10 +471,10 @@ public class Natural :
 
 		if (right < Digit.THREE)
 		{
-			return right.ToString() switch
+			return Digit.ToChar(right[0]) switch
 			{
-				"0" => result,
-				"1" => left,
+				'0' => result,
+				'1' => left,
 				_ => left * left
 			};
 		}
@@ -572,7 +555,7 @@ public class Natural :
 			return (left, remainder);
 
 		if (right.length > 2)
-			throw new NotSupportedException("The exponent cannot be higher than 99 as it would be too computationally expensive!");
+			throw new NotSupportedException("The degree cannot be higher than 99 as it would be too computationally expensive!");
 
 		int degreeInt = (int)ToUInt32(right);
 		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - left.Length % degreeInt)];
@@ -591,13 +574,13 @@ public class Natural :
 	}
 
 	/// <summary>
-	/// Calculates the factorial of the given base.
+	/// Calculates the factorial of the given base using binary splitting.
 	/// </summary>
 	/// <param name="value">The <see cref="Natural"/> that represents the base.</param>
 	/// <returns>The result of the calculation.</returns>
 	public static Natural Factorial(Natural value)
 	{
-		/*static Natural ProductRange(Natural a, Natural b)
+		static Natural ProductRange(Natural a, Natural b)
 		{
 			if (a == b)
 				return a;
@@ -615,20 +598,7 @@ public class Natural :
 		if (value.isZero || value == Digit.ONE)
 			return Digit.ONE;
 
-		return ProductRange(Digit.ONE, value);*/
-
-		if (value.isZero || value == Digit.ONE)
-			return Digit.ONE;
-
-		Natural result = value;
-
-		while (value != Digit.ONE)
-		{
-			value -= Digit.ONE;
-			result *= value;
-		}
-
-		return result;
+		return ProductRange(Digit.ONE, value);
 	}
 
 	/// <summary>

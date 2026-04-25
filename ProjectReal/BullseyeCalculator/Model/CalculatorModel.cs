@@ -39,6 +39,7 @@ public class CalculatorModel
 	#region Private methods
 
 	private async Task<List<(string Calculation, string State)>> FullEvaluationAsync(string input) => await Task.Run(() => data.Calculator.FullEvaluation(input));
+
 	private static List<string> FormatEvaluation(List<(string Calculation, string State)> evaluation)
 	{
 		List<string> result = [];

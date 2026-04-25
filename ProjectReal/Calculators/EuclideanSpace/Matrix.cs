@@ -195,22 +195,7 @@ public class Matrix<T> :
 	/// Returns a <see cref="string"/> that represents the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>A <see cref="Matrix{T}"/> as a <see langword="string"/>.</returns>
-	public override string ToString()
-	{
-		List<string> rows = [];
-
-		for (int i = 0; i < Rows; ++i)
-		{
-			List<string> row = [];
-
-			for (int j = 0; j < Columns; ++j)
-				row.Add(value[i, j].ToString());
-
-			rows.Add(string.Join(ColumnSeparator, row));
-		}
-
-		return $"[{string.Join(RowSeparator, rows)}]";
-	}
+	public override string ToString() => MatrixOperations<T>.ToString(ToMatrix(value));
 
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.
@@ -311,7 +296,7 @@ public class Matrix<T> :
 	public static Matrix<T> operator +(T left, Matrix<T> right) => right + left;
 	public static Matrix<T> operator -(T left, Matrix<T> right) => (-right) + left;
 	public static Matrix<T> operator *(T left, Matrix<T> right) => right * left;
-	public static Matrix<T> operator /(T left, Matrix<T> right) => right / left;
+	public static Matrix<T> operator /(T left, Matrix<T> right) => MatrixOperations<T>.Scale(MatrixOperations<T>.Inverse(ToMatrix(right)), left);
 
 	#endregion
 }

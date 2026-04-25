@@ -45,7 +45,7 @@ public abstract partial class Function<T> : FunctionBase<T>
 		++step;
 
 		foreach (ValueHolder<T> parameter in parameters)
-			parameter.FullEvaluation(ref partialValues, root, ref step)/* ?? throw new FormatException()*/;
+			parameter.FullEvaluation(ref partialValues, root, ref step);
 
 		int stepCopy = step;
 

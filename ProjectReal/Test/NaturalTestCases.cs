@@ -2,7 +2,7 @@
 
 namespace Test;
 
-public class NaturalTestCase(
+public readonly struct NaturalTestCase(
 	string number1, string number2, 
 	bool equal, bool greater, 
 	string add, bool subSwap, string subNum, 

@@ -2,7 +2,7 @@
 using System;
 using System.Numerics;
 
-namespace Calculators;
+namespace Calculators.EuclideanSpace;
 
 /// <summary>
 /// Contains methods for one dimensional arrays - vectors.
@@ -25,10 +25,24 @@ where T :
 	#region Public methods
 
 	/// <summary>
+	/// Constructs a vector of <paramref name="n"/> length by the given <paramref name="value"/>.
+	/// </summary>
+	/// <param name="n">The number of rows in the vector.</param>
+	/// <param name="value">The value of the elements.</param>
+	/// <returns>The vector.</returns>
+	public static T[] Full(int n, T value)
+	{
+		T[] result = new T[n];
+		Array.Fill(result, value);
+
+		return result;
+	}
+
+	/// <summary>
 	/// Constructs a vector of <paramref name="n"/> length with full of zeros.
 	/// </summary>
-	/// <param name="n">The number of rows in the matrix.</param>
-	/// <returns>The matrix with zeros.</returns>
+	/// <param name="n">The number of rows in the vector.</param>
+	/// <returns>The vector with zeros.</returns>
 	public static T[] Zeros(int n)
 	{
 		T[] result = new T[n];
@@ -40,12 +54,28 @@ where T :
 	/// <summary>
 	/// Constructs a vector of n length with full of ones.
 	/// </summary>
-	/// <param name="n">The number of rows in the matrix.</param>
-	/// <returns>The matrix with ones.</returns>
+	/// <param name="n">The number of rows in the vector.</param>
+	/// <returns>The vector with ones.</returns>
 	public static T[] Ones(int n)
 	{
 		T[] result = new T[n];
 		Array.Fill(result, T.MultiplicativeIdentity);
+
+		return result;
+	}
+
+	/// <summary>
+	/// Duplicates the given vector.
+	/// </summary>
+	/// <param name="a">The vector to duplicate.</param>
+	/// <returns>The duplicated vector.</returns>
+	public static T[] Duplicate(T[] a)
+	{
+		int n = a.Length;
+		T[] result = new T[n];
+
+		for (int i = 0; i < n; ++i)
+			result[i] = a[i];
 
 		return result;
 	}
@@ -108,7 +138,7 @@ where T :
 	/// </summary>
 	/// <param name="a">The first vector.</param>
 	/// <param name="b">The second vector.</param>
-	/// <returns>The outer product matrix.</returns>
+	/// <returns>The outer product vector.</returns>
 	public static T[,] OuterProduct(T[] a, T[] b)
 	{
 		int aN = a.Length;
@@ -151,7 +181,7 @@ where T :
 
 		while (--i > 0 && a[i] == b[i]) { }
 
-		return i == 0 && a[0] == b[0];
+		return i < 0 || i == 0 && a[0] == b[0];
 	}
 
 	/// <summary>
@@ -168,11 +198,13 @@ where T :
 		if (a.Length != b.Length)
 			return a.Length > b.Length;
 
-		int i = a.Length;
+		for (int i = a.Length - 1; i >= 0; --i)
+		{
+			if (!(a[i] > b[i]/* || -a[i] > -b[i]*/))
+				return false;
+		}
 
-		while (--i > 0 && a[i] == b[i]) { }
-
-		return a[i] > b[i];
+		return true;
 	}
 
 	/// <summary>

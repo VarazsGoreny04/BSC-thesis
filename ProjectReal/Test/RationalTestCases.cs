@@ -2,7 +2,7 @@
 
 namespace Test;
 
-public class RationalTestCase(
+public readonly struct RationalTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, string sub,

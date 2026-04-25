@@ -22,7 +22,7 @@ public class RationalTest
 	}
 
 	[TestCleanup()]
-	public void Cleanup()
+	public void CleanUp()
 	{
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;

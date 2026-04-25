@@ -12,6 +12,8 @@ public class Program
 {
 	public static void Main()
 	{
+		Rational.WriteSign = false;
+
 		Calculator.FunctionToken<Matrix<Rational>>[] euclideanSpaceFunctionTokens = [
 			new("diag", () => new Diagonalize<Rational>()),
 			new("inv", () => new Inverse<Rational>())
@@ -108,7 +110,7 @@ public class Program
 		/*Rational[] points = CoordinateSystem.LinSpace("1", "6", 100);
 		Console.WriteLine(Matrix.ToString(Polynomial.EvaluateRange(res, points)));*/
 
-		/*Rational.WriteSign = false;
+		/*
 
 		Matrix l0 = new(
 			"1;0;0&" +
@@ -152,5 +154,30 @@ public class Program
 		/*StandardCalculator<int> calculator1 = new();
 
 		Console.WriteLine(calculator1.FullEvaluation("3+1").LastOrDefault().State);*/
+
+		Matrix<Rational> m = new(
+			"1;2&" +
+			"3;4"
+		);
+
+		Matrix<Rational> m1 = new(
+			"5;2;3&" +
+			"3;6;10&" +
+			"2;4;6"
+		);
+		Matrix<Rational> mmin1 = new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1)));
+
+		Matrix<Rational> m2 = Matrix<Rational>.MultiplicativeIdentity;
+		Matrix<Rational> m3 = new("2");
+
+		Console.WriteLine(new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1))));
+		/*Console.WriteLine(m1);
+		Console.WriteLine(m1 * mmin1);
+
+		Console.WriteLine(m3 + m2);
+		Console.WriteLine(m1 + m2);
+		Console.WriteLine(m3 + m1);
+		Console.WriteLine(m1 / m3);
+		Console.WriteLine(m3 / m1);*/
 	}
 }

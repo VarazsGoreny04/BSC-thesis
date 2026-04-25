@@ -16,7 +16,7 @@ public class IntegerTest
 	}
 
 	[TestCleanup()]
-	public void Cleanup() => Integer.WriteSign = writeSign;
+	public void CleanUp() => Integer.WriteSign = writeSign;
 
 	private static bool Sign(string sign)
 	{

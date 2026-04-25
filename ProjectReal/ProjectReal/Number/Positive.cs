@@ -373,7 +373,8 @@ public class Positive :
 	public static Positive Power(Positive left, Positive right)
 	{
 		return right.fractionLength == 0 ?
-			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) : throw new NotSupportedException(); // TODO
+			new Positive(left.value ^ right.value, left.fractionLength * (int)Natural.ToUInt32(right.Value)) :
+			throw new NotSupportedException("This type does not support fractional exponents!");
 	}
 
 	/// <summary>
@@ -419,7 +420,7 @@ public class Positive :
 	public static (Positive Value, Positive Remainder) Root(Positive left, Positive right, int? fractionCalculationLength = null)
 	{
 		if (right.fractionLength != 0)
-			throw new NotSupportedException(); // TODO
+			throw new NotSupportedException("This type does not support fractional degrees!");
 		else if (right.value < Digit.THREE)
 		{
 			return Digit.ToChar(right[0]) switch

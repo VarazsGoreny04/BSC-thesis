@@ -2,7 +2,7 @@
 
 namespace Test;
 
-public class PositiveTestCase(
+public readonly struct PositiveTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, bool subSwap, string subNum,

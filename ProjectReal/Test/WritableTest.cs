@@ -18,7 +18,7 @@ public class WritableTest
 	}
 
 	[TestCleanup()]
-	public void Cleanup() => Writable.WriteSign = writeSign;
+	public void CleanUp() => Writable.WriteSign = writeSign;
 
 	private static bool Sign(string sign)
 	{
