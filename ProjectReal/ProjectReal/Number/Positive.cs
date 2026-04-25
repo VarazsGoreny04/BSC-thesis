@@ -394,7 +394,7 @@ public class Positive :
 
 		(Natural root, Natural remainder) = Natural.SquareRoot(new Natural([.. Digit.CreateArray(splicingLength), .. value.Digits]));
 
-		int zeroCalculationLength = (fCL * 2 - (value.fractionLength + splicingLength)) / 2;
+		int zeroCalculationLength = Math.Max((fCL * 2 - (value.fractionLength + splicingLength)) / 2, 0);
 		for (int i = 0; i < zeroCalculationLength; ++i)
 		{
 			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
@@ -402,7 +402,8 @@ public class Positive :
 			root = Natural.CalculateTwoRootDigits(root, ref remainder);
 		}
 
-		return (new Positive(root, fCL), new Positive(remainder, fCL * 2));
+		int fractionLength = ((value.fractionLength + 1) / 2) + zeroCalculationLength;
+		return (new Positive(root, fractionLength), new Positive(remainder, fractionLength * 2));
 	}
 
 	/// <summary>
@@ -443,7 +444,7 @@ public class Positive :
 		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
 		Natural degreeFactorial = Natural.Factorial(degree);
 
-		int zeroCalculationLength = (fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt;
+		int zeroCalculationLength = Math.Max((fCL * degreeInt - (left.fractionLength + splicingLength)) / degreeInt, 0);
 		for (int i = 0; i < zeroCalculationLength; ++i)
 		{
 			remainder = new Natural([.. Digit.CreateArray(degreeInt), .. remainder.Digits]);
@@ -451,7 +452,8 @@ public class Positive :
 			root = Natural.CalculateNRootDigits(root, ref remainder, degree, degreeFactorial);
 		}
 
-		return (new Positive(root, fCL), new Positive(remainder, fCL * degreeInt));
+		int fractionLength = ((left.fractionLength + degreeInt - 1) / degreeInt) + zeroCalculationLength;
+		return (new Positive(root, fractionLength), new Positive(remainder, fractionLength * degreeInt));
 	}
 
 	/// <summary>

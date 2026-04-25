@@ -1,4 +1,5 @@
-﻿using ProjectReal.NumberSet;
+﻿using ProjectReal.Number;
+using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -176,9 +177,9 @@ where T :
 
 		T[,] result = new T[m, n];
 
-		for (int i = n - 1; i >= 0; --i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = m - 1; j >= 0; --j)
+			for (int j = 0; j < m; ++j)
 				result[i, j] = A[j, i];
 		}
 
@@ -275,33 +276,6 @@ where T :
 	}
 
 	/// <summary>
-	/// Compares two matrices.
-	/// </summary>
-	/// <param name="A">The first matrix to compare.</param>
-	/// <param name="B">The second matrix to compare.</param>
-	/// <returns>
-	/// <see langword="true"/> if <paramref name="A"/> minus <paramref name="B"/> is a positive definite matrix;
-	/// otherwise, <see langword="false"/>.
-	/// </returns>
-	public static bool GreaterThan(T[,] A, T[,] B)
-	{
-		T[,] C = Subtract(A, B);
-
-		if (Equals(C, Transpose(C)))
-			return false;
-
-		T[,] diagonalized = Diagonalize(C, 3).Eigenvalues;
-
-		for (int i = diagonalized.GetLength(0) - 1; i >= 0; --i)
-		{
-			if (diagonalized[i, i] <= T.AdditiveIdentity)
-				return false;
-		}
-
-		return true;
-	}
-
-	/// <summary>
 	/// Adds matrix <paramref name="B"/> to matrix <paramref name="A"/>.
 	/// </summary>
 	/// <param name="A">The matrix to be added.</param>
@@ -368,7 +342,7 @@ where T :
 		if (m != b.Length)
 			throw new ArgumentException();
 
-		T[] result = new T[n];
+		T[] result = VectorOperations<T>.Zeros(n);
 
 		for (int i = 0; i < n; ++i)
 		{
@@ -388,21 +362,20 @@ where T :
 	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
 	public static T[,] Product(T[,] A, T[,] B)
 	{
-		int n = A.GetLength(0);
-		int m = A.GetLength(1);
+		int an = A.GetLength(0);
+		int am = A.GetLength(1);
+		int bm = B.GetLength(1);
 
-		if (n != B.GetLength(1) || m != B.GetLength(0))
+		if (am != B.GetLength(0))
 			throw new ArgumentException();
 
-		T[,] result = new T[n, n];
+		T[,] result = Zeros(an, bm);
 
-		for (int i = 0; i < n; ++i)
+		for (int i = 0; i < an; ++i)
 		{
-			for (int j = 0; j < n; ++j)
+			for (int j = 0; j < bm; ++j)
 			{
-				result[i, j] = T.AdditiveIdentity;
-
-				for (int k = 0; k < m; ++k)
+				for (int k = 0; k < am; ++k)
 					result[i, j] += A[i, k] * B[k, j];
 			}
 		}
@@ -585,34 +558,36 @@ where T :
 			throw new ArgumentException();
 
 		// Duplicate the original Matrix<T> A so it stays intact.
-		T[,] U = Duplicate(A);
+		T[,] Q = Duplicate(A);
 
 		// Calculate the U Matrix<T> using the Gram–Schmidt process (see https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
 		for (int j = 1; j < n; ++j)
 		{
-			T[] u = GetColumn(U, j);
-			T[] v = GetColumn(U, j);
+			T[] v = GetColumn(Q, j);
+			T[] u = VectorOperations<T>.Duplicate(v);
 
 			for (int k = j - 1; k >= 0; --k)
-				u = VectorOperations<T>.Subtract(u, VectorOperations<T>.Project(GetColumn(U, k), v));
+				u = VectorOperations<T>.Subtract(u, VectorOperations<T>.Project(GetColumn(Q, k), v));
 
 			// Update the column entries in U.
 			for (int i = 0; i < n; ++i)
-				U[i, j] = u[i];
+				Q[i, j] = u[i];
 		}
 
 		// Normalize the column vectors of U.
 		for (int j = 0; j < n; ++j)
 		{
-			T[] u = GetColumn(U, j);
+			T[] u = GetColumn(Q, j);
 			T magnitude = VectorOperations<T>.Magnitude(u);
 
 			// Update the column entries in U.
 			for (int i = 0; i < n; ++i)
-				U[i, j] = u[i] / magnitude;
+				Q[i, j] = u[i] / magnitude;
 		}
 
-		return (U, Product(Transpose(U), A));
+		T[,] R = Product(Transpose(Q), A);
+
+		return (Q, R);
 	}
 
 	/// <summary>
@@ -639,6 +614,13 @@ where T :
 		{
 			(T[,] Q, T[,] R) = QRDecomposition(B);
 			B = Product(R, Q);
+
+			/*for (int i = 0; i < n; ++i)
+			{
+				for (int j = 0; j < i; ++j)
+					B[i, j] = T.AdditiveIdentity;
+			}*/
+
 			C = Product(C, Q);
 		}
 

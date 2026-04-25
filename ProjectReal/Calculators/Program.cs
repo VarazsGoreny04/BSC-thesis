@@ -165,12 +165,21 @@ public class Program
 			"3;6;10&" +
 			"2;4;6"
 		);
-		Matrix<Rational> mmin1 = new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1)));
+
+		Matrix<Rational> m2 = new(
+			"1;2;3&" +
+			"3;4;10&" +
+			"8;4;6"
+		);
+		/*Matrix<Rational> mmin1 = new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1)));
 
 		Matrix<Rational> m2 = Matrix<Rational>.MultiplicativeIdentity;
 		Matrix<Rational> m3 = new("2");
 
-		Console.WriteLine(new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1))));
+		Console.WriteLine(new Matrix<Rational>(MatrixOperations<Rational>.Inverse(Matrix<Rational>.ToMatrix(m1))));*/
+
+		Console.WriteLine(MatrixOperations<Rational>.Determinant(Matrix<Rational>.ToMatrix(m1)) - MatrixOperations<Rational>.Determinant(Matrix<Rational>.ToMatrix(m2)));
+		Console.WriteLine(MatrixOperations<Rational>.Determinant(Matrix<Rational>.ToMatrix(m1-m2)));
 		/*Console.WriteLine(m1);
 		Console.WriteLine(m1 * mmin1);
 

@@ -1,12 +1,13 @@
 ﻿using Calculators.EuclideanSpace;
+using CalculatorTests.EuclideanSpace.VectorOperations;
 using ProjectReal.Number;
-using System.Diagnostics;
 
 namespace CalculatorTests.EuclideanSpace.MatrixOperations;
 
 [TestClass]
 public class MatrixOperationsTest
 {
+	private readonly int fractionCalculationLength;
 	private readonly bool fractionalFormat;
 	private readonly bool writeSign;
 
@@ -15,9 +16,11 @@ public class MatrixOperationsTest
 
 	public MatrixOperationsTest()
 	{
+		fractionCalculationLength = Rational.FractionCalculationLength;
 		fractionalFormat = Rational.FractionalFormat;
 		writeSign = Rational.WriteSign;
 
+		Rational.FractionCalculationLength = 10;
 		Rational.FractionalFormat = true;
 		Rational.WriteSign = true;
 
@@ -41,6 +44,7 @@ public class MatrixOperationsTest
 	[TestCleanup()]
 	public void CleanUp()
 	{
+		Rational.FractionCalculationLength = fractionCalculationLength;
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 	}
@@ -336,12 +340,6 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void GreaterThanTest()
-	{
-		throw new NotImplementedException();
-	}
-
-	[TestMethod]
 	public void AddTest()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
@@ -362,6 +360,36 @@ public class MatrixOperationsTest
 
 			Assert.IsTrue(MatrixOperations<Rational>.Equals(item.Sub, result),
 				$"\n\nExpected: {MatrixOperations<Rational>.ToString(item.Sub)}\n\nActual: {MatrixOperations<Rational>.ToString(result)}");
+		}
+	}
+
+	[TestMethod]
+	public void ProductWithVectorTest()
+	{
+		foreach (TestMatrix item in TestMatrices.List)
+		{
+			int n = item.Matrix1.GetLength(0);
+			int m = item.Matrix1.GetLength(0);
+			List<Rational[]> vectors = [.. TestVectors.List.Where(x => x.Vector1.Length == m).SelectMany(x => new List<Rational[]> { x.Vector1, x.Vector2 })];
+
+			foreach (Rational[] vector in vectors)
+			{
+				Rational[] result1 = MatrixOperations<Rational>.Product(item.Matrix1, vector);
+				Rational[] result2 = MatrixOperations<Rational>.Product(item.Matrix2, vector);
+
+				Rational[,] matrixForm = new Rational[m, 1];
+				for (int i = 0; i < m; ++i)
+					matrixForm[i, 0] = vector[i];
+
+				Rational[] expected1 = MatrixOperations<Rational>.GetColumn(MatrixOperations<Rational>.Product(item.Matrix1, matrixForm), 0);
+				Rational[] expected2 = MatrixOperations<Rational>.GetColumn(MatrixOperations<Rational>.Product(item.Matrix2, matrixForm), 0);
+
+				Assert.IsTrue(VectorOperations<Rational>.Equals(expected1, result1),
+					$"\n\nExpected: {VectorOperations<Rational>.ToString(expected1)}\n\nActual: {VectorOperations<Rational>.ToString(result1)}");
+
+				Assert.IsTrue(VectorOperations<Rational>.Equals(expected2, result2),
+					$"\n\nExpected: {VectorOperations<Rational>.ToString(expected2)}\n\nActual: {VectorOperations<Rational>.ToString(result2)}");
+			}
 		}
 	}
 
@@ -416,6 +444,73 @@ public class MatrixOperationsTest
 				$"\n\nExpected: {MatrixOperations<Rational>.ToString(item.LU2.L)}\n\nActual: {MatrixOperations<Rational>.ToString(L2)}");
 			Assert.IsTrue(MatrixOperations<Rational>.Equals(item.LU2.U, U2),
 				$"\n\nExpected: {MatrixOperations<Rational>.ToString(item.LU2.U)}\n\nActual: {MatrixOperations<Rational>.ToString(U2)}");
+		}
+	}
+
+	[TestMethod]
+	public void DeterminantTest()
+	{
+		foreach (TestMatrix item in TestMatrices.List)
+		{
+			(Rational[,] matrix1, bool sign1) = MatrixOperations<Rational>.GaussianElimination(item.Matrix1);
+			(Rational[,] matrix2, bool sign2) = MatrixOperations<Rational>.GaussianElimination(item.Matrix2);
+
+			Rational expected1 = Digit.ONE;
+			for (int i = matrix1.GetLength(0) - 1; i >= 0; --i)
+				expected1 *= matrix1[i, i];
+
+			Rational expected2 = Digit.ONE;
+			for (int i = matrix2.GetLength(0) - 1; i >= 0; --i)
+				expected2 *= matrix2[i, i];
+
+			Rational result1 = MatrixOperations<Rational>.Determinant(item.Matrix1);
+			Rational result2 = MatrixOperations<Rational>.Determinant(item.Matrix2);
+
+			Assert.AreEqual(sign1 ? expected1 : -expected1, result1);
+
+			Assert.AreEqual(sign2 ? expected2 : -expected2, result2);
+		}
+	}
+
+	[TestMethod]
+	public void QRDecompositionTest()
+	{
+		Rational epsilon = $"0.{new string('0', fractionCalculationLength / 2)}1";
+
+		foreach (TestMatrix item in TestMatrices.List)
+		{
+			(Rational[,] Q1, Rational[,] R1) = MatrixOperations<Rational>.QRDecomposition(item.Matrix1);
+			(Rational[,] Q2, Rational[,] R2) = MatrixOperations<Rational>.QRDecomposition(item.Matrix2);
+
+			Rational[,] product1 = MatrixOperations<Rational>.Product(Q1, R1);
+			Rational[,] product2 = MatrixOperations<Rational>.Product(Q2, R2);
+
+			Rational[,] subtracted1 = MatrixOperations<Rational>.Subtract(item.Matrix1, product1);
+			Rational[,] subtracted2 = MatrixOperations<Rational>.Subtract(item.Matrix2, product2);
+
+			bool result1 = true;
+			for (int i = subtracted1.GetLength(0) - 1; i >= 0; --i)
+			{
+				for (int j = subtracted1.GetLength(1) - 1; j >= 0; --j)
+				{
+					if (subtracted1[i, j] > epsilon)
+						result1 = false;
+				}
+			}
+
+			bool result2 = true;
+			for (int i = subtracted2.GetLength(0) - 1; i >= 0; --i)
+			{
+				for (int j = subtracted2.GetLength(1) - 1; j >= 0; --j)
+				{
+					if (subtracted2[i, j] > epsilon)
+						result2 = false;
+				}
+			}
+
+			Assert.IsTrue(result1, $"\n\nExpected: {MatrixOperations<Rational>.ToString(item.Matrix1)}\n\nActual: {MatrixOperations<Rational>.ToString(product1)}");
+
+			Assert.IsTrue(result2, $"\n\nExpected: {MatrixOperations<Rational>.ToString(item.Matrix2)}\n\nActual: {MatrixOperations<Rational>.ToString(product2)}");
 		}
 	}
 }

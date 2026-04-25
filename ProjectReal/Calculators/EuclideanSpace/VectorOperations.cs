@@ -12,6 +12,7 @@ public class VectorOperations<T>
 where T :
 	IComparisonOperators<T, T, bool>,
 	IEqualityOperators<T, T, bool>,
+	IUnaryNegationOperators<T, T>,
 	IAdditionOperators<T, T, T>,
 	ISubtractionOperators<T, T, T>,
 	IMultiplyOperators<T, T, T>,
@@ -185,29 +186,6 @@ where T :
 	}
 
 	/// <summary>
-	/// Compares two vectors.
-	/// </summary>
-	/// <param name="a">The first vector to compare.</param>
-	/// <param name="b">The second vector to compare.</param>
-	/// <returns>
-	/// <see langword="true"/> if the length and the value of <paramref name="a"/> is greater than the length and the value of <paramref name="b"/>;
-	/// otherwise, <see langword="false"/>.
-	/// </returns>
-	public static bool GreaterThan(T[] a, T[] b)
-	{
-		if (a.Length != b.Length)
-			return a.Length > b.Length;
-
-		for (int i = a.Length - 1; i >= 0; --i)
-		{
-			if (!(a[i] > b[i]/* || -a[i] > -b[i]*/))
-				return false;
-		}
-
-		return true;
-	}
-
-	/// <summary>
 	/// Adds vector <paramref name="b"/> from vector <paramref name="a"/>.
 	/// </summary>
 	/// <param name="a">The vector to be added.</param>
@@ -257,7 +235,7 @@ where T :
 	/// <param name="a">The vector to print.</param>
 	/// <returns>The string representation of the given vector.</returns>
 	/// <exception cref="ArgumentException">The vector</exception>
-	public static string ToString(T[] a) => a.Length < 1 ? "[ ]" : $"[ {string.Join(",\t", a)} ]";
+	public static string ToString(T[] a) => $"[{string.Join(Matrix<T>.RowSeparator, a)}]";
 
 	#endregion
 }

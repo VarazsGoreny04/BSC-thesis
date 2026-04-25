@@ -5,7 +5,6 @@ namespace CalculatorTests.EuclideanSpace.MatrixOperations;
 
 public readonly struct TestMatrix(
 	Rational[,] matrix1, Rational[,] matrix2,
-	/*bool greater,*/
 	Rational[,] add, Rational[,] sub,
 	Rational[,] mul, Rational[,] div,
 	Rational[,] inv1, Rational[,] inv2,
@@ -13,7 +12,6 @@ public readonly struct TestMatrix(
 {
 	public readonly Rational[,] Matrix1 = matrix1;
 	public readonly Rational[,] Matrix2 = matrix2;
-	/*public readonly bool Greater = greater;*/
 	public readonly Rational[,] Add = add;
 	public readonly Rational[,] Sub = sub;
 	public readonly Rational[,] Mul = mul;

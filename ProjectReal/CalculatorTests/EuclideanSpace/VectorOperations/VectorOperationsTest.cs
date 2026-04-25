@@ -6,6 +6,7 @@ namespace CalculatorTests.EuclideanSpace.VectorOperations;
 [TestClass]
 public class VectorOperationsTest
 {
+	private readonly int fractionCalculationLength;
 	private readonly bool fractionalFormat;
 	private readonly bool writeSign;
 
@@ -14,9 +15,11 @@ public class VectorOperationsTest
 
 	public VectorOperationsTest()
 	{
+		fractionCalculationLength = Rational.FractionCalculationLength;
 		fractionalFormat = Rational.FractionalFormat;
 		writeSign = Rational.WriteSign;
 
+		Rational.FractionCalculationLength = 10;
 		Rational.FractionalFormat = true;
 		Rational.WriteSign = true;
 
@@ -28,6 +31,7 @@ public class VectorOperationsTest
 	[TestCleanup()]
 	public void CleanUp()
 	{
+		Rational.FractionCalculationLength = fractionCalculationLength;
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 	}
@@ -109,6 +113,55 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
+	public void MagnitudeTest()
+	{
+		Rational epsilon = $"0.{new string('0', fractionCalculationLength - 3)}1";
+
+		foreach (TestVector item in TestVectors.List)
+		{
+			Rational result1 = VectorOperations<Rational>.Magnitude(item.Vector1);
+			Rational result2 = VectorOperations<Rational>.Magnitude(item.Vector2);
+
+			Rational expected1 = item.Vector1.Select(x => x * x).Aggregate((a, b) => a + b);
+			Rational expected2 = item.Vector2.Select(x => x * x).Aggregate((a, b) => a + b);
+
+			Rational difference1 = Rational.Abs(expected1 - (result1 * result1));
+			Rational difference2 = Rational.Abs(expected2 - (result2 * result2));
+
+
+			Assert.IsTrue(difference1 <= epsilon, $"\n\nExpected: {~expected1}\n\nActual: {result1}");
+
+			Assert.IsTrue(difference2 <= epsilon, $"\n\nExpected: {~expected2}\n\nActual: {result2}");
+		}
+	}
+
+	[TestMethod]
+	public void InnerProductTest()
+	{
+		foreach (TestVector item in TestVectors.List)
+		{
+			Rational result1 = VectorOperations<Rational>.InnerProduct(item.Vector1, item.Vector2);
+			Rational result2 = VectorOperations<Rational>.InnerProduct(item.Vector2, item.Vector1);
+
+			Assert.AreEqual(item.Vector1.Zip(item.Vector2).Select(x => x.First * x.Second).Aggregate((a, b) => a + b), result1);
+
+			Assert.AreEqual(item.Vector2.Zip(item.Vector1).Select(x => x.First * x.Second).Aggregate((a, b) => a + b), result2);
+		}
+	}
+
+	[TestMethod]
+	public void OuterProductTest()
+	{
+		foreach (TestVector item in TestVectors.List)
+		{
+			Rational[,] result = VectorOperations<Rational>.OuterProduct(item.Vector1, item.Vector2);
+
+			Assert.IsTrue(MatrixOperations<Rational>.Equals(item.OuterProduct1, result),
+				$"\n\nExpected: {MatrixOperations<Rational>.ToString(item.OuterProduct1)}\n\nActual: {MatrixOperations<Rational>.ToString(result)}");
+		}
+	}
+
+	[TestMethod]
 	public void EqualTest()
 	{
 		foreach (TestVector item in TestVectors.List)
@@ -116,24 +169,13 @@ public class VectorOperationsTest
 			bool result1 = VectorOperations<Rational>.Equals(item.Vector1, item.Vector2);
 			bool result2 = VectorOperations<Rational>.Equals(item.Vector2, item.Vector1);
 
-			bool equal = true;
-			for (int i = item.Vector1.Length - 1; i >= 0; --i)
-			{
-				if (item.Vector1[i] != item.Vector2[i])
-					equal = false;
-			}
+			bool equal = item.Vector1.Length == item.Vector2.Length && item.Vector1.ToList().Zip(item.Vector2.ToList()).All(x => x.First == x.Second);
 
 			Assert.AreEqual(equal, result1);
 			Assert.AreEqual(equal, result2);
 			Assert.IsTrue(VectorOperations<Rational>.Equals(item.Vector1, item.Vector1));
 			Assert.IsTrue(VectorOperations<Rational>.Equals(item.Vector2, item.Vector2));
 		}
-	}
-
-	[TestMethod]
-	public void GreaterThanTest()
-	{
-		throw new NotImplementedException();
 	}
 
 	[TestMethod]

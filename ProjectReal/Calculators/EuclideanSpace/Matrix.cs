@@ -12,9 +12,7 @@ namespace Calculators.EuclideanSpace;
 /// </summary>
 /// <typeparam name="T">The type of values within the matrix.</typeparam>
 public class Matrix<T> :
-	IComparisonOperators<Matrix<T>, Matrix<T>, bool>,
 	IEqualityOperators<Matrix<T>, Matrix<T>, bool>,
-	IComparisonOperators<Matrix<T>, T, bool>,
 	IEqualityOperators<Matrix<T>, T, bool>,
 	IUnaryPlusOperators<Matrix<T>, Matrix<T>>,
 	IUnaryNegationOperators<Matrix<T>, Matrix<T>>,
@@ -220,31 +218,13 @@ public class Matrix<T> :
 	public static implicit operator Matrix<T>(T[,] value) => new(value);
 	public static bool operator ==(Matrix<T>? left, Matrix<T>? right) => left is Matrix<T> l && right is Matrix<T> r && Equals(ToMatrix(l), ToMatrix(r));
 	public static bool operator !=(Matrix<T>? left, Matrix<T>? right) => !(left == right);
-	public static bool operator >(Matrix<T> left, Matrix<T> right) => MatrixOperations<T>.GreaterThan(ToMatrix(left), ToMatrix(right));
-	public static bool operator <(Matrix<T> left, Matrix<T> right) => MatrixOperations<T>.GreaterThan(ToMatrix(right), ToMatrix(left));
-	public static bool operator >=(Matrix<T> left, Matrix<T> right) => !(left < right);
-	public static bool operator <=(Matrix<T> left, Matrix<T> right) => !(left > right);
 	public static bool operator ==(Matrix<T>? left, T? right)
 	{
 		return left is Matrix<T> l && right is T r && Equals(ToMatrix(l), MatrixOperations<T>.Diagonal(l.Rows, l.Columns, r));
 	}
 	public static bool operator !=(Matrix<T>? left, T? right) => !(left == right);
-	public static bool operator >(Matrix<T> left, T right)
-	{
-		return MatrixOperations<T>.GreaterThan(ToMatrix(left), MatrixOperations<T>.Diagonal(left.Rows, left.Columns, right));
-	}
-	public static bool operator <(Matrix<T> left, T right)
-	{
-		return MatrixOperations<T>.GreaterThan(MatrixOperations<T>.Diagonal(left.Rows, left.Columns, right), ToMatrix(left));
-	}
-	public static bool operator >=(Matrix<T> left, T right) => !(left < right);
-	public static bool operator <=(Matrix<T> left, T right) => !(left > right);
 	public static bool operator ==(T? left, Matrix<T>? right) => right == left;
 	public static bool operator !=(T? left, Matrix<T>? right) => right != left;
-	public static bool operator >(T left, Matrix<T> right) => right < left;
-	public static bool operator <(T left, Matrix<T> right) => right > left;
-	public static bool operator >=(T left, Matrix<T> right) => !(right > left);
-	public static bool operator <=(T left, Matrix<T> right) => !(right < left);
 	public static Matrix<T> operator +(Matrix<T> value) => value;
 	public static Matrix<T> operator -(Matrix<T> value) => MatrixOperations<T>.Scale(ToMatrix(value), -T.MultiplicativeIdentity);
 	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)  // TODO: Computing with identity matrix is not correct
