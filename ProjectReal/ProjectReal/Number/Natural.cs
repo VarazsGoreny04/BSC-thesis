@@ -53,7 +53,7 @@ public class Natural :
 	public ImmutableArray<Digit> Digits => digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
 	public Digit this[Index index] => digits[index];
 
 	#endregion

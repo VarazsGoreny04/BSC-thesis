@@ -92,8 +92,8 @@ public class Writable :
 	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public Digit this[Index i] => value.Digits[i];
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
+	public Digit this[Index index] => value.Digits[index];
 
 	#endregion
 
@@ -332,12 +332,13 @@ public class Writable :
 	/// <returns>The result of the calculation.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
 	/// <exception cref="NotSupportedException">
-	/// Absolut value of <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive.
+	/// Absolut value of <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive and
+	/// the result of the 
 	/// </exception>
 	public static Writable Power(Writable left, Writable right)
 	{
 		return right.sign ? new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value) :
-			throw new NotImplementedException();
+			(right.FractionLength == 0 ? Digit.ONE / Power(left, right.Value) : throw new NotSupportedException("This type does not support complex number results!"));
 	}
 
 	/// <summary>
@@ -346,10 +347,11 @@ public class Writable :
 	/// <param name="value">The <see cref="Writable"/> that represents the radicand.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> cannot be negative as it is not mathematically meaningful.</exception>
 	public static (Writable Value, Writable Remainder) SquareRoot(Writable value, int? fractionCalculationLength = null)
 	{
-		return value.sign ? Positive.SquareRoot(value.value, fractionCalculationLength) : throw new NotImplementedException();
+		return value.sign ? Positive.SquareRoot(value.value, fractionCalculationLength) :
+			throw new ArgumentOutOfRangeException(nameof(value), value, "The radicand cannot be negative as it is not mathematically meaningful!");
 	}
 
 	/// <summary>

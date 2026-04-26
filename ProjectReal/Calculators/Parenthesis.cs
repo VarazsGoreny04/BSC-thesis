@@ -61,7 +61,7 @@ public sealed class ClosingParenthesis<T> : Parenthesis
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{
 		if (!functions.Any(f => f is OpeningParenthesis))
-			throw new FormatException();
+			throw new FormatException("No opening parenthesis found to close!");
 
 		Expression e;
 
@@ -80,13 +80,13 @@ public sealed class ClosingParenthesis<T> : Parenthesis
 			if (expression is ValueHolder<T> valueHolder)
 				temp.Push(valueHolder);
 			else
-				throw new FormatException();
+				throw new FormatException("Only elements representing values ​​can be parenthesized!");
 		}
 
 		if (temp.Count == 1)
 			result.Push(new Parenthesized<T>(temp.Pop()));
 		else
-			throw new FormatException();
+			throw new FormatException("Could not understand the expression inside parentheses!");
 	}
 
 	#endregion

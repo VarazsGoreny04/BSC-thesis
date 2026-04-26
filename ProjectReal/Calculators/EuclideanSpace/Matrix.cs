@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace Calculators.EuclideanSpace;
 
@@ -91,7 +92,8 @@ public class Matrix<T> :
 	/// </summary>
 	/// <param name="content">The matrix in <see cref="string"/> format.</param>
 	/// <param name="standardCalculator">The calculator for the elements of the matrix.</param>
-	/// <exception cref="FormatException">The rows of the matrix must have the the same number of elements.</exception>
+	/// <exception cref="ArgumentException">The rows of the matrix must have the the same number of elements.</exception>
+	/// <exception cref="FormatException">The calculator could not understand the input.</exception>
 	public Matrix(string content, StandardCalculator<T> standardCalculator)
 	{
 		string[] rows = content.Split(rowSeparator, StringSplitOptions.TrimEntries);
@@ -100,22 +102,17 @@ public class Matrix<T> :
 		for (int i = 1; i < tokenized.Length; ++i)
 		{
 			if (tokenized[0].Length != tokenized[i].Length)
-				throw new FormatException();
+				throw new ArgumentException("The rows of the matrix must have the the same number of elements!");
 		}
 
-		value = new ValueHolder<T>[tokenized.Length, tokenized[0].Length];
+		int n = tokenized.Length;
+		int m = tokenized[0].Length;
+		value = new ValueHolder<T>[n, m];
 
-		try
+		for (int row = 0; row < n; ++row)
 		{
-			for (int row = tokenized.Length - 1; row >= 0; --row)
-			{
-				for (int col = tokenized[row].Length - 1; col >= 0; --col)
-					value[row, col] = Calculator.Evaluate<T>(tokenized[row][col], standardCalculator);
-			}
-		}
-		catch (IndexOutOfRangeException)
-		{
-			throw new FormatException();
+			for (int col = 0; col < m; ++col)
+				value[row, col] = Calculator.Evaluate<T>(tokenized[row][col], standardCalculator);
 		}
 	}
 
@@ -124,6 +121,7 @@ public class Matrix<T> :
 	/// </summary>
 	/// <param name="content">The matrix in <see cref="string"/> format.</param>
 	/// <exception cref="FormatException">The rows of the matrix must have the the same number of elements.</exception>
+	/// <exception cref="FormatException">The calculator could not understand the input.</exception>
 	public Matrix(string content) : this(content, new StandardCalculator<T>([])) { }
 
 	/// <summary>
@@ -137,7 +135,7 @@ public class Matrix<T> :
 		int cols = value.GetLength(1);
 
 		if (rows < 1 || cols < 1)
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must have at least one element!");
 
 		this.value = value;
 	}
@@ -153,7 +151,7 @@ public class Matrix<T> :
 		int cols = value.GetLength(1);
 
 		if (rows < 1 || cols < 1)
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must have at least one element!");
 
 		this.value = new ValueHolder<T>[rows, cols];
 
@@ -208,7 +206,10 @@ public class Matrix<T> :
 	/// <summary>
 	/// Throws a <see cref="NotImplementedException"/> because there is no point in implementing this method.
 	/// </summary>
-	public override int GetHashCode() => throw new NotImplementedException();
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException("This method is not implemented because there are more possible values ​​than the int can handle.");
+	}
 
 	#endregion
 

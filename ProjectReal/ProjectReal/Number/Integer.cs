@@ -73,7 +73,7 @@ public class Integer :
 	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
 	public Digit this[Index index] => value.Digits[index];
 
 	#endregion
@@ -299,8 +299,8 @@ public class Integer :
 	/// </exception>
 	public static Integer Power(Integer left, Integer right)
 	{
-		return !right.sign ? Digit.ONE / Power(left, right.Value) :
-			new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value);
+		return right.sign ? new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value) :
+			Digit.ONE / Power(left, right.Value);
 	}
 
 	/// <summary>

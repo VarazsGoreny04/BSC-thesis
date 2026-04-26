@@ -165,6 +165,7 @@ public class CalculatorModel
 			}
 			catch (Exception e)
 			{
+				tokenSource = null;
 				ChangeResult(e.Message);
 			}
 		}

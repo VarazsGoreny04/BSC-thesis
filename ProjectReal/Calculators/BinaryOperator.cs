@@ -33,7 +33,7 @@ public abstract partial class BinaryOperator<T> : Operator<T>
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="BinaryOperator<T>"/> with the <paramref name="left"/> and <paramref name="right"/> values.
+	/// Constructs a <see cref="BinaryOperator{T}"/> with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
 	/// <param name="right">The right hand side of the operator.</param>

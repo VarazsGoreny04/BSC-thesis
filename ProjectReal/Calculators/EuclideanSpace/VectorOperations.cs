@@ -124,7 +124,7 @@ where T :
 	public static T InnerProduct(T[] a, T[] b)
 	{
 		if (a.Length != b.Length)
-			throw new ArgumentException();
+			throw new ArgumentException("The two vectors must have the same length!");
 
 		T result = T.AdditiveIdentity;
 
@@ -197,7 +197,7 @@ where T :
 		int n = a.Length;
 
 		if (n != b.Length)
-			throw new ArgumentException();
+			throw new ArgumentException("The two vectors must have the same length!");
 
 		T[] result = new T[n];
 
@@ -219,7 +219,7 @@ where T :
 		int n = a.Length;
 
 		if (n != b.Length)
-			throw new ArgumentException();
+			throw new ArgumentException("The two vectors must have the same length!");
 
 		T[] result = new T[n];
 

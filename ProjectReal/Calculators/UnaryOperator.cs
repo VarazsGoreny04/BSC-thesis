@@ -25,12 +25,7 @@ public abstract class UnaryOperator<T> : Operator<T>
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="UnaryOperator"/> with the parameter set to <see langword="null"/>.
-	/// </summary>
-	public UnaryOperator() : base([null!]) { }
-
-	/// <summary>
-	/// Constructs a <see cref="UnaryOperator"/> with the <paramref name="parameter"/> value.
+	/// Constructs a <see cref="UnaryOperator{T}"/> with the <paramref name="parameter"/> value.
 	/// </summary>
 	/// <param name="parameter">The parameter of the operator.</param>
 	public UnaryOperator(ValueHolder<T> parameter) : base([parameter]) { }
@@ -47,15 +42,11 @@ public abstract class UnaryOperator<T> : Operator<T>
 
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
 	{
-		++step;
-		Parameter?.FullEvaluation(ref partialValues, root, ref step);
+		Parameter.FullEvaluation(ref partialValues, root, ref step);
 
-		int stepCopy = step;
+		int stepCopy = ++step;
 
-		ValueHolder<T> parameter = Parameter ?? throw new FormatException();
-
-		partialValues.Add(($"{Sign()}{ParenthesizeIfSigned(parameter.GetValue())} = {GetValue()}",
-			root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{Sign()}{ParenthesizeIfSigned(Parameter.GetValue())} = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
 
 	public override string ToStringByStep(ref int step)

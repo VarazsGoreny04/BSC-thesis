@@ -57,7 +57,7 @@ public abstract partial class Function<T> : FunctionBase<T>
 		string[] arguments = new string[parameters.Length];
 
 		for (int i = 0; i < parameters.Length; ++i)
-			arguments[i] = parameters[i].ToStringByStep(ref step) ?? throw new FormatException();
+			arguments[i] = parameters[i].ToStringByStep(ref step);
 
 		return --step <= 0 ? $"{Sign()}({string.Join("; ", arguments)})" : $"({GetValue()})";
 	}

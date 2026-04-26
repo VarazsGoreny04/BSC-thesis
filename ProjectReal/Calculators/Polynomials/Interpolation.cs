@@ -36,17 +36,17 @@ where T :
 	/// -or-
 	/// some of the <paramref name="points"/> have matching X coordinate.
 	/// </exception>
-	public static void CheckXDifference(Point2D<T>[] points)
+	public static void CheckBases(Point2D<T>[] points)
 	{
 		if (points.Length < 1)
-			throw new ArgumentException();
+			throw new ArgumentException("The vector must be at least one dimensional!");
 
 		for (int i = 0; i < points.Length; ++i)
 		{
 			for (int j = i + 1; j < points.Length; ++j)
 			{
 				if (points[i].X == points[j].X)
-					throw new ArgumentException();
+					throw new ArgumentException("Some of the points have matching X coordinate");
 			}
 		}
 	}
@@ -57,13 +57,12 @@ where T :
 	/// <param name="points">The fix points of the polynomial.</param>
 	/// <param name="index">The index of the point in the <paramref name="points"/> array.</param>
 	/// <returns>The created Lagrange basis polynomial.</returns>
-	/// <exception cref="ArgumentException">
-	/// The <paramref name="points"/> array cannot be empty and the <paramref name="index"/> must be within the bounds of the array.
-	/// </exception>
+	/// <exception cref="ArgumentException">The <paramref name="points"/> array cannot be empty.</exception>
+	/// <exception cref="IndexOutOfRangeException">The <paramref name="index"/> must be within the bounds of the array.</exception>
 	public static T[] LagrangeBasis(Point2D<T>[] points, int index)
 	{
-		if (index < 0 || index > (points.Length - 1))
-			throw new ArgumentException();
+		if (points.Length < 1)
+			throw new ArgumentException("The array cannot be empty!", nameof(points));
 
 		T denominator = T.MultiplicativeIdentity;
 		T[] numerator = [T.MultiplicativeIdentity];
@@ -94,6 +93,7 @@ where T :
 	/// </summary>
 	/// <param name="points">The points the polynomial needs to cross.</param>
 	/// <returns>The coefficients of the polynomial in an array.</returns>
+	/// <exception cref="ArgumentException">The <paramref name="points"/> array cannot be empty.</exception>
 	public static T[] Lagrange(Point2D<T>[] points)
 	{
 		T[] result = VectorOperations<T>.Zeros(points.Length);

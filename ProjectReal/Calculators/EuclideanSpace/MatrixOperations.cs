@@ -1,5 +1,4 @@
-﻿using ProjectReal.Number;
-using ProjectReal.NumberSet;
+﻿using ProjectReal.NumberSet;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -255,13 +254,16 @@ where T :
 	/// <see langword="true"/> if the length and the value of <paramref name="A"/> is equal to the length and the value of <paramref name="B"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
+	/// <exception cref="ArgumentException">
+	/// The <paramref name="A"/> matrix must have the same number of rows and columns as the <paramref name="B"/> matrix.
+	/// </exception>
 	public static bool Equals(T[,] A, T[,] B)
 	{
 		int n = A.GetLength(0);
 		int m = A.GetLength(1);
 
 		if (n != B.GetLength(0) || m != B.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The two matrices must have the same number of rows and columns!");
 
 		for (int i = 0; i < n; ++i)
 		{
@@ -288,7 +290,7 @@ where T :
 		int m = A.GetLength(1);
 
 		if (n != B.GetLength(0) || m != B.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The extents of the two matrices are not equal!");
 
 		T[,] result = new T[n, m];
 
@@ -314,7 +316,7 @@ where T :
 		int m = A.GetLength(1);
 
 		if (n != B.GetLength(0) || m != B.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The extents of the two matrices are not equal!");
 
 		T[,] result = new T[n, m];
 
@@ -333,14 +335,14 @@ where T :
 	/// <param name="A">The matrix.</param>
 	/// <param name="b">The vector.</param>
 	/// <returns>The resulting matrix.</returns>
-	/// <exception cref="ArgumentException">The column count of the matrices in not equal to the length of the vector.</exception>
+	/// <exception cref="ArgumentException">The column count of the matrix in not equal to the length of the vector.</exception>
 	public static T[] Product(T[,] A, T[] b)
 	{
 		int n = A.GetLength(0);
 		int m = A.GetLength(1);
 
 		if (m != b.Length)
-			throw new ArgumentException();
+			throw new ArgumentException("The column count of the matrix in not equal to the length of the vector!");
 
 		T[] result = VectorOperations<T>.Zeros(n);
 
@@ -367,7 +369,7 @@ where T :
 		int bm = B.GetLength(1);
 
 		if (am != B.GetLength(0))
-			throw new ArgumentException();
+			throw new ArgumentException("The extents of the two matrices are not equal!");
 
 		T[,] result = Zeros(an, bm);
 
@@ -401,7 +403,6 @@ where T :
 
 		bool determinantSign = true;
 
-		// Subtract each row by a multiple of another row.
 		for (int k = 0; k < n - 1; ++k)
 		{
 			if (LU[k, k] == T.AdditiveIdentity)
@@ -430,7 +431,6 @@ where T :
 			}
 		}
 
-		// Return the eliminated Matrix<T> with the sign of the determinant.
 		return (LU, determinantSign);
 	}
 
@@ -446,12 +446,10 @@ where T :
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must be a square matrix!", nameof(A));
 
-		// Initialize the eliminated augmented Matrix<T> B.
 		T[,] B = GaussianElimination(HorizontalConcat(A, Identity(n, n))).EliminatedMatrix;
 
-		// Divide each row element by the diagonal element.
 		for (int i = 0; i < n; ++i)
 		{
 			T temp = B[i, i];
@@ -460,7 +458,6 @@ where T :
 				B[i, j] = B[i, j] / temp;
 		}
 
-		// Strip the augmented Matrix<T> B of the first n columns to get the inverse Matrix<T> C of the original Matrix<T> A.
 		T[,] C = new T[n, n];
 		for (int i = 0; i < n; ++i)
 		{
@@ -468,7 +465,6 @@ where T :
 				C[i, j - n] = B[i, j];
 		}
 
-		// Return the inverse Matrix<T> C.
 		return C;
 	}
 
@@ -485,7 +481,7 @@ where T :
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must be a square matrix!", nameof(A));
 
 		(T[,] B, bool determinantSign) = GaussianElimination(A);
 
@@ -521,10 +517,8 @@ where T :
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must be a square matrix!", nameof(A));
 
-		// In the augmented Matrix<T> B, the first n columns are the original 
-		// Matrix<T> A, and the last n columns are the identity matrix.
 		T[,] B = GaussianElimination(A).EliminatedMatrix;
 
 		T[,] L = Identity(n, n);
@@ -555,12 +549,10 @@ where T :
 		int n = A.GetLength(0);
 
 		if (n != A.GetLength(1))
-			throw new ArgumentException();
+			throw new ArgumentException("The given matrix must be a square matrix!", nameof(A));
 
-		// Duplicate the original Matrix<T> A so it stays intact.
 		T[,] Q = Duplicate(A);
 
-		// Calculate the U Matrix<T> using the Gram–Schmidt process (see https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process).
 		for (int j = 1; j < n; ++j)
 		{
 			T[] v = GetColumn(Q, j);
@@ -569,18 +561,15 @@ where T :
 			for (int k = j - 1; k >= 0; --k)
 				u = VectorOperations<T>.Subtract(u, VectorOperations<T>.Project(GetColumn(Q, k), v));
 
-			// Update the column entries in U.
 			for (int i = 0; i < n; ++i)
 				Q[i, j] = u[i];
 		}
 
-		// Normalize the column vectors of U.
 		for (int j = 0; j < n; ++j)
 		{
 			T[] u = GetColumn(Q, j);
 			T magnitude = VectorOperations<T>.Magnitude(u);
 
-			// Update the column entries in U.
 			for (int i = 0; i < n; ++i)
 				Q[i, j] = u[i] / magnitude;
 		}
@@ -603,24 +592,14 @@ where T :
 	{
 		int n = A.GetLength(0);
 
-		// Duplicate the original Matrix<T> A so it stays intact.
 		T[,] B = Duplicate(A);
-
-		// Initialize the eigenvector Matrix<T> C.
 		T[,] C = Identity(n, n);
 
-		// Perform the QR decomposition and update the B and C matrixes each iteration.
 		for (int i = 0; i < iterations; ++i)
 		{
 			(T[,] Q, T[,] R) = QRDecomposition(B);
+
 			B = Product(R, Q);
-
-			/*for (int i = 0; i < n; ++i)
-			{
-				for (int j = 0; j < i; ++j)
-					B[i, j] = T.AdditiveIdentity;
-			}*/
-
 			C = Product(C, Q);
 		}
 

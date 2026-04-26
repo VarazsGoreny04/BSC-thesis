@@ -14,7 +14,7 @@ public sealed partial class Parenthesized<T> : FunctionBase<T>
 	/// <summary>
 	/// Gets or sets the value inside the parenthesized area.
 	/// </summary>
-	public ValueHolder<T> Content => parameters[0] ?? throw new ArgumentException();
+	public ValueHolder<T> Content => parameters[0];
 
 	#endregion
 
@@ -30,9 +30,15 @@ public sealed partial class Parenthesized<T> : FunctionBase<T>
 
 	#region Internal methods
 
-	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => throw new NotImplementedException();
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
+	{
+		throw new NotImplementedException("This method should never be called!");
+	}
 
-	internal override void ToTree(ref Stack<Expression> result) => throw new NotImplementedException();
+	internal override void ToTree(ref Stack<Expression> result)
+	{
+		throw new NotImplementedException("This method should never be called!");
+	}
 
 	internal override Priority Order() => Priority.Function;
 

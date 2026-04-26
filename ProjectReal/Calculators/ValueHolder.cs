@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Calculators;
 
@@ -16,9 +17,10 @@ public abstract partial class ValueHolder<T> : Expression
 	/// </summary>
 	/// <param name="value">The given <see cref="T"/> value.</param>
 	/// <returns>The result as a <see cref="string"/>.</returns>
+	/// <exception cref="FormatException">The given <paramref name="value"/> could not be turned into <see cref="string"/>.</exception>
 	protected static string ParenthesizeIfSigned(T value)
 	{
-		string result = value?.ToString() ?? throw new FormatException();
+		string result = value?.ToString() ?? throw new FormatException("The given value could not be turned into string.");
 
 		return result.Length > 0 && (result[0] == '+' || result[0] == '-') ? $"({result})" : result;
 	}

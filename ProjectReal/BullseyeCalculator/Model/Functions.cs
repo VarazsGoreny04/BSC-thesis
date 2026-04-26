@@ -1,6 +1,5 @@
 ﻿using Calculators;
 using ProjectReal.Number;
-using System;
 
 namespace BullseyeCalculator.Model;
 
@@ -39,7 +38,7 @@ public sealed class Abs : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Abs(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Abs(Parameter.GetValue());
 
 	public override string Sign() => "abs";
 
@@ -81,7 +80,7 @@ public sealed class Floor : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.RoundDown(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.RoundDown(Parameter.GetValue());
 
 	public override string Sign() => "floor";
 
@@ -123,7 +122,7 @@ public sealed class Round : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Round(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Round(Parameter.GetValue());
 
 	public override string Sign() => "round";
 
@@ -165,7 +164,7 @@ public sealed class Ceiling : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.RoundUp(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.RoundUp(Parameter.GetValue());
 
 	public override string Sign() => "ceiling";
 
@@ -207,7 +206,7 @@ public sealed class Fact : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Abs(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Abs(Parameter.GetValue());
 
 	public override string Sign() => "fact";
 
@@ -249,7 +248,7 @@ public sealed class Sin : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Sin(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Sin(Parameter.GetValue());
 
 	public override string Sign() => "sin";
 
@@ -291,7 +290,7 @@ public sealed class Cos : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Cos(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Cos(Parameter.GetValue());
 
 	public override string Sign() => "cos";
 
@@ -334,7 +333,7 @@ public sealed class Exp : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Exp(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Exp(Parameter.GetValue());
 
 	public override string Sign() => "exp";
 
@@ -376,7 +375,7 @@ public sealed class Ln : Function<Rational>
 
 	#region Public methods
 
-	public override Rational GetValue() => Rational.Ln(Parameter?.GetValue() ?? throw new FormatException());
+	public override Rational GetValue() => Rational.Ln(Parameter.GetValue());
 
 	public override string Sign() => "ln";
 

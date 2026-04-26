@@ -79,8 +79,8 @@ public class Positive :
 	public ImmutableArray<Digit> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> cannot be less than 0.</exception>
-	public Digit this[Index i] => value.Digits[i];
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
+	public Digit this[Index index] => value.Digits[index];
 
 	#endregion
 

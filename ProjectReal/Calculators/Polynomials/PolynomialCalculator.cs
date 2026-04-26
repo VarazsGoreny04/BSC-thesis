@@ -59,14 +59,19 @@ where T :
 
 	protected override string[] GetFunctions() => [];
 
+	/// <summary>
+	/// Turns the given expression tree to points.
+	/// </summary>
+	/// <param name="expressionTree">The expression tree.</param>
+	/// <returns>The created <see cref="Point2D{T}"/> array.</returns>
+	/// <exception cref="ArgumentException">The evaluated matrix must have exactly 2 columns.</exception>
 	protected Point2D<T>[] GetPoints(ValueHolder<Matrix<T>> expressionTree)
 	{
 		Matrix<T> matrix = expressionTree.GetValue();
 
 		if (matrix.Columns != 2)
-			throw new ArgumentException();
-
-
+			throw new ArgumentException("The evaluated matrix must have exactly 2 columns!");
+		
 		Point2D<T>[] points = new Point2D<T>[matrix.Rows];
 
 		for (int i = matrix.Rows - 1; i >= 0; --i)
@@ -86,7 +91,7 @@ where T :
 		List<(string, string)> result = FullEvaluation(expressionTree);
 		Point2D<T>[] points = GetPoints(expressionTree);
 
-		Interpolation<T>.CheckXDifference(points);
+		Interpolation<T>.CheckBases(points);
 
 		List<T[]> lagrangeBasisPolynomials = [];
 
