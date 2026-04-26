@@ -437,7 +437,7 @@ public class Positive :
 
 		Natural degree = right.Value;
 		int degreeInt = (int)Natural.ToUInt32(degree);
-		int splicingLength = degreeInt - left.fractionLength % degreeInt;
+		int splicingLength = (degreeInt - left.fractionLength) % degreeInt;
 
 		(Natural root, Natural remainder) = Natural.Root(new([.. Digit.CreateArray(splicingLength), .. left.Digits]), degree);
 

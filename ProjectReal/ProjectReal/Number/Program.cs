@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ProjectReal.Number;
@@ -319,12 +320,22 @@ public class Program
 
 		//Validate(i => Rational.Ln("4095.43", i), 1, 50);
 
-		Rational.FractionCalculationLength = 10;
+		/*Rational.FractionCalculationLength = 10;
 		Rational a = Rational.Ln("0.001");
-		Console.WriteLine(a);
+		Console.WriteLine(a);*/
 		// Rational b = "2.4" * a;
 		// Rational c = Rational.Exp(b);
 		// Console.WriteLine($"{a}\n{b}\n{c}");
+
+		/*List<Rational> rats = ["35", "17", "9", "2", "1"*//*, "0", "-1", "-2", "-9", "-17", "-35"*//*];
+		foreach (Rational item in rats)
+		{
+			Console.WriteLine(item);
+			Performance(i => Rational.Ln(item, i), 1, 50);
+		}*/
+
+		Rational.FractionCalculationLength = 50;
+		Console.WriteLine(Rational.Ln("35"));
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)
@@ -371,7 +382,10 @@ public class Program
 		{
 			Rational.FractionCalculationLength = i;
 
-			Console.Write(Rational.ToWritableString(func.Invoke(i)));
+			Rational a = func.Invoke(i);
+			/*Rational.FractionCalculationLength = to;
+			Console.WriteLine(Rational.ToWritableString(a));*/
+		Console.WriteLine(Rational.ToWritableString(a));
 		}
 
 		timer.Stop();

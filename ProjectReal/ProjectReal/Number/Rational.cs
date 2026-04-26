@@ -607,7 +607,7 @@ public class Rational :
 	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumABPQ(int n1, int n2)
+		static PQBTSeriesResult SumPQBT(int n1, int n2)
 		{
 			PQBTSeriesResult r;
 
@@ -631,8 +631,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumABPQ(n1, nm);
-				PQBTSeriesResult R = SumABPQ(nm, n2);
+				PQBTSeriesResult L = SumPQBT(n1, nm);
+				PQBTSeriesResult R = SumPQBT(nm, n2);
 
 				r = new(
 					P: null!,
@@ -647,7 +647,7 @@ public class Rational :
 
 		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1) + 23;
 
-		PQBTSeriesResult r = SumABPQ(0, n);
+		PQBTSeriesResult r = SumPQBT(0, n);
 
 		return new Rational(r.T, r.Q);
 	}
@@ -665,7 +665,7 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
 		{
 			PQBTSeriesResult r;
 
@@ -689,8 +689,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumABPQ(n1, nm, x);
-				PQBTSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumPQBT(n1, nm, x);
+				PQBTSeriesResult R = SumPQBT(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -703,11 +703,21 @@ public class Rational :
 			return r;
 		}
 
+		static Rational Exp(int n, Rational x)
+		{
+			PQBTSeriesResult r = SumPQBT(0, n, x);
+
+			return new Rational(r.T, r.Q);
+		}
+
+		Integer whole = RoundDown(x);
+		Rational fraction = x - whole;
+
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + Digit.ONE);
 
-		PQBTSeriesResult r = SumABPQ(0, n, x);
-
-		return new Rational(r.T, r.Q);
+		Rational powE = Power(E(n + plusFractionLength), whole, fractionCalculationLength);
+		return fraction.IsZero ? powE : powE * Exp(n, fraction);
 	}
 
 	/// <summary>
@@ -715,9 +725,12 @@ public class Rational :
 	/// the given <paramref name="fractionCalculationLength"/> using Halley's method.
 	/// </summary>
 	/// <remarks><see href="https://en.wikipedia.org/wiki/Natural_logarithm#High_precision"/></remarks>
-	/// <param name="x">The anti-logarithm in ln(<paramref name="x"/>).</param>
+	/// <param name="x">The anti-logarithm.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The natural logarithm of the given parameter.</returns>
+	/// <exception cref="ArgumentOutOfRangeException">
+	/// The anti-logarithm cannot be negative as it is not mathematically meaningful.
+	/// </exception>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
 		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x, int fractionCalculationLength)
@@ -731,7 +744,7 @@ public class Rational :
 				while ((twoToTheNth *= Digit.TWO) <= x)
 					n += Digit.ONE;
 
-				return (n, GetValue(Divide(x.numerator, twoToTheNth / Digit.TWO)).Value);
+				return (n, GetValue(Divide(x, twoToTheNth / Digit.TWO)).Value);
 			}
 			else
 			{
@@ -740,7 +753,7 @@ public class Rational :
 				while ((twoToTheNth /= Digit.TWO) >= x)
 					n -= Digit.ONE;
 
-				return (n - Digit.ONE, GetValue(Divide(x.numerator, twoToTheNth)).Value);
+				return (n - Digit.ONE, GetValue(Divide(x, twoToTheNth)).Value);
 			}
 		}
 
@@ -752,12 +765,15 @@ public class Rational :
 			Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
 			return Ln(y + (Digit.TWO * (x - expY) / (x + expY)), x, iterations - 1, fractionCalculationLength);
 		}
-		
-		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 10);
 
-		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, fCL);
+		if (x <= Digit.ZERO)
+			throw new ArgumentOutOfRangeException(nameof(x), x, "The anti-logarithm cannot be negative as it is not mathematically meaningful!");
 
-		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, fCL) + exponent * Ln("0.693", Digit.TWO, 3, fCL);
+		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 10);
+
+		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, n);
+
+		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n);
 	}
 
 	/// <summary>
@@ -772,7 +788,7 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Sin(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
 		{
 			PQBTSeriesResult r;
 
@@ -798,8 +814,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumABPQ(n1, nm, x);
-				PQBTSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumPQBT(n1, nm, x);
+				PQBTSeriesResult R = SumPQBT(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -819,7 +835,7 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		PQBTSeriesResult r = SumABPQ(0, n, x);
+		PQBTSeriesResult r = SumPQBT(0, n, x);
 
 		return new Rational(r.T, r.Q);
 	}
@@ -836,7 +852,7 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Cos(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumABPQ(int n1, int n2, Rational x)
+		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
 		{
 			PQBTSeriesResult r;
 
@@ -862,8 +878,8 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumABPQ(n1, nm, x);
-				PQBTSeriesResult R = SumABPQ(nm, n2, x);
+				PQBTSeriesResult L = SumPQBT(n1, nm, x);
+				PQBTSeriesResult R = SumPQBT(nm, n2, x);
 
 				r = new(
 					P: L.P * R.P,
@@ -883,7 +899,7 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		PQBTSeriesResult r = SumABPQ(0, n, x);
+		PQBTSeriesResult r = SumPQBT(0, n, x);
 
 		return new Rational(r.T, r.Q);
 	}
