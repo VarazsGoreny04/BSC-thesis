@@ -337,13 +337,13 @@ public class Program
 		/*Rational.FractionCalculationLength = 50;
 		Console.WriteLine(Rational.Ln("35"));*/
 
-		Rational.FractionCalculationLength = 10;
 		//Console.WriteLine(Rational.Exp("-0.015620048843"));
 		//Console.WriteLine(Rational.Power("0.8", "0.07"));
 
-		Rational i = new("+0.07");
-		Rational j = new("+0.8");
-		Console.WriteLine(Rational.Power(i, Rational.Reciprocal(j)));
+		/*Rational i = new("+0.07");
+		Rational j = new("+0.8");*/
+		/*Rational.FractionCalculationLength = 50;
+		Console.WriteLine(Rational.Ln("35", 50));*/
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)

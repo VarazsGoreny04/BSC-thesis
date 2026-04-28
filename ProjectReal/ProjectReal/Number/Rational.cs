@@ -697,8 +697,8 @@ public class Rational :
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + Digit.ONE);
 
-		Rational powE = whole.IsZero ? Digit.ONE : Power(E(n + plusFractionLength), whole, fractionCalculationLength);
-		return fraction.IsZero ? powE : powE * Exp(n, fraction);
+		Rational powE = whole.IsZero ? Digit.ONE : Power(E(n + plusFractionLength), whole, n);
+		return fraction.IsZero ? powE : powE * Exp(n + 5, fraction);
 	}
 
 	/// <summary>
@@ -727,7 +727,7 @@ public class Rational :
 			}
 			else
 			{
-				Positive twoToTheNth = Digit.ONE;
+				Rational twoToTheNth = Digit.ONE;
 
 				while ((twoToTheNth /= Digit.TWO) >= x)
 					n -= Digit.ONE;
@@ -736,13 +736,13 @@ public class Rational :
 			}
 		}
 
-		static Writable Ln(Writable y, Writable x, int iterations, int fractionCalculationLength)
+		static Rational Ln(Rational y, Writable x, int iterations, int fractionCalculationLength)
 		{
 			if (iterations <= 0)
 				return y;
 
 			Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
-			return Ln(y + (Digit.TWO * (x - expY) / (x + expY)), x, iterations - 1, fractionCalculationLength);
+			return Ln(y + (Digit.TWO * new Rational(x - expY) / new Rational(x + expY)), x, iterations - 1, fractionCalculationLength);
 		}
 
 		if (x <= Digit.ZERO)
@@ -752,7 +752,7 @@ public class Rational :
 
 		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, n);
 
-		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n);
+		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n + exponent.Length);
 	}
 
 	/// <summary>
