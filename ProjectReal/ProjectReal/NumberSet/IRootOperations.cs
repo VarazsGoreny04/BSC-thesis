@@ -9,13 +9,13 @@
 public interface IRootOperations<TSelf, TOther, TResult> where TSelf : IRootOperations<TSelf, TOther, TResult>
 {
 	/// <summary>Computes the square root of the given value.</summary>
-	/// <param name="left">The base value.</param>
-	/// <returns>The value of <paramref name="left" /> raised to <paramref name="right" />.</returns>
-	static abstract TResult operator ~(TSelf left);
+	/// <param name="value">The radicand value.</param>
+	/// <returns>The square root of <paramref name="value"/>.</returns>
+	static abstract TResult operator ~(TSelf value);
 
-	/// <summary>Computes the power of the two values. The operator is left associative.</summary>
+	/// <summary>Computes the root of the two values. The operator is left associative.</summary>
 	/// <param name="left">The radicand value.</param>
 	/// <param name="right">The degree value.</param>
-	/// <returns>The root of <paramref name="left" /> raised to the <paramref name="right" />.</returns>
+	/// <returns>The <paramref name="right"/>-th root of the <paramref name="left"/> value.</returns>
 	static abstract TResult operator |(TSelf left, TOther right);
 }

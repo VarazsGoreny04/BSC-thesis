@@ -354,6 +354,7 @@ public class PositiveTest
 				try
 				{
 					Positive.Power(positive1, positive2);
+					throw new Exception($"({positive1})^({positive2}) did not fail!");
 				}
 				catch (Exception e)
 				{
@@ -382,6 +383,7 @@ public class PositiveTest
 				try
 				{
 					Positive.Root(positive1, positive2);
+					throw new Exception($"({positive2})|({positive1}) did not fail!");
 				}
 				catch (Exception e)
 				{

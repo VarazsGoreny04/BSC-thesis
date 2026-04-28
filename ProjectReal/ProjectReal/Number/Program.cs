@@ -334,8 +334,16 @@ public class Program
 			Performance(i => Rational.Ln(item, i), 1, 50);
 		}*/
 
-		Rational.FractionCalculationLength = 50;
-		Console.WriteLine(Rational.Ln("35"));
+		/*Rational.FractionCalculationLength = 50;
+		Console.WriteLine(Rational.Ln("35"));*/
+
+		Rational.FractionCalculationLength = 10;
+		//Console.WriteLine(Rational.Exp("-0.015620048843"));
+		//Console.WriteLine(Rational.Power("0.8", "0.07"));
+
+		Rational i = new("+0.8");
+		Rational j = new("+0.07");
+		Console.WriteLine(Rational.Power(i, Rational.Reciprocal(j)));
 	}
 
 	private static void Test(Func<Rational> func, int from, int to)

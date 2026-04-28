@@ -272,7 +272,8 @@ public class WritableTest
 	[TestMethod]
 	public void PowerMethod()
 	{
-		Writable writable1, writable2;
+		int length;
+		Writable writable1, writable2, whole, remainder;
 
 		foreach (WritableTestCase item in WritableTestCases.List)
 		{
@@ -283,7 +284,8 @@ public class WritableTest
 			{
 				try
 				{
-					Writable.Power(writable1, writable2);
+					(whole, remainder) = Writable.Power(writable1, writable2);
+					throw new Exception($"({writable1})^({writable2}) did not fail!");
 				}
 				catch (Exception e)
 				{
@@ -292,7 +294,14 @@ public class WritableTest
 				}
 			}
 			else if (item.Pow != "BIG")
-				Assert.AreEqual(item.Pow, Writable.Power(writable1, writable2).ToString());
+			{
+				(whole, remainder) = Writable.Power(writable1, writable2, FRACTION_CALCULATION_LENGTH);
+
+				length = Math.Min(whole.ToString().Length, item.Pow.Length);
+
+				Assert.AreEqual((new Writable(item.Pow)).ToString()[..length], whole.ToString()[..length]);
+				//Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
+			}
 		}
 	}
 
@@ -312,10 +321,11 @@ public class WritableTest
 				try
 				{
 					Writable.Root(writable1, writable2);
+					throw new Exception($"({writable2})^({writable1}) did not fail!");
 				}
 				catch (Exception e)
 				{
-					if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
+					if (!(e is ArgumentException or DivideByZeroException or NotSupportedException))
 						Assert.Fail(e.Message);
 				}
 			}

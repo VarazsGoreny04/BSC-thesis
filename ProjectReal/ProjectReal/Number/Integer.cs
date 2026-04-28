@@ -292,15 +292,18 @@ public class Integer :
 	/// <param name="left">The <see cref="Integer"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the exponent.</param>
 	/// <returns>The result of the calculation.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
 	/// <exception cref="DivideByZeroException"><paramref name="left"/> cannot be 0 while <paramref name="right"/> is negative.</exception>
 	/// <exception cref="NotSupportedException">
 	/// Absolut value of <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
 	/// </exception>
 	public static Integer Power(Integer left, Integer right)
 	{
-		return right.sign ? new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value) :
-			Digit.ONE / Power(left, right.Value);
+		bool sign = left.sign || right[0] % Digit.TWO == Digit.ZERO;
+
+		if (!right.sign)
+			return left.Length == 1 && left[0] == Digit.ONE ? new Integer(sign, left.value) : Digit.ZERO;
+
+		return new Integer(sign, left.value ^ right.value);
 	}
 
 	/// <summary>
@@ -321,24 +324,25 @@ public class Integer :
 	/// <param name="left">The <see cref="Integer"/> that represents the radicand.</param>
 	/// <param name="right">The <see cref="Integer"/> that represents the degree.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
 	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0 as is not mathematically meaningful.</exception>
-	/// <exception cref="NotSupportedException">
-	/// <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.
-	/// </exception>
+	/// <exception cref="NotSupportedException"><paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Integer Whole, Integer Remainder) Root(Integer left, Integer right)
 	{
-		if (!right.sign)
-			throw new ArgumentOutOfRangeException(nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
-		else if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+		if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
 			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
-		(Natural whole, Natural remainder) = Natural.Root(left.value, right.value);
+		if (!right.sign)
+		{
+			return left.Length == 1 && left[0] == Digit.ONE ? (new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value), Digit.ZERO) :
+				(Digit.ZERO, left);
+		}
 
-		return (new Integer(left.sign, whole), new Integer(left.sign, remainder));
+		(Natural naturalWhole, Natural naturalRemainder) = Natural.Root(left.value, right.value);
+
+		return (new Integer(left.sign, naturalWhole), new Integer(left.sign, naturalRemainder));
 	}
 
 	/// <summary>

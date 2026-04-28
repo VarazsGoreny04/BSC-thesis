@@ -308,7 +308,7 @@ public class Writable :
 	/// <param name="left">The <see cref="Writable"/> that represents the numerator.</param>
 	/// <param name="right">The <see cref="Writable"/> that represents the denominator.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
-	/// <returns>The whole value and the remainder in a tuple.</returns>
+	/// <returns>The value and the remainder in a tuple.</returns>
 	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
 	public static (Writable Value, Writable Remainder) Divide(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
@@ -329,16 +329,20 @@ public class Writable :
 	/// </summary>
 	/// <param name="left">The <see cref="Writable"/> that represents the base.</param>
 	/// <param name="right">The <see cref="Writable"/> that represents the exponent.</param>
-	/// <returns>The result of the calculation.</returns>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>The value and the remainder in a tuple.</returns>
 	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be negative.</exception>
 	/// <exception cref="NotSupportedException">
 	/// Absolut value of <paramref name="right"/> cannot be a fraction or higher than 999 as it would be too computationally expensive and
 	/// the result of the 
 	/// </exception>
-	public static Writable Power(Writable left, Writable right)
+	public static (Writable Value, Writable Remainder) Power(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		return right.sign ? new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value) :
-			(right.FractionLength == 0 ? Digit.ONE / Power(left, right.Value) : throw new NotSupportedException("This type does not support complex number results!"));
+		if (right.FractionLength > 0)
+			throw new NotSupportedException("This type does not support fractional exponents!");
+
+		return right.sign ? (new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value), Digit.ZERO) :
+			Divide(Digit.ONE, Power(left, right.Value).Value, fractionCalculationLength);
 	}
 
 	/// <summary>
@@ -361,7 +365,6 @@ public class Writable :
 	/// <param name="right">The <see cref="Writable"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
 	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
@@ -369,14 +372,20 @@ public class Writable :
 	/// <exception cref="NotSupportedException"><paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		if (!right.sign)
-			throw new ArgumentOutOfRangeException(nameof(right), right, "The degree cannot be negative as it is not mathematically meaningful!");
-		else if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+		if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
 			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
-		(Positive whole, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
+		if (!right.sign)
+		{
+			(Writable rootValue, Writable rootRemainder) = Root(left, right.Value, (fractionCalculationLength ?? FractionCalculationLength) + 1);
+			(Writable divisionValue, Writable divisionRemainder) = Divide(Digit.ONE, rootValue, fractionCalculationLength);
 
-		return (new Writable(left.Sign, whole), new Writable(left.Sign, remainder));
+			return (divisionValue, Digit.ZERO /*rootRemainder + Power(divisionRemainder, right).Value*/); // TODO
+		}
+
+		(Positive value, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
+
+		return (new Writable(left.Sign, value), new Writable(left.Sign, remainder));
 	}
 
 	/// <summary>
@@ -421,7 +430,7 @@ public class Writable :
 	public static Writable operator *(Writable left, Writable right) => Multiply(left, right);
 	public static Writable operator /(Writable left, Writable right) => Divide(left, right).Value;
 	public static Writable operator %(Writable left, Writable right) => Divide(left, right, 0).Remainder;
-	public static Writable operator ^(Writable left, Writable right) => Power(left, right);
+	public static Writable operator ^(Writable left, Writable right) => Power(left, right).Value;
 	public static Writable operator ~(Writable value) => SquareRoot(value).Value;
 	public static Writable operator |(Writable left, Writable right) => Root(right, left).Value;
 

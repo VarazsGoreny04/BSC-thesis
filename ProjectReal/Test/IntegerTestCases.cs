@@ -95,8 +95,8 @@ public static class IntegerTestCases
 			sub: "+1",
 			mul: "+0",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "-0",
@@ -119,8 +119,8 @@ public static class IntegerTestCases
 			sub: "+1",
 			mul: "+0",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "+1",
@@ -191,8 +191,8 @@ public static class IntegerTestCases
 			sub: "+1000000000000000000000",
 			mul: "-999999999999999999999",
 			div: "-999999999999999999999",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "-999999999999999999999",
@@ -203,7 +203,7 @@ public static class IntegerTestCases
 			sub: "-1000000000000000000000",
 			mul: "-999999999999999999999",
 			div: "-999999999999999999999",
-			pow: "BIG",
+			pow: "-999999999999999999999",
 			root: "-999999999999999999999"
 		),
 		new(
@@ -215,8 +215,8 @@ public static class IntegerTestCases
 			sub: "-999999999999999999998",
 			mul: "+999999999999999999999",
 			div: "+999999999999999999999",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "+1",
@@ -239,8 +239,8 @@ public static class IntegerTestCases
 			sub: "+1000000000000000000000",
 			mul: "-999999999999999999999",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1",
@@ -263,8 +263,8 @@ public static class IntegerTestCases
 			sub: "+999999999999999999998",
 			mul: "+999999999999999999999",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "-1",
+			root: "-1"
 		),
 		new(
 			number1: "+123456789",
@@ -287,8 +287,8 @@ public static class IntegerTestCases
 			sub: "+246913578",
 			mul: "-15241578750190521",
 			div: "-1",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "-123456789",
@@ -311,8 +311,8 @@ public static class IntegerTestCases
 			sub: "+0",
 			mul: "+15241578750190521",
 			div: "+1",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "+1",
@@ -335,8 +335,8 @@ public static class IntegerTestCases
 			sub: "+3",
 			mul: "-2",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1",
@@ -359,7 +359,7 @@ public static class IntegerTestCases
 			sub: "+1",
 			mul: "+2",
 			div: "+0",
-			pow: "ERROR",
+			pow: "+1",
 			root: "ERROR"
 		),
 		new(
@@ -383,8 +383,8 @@ public static class IntegerTestCases
 			sub: "+3",
 			mul: "-2",
 			div: "-2",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 		new(
 			number1: "-2",
@@ -407,8 +407,8 @@ public static class IntegerTestCases
 			sub: "-1",
 			mul: "+2",
 			div: "+2",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0",
+			root: "+0"
 		),
 	];
 }

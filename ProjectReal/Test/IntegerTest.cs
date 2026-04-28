@@ -263,6 +263,7 @@ public class IntegerTest
 				try
 				{
 					Integer.Power(integer1, integer2);
+					throw new Exception($"({integer1})^({integer2}) did not fail!");
 				}
 				catch (Exception e)
 				{
@@ -290,11 +291,12 @@ public class IntegerTest
 				try
 				{
 					Integer.Root(integer1, integer2);
+					throw new Exception($"({integer2})|({integer1}) did not fail!");
 				}
 				catch (Exception e)
 				{
-					if (!(e is ArgumentException or ArgumentOutOfRangeException or DivideByZeroException or NotSupportedException))
-						Assert.Fail();
+					if (!(e is ArgumentException or DivideByZeroException or NotSupportedException))
+						Assert.Fail(e.Message);
 				}
 			}
 			else if (item.Root != "BIG")

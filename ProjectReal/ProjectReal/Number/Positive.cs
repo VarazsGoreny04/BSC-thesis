@@ -399,7 +399,7 @@ public class Positive :
 		{
 			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
 
-			root = Natural.CalculateTwoRootDigits(root, ref remainder);
+			(root, remainder) = Natural.CalculateTwoRootDigits(root, remainder);
 		}
 
 		int fractionLength = ((value.fractionLength + 1) / 2) + zeroCalculationLength;
@@ -449,7 +449,7 @@ public class Positive :
 		{
 			remainder = new Natural([.. Digit.CreateArray(degreeInt), .. remainder.Digits]);
 
-			root = Natural.CalculateNRootDigits(root, ref remainder, degree, degreeFactorial);
+			(root, remainder) = Natural.CalculateNRootDigits(root, remainder, degree, degreeFactorial);
 		}
 
 		int fractionLength = ((left.fractionLength + degreeInt - 1) / degreeInt) + zeroCalculationLength;

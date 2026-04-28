@@ -133,7 +133,13 @@ public class Natural :
 
 	#region Internal methods
 
-	internal static Natural CalculateTwoRootDigits(Natural root, ref Natural remainder)
+	/// <summary>
+	/// Calculates one iteration of the square root.
+	/// </summary>
+	/// <param name="root">The root from the previous calculations.</param>
+	/// <param name="remainder">The remainder from the previous calculations.</param>
+	/// <returns>The result of this iteration.</returns>
+	internal static (Natural Root, Natural Remainder) CalculateTwoRootDigits(Natural root, Natural remainder)
 	{
 		Digit xTry;
 		Natural test;
@@ -159,10 +165,18 @@ public class Natural :
 		else
 			xTry = Digit.ZERO;
 
-			return new Natural([xTry, .. root.Digits]);
+		return (new Natural([xTry, .. root.Digits]), remainder);
 	}
 
-	internal static Natural CalculateNRootDigits(Natural root, ref Natural remainder, Natural degree, Natural degreeFactorial)
+	/// <summary>
+	/// Calculates one iteration of the <paramref name="degree"/>-th root.
+	/// </summary>
+	/// <param name="root">The root from the previous calculations.</param>
+	/// <param name="remainder">The remainder from the previous calculations.</param>
+	/// <param name="degree">The degree.</param>
+	/// <param name="degree">The factorial of the degree.</param>
+	/// <returns>The result of the calculation.</returns>
+	internal static (Natural Root, Natural Remainder) CalculateNRootDigits(Natural root, Natural remainder, Natural degree, Natural degreeFactorial)
 	{
 		Digit xTry;
 		Natural test, degUp, binomial;
@@ -209,7 +223,27 @@ public class Natural :
 		else
 			xTry = Digit.ZERO;
 
-		return new Natural([xTry, .. root.Digits]);
+		return (new Natural([xTry, .. root.Digits]), remainder);
+	}
+
+	/// <summary>
+	/// Calculates the greatest common divisor of the given two <see cref="Natural"/> numbers using the Euclidean algorithm.
+	/// </summary>
+	/// <param name="a">The first number.</param>
+	/// <param name="b">The second number.</param>
+	/// <returns>The greatest common divisor.</returns>
+	public static Natural GreatestCommonDivisor(Natural a, Natural b)
+	{
+		Natural temp;
+
+		while (!b.IsZero)
+		{
+			temp = b;
+			b = a % b;
+			a = temp;
+		}
+
+		return a;
 	}
 
 	#endregion
@@ -521,7 +555,7 @@ public class Natural :
 		{
 			remainder = new Natural([value[stepBack], (stepBack + 1 < value.Length ? value[stepBack + 1] : Digit.ZERO), .. remainder.digits]);
 
-			root = CalculateTwoRootDigits(root, ref remainder);
+			(root, remainder) = CalculateTwoRootDigits(root, remainder);
 		}
 
 		return (root, remainder);
@@ -567,7 +601,7 @@ public class Natural :
 		{
 			remainder = new Natural([.. digits[stepBack..(stepBack + degreeInt)], .. remainder.digits]);
 
-			root = CalculateNRootDigits(root, ref remainder, right, degreeFactorial);
+			(root, remainder) = CalculateNRootDigits(root, remainder, right, degreeFactorial);
 		}
 
 		return (root, remainder);
@@ -599,26 +633,6 @@ public class Natural :
 			return Digit.ONE;
 
 		return ProductRange(Digit.ONE, value);
-	}
-
-	/// <summary>
-	/// Calculates the greatest common divisor of the given two <see cref="Natural"/> numbers using the Euclidean algorithm.
-	/// </summary>
-	/// <param name="a">The first number.</param>
-	/// <param name="b">The second number.</param>
-	/// <returns>The greatest common divisor.</returns>
-	public static Natural GreatestCommonDivisor(Natural a, Natural b)
-	{
-		Natural temp;
-
-		while (!b.IsZero)
-		{
-			temp = b;
-			b = a % b;
-			a = temp;
-		}
-
-		return a;
 	}
 
 	/// <summary>

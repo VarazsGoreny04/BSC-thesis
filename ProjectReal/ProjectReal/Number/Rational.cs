@@ -206,19 +206,7 @@ public class Rational :
 	#region Private methods
 
 	/// <summary>
-	/// Container class for binary splitting results.
-	/// </summary>
-	/// <param name="P">The value of P.</param>
-	/// <param name="Q">The value of Q.</param>
-	/// <param name="B">The value of B.</param>
-	/// <param name="T">The value of T.</param>
-	private class PQBTSeriesResult(Writable P, Writable Q, Writable B, Writable T)
-	{
-		public Writable P = P, Q = Q, B = B, T = T;
-	}
-
-	/// <summary>
-	/// Approximates the minimum iterations needed for the given precision for the given value.
+	/// For the sine and cosine functions. Approximates the minimum iterations needed for the given precision for the given value.
 	/// </summary>
 	/// <param name="x">The given value.</param>
 	/// <param name="fractionCalculationLength">The precision needed in digits.</param>
@@ -491,21 +479,33 @@ public class Rational :
 	/// <param name="right">The <see cref="Rational"/> that represents the exponent.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The result of the calculation.</returns>
-	/// <exception cref="NotImplementedException"><paramref name="right"/> cannot be a fraction.</exception>
 	/// <exception cref="NotSupportedException">
 	/// Absolut value of <paramref name="right"/> cannot be higher than 999 as it would be too computationally expensive.
+	/// -or-
+	/// If <paramref name="left"/> is negative than <paramref name="right"/> must be a whole number.
+	/// This type does not support complex number results.
 	/// </exception>
 	public static Rational Power(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
-		if (right.denominator is not null || right.numerator.FractionLength > 0)
+		Rational rightAbs = Abs(right);
+		Rational result;
+
+		if (rightAbs.denominator is not null || rightAbs.numerator.FractionLength > 0)
 		{
+			if (!left.Sign)
+				throw new NotSupportedException("This type does not support complex number results!");
+
 			int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-			return Exp(right * Ln(left, fCL + (right.numerator.WholeLength - right.denominator?.WholeLength) + 1), fCL);
-		}
+			Rational ln = Ln(left, fCL + (right.numerator.WholeLength - right.denominator?.WholeLength) + 1);
+			Rational mul = right * ln;
 
-		return right.Sign ? new Rational(left.numerator ^ right.numerator, left.denominator is not null ? left.denominator ^ right.Numerator : left.denominator) :
-			new Rational(new Writable(left.Sign, left.denominator is not null ? left.denominator ^ right.Numerator : Digit.ONE), left.Numerator ^ right.Numerator);
+			return Exp(mul, fCL);
+		}
+		else
+			result = new Rational(left.numerator ^ rightAbs.numerator, left.denominator is not null ? left.denominator ^ rightAbs.Numerator : left.denominator);
+
+		return right.Sign ? result : Reciprocal(result);
 	}
 
 	/// <summary>
@@ -530,7 +530,6 @@ public class Rational :
 	/// <param name="right">The <see cref="Rational"/> that represents the degree.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="ArgumentOutOfRangeException"><paramref name="right"/> cannot be negative as is not mathematically meaningful.</exception>
 	/// <exception cref="ArgumentException">
 	/// <paramref name="left"/> being negative and <paramref name="right"/> being even is not mathematically meaningful.
 	/// </exception>
@@ -538,15 +537,14 @@ public class Rational :
 	/// <exception cref="NotSupportedException"> <paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
-		if (right.denominator is not null)
+		if (right.denominator is not null || right.numerator.FractionLength > 0)
 			return (Power(left, Reciprocal(right), fractionCalculationLength), Digit.ZERO, Digit.ZERO);
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
 		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ?
 			Positive.Root(d, right.Numerator, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
 
-		return right.Sign ? (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder) :
-			(new Rational(true, denominator.Value, numerator.Value.Value), denominator.Remainder, numerator.Remainder.Value);
+		return (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder);
 	}
 
 	/// <summary>
@@ -564,18 +562,17 @@ public class Rational :
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
-			Natural P, Q;
-			Integer T;
-
 			if (a + Digit.ONE >= b)
 			{
-				(P, Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
+				(Natural P, Natural Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
 					((Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE), a * a * a * "10939058860032000");
 
-				T = P * ("13591409" + "545140134" * a);
+				Integer T = P * ("13591409" + "545140134" * a);
 
 				if (a[0] % Digit.TWO == Digit.ONE)
 					T = -T;
+
+				return (P, Q, T);
 			}
 			else
 			{
@@ -584,11 +581,12 @@ public class Rational :
 				(Natural Pl, Natural Ql, Integer Tl) = BinarySplitting(a, m);
 				(Natural Pr, Natural Qr, Integer Tr) = BinarySplitting(m, b);
 
-				P = Pl * Pr;
-				Q = Ql * Qr;
-				T = Qr * Tl + Pl * Tr;
+				return (
+					P: Pl * Pr,
+					Q: Ql * Qr,
+					T: Qr * Tl + Pl * Tr
+				);
 			}
-			return (P, Q, T);
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
@@ -607,23 +605,17 @@ public class Rational :
 	/// <returns>The number e.</returns>
 	public static Rational E(int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumPQBT(int n1, int n2)
+		static (Natural Q, Natural T) BinarySplitting(int n1, int n2)
 		{
-			PQBTSeriesResult r;
-
 			if (n1 + 1 >= n2)
 			{
-				r = n1 == 0 ?
-				new(
-					P: null!,
+				return n1 == 0 ?
+				(
 					Q: Digit.ONE,
-					B: null!,
 					T: Digit.ONE
 				) :
-				new(
-					P: null!,
+				(
 					Q: new Natural((uint)n1),
-					B: null!,
 					T: Digit.ONE
 				);
 			}
@@ -631,25 +623,21 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumPQBT(n1, nm);
-				PQBTSeriesResult R = SumPQBT(nm, n2);
+				(Natural Ql, Natural Tl) = BinarySplitting(n1, nm);
+				(Natural Qr, Natural Tr) = BinarySplitting(nm, n2);
 
-				r = new(
-					P: null!,
-					Q: L.Q * R.Q,
-					B: null!,
-					T: R.Q * L.T + R.T
+				return (
+					Q: Ql * Qr,
+					T: Qr * Tl + Tr
 				);
 			}
-
-			return r;
 		}
 
 		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1) + 23;
 
-		PQBTSeriesResult r = SumPQBT(0, n);
+		(Natural Q, Natural T) = BinarySplitting(0, n);
 
-		return new Rational(r.T, r.Q);
+		return new Rational(T, Q);
 	}
 
 	/// <summary>
@@ -665,23 +653,19 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Exp(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
+		static (Writable P, Positive Q, Writable T) BinarySplitting(int n1, int n2, Rational x)
 		{
-			PQBTSeriesResult r;
-
 			if (n1 + 1 >= n2)
 			{
-				r = n1 == 0 ?
-				new(
+				return n1 == 0 ?
+				(
 					P: Digit.ONE,
 					Q: Digit.ONE,
-					B: null!,
 					T: Digit.ONE
 				) :
-				new(
+				(
 					P: x.numerator,
 					Q: x.denominator is not null ? new Natural((uint)n1) * x.denominator : new Natural((uint)n1),
-					B: null!,
 					T: x.numerator
 				);
 			}
@@ -689,25 +673,22 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumPQBT(n1, nm, x);
-				PQBTSeriesResult R = SumPQBT(nm, n2, x);
+				(Writable Pl, Positive Ql, Writable Tl) = BinarySplitting(n1, nm, x);
+				(Writable Pr, Positive Qr, Writable Tr) = BinarySplitting(nm, n2, x);
 
-				r = new(
-					P: L.P * R.P,
-					Q: L.Q * R.Q,
-					B: null!,
-					T: R.Q * L.T + L.P * R.T
+				return (
+					P: Pl * Pr,
+					Q: Ql * Qr,
+					T: Qr * Tl + Pl * Tr
 				);
 			}
-
-			return r;
 		}
 
 		static Rational Exp(int n, Rational x)
 		{
-			PQBTSeriesResult r = SumPQBT(0, n, x);
+			(_, Positive Q, Writable T) = BinarySplitting(0, n, x);
 
-			return new Rational(r.T, r.Q);
+			return new Rational(T, Q);
 		}
 
 		Integer whole = RoundDown(x);
@@ -716,7 +697,7 @@ public class Rational :
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + Digit.ONE);
 
-		Rational powE = Power(E(n + plusFractionLength), whole, fractionCalculationLength);
+		Rational powE = whole.IsZero ? Digit.ONE : Power(E(n + plusFractionLength), whole, fractionCalculationLength);
 		return fraction.IsZero ? powE : powE * Exp(n, fraction);
 	}
 
@@ -728,9 +709,7 @@ public class Rational :
 	/// <param name="x">The anti-logarithm.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
 	/// <returns>The natural logarithm of the given parameter.</returns>
-	/// <exception cref="ArgumentOutOfRangeException">
-	/// The anti-logarithm cannot be negative as it is not mathematically meaningful.
-	/// </exception>
+	/// <exception cref="ArgumentOutOfRangeException">The anti-logarithm cannot be negative as it is not mathematically meaningful.</exception>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
 		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x, int fractionCalculationLength)
@@ -788,25 +767,21 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Sin(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
+		static (Writable P, Positive Q, Writable T) BinarySplitting(int n1, int n2, Rational x)
 		{
-			PQBTSeriesResult r;
-
 			if (n1 + 1 >= n2)
 			{
 				Writable tempP;
 
-				r = n1 == 0 ?
-				new(
+				return n1 == 0 ?
+				(
 					P: x.numerator,
 					Q: x.denominator ?? Digit.ONE,
-					B: null!,
 					T: x.numerator
 				) :
-				new(
+				(
 					P: tempP = -Writable.SecondPower(x.numerator),
-					Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
-					B: null!,
+					Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Positive.SecondPower(x.denominator ?? Digit.ONE),
 					T: tempP
 				);
 			}
@@ -814,18 +789,15 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumPQBT(n1, nm, x);
-				PQBTSeriesResult R = SumPQBT(nm, n2, x);
+				(Writable Pl, Positive Ql, Writable Tl) = BinarySplitting(n1, nm, x);
+				(Writable Pr, Positive Qr, Writable Tr) = BinarySplitting(nm, n2, x);
 
-				r = new(
-					P: L.P * R.P,
-					Q: L.Q * R.Q,
-					B: null!,
-					T: R.Q * L.T + L.P * R.T
+				return (
+					P: Pl * Pr,
+					Q: Ql * Qr,
+					T: Qr * Tl + Pl * Tr
 				);
 			}
-
-			return r;
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
@@ -835,9 +807,9 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		PQBTSeriesResult r = SumPQBT(0, n, x);
+		(_, Positive Q, Writable T) = BinarySplitting(0, n, x);
 
-		return new Rational(r.T, r.Q);
+		return new Rational(T, Q);
 	}
 
 	/// <summary>
@@ -852,25 +824,21 @@ public class Rational :
 	/// <returns>The the exponential function for the given exponent.</returns>
 	public static Rational Cos(Rational x, int? fractionCalculationLength = null)
 	{
-		static PQBTSeriesResult SumPQBT(int n1, int n2, Rational x)
+		static (Writable P, Positive Q, Writable T) BinarySplitting(int n1, int n2, Rational x)
 		{
-			PQBTSeriesResult r;
-
 			if (n1 + 1 >= n2)
 			{
 				Writable tempP;
 
-				r = n1 == 0 ?
-				new(
+				return n1 == 0 ?
+				(
 					P: Digit.ONE,
 					Q: Digit.ONE,
-					B: null!,
 					T: Digit.ONE
 				) :
-				new(
+				(
 					P: tempP = -Writable.SecondPower(x.numerator),
-					Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Writable.SecondPower(x.denominator ?? Digit.ONE),
-					B: null!,
+					Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Positive.SecondPower(x.denominator ?? Digit.ONE),
 					T: tempP
 				);
 			}
@@ -878,18 +846,15 @@ public class Rational :
 			{
 				int nm = (n1 + n2) / 2;
 
-				PQBTSeriesResult L = SumPQBT(n1, nm, x);
-				PQBTSeriesResult R = SumPQBT(nm, n2, x);
+				(Writable Pl, Positive Ql, Writable Tl) = BinarySplitting(n1, nm, x);
+				(Writable Pr, Positive Qr, Writable Tr) = BinarySplitting(nm, n2, x);
 
-				r = new(
-					P: L.P * R.P,
-					Q: L.Q * R.Q,
-					B: null!,
-					T: R.Q * L.T + L.P * R.T
+				return (
+					P: Pl * Pr,
+					Q: Ql * Qr,
+					T: Qr * Tl + Pl * Tr
 				);
 			}
-
-			return r;
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
@@ -899,9 +864,9 @@ public class Rational :
 
 		int n = IterationsNeededSinCos(x, fCL);
 
-		PQBTSeriesResult r = SumPQBT(0, n, x);
+		(_, Positive Q, Writable T) = BinarySplitting(0, n, x);
 
-		return new Rational(r.T, r.Q);
+		return new Rational(T, Q);
 	}
 
 	/// <summary>

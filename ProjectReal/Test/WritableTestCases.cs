@@ -286,8 +286,8 @@ public static class WritableTestCases
 			sub: "+1.1",
 			mul: "-0.1",
 			div: "-0.1",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+10",
+			root: "+10"
 		),
 		new(
 			number1: "-0.1",
@@ -310,8 +310,8 @@ public static class WritableTestCases
 			sub: "+0.9",
 			mul: "+0.1",
 			div: "+0.1",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "-10",
+			root: "-10"
 		),
 		new(
 			number1: "+0.8",
@@ -442,8 +442,8 @@ public static class WritableTestCases
 			sub: "+7.06",
 			mul: "-0.42",
 			div: "-0.0085714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+357224508.45907636031092821216278006401463191586648376771833561957018747142",
+			root: "+1.494685499791881447512306164113147068247846487875195993898454028442622575"
 		),
 		new(
 			number1: "-0.06",
@@ -478,8 +478,8 @@ public static class WritableTestCases
 			sub: "+6.007",
 			mul: "-0.042",
 			div: "-0.0011666666666666666666666666666666666666666666666666666666666666666666666",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+8499859752314.0868175675101360827546345485299492558372786849016991219644875",
+			root: "+2.286390077337439410250094545876832689309317235122316848219142411922895248"
 		),
 		new(
 			number1: "-0.007",
@@ -586,8 +586,8 @@ public static class WritableTestCases
 			sub: "+9999999999999999.0000000000000001",
 			mul: "-0.9999999999999999",
 			div: "+0",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "BIG",
+			root: "BIG"
 		),
 		new(
 			number1: "-0.0000000000000001",

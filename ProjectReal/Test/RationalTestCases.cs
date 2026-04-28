@@ -803,8 +803,8 @@ public static class RationalTestCases
 			sub: "+0.9",
 			mul: "+0.1",
 			div: "+10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "+1",
@@ -815,8 +815,8 @@ public static class RationalTestCases
 			sub: "+1.1",
 			mul: "-0.1",
 			div: "-10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1",
@@ -864,7 +864,7 @@ public static class RationalTestCases
 			mul: "-0.1",
 			div: "-0.1",
 			pow: "+10",
-			root: "ERROR"
+			root: "+10"
 		),
 		new(
 			number1: "-0.1",
@@ -888,7 +888,7 @@ public static class RationalTestCases
 			mul: "+0.1",
 			div: "+0.1",
 			pow: "-10",
-			root: "ERROR"
+			root: "-10"
 		),
 		new(
 			number1: "+1/1",
@@ -899,8 +899,8 @@ public static class RationalTestCases
 			sub: "+0.9",
 			mul: "+0.1",
 			div: "+10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "+1/1",
@@ -911,8 +911,8 @@ public static class RationalTestCases
 			sub: "+1.1",
 			mul: "-0.1",
 			div: "-10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1/1",
@@ -960,7 +960,7 @@ public static class RationalTestCases
 			mul: "-0.1",
 			div: "-0.1",
 			pow: "+10",
-			root: "ERROR"
+			root: "+10"
 		),
 		new(
 			number1: "-0.1/1",
@@ -984,7 +984,7 @@ public static class RationalTestCases
 			mul: "+0.1",
 			div: "+0.1",
 			pow: "-10",
-			root: "ERROR"
+			root: "-10"
 		),
 		new(
 			number1: "+1/+1",
@@ -995,8 +995,8 @@ public static class RationalTestCases
 			sub: "+0.9",
 			mul: "+0.1",
 			div: "+10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "+1/+1",
@@ -1007,8 +1007,8 @@ public static class RationalTestCases
 			sub: "+1.1",
 			mul: "-0.1",
 			div: "-10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1/+1",
@@ -1056,7 +1056,7 @@ public static class RationalTestCases
 			mul: "-0.1",
 			div: "-0.1",
 			pow: "+10",
-			root: "ERROR"
+			root: "+10"
 		),
 		new(
 			number1: "-0.1/+1",
@@ -1080,7 +1080,7 @@ public static class RationalTestCases
 			mul: "+0.1",
 			div: "+0.1",
 			pow: "-10",
-			root: "ERROR"
+			root: "-10"
 		),
 		new(
 			number1: "-1/-1",
@@ -1091,8 +1091,8 @@ public static class RationalTestCases
 			sub: "+0.9",
 			mul: "+0.1",
 			div: "+10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "-1/-1",
@@ -1103,8 +1103,8 @@ public static class RationalTestCases
 			sub: "+1.1",
 			mul: "-0.1",
 			div: "-10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1",
+			root: "+1"
 		),
 		new(
 			number1: "+1/-1",
@@ -1152,7 +1152,7 @@ public static class RationalTestCases
 			mul: "-0.1",
 			div: "-0.1",
 			pow: "+10",
-			root: "ERROR"
+			root: "+10"
 		),
 		new(
 			number1: "+0.1/-1",
@@ -1176,7 +1176,7 @@ public static class RationalTestCases
 			mul: "+0.1",
 			div: "+0.1",
 			pow: "-10",
-			root: "ERROR"
+			root: "-10"
 		),
 		new(
 			number1: "+0.8",
@@ -1187,8 +1187,8 @@ public static class RationalTestCases
 			sub: "+0.73",
 			mul: "+0.056",
 			div: "+11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.98450131166101599516482430851323742991975989518217786920458890683857713161",
+			root: "+0.0412639922039405225947659700208971094662122910497207092910215029670300745"
 		),
 		new(
 			number1: "+0.8",
@@ -1199,8 +1199,8 @@ public static class RationalTestCases
 			sub: "+0.87",
 			mul: "-0.056",
 			div: "-11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1.01574267921780130779882746350512433232995649872287316601024188401636412939",
+			root: "+24.234203880653713676354341888311760970473971425589842645767160377345826781"
 		),
 		new(
 			number1: "-0.8",
@@ -1235,8 +1235,8 @@ public static class RationalTestCases
 			sub: "-0.73",
 			mul: "+0.056",
 			div: "+0.0875",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.11914571614494368467275292528625200750824314016526246512640821987466009430",
+			root: "+0.0360058070652728098148897484529713516891183111575888483722044751072731176"
 		),
 		new(
 			number1: "+0.07",
@@ -1247,104 +1247,8 @@ public static class RationalTestCases
 			sub: "+0.87",
 			mul: "-0.056",
 			div: "-0.0875",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "-0.07",
-			number2: "+0.8",
-			equal: false,
-			greater: false,
-			add: "+0.73",
-			sub: "-0.87",
-			mul: "-0.056",
-			div: "-0.0875",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "-0.07",
-			number2: "-0.8",
-			equal: false,
-			greater: true,
-			add: "-0.87",
-			sub: "+0.73",
-			mul: "+0.056",
-			div: "+0.0875",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "+0.8",
-			number2: "+0.07",
-			equal: false,
-			greater: true,
-			add: "+0.87",
-			sub: "+0.73",
-			mul: "+0.056",
-			div: "+11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "+0.8",
-			number2: "-0.07",
-			equal: false,
-			greater: true,
-			add: "+0.73",
-			sub: "+0.87",
-			mul: "-0.056",
-			div: "-11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "-0.8",
-			number2: "+0.07",
-			equal: false,
-			greater: false,
-			add: "-0.73",
-			sub: "-0.87",
-			mul: "-0.056",
-			div: "-11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "-0.8",
-			number2: "-0.07",
-			equal: false,
-			greater: false,
-			add: "-0.87",
-			sub: "-0.73",
-			mul: "+0.056",
-			div: "+11.4285714285714285714285714285714285714285714285714285714285714285714285714",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "+0.07",
-			number2: "+0.8",
-			equal: false,
-			greater: false,
-			add: "+0.87",
-			sub: "-0.73",
-			mul: "+0.056",
-			div: "+0.0875",
-			pow: "ERROR",
-			root: "ERROR"
-		),
-		new(
-			number1: "+0.07",
-			number2: "-0.8",
-			equal: false,
-			greater: true,
-			add: "-0.73",
-			sub: "+0.87",
-			mul: "-0.056",
-			div: "-0.0875",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+8.39308396773137427743693024079043227106054637291591764945287997677672888981",
+			root: "+27.773297740199485562749690563628957263196883112486195896339382910507309198"
 		),
 		new(
 			number1: "-0.07",
@@ -1415,7 +1319,7 @@ public static class RationalTestCases
 			sub: "+0",
 			mul: "+1",
 			div: "+1",
-			pow: "-1",
+			pow: "ERROR",
 			root: "ERROR"
 		),
 		new(
@@ -1451,8 +1355,8 @@ public static class RationalTestCases
 			sub: "-6/20",
 			mul: "+36/200",
 			div: "+3/6",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.48559337483020382976704850935686998457534594982144690046583978951603426674",
+			root: "+0.1344421423967149412624244604211573841350024999202773305325283751878817699"
 		),
 		new(
 			number1: "3/+10",
@@ -1463,8 +1367,8 @@ public static class RationalTestCases
 			sub: "+9/10",
 			mul: "-36/200",
 			div: "-1/2",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+2.05933616855803972746406393751181073478577106036932101496271519390971178854",
+			root: "+7.4381438898018835764739924959992310367046409688366794542286506731159010386"
 		),
 		new(
 			number1: "3/10",
@@ -1475,8 +1379,8 @@ public static class RationalTestCases
 			sub: "-7/20",
 			mul: "+39/200",
 			div: "+6/15",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.45722378610564944999545441564517308412748353575348541799668797685114138646",
+			root: "+0.1568812933687487382023057850373289565201331269546850803445303128392542568"
 		),
 		new(
 			number1: "+0.1",
@@ -1487,8 +1391,8 @@ public static class RationalTestCases
 			sub: "+0.11",
 			mul: "-0.001",
 			div: "-10",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+1.02329299228075413096627517481987782734116405723798130859942558567382964586",
+			root: "BIG"
 		),
 		new(
 			number1: "-0.01",
@@ -1512,7 +1416,7 @@ public static class RationalTestCases
 			mul: "-0.42",
 			div: "-0.0085714285714285714285714285714285714285714285714285714285714285714285714",
 			pow: "+781250000000/2187",
-			root: "ERROR"
+			root: "1.49468549979188144751230616411314706824784648787519599389845402844262257583"
 		),
 		new(
 			number1: "-0.06",
@@ -1547,8 +1451,8 @@ public static class RationalTestCases
 			sub: "+6.007",
 			mul: "-0.042",
 			div: "-0.0011666666666666666666666666666666666666666666666666666666666666666666666",
-			pow: "+1000000000000000000/117649",
-			root: "ERROR"
+			pow: "+8499859752314.0868175675101360827546345485299492558372786849016991219644875",
+			root: "+2.286390077337439410250094545876832689309317235122316848219142411922895248"
 		),
 		new(
 			number1: "-0.007",
@@ -1583,8 +1487,8 @@ public static class RationalTestCases
 			sub: "+3.3",
 			mul: "-2.52",
 			div: "-0.57142857142857142857142857142857142857142857142857142857142857142857142857",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.68189794761243936391484046400267208692129831700944307090521225634889065464",
+			root: "+0.9168423058614308961516627344305651983498653505857525343908444104129265016"
 		),
 		new(
 			number1: "-1.2",
@@ -1595,7 +1499,7 @@ public static class RationalTestCases
 			sub: "-3.3",
 			mul: "-2.52",
 			div: "-0.57142857142857142857142857142857142857142857142857142857142857142857142857",
-			pow: "ERROR",
+			pow: "-1.46649510165171486102185675506285096297240793734133868006853542827983761905",
 			root: "ERROR"
 		),
 		new(
@@ -1607,8 +1511,8 @@ public static class RationalTestCases
 			sub: "+3.3",
 			mul: "-2.52",
 			div: "-1.75",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "+0.69006555934235421779612686462713198681619680355995109946171070510086401774",
+			root: "+0.2267573696145124716553287981859410430839002267573696145124716553287981859"
 		),
 		new(
 			number1: "-2.1",
@@ -1619,7 +1523,7 @@ public static class RationalTestCases
 			sub: "-3.3",
 			mul: "-2.52",
 			div: "-1.75",
-			pow: "ERROR",
+			pow: "-2.43592074317340280020276397458864858801112084694288781863960384759336672583",
 			root: "ERROR"
 		),
 		new(
@@ -1631,8 +1535,8 @@ public static class RationalTestCases
 			sub: "+777.777",
 			mul: "-80779.853376",
 			div: "-5.3000340202177293934681181959564541213063763608087091757387247278382581648",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "BIG",
+			root: "BIG"
 		),
 		new(
 			number1: "-654.321",
@@ -1643,7 +1547,7 @@ public static class RationalTestCases
 			sub: "-777.777",
 			mul: "-80779.853376",
 			div: "-5.3000340202177293934681181959564541213063763608087091757387247278382581648",
-			pow: "ERROR",
+			pow: "BIG",
 			root: "ERROR"
 		),
 		new(
@@ -1656,7 +1560,7 @@ public static class RationalTestCases
 			mul: "-0.9999999999999999",
 			div: "+0",
 			pow: "BIG",
-			root: "ERROR"
+			root: "BIG"
 		),
 		new(
 			number1: "-0.0000000000000001",
@@ -1679,8 +1583,8 @@ public static class RationalTestCases
 			sub: "+9999999999999999.0000000000000001",
 			mul: "-0.9999999999999999",
 			div: "-99999999999999990000000000000000",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "BIG",
+			root: "BIG"
 		),
 		new(
 			number1: "-9999999999999999",
@@ -1691,7 +1595,7 @@ public static class RationalTestCases
 			sub: "-9999999999999999.0000000000000001",
 			mul: "-0.9999999999999999",
 			div: "-99999999999999990000000000000000",
-			pow: "ERROR",
+			pow: "BIG",
 			root: "ERROR"
 		),
 		new(
@@ -1703,8 +1607,8 @@ public static class RationalTestCases
 			sub: "+123456789246.913489123456789",
 			mul: "-15241567777777.8677777778677625363",
 			div: "-1000000721.9005269792846948687272541708955447537476702357992721334686",
-			pow: "ERROR",
-			root: "ERROR"
+			pow: "BIG",
+			root: "BIG"
 		),
 		new(
 			number1: "-123456789123.456789123456789",
@@ -1715,7 +1619,7 @@ public static class RationalTestCases
 			sub: "-123456789246.913489123456789",
 			mul: "-15241567777777.8677777778677625363",
 			div: "-1000000721.9005269792846948687272541708955447537476702357992721334686",
-			pow: "ERROR",
+			pow: "BIG",
 			root: "ERROR"
 		),
 		new(
@@ -1727,7 +1631,7 @@ public static class RationalTestCases
 			sub: "-123456789000.000089123456789",
 			mul: "+15241567777777.8677777778677625363",
 			div: "+1000000721.9005269792846948687272541708955447537476702357992721334686",
-			pow: "ERROR",
+			pow: "BIG",
 			root: "ERROR"
 		),
 	];
