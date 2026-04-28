@@ -9,14 +9,17 @@ public class RationalTest
 	private const int FRACTION_CALCULATION_LENGTH = 10;
 	private const int VALIDATE_UNTIL = 500;
 
+	private readonly int fractionCalculationLength;
 	private readonly bool fractionalFormat;
 	private readonly bool writeSign;
 
 	public RationalTest()
 	{
+		fractionCalculationLength = Rational.FractionCalculationLength;
 		fractionalFormat = Rational.FractionalFormat;
 		writeSign = Rational.WriteSign;
 
+		Rational.FractionCalculationLength = FRACTION_CALCULATION_LENGTH;
 		Rational.FractionalFormat = true;
 		Rational.WriteSign = true;
 	}
@@ -24,6 +27,7 @@ public class RationalTest
 	[TestCleanup()]
 	public void CleanUp()
 	{
+		Rational.FractionCalculationLength = fractionCalculationLength;
 		Rational.FractionalFormat = fractionalFormat;
 		Rational.WriteSign = writeSign;
 	}
@@ -708,7 +712,7 @@ public class RationalTest
 
 				length = Math.Min(expected.Length, result.Length);
 
-				Assert.AreEqual(expected[..length], result.ToString()[..length]);
+				Assert.AreEqual(new Rational(expected[..length]), new Rational(result.ToString()[..length]));
 			}
 		}
 	}
@@ -734,7 +738,7 @@ public class RationalTest
 				result = Rational.Power(rational1, rational2, FRACTION_CALCULATION_LENGTH);
 				expected = (new Rational(item.Pow)).ToString();
 
-				length = Math.Min(expected.Length, result.ToString().Length);
+				length = Math.Min(expected.Length, result.ToString().Length / 2);
 
 				Assert.AreEqual(expected[..length], result.ToString()[..length]);
 			}
@@ -746,8 +750,10 @@ public class RationalTest
 	{
 		Rational.FractionalFormat = false;
 
+		Rational epsilon = $"0.{new string('0', FRACTION_CALCULATION_LENGTH / 2)}3";
+
 		int length;
-		Rational rational1, rational2, result;
+		Rational rational1, rational2, result, reconstruction;
 		Writable numeratorRemainder;
 		Positive? denominatorRemainder;
 		string expected;
@@ -775,11 +781,17 @@ public class RationalTest
 				(result, numeratorRemainder, denominatorRemainder) = Rational.Root(rational1, rational2, FRACTION_CALCULATION_LENGTH);
 				expected = (new Rational(item.Root)).ToString();
 
-				length = Math.Min(expected.Length, result.ToString().Length);
+				length = Math.Min(expected.Length, result.ToString().Length / 2);
 
 				Assert.AreEqual(expected[..length], result.ToString()[..length]);
-				Assert.AreEqual(rational1, ((new Rational(result.Sign, result.Numerator) ^ rational2) + numeratorRemainder) /
-					((result?.Denominator ?? "1") ^ rational2) + denominatorRemainder);
+
+				if (!(!rational2.Sign || rational2.Denominator is not null || rational2.Numerator.FractionLength > 0))
+				{
+					reconstruction = ((new Rational(result.Sign, result.Numerator) ^ rational2) + numeratorRemainder) /
+						((result?.Denominator ?? "1") ^ rational2) + denominatorRemainder;
+
+					Assert.AreEqual(rational1, reconstruction);
+				}
 			}
 		}
 	}

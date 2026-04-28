@@ -341,8 +341,8 @@ public class Program
 		//Console.WriteLine(Rational.Exp("-0.015620048843"));
 		//Console.WriteLine(Rational.Power("0.8", "0.07"));
 
-		Rational i = new("+0.8");
-		Rational j = new("+0.07");
+		Rational i = new("+0.07");
+		Rational j = new("+0.8");
 		Console.WriteLine(Rational.Power(i, Rational.Reciprocal(j)));
 	}
 

@@ -8,17 +8,24 @@ public class WritableTest
 {
 	private const int FRACTION_CALCULATION_LENGTH = 10;
 
+	private readonly int fractionCalculationLength;
 	private readonly bool writeSign;
 
 	public WritableTest()
 	{
+		fractionCalculationLength = Writable.FractionCalculationLength;
 		writeSign = Writable.WriteSign;
 
+		Writable.FractionCalculationLength = FRACTION_CALCULATION_LENGTH;
 		Writable.WriteSign = true;
 	}
 
 	[TestCleanup()]
-	public void CleanUp() => Writable.WriteSign = writeSign;
+	public void CleanUp()
+	{
+		Writable.FractionCalculationLength = fractionCalculationLength;
+		Writable.WriteSign = writeSign;
+	}
 
 	private static bool Sign(string sign)
 	{

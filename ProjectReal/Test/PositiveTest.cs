@@ -8,6 +8,21 @@ public class PositiveTest
 {
 	private const int FRACTION_CALCULATION_LENGTH = 10;
 
+	private readonly int fractionCalculationLength;
+
+	public PositiveTest()
+	{
+		fractionCalculationLength = Positive.FractionCalculationLength;
+
+		Positive.FractionCalculationLength = FRACTION_CALCULATION_LENGTH;
+	}
+
+	[TestCleanup()]
+	public void CleanUp()
+	{
+		Positive.FractionCalculationLength = fractionCalculationLength;
+	}
+
 	[TestMethod]
 	public void ZeroConstructor()
 	{
