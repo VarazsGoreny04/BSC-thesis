@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Calculators.EuclideanSpace;
+namespace Calculators.Polynomials;
 
 /// <summary>
 /// Contains methods for basic operations with the Cartesian 2D coordinate system.

@@ -752,7 +752,7 @@ public class Rational :
 
 		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, n);
 
-		return Ln((reducedX - Digit.ONE) / Digit.SEVEN, reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n + exponent.Length);
+		return Ln(("0.7" * (reducedX - Digit.ONE)) - (Abs("1.5" - reducedX) / Digit.NINE) + "0.06", reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n + exponent.Length);
 	}
 
 	/// <summary>

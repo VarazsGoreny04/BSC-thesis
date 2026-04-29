@@ -889,16 +889,16 @@ public class RationalTest
 			("+0.001", "-6.907755278982137052053974364053092622803304465886318928099983702902717829032057440707991615268794895025903352126858")
 		];
 
-		string result;
+		Rational result;
 		Rational expected;
 
 		for (int i = 0; i < ln100.Length; ++i)
 		{
-			result = Rational.Ln(ln100[i].Value).ToString();
+			result = Rational.Ln(ln100[i].Value);
 
-			expected = new Rational(ln100[i].Result[..result.Length]);
+			expected = new Rational(ln100[i].Result);
 
-			Assert.IsTrue(Rational.Abs(expected - new Rational(result)) < epsilon, $"Expected:<{expected}> Actual:<{result}>");
+			Assert.IsTrue(Rational.Abs(expected - result) < epsilon, $"Expected:<{expected}> Actual:<{result}>");
 		}
 	}
 

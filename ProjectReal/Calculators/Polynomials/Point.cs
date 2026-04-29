@@ -1,9 +1,10 @@
-﻿using ProjectReal.NumberSet;
+﻿using Calculators.EuclideanSpace;
+using ProjectReal.NumberSet;
 using System;
 using System.Linq;
 using System.Numerics;
 
-namespace Calculators.EuclideanSpace;
+namespace Calculators.Polynomials;
 
 /// <summary>
 /// Represents a point in the coordinate system.
