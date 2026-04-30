@@ -18,6 +18,7 @@ where T :
 	ISubtractionOperators<T, T, T>,
 	IMultiplyOperators<T, T, T>,
 	IDivisionOperators<T, T, T>,
+	IModulusOperators<T, T, T>,
 	IPowerOperations<T, T, T>,
 	IRootOperations<T, T, T>,
 	IAdditiveIdentity<T, T>,
@@ -361,7 +362,7 @@ where T :
 	/// <param name="A">The first matrix.</param>
 	/// <param name="B">The second matrix.</param>
 	/// <returns>The resulting matrix.</returns>
-	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
+	/// <exception cref="ArgumentException">The column count of the first matrix must be equal to the row count of the second matrix.</exception>
 	public static T[,] Product(T[,] A, T[,] B)
 	{
 		int an = A.GetLength(0);
@@ -369,7 +370,7 @@ where T :
 		int bm = B.GetLength(1);
 
 		if (am != B.GetLength(0))
-			throw new ArgumentException("The extents of the two matrices are not equal!");
+			throw new ArgumentException("The column count of the first matrix must be equal to the row count of the second matrix!");
 
 		T[,] result = Zeros(an, bm);
 
@@ -380,6 +381,32 @@ where T :
 				for (int k = 0; k < am; ++k)
 					result[i, j] += A[i, k] * B[k, j];
 			}
+		}
+
+		return result;
+	}
+
+	/// <summary>
+	/// Performs the modulo operation on the elements of the matrix <paramref name="A"/> with the corresponding element of matrix <paramref name="B"/>.
+	/// </summary>
+	/// <param name="A">The first matrix.</param>
+	/// <param name="B">The second matrix.</param>
+	/// <returns>The resulting matrix.</returns>
+	/// <exception cref="ArgumentException">The extents of the two matrices are not equal.</exception>
+	public static T[,] Modulo(T[,] A, T[,] B)
+	{
+		int an = A.GetLength(0);
+		int am = A.GetLength(1);
+
+		if (an != B.GetLength(0) || am != B.GetLength(1))
+			throw new ArgumentException("The extents of the two matrices are not equal!");
+
+		T[,] result = Zeros(an, am);
+
+		for (int i = 0; i < an; ++i)
+		{
+			for (int j = 0; j < am; ++j)
+				result[i, j] += A[i, j] % B[i, j];
 		}
 
 		return result;

@@ -18,6 +18,7 @@ where T :
 	IUnaryNegationOperators<T, T>,
 	IMultiplyOperators<T, T, T>,
 	IDivisionOperators<T, T, T>,
+	IModulusOperators<T, T, T>,
 	IPowerOperations<T, T, T>,
 	IRootOperations<T, T, T>,
 	IParsable<T>
@@ -44,6 +45,7 @@ where T :
 			new(SubtractRegex(), _ => new Subtract<T>()),
 			new(MultiplyRegex(), _ => new Multiply<T>()),
 			new(DivideRegex(), _ => new Divide<T>()),
+			new(ModuloRegex(), _ => new Modulo<T>()),
 			new(PowerRegex(), _ => new Power<T>()),
 			new(RootRegex(), _ => new Root<T>()),
 			// Separators

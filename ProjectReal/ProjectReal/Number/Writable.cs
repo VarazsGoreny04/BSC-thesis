@@ -213,14 +213,14 @@ public class Writable :
 	}
 
 	/// <summary>
-	/// Rounds down the given <see cref="Writable"/> instance.
+	/// Rounds down the absolute value of the given <see cref="Writable"/> instance and keeps the sign.
 	/// </summary>
 	/// <param name="value">The <see cref="Writable"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Writable"/> instance.</returns>
 	public static Integer RoundDown(Writable value) => new(value.Sign, Positive.RoundDown(value.Value));
 
 	/// <summary>
-	/// Rounds up the given <see cref="Writable"/> instance.
+	/// Rounds up the absolute value of the given <see cref="Writable"/> instance and keeps the sign.
 	/// </summary>
 	/// <param name="value">The <see cref="Writable"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Writable"/> instance plus one if it was not whole.</returns>

@@ -22,7 +22,7 @@ public abstract partial class ValueHolder<T> : Expression
 	{
 		string result = value?.ToString() ?? throw new FormatException("The given value could not be turned into string.");
 
-		return result.Length > 0 && (result[0] == '+' || result[0] == '-') ? $"({result})" : result;
+		return result.Length > 0 && (result[0] is '+' or '-') ? $"({result})" : result;
 	}
 
 	#endregion

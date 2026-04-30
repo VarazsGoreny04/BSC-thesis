@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Calculators;
 
@@ -19,12 +20,18 @@ public sealed class Coma<T> : Expression
 
 	#region Internal methods
 
-	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result) => result.Add(this);
-
-	internal override void ToTree(ref Stack<Expression> result)
+	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{
-		new ClosingParenthesis<T>().ToTree(ref result);
-		new OpeningParenthesis().ToTree(ref result);
+		new ClosingParenthesis<T>().ToPostfix(ref functions, ref result);
+		new OpeningParenthesis().ToPostfix(ref functions, ref result);
+	}
+
+	/// <summary>
+	/// Throws a <see cref="NotImplementedException"/> because a coma cannot be parsed into tree form.
+	/// </summary>
+	internal override void ToTree(ref Stack<Expression> _)
+	{
+		throw new NotImplementedException("This function should never be called because a coma cannot be parsed into tree form!");
 	}
 
 	#endregion

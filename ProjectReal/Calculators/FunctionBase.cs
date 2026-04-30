@@ -36,7 +36,7 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{
-		if (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() >= Order())
+		while (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() >= Order())
 		{
 			functions.Pop();
 

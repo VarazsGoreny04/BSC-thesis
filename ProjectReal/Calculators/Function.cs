@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculators;
@@ -42,14 +41,12 @@ public abstract partial class Function<T> : FunctionBase<T>
 
 	public override void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step)
 	{
-		++step;
-
 		foreach (ValueHolder<T> parameter in parameters)
 			parameter.FullEvaluation(ref partialValues, root, ref step);
 
-		int stepCopy = step;
+		int stepCopy = ++step;
 
-		partialValues.Add(($"{Sign()}({string.Join(", ", parameters.Select(static p => p.GetValue()))}) = {GetValue()}", root.ToStringByStep(ref stepCopy)));
+		partialValues.Add(($"{Sign()}({string.Join(",", parameters.Select(static p => p.GetValue()))}) = {GetValue()}", root.ToStringByStep(ref stepCopy)));
 	}
 
 	public override string ToStringByStep(ref int step)
@@ -59,7 +56,7 @@ public abstract partial class Function<T> : FunctionBase<T>
 		for (int i = 0; i < parameters.Length; ++i)
 			arguments[i] = parameters[i].ToStringByStep(ref step);
 
-		return --step <= 0 ? $"{Sign()}({string.Join("; ", arguments)})" : $"({GetValue()})";
+		return --step <= 0 ? $"{Sign()}({string.Join(",", arguments)})" : $"({GetValue()})";
 	}
 
 	#endregion

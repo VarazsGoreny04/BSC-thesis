@@ -63,18 +63,6 @@ public class CalculatorModel
 
 	#region Public methods
 
-	public void SwitchMode(Mode mode)
-	{
-		data.mode = mode;
-		data.calculator = mode switch
-		{
-			Mode.Standard => data.standardCalculator,
-			Mode.Matrix => data.euclideanSpaceCalculator,
-			Mode.Interpolation => data.polynomialCalculator,
-			_ => throw new NotImplementedException("No corresponding calculator found for this mode!")
-		};
-	}
-
 	public void PushInput(string text)
 	{
 		if (tokenSource is not null)

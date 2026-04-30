@@ -176,7 +176,7 @@ public partial class Divide<T> : BinaryOperator<T> where T : IDivisionOperators<
 	public Divide() : base(null!, null!) { }
 
 	/// <summary>
-	/// Constructs a <see cref="Divide"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
+	/// Constructs a <see cref="Divide{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
 	/// <param name="right">The right hand side of the operator.</param>
@@ -200,6 +200,43 @@ public partial class Divide<T> : BinaryOperator<T> where T : IDivisionOperators<
 }
 
 /// <summary>
+/// Represents the modulo operator.
+/// </summary>
+/// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
+public partial class Modulo<T> : BinaryOperator<T> where T : IModulusOperators<T, T, T>
+{
+	#region Constructors
+
+	/// <summary>
+	/// Constructs a <see cref="Modulo{T}"/> operator with the left and right values set to <see langword="null"/>.
+	/// </summary>
+	public Modulo() : base(null!, null!) { }
+
+	/// <summary>
+	/// Constructs a <see cref="Modulo{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
+	/// </summary>
+	/// <param name="left">The left hand side of the operator.</param>
+	/// <param name="right">The right hand side of the operator.</param>
+	public Modulo(ValueHolder<T> left, ValueHolder<T> right) : base(left, right) { }
+
+	#endregion
+
+	#region Internal methods
+
+	internal override Priority Order() => Priority.SecondClass;
+
+	#endregion
+
+	#region Public methods
+
+	public override T GetValue() => Left.GetValue() % Right.GetValue();
+
+	public override string Sign() => "%";
+
+	#endregion
+}
+
+/// <summary>
 /// Represents the power operator.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
@@ -208,12 +245,12 @@ public partial class Power<T> : BinaryOperator<T> where T : IPowerOperations<T, 
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Power"/> operator with the left and right values set to <see langword="null"/>.
+	/// Constructs a <see cref="Power{T}"/> operator with the left and right values set to <see langword="null"/>.
 	/// </summary>
 	public Power() : base(null!, null!) { }
 
 	/// <summary>
-	/// Constructs a <see cref="Power"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
+	/// Constructs a <see cref="Power{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
 	/// <param name="right">The right hand side of the operator.</param>
@@ -225,7 +262,7 @@ public partial class Power<T> : BinaryOperator<T> where T : IPowerOperations<T, 
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
 	{
-		if (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() > Order())
+		while (functions.FirstOrDefault() is FunctionBase<T> fB && fB.Order() > Order())
 		{
 			functions.Pop();
 
@@ -257,12 +294,12 @@ public partial class Root<T> : BinaryOperator<T> where T : IRootOperations<T, T,
 	#region Constructors
 
 	/// <summary>
-	/// Constructs a <see cref="Root"/> operator with the left and right values set to <see langword="null"/>.
+	/// Constructs a <see cref="Root{T}"/> operator with the left and right values set to <see langword="null"/>.
 	/// </summary>
 	public Root() : base(null!, null!) { }
 
 	/// <summary>
-	/// Constructs a <see cref="Root"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
+	/// Constructs a <see cref="Root{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
 	/// <param name="right">The right hand side of the operator.</param>

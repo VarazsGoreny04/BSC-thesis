@@ -1,9 +1,9 @@
-﻿using BullseyeCalculator.Model;
-using Calculators;
+﻿using Calculators;
 using Calculators.EuclideanSpace;
 using Calculators.Polynomials;
 using Calculators.Standard;
 using ProjectReal.Number;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -56,7 +56,6 @@ public class CalculatorData
 			new("ceiling", () => new Ceiling()),
 			new("round", () => new Round()),
 			new("floor", () => new Floor()),
-			new("fact", () => new Fact()),
 			new("exp", () => new Exp()),
 			new("cos", () => new Cos()),
 			new("sin", () => new Sin()),
@@ -85,6 +84,22 @@ public class CalculatorData
 
 		evaluation = [];
 		result = string.Empty;
+	}
+
+	#endregion
+
+	#region Public methods
+
+	public void SwitchMode(Mode mode)
+	{
+		this.mode = mode;
+		calculator = mode switch
+		{
+			Mode.Standard => standardCalculator,
+			Mode.Matrix => euclideanSpaceCalculator,
+			Mode.Interpolation => polynomialCalculator,
+			_ => throw new NotImplementedException("No corresponding calculator found for this mode!")
+		};
 	}
 
 	#endregion

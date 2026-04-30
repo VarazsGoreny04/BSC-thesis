@@ -1,7 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 
-namespace BullseyeCalculator.Model;
+namespace BullseyeCalculator.Persistence;
 
 /// <summary>
 /// Represents an absolute value function in an expression.
@@ -167,48 +167,6 @@ public sealed class Ceiling : Function<Rational>
 	public override Rational GetValue() => Rational.RoundUp(Parameter.GetValue());
 
 	public override string Sign() => "ceiling";
-
-	#endregion
-}
-
-/// <summary>
-/// Represents a factorial function in an expression.
-/// </summary>
-public sealed class Fact : Function<Rational>
-{
-	#region Properties
-
-	/// <summary>
-	/// Gets or sets the parameter of the function.
-	/// </summary>
-	public ValueHolder<Rational> Parameter
-	{
-		get => parameters[0];
-		set => parameters[0] = value;
-	}
-
-	#endregion
-
-	#region Constructors
-
-	/// <summary>
-	/// Constructs a <see cref="Fact"/> function with the parameter set to <see langword="null"/>.
-	/// </summary>
-	public Fact() : base([null!]) { }
-
-	/// <summary>
-	/// Constructs a <see cref="Fact"/> function with the <paramref name="parameter"/> value.
-	/// </summary>
-	/// <param name="parameter">The parameter of the function.</param>
-	public Fact(ValueHolder<Rational> parameter) : base([parameter]) { }
-
-	#endregion
-
-	#region Public methods
-
-	public override Rational GetValue() => Rational.Abs(Parameter.GetValue());
-
-	public override string Sign() => "fact";
 
 	#endregion
 }

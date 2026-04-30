@@ -160,7 +160,7 @@
 			</Button>
 		</Grid>
 
-		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" />
+		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" FontSize="{DynamicResource ControlFontSize}" />
 
 		<Grid x:Name="Keys" Grid.Row="2">
 			<Grid.ColumnDefinitions>
@@ -278,25 +278,88 @@
 				<Button Grid.Row="0" Grid.Column="1" Content="(" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="(" />
 				<Button Grid.Row="0" Grid.Column="2" Content=")" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=")" />
 
-				<Expander Grid.Row="0" Grid.Column="0" Header="⨍" FontSize="{DynamicResource ControlFontSize}">
-					<StackPanel>
-						<Button Content="|x|" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="abs("/>
-						<Button Content="!x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="fact(" />
-					</StackPanel>
-				</Expander>
-				<Expander Grid.Row="1" Grid.Column="0" Header="📐" FontSize="{DynamicResource ControlFontSize}">
-					<StackPanel>
-						<Button Content="sin" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="sin(" />
-						<Button Content="cos" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
-						<Button Content="eˣ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="exp(" />
-						<Button Content="ln" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ln(" />
-					</StackPanel>
-				</Expander>
+				<Button Grid.Row="0" Grid.Column="0" Content="{Binding CurrentPanelName}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding CyclePanelCommand}" />
 
-				<Button Grid.Row="2" Grid.Column="0" Content="x²" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^2" />
-				<Button Grid.Row="3" Grid.Column="0" Content="xⁿ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^" />
-				<Button Grid.Row="4" Grid.Column="0" Content="√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="2|" />
-				<Button Grid.Row="5" Grid.Column="0" Content="ⁿ√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="|" />
+				<Grid x:Name="ExponentialFunctionKeys" Grid.Row="1" Grid.RowSpan="4" Grid.Column="0">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Button Grid.Row="0" Content="x²" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^2" />
+					<Button Grid.Row="1" Content="xⁿ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="^" />
+					<Button Grid.Row="2" Content="√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="2|" />
+					<Button Grid.Row="3" Content="ⁿ√x" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="|" />
+
+					<Grid.Style>
+						<Style TargetType="Grid">
+							<Setter Property="Visibility" Value="Hidden" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding CurrentPanel}" Value="ExponentialFunctions">
+									<Setter Property="Visibility" Value="Visible" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Grid.Style>
+				</Grid>
+
+				<Grid x:Name="StandardFunctionKeys" Grid.Row="1" Grid.RowSpan="4" Grid.Column="0">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<!-- <RowDefinition />
+						<RowDefinition /> -->
+					</Grid.RowDefinitions>
+
+					<!-- <Button Grid.Row="0" Content="⌊x⌉" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="round(" /> -->
+					<Button Grid.Row="0" Content="⌊x⌋" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="floor(" />
+					<Button Grid.Row="1" Content="⌈x⌉" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ceiling(" />
+					<Button Grid.Row="2" Content="min" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="min(" />
+					<Button Grid.Row="3" Content="max" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="max(" />
+					<!-- <Button Grid.Row="5" Content="|x|" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="abs(" /> -->
+
+					<Grid.Style>
+						<Style TargetType="Grid">
+							<Setter Property="Visibility" Value="Hidden" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding CurrentPanel}" Value="StandardFunctions">
+									<Setter Property="Visibility" Value="Visible" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Grid.Style>
+				</Grid>
+
+				<Grid x:Name="SpecialFunctionKeys" Grid.Row="1" Grid.RowSpan="4" Grid.Column="0">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Button Grid.Row="0" Content="sin" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="sin(" />
+					<Button Grid.Row="1" Content="cos" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
+					<Button Grid.Row="2" Content="eˣ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="exp(" />
+					<Button Grid.Row="3" Content="ln" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ln(" />
+					
+					<Grid.Style>
+						<Style TargetType="Grid">
+							<Setter Property="Visibility" Value="Hidden" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding CurrentPanel}" Value="SpecialFunctions">
+									<Setter Property="Visibility" Value="Visible" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Grid.Style>
+				</Grid>
+
+				<Button Grid.Row="5" Grid.Column="0" Content="," FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=","  />
 
 				<Button Grid.Row="1" Grid.Column="1" Content="π" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="pi" />
 				<Button Grid.Row="1" Grid.Column="2" Content="e" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="e" />

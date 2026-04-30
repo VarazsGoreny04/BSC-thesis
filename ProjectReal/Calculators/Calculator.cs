@@ -21,7 +21,7 @@ public abstract partial class Calculator
 	[GeneratedRegex(@"^\+$")]
 	protected static partial Regex AddRegex();
 
-	[GeneratedRegex(@"^-$")]
+	[GeneratedRegex(@"^\-$")]
 	protected static partial Regex SubtractRegex();
 
 	[GeneratedRegex(@"^\*$")]
@@ -29,6 +29,9 @@ public abstract partial class Calculator
 
 	[GeneratedRegex(@"^/$")]
 	protected static partial Regex DivideRegex();
+
+	[GeneratedRegex(@"^%$")]
+	protected static partial Regex ModuloRegex();
 
 	[GeneratedRegex(@"^\^$")]
 	protected static partial Regex PowerRegex();

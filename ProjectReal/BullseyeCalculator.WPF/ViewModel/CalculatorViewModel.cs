@@ -13,6 +13,7 @@ public class CalculatorViewModel : ViewModelBase
 
 	private bool showSteps;
 	private bool showOptions;
+	private Panel panel;
 
 	#endregion
 
@@ -46,11 +47,23 @@ public class CalculatorViewModel : ViewModelBase
 		get => model.Data.Mode;
 		set
 		{
-			model.SwitchMode(value);
+			model.Data.SwitchMode(value);
 
 			OnPropertyChanged(nameof(CurrentMode));
 		}
 	}
+	public Panel CurrentPanel
+	{
+		get => panel;
+		set
+		{
+			panel = value;
+
+			OnPropertyChanged(nameof(CurrentPanel));
+			OnPropertyChanged(nameof(CurrentPanelName));
+		}
+	}
+	public string CurrentPanelName => $"⨍{(int)CurrentPanel}";
 	public static char Separator => CalculatorData.Separator;
 	public static char ColumnSeparator => CalculatorData.ColumnSeparator;
 	public static char RowSeparator => CalculatorData.RowSeparator;
@@ -90,6 +103,8 @@ public class CalculatorViewModel : ViewModelBase
 	public DelegateCommand ShowStepsCommand { get; }
 	public DelegateCommand ShowOptionsCommand { get; }
 
+	public DelegateCommand CyclePanelCommand { get; }
+
 	public DelegateCommand StandardModeCommand { get; }
 	public DelegateCommand EuclideanModeCommand { get; }
 	public DelegateCommand InterpolationModeCommand { get; }
@@ -123,6 +138,8 @@ public class CalculatorViewModel : ViewModelBase
 		showSteps = false;
 		showOptions = false;
 
+		CurrentPanel = Panel.ExponentialFunctions;
+
 		CurrentMode = Mode.Standard;
 
 		PushInputEvent += new EventHandler<ParamEventArgs>(
@@ -140,12 +157,29 @@ public class CalculatorViewModel : ViewModelBase
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
 		ShowOptionsCommand = new DelegateCommand(_ => ShowOptions = !showOptions);
 
+		CyclePanelCommand = new DelegateCommand(_ => CyclePanel());
+
 		StandardModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Standard);
 		EuclideanModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Matrix);
 		InterpolationModeCommand = new DelegateCommand(_ => CurrentMode = Mode.Interpolation);
 
 		IncreaseFractionCalculationLengthCommand = new DelegateCommand(_ => ++FractionCalculationLength);
 		DecreaseFractionCalculationLengthCommand = new DelegateCommand(_ => --FractionCalculationLength);
+	}
+
+	#endregion
+
+	#region Private methods
+
+	private void CyclePanel()
+	{
+		CurrentPanel = CurrentPanel switch
+		{
+			Panel.ExponentialFunctions => Panel.StandardFunctions,
+			Panel.StandardFunctions => Panel.SpecialFunctions,
+			Panel.SpecialFunctions => Panel.ExponentialFunctions,
+			_ => throw new NotImplementedException("This panel state is not implemented!")
+		};
 	}
 
 	#endregion

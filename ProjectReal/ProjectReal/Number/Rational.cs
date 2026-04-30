@@ -329,14 +329,14 @@ public class Rational :
 	}
 
 	/// <summary>
-	/// Rounds down the given <see cref="Rational"/> instance.
+	/// Rounds down the absolute value of the given <see cref="Rational"/> instance and keeps the sign.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Rational"/> instance.</returns>
 	public static Integer RoundDown(Rational value) => Writable.RoundDown(GetValue(value).Value);
 
 	/// <summary>
-	/// Rounds up the given <see cref="Rational"/> instance.
+	/// Rounds up the absolute value of the given <see cref="Rational"/> instance and keeps the sign.
 	/// </summary>
 	/// <param name="value">The <see cref="Rational"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Rational"/> instance plus one if it was not whole.</returns>

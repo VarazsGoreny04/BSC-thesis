@@ -18,6 +18,7 @@ where T :
 	IAdditionOperators<T, T, T>,
 	ISubtractionOperators<T, T, T>,
 	IMultiplyOperators<T, T, T>,
+	IModulusOperators<T, T, T>,
 	IDivisionOperators<T, T, T>,
 	IPowerOperations<T, T, T>,
 	IRootOperations<T, T, T>,

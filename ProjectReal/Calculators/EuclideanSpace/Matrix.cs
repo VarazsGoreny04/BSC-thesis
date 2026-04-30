@@ -1,10 +1,8 @@
 ﻿using Calculators.Standard;
 using ProjectReal.NumberSet;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Xml.Linq;
 
 namespace Calculators.EuclideanSpace;
 
@@ -25,6 +23,7 @@ public class Matrix<T> :
 	ISubtractionOperators<Matrix<T>, T, Matrix<T>>,
 	IMultiplyOperators<Matrix<T>, T, Matrix<T>>,
 	IDivisionOperators<Matrix<T>, T, Matrix<T>>,
+	IModulusOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
 	IAdditiveIdentity<Matrix<T>, Matrix<T>>,
 	IMultiplicativeIdentity<Matrix<T>, Matrix<T>>
 	where T :
@@ -35,6 +34,7 @@ public class Matrix<T> :
 		ISubtractionOperators<T, T, T>,
 		IMultiplyOperators<T, T, T>,
 		IDivisionOperators<T, T, T>,
+		IModulusOperators<T, T, T>,
 		IPowerOperations<T, T, T>,
 		IRootOperations<T, T, T>,
 		IAdditiveIdentity<T, T>,
@@ -161,7 +161,7 @@ public class Matrix<T> :
 				this.value[i, j] = new Number<T>(value[i, j]);
 		}
 	}
-
+	
 	#endregion
 
 	#region Public methods
@@ -217,7 +217,15 @@ public class Matrix<T> :
 
 	public static implicit operator Matrix<T>(ValueHolder<T>[,] value) => new(value);
 	public static implicit operator Matrix<T>(T[,] value) => new(value);
-	public static bool operator ==(Matrix<T>? left, Matrix<T>? right) => left is Matrix<T> l && right is Matrix<T> r && Equals(ToMatrix(l), ToMatrix(r));
+	public static bool operator ==(Matrix<T>? left, Matrix<T>? right)
+	{
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() == right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left == right[0, 0].GetValue(),
+			_ => left is Matrix<T> l && right is Matrix<T> r && Equals(ToMatrix(l), ToMatrix(r))
+		};
+	}
 	public static bool operator !=(Matrix<T>? left, Matrix<T>? right) => !(left == right);
 	public static bool operator ==(Matrix<T>? left, T? right)
 	{
@@ -228,7 +236,7 @@ public class Matrix<T> :
 	public static bool operator !=(T? left, Matrix<T>? right) => right != left;
 	public static Matrix<T> operator +(Matrix<T> value) => value;
 	public static Matrix<T> operator -(Matrix<T> value) => MatrixOperations<T>.Scale(ToMatrix(value), -T.MultiplicativeIdentity);
-	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)  // TODO: Computing with identity matrix is not correct
+	public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)
 	{
 		return (left, right) switch
 		{
@@ -264,6 +272,15 @@ public class Matrix<T> :
 			_ => MatrixOperations<T>.InverseProduct(ToMatrix(left), ToMatrix(right))
 		};
 	}
+	public static Matrix<T> operator %(Matrix<T> left, Matrix<T> right)
+	{
+		return (left, right) switch
+		{
+			(Matrix<T>, Matrix<T>) when left.Rows == 1 && left.Columns == 1 => left[0, 0].GetValue() % right,
+			(Matrix<T>, Matrix<T>) when right.Rows == 1 && right.Columns == 1 => left % right[0, 0].GetValue(),
+			_ => MatrixOperations<T>.InverseProduct(ToMatrix(left), ToMatrix(right))
+		};
+	}
 	public static Matrix<T> operator +(Matrix<T> left, T right)
 	{
 		return MatrixOperations<T>.Add(ToMatrix(left), MatrixOperations<T>.Full(left.Rows, left.Columns, right));
@@ -274,10 +291,18 @@ public class Matrix<T> :
 	}
 	public static Matrix<T> operator *(Matrix<T> left, T right) => MatrixOperations<T>.Scale(ToMatrix(left), right);
 	public static Matrix<T> operator /(Matrix<T> left, T right) => MatrixOperations<T>.Scale(ToMatrix(left), T.MultiplicativeIdentity / right);
+	public static Matrix<T> operator %(Matrix<T> left, T right)
+	{
+		return MatrixOperations<T>.Modulo(ToMatrix(left), MatrixOperations<T>.Full(left.Rows, left.Columns, right));
+	}
 	public static Matrix<T> operator +(T left, Matrix<T> right) => right + left;
 	public static Matrix<T> operator -(T left, Matrix<T> right) => (-right) + left;
 	public static Matrix<T> operator *(T left, Matrix<T> right) => right * left;
 	public static Matrix<T> operator /(T left, Matrix<T> right) => MatrixOperations<T>.Scale(MatrixOperations<T>.Inverse(ToMatrix(right)), left);
+	public static Matrix<T> operator %(T left, Matrix<T> right)
+	{
+		return MatrixOperations<T>.Modulo(MatrixOperations<T>.Full(right.Rows, right.Columns, left), ToMatrix(right));
+	}
 
 	#endregion
 }

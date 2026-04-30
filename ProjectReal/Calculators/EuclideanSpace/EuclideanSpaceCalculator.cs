@@ -21,6 +21,7 @@ where T :
 	ISubtractionOperators<T, T, T>,
 	IMultiplyOperators<T, T, T>,
 	IDivisionOperators<T, T, T>,
+	IModulusOperators<T, T, T>,
 	IPowerOperations<T, T, T>,
 	IRootOperations<T, T, T>,
 	IAdditiveIdentity<T, T>,
@@ -56,6 +57,7 @@ where T :
 			new(SubtractRegex(), _ => new Subtract<Matrix<T>>()),
 			new(MultiplyRegex(), _ => new Multiply<Matrix<T>>()),
 			new(DivideRegex(), _ => new Divide<Matrix<T>>()),
+			new(ModuloRegex(), _ => new Modulo<Matrix<T>>()),
 			// Separators
 			new(OpeningParenthesisRegex(), _ => new OpeningParenthesis()),
 			new(ClosingParenthesisRegex(), _ => new ClosingParenthesis<Matrix<T>>()),

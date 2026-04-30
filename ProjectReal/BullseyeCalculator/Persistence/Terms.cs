@@ -1,7 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 
-namespace BullseyeCalculator.Model;
+namespace BullseyeCalculator.Persistence;
 
 /// <summary>
 /// Represents a pi value in an expression.
