@@ -7,7 +7,7 @@ namespace Calculators.Polynomials;
 /// Contains methods for basic operations with the Cartesian 2D coordinate system.
 /// </summary>
 /// <typeparam name="T">The type to calculate with.</typeparam>
-public class CoordinateSystem<T>
+public static class CoordinateSystem<T>
 where T : 
 	IMultiplicativeIdentity<T, T>,
 	IAdditionOperators<T, T, T>,

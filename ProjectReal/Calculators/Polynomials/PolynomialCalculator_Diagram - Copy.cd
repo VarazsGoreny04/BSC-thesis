@@ -133,5 +133,47 @@
       <FileName>BinaryOperators.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Calculators.Polynomials.Point&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Polynomials\Point.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Polynomials.Point2D&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAwAESAAAAAAAAAIBAAAAAAAAAYiA=</HashCode>
+      <FileName>Polynomials\Point.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Polynomials.Point3D&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAwAESAAAAAAAAAIBAAAAAAAAAAAE=</HashCode>
+      <FileName>Polynomials\Point.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Polynomials.Interpolation&lt;T&gt;" Collapsed="true">
+    <Position X="4.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAACAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Polynomials\Interpolation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Polynomials.CoordinateSystem&lt;T&gt;" Collapsed="true">
+    <Position X="7.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Polynomials\CoordinateSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Calculators.Polynomials.Polynomial&lt;T&gt;">
+    <Position X="9.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAgAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Polynomials\Polynomial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -114,15 +114,6 @@ public class CalculatorViewModel : ViewModelBase
 
 	#endregion
 
-	#region Events
-
-	public event EventHandler<ParamEventArgs>? PushInputEvent;
-	public event EventHandler? PopInputEvent;
-	public event EventHandler? ClearInputEvent;
-	public event EventHandler? EvaluateEvent;
-
-	#endregion
-
 	#region Constructors
 
 	public CalculatorViewModel()
@@ -142,17 +133,10 @@ public class CalculatorViewModel : ViewModelBase
 
 		CurrentMode = Mode.Standard;
 
-		PushInputEvent += new EventHandler<ParamEventArgs>(
-			(_, e) => model.PushInput(e.Param?.ToString() ?? throw new FormatException("Input format is invalid!"))
-		);
-		PopInputEvent += new EventHandler((_, _) => model.PopInput());
-		ClearInputEvent += new EventHandler((_, _) => model.ClearInput());
-		EvaluateEvent += new EventHandler((_, _) => model.Evaluate());
-
-		PushInputCommand = new DelegateCommand(param => PushInputEvent?.Invoke(this, new ParamEventArgs(param)));
-		PopInputCommand = new DelegateCommand(_ => PopInputEvent?.Invoke(this, EventArgs.Empty));
-		ClearInputCommand = new DelegateCommand(_ => ClearInputEvent?.Invoke(this, EventArgs.Empty));
-		EvaluateCommand = new DelegateCommand(_ => EvaluateEvent?.Invoke(this, EventArgs.Empty));
+		PushInputCommand = new DelegateCommand(param => model.PushInput(param?.ToString() ?? throw new FormatException("Input format is invalid!")));
+		PopInputCommand = new DelegateCommand(_ => model.PopInput());
+		ClearInputCommand = new DelegateCommand(_ => model.ClearInput());
+		EvaluateCommand = new DelegateCommand(_ => model.Evaluate());
 
 		ShowStepsCommand = new DelegateCommand(_ => ShowSteps = !showSteps);
 		ShowOptionsCommand = new DelegateCommand(_ => ShowOptions = !showOptions);

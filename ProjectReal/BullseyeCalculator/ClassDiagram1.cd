@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BullseyeCalculator.Persistence.CalculatorData">
+    <Position X="1.75" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAKAAAAKgBAACAAUAEQEBCBAAAEAgAAAAAIA=</HashCode>
+      <FileName>Persistence\CalculatorData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BullseyeCalculator.Model.CalculatorModel">
+    <Position X="4.75" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAEAAAAEAEAARAAAIEAgAQACAQABAAAIAQEAAAAEA=</HashCode>
+      <FileName>Model\CalculatorModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="BullseyeCalculator.Persistence.Mode">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAgAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Persistence\Mode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
