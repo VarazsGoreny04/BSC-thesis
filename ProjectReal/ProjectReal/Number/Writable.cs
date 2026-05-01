@@ -380,7 +380,7 @@ public class Writable :
 			(Writable rootValue, Writable rootRemainder) = Root(left, right.Value, (fractionCalculationLength ?? FractionCalculationLength) + 1);
 			(Writable divisionValue, Writable divisionRemainder) = Divide(Digit.ONE, rootValue, fractionCalculationLength);
 
-			return (divisionValue, Digit.ZERO /*rootRemainder + Power(divisionRemainder, right).Value*/); // TODO
+			return (divisionValue, Digit.ZERO);
 		}
 
 		(Positive value, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);

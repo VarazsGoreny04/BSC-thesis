@@ -13,9 +13,6 @@
     <Page Update="Resources\ListViewStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\ExpanderStyle.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Resources\LabelStyle.xaml">
       <SubType>Designer</SubType>
     </Page>

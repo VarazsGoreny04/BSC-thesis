@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Calculators.Polynomials;
+namespace Calculators.Interpolation;
 
 /// <summary>
 /// Contains methods for basic operations with the Cartesian 2D coordinate system.

@@ -28,7 +28,7 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void StringConstructor() // Leading zero is not tested
+	public void StringConstructor()
 	{
 		Assert.ThrowsException<NullReferenceException>(() => new Natural((null as string)!));
 
@@ -53,7 +53,7 @@ public class NaturalTest
 	}
 
 	[TestMethod]
-	public void DigitConstructor() // Leading zero is not tested
+	public void DigitConstructor()
 	{
 		Digit[] nullArray = null!;
 		Assert.ThrowsException<NullReferenceException>(() => new Natural(nullArray));

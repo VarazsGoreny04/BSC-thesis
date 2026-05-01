@@ -1,6 +1,6 @@
 ﻿using Calculators;
 using Calculators.EuclideanSpace;
-using Calculators.Polynomials;
+using Calculators.Interpolation;
 using Calculators.Standard;
 using ProjectReal.Number;
 using System;
@@ -18,7 +18,7 @@ public class CalculatorData
 
 	internal readonly StandardCalculator<Rational> standardCalculator;
 	internal readonly EuclideanSpaceCalculator<Rational> euclideanSpaceCalculator;
-	internal readonly PolynomialCalculator<Rational> polynomialCalculator;
+	internal readonly InterpolationCalculator<Rational> interpolationCalculator;
 
 	internal Mode mode;
 	internal Calculator calculator;
@@ -75,7 +75,7 @@ public class CalculatorData
 
 		standardCalculator = new StandardCalculator<Rational>(standardFunctionTokens);
 		euclideanSpaceCalculator = new EuclideanSpaceCalculator<Rational>(euclideanSpaceFunctionTokens, standardCalculator);
-		polynomialCalculator = new PolynomialCalculator<Rational>(standardCalculator);
+		interpolationCalculator = new InterpolationCalculator<Rational>(standardCalculator);
 		
 		mode = Mode.Standard;
 		calculator = standardCalculator;
@@ -97,7 +97,7 @@ public class CalculatorData
 		{
 			Mode.Standard => standardCalculator,
 			Mode.Matrix => euclideanSpaceCalculator,
-			Mode.Interpolation => polynomialCalculator,
+			Mode.Interpolation => interpolationCalculator,
 			_ => throw new NotImplementedException("No corresponding calculator found for this mode!")
 		};
 	}

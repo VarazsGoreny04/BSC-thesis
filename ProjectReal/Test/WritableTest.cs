@@ -307,7 +307,6 @@ public class WritableTest
 				length = Math.Min(whole.ToString().Length, item.Pow.Length);
 
 				Assert.AreEqual((new Writable(item.Pow)).ToString()[..length], whole.ToString()[..length]);
-				//Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
 			}
 		}
 	}

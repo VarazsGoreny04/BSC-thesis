@@ -3,7 +3,7 @@ using ProjectReal.NumberSet;
 using System;
 using System.Numerics;
 
-namespace Calculators.Polynomials;
+namespace Calculators.Interpolation;
 
 /// <summary>
 /// Contains methods for interpolation.

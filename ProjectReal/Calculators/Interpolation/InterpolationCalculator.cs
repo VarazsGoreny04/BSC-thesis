@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-namespace Calculators.Polynomials;
+namespace Calculators.Interpolation;
 
 /// <summary>
 /// A calculator that understands 2×N matrices as (X, Y) coordinate pairs and can perform interpolations with them.
 /// </summary>
 /// <typeparam name="T">The type to calculate with.</typeparam>
-public partial class PolynomialCalculator<T> : Calculator
+public partial class InterpolationCalculator<T> : Calculator
 where T :
 	IComparisonOperators<T, T, bool>,
 	IEqualityOperators<T, T, bool>,
@@ -47,7 +47,7 @@ where T :
 	/// <summary>
 	/// Constructs a calculator that is capable of doing interpolations.
 	/// </summary>
-	public PolynomialCalculator(StandardCalculator<T> standardCalculator) : base(
+	public InterpolationCalculator(StandardCalculator<T> standardCalculator) : base(
 		[
 			// Matrix
 			new(BracketedRegex(), match => new MatrixHolder<T>(new Matrix<T>(match[1..^1], standardCalculator)))

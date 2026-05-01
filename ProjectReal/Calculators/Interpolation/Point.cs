@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 
-namespace Calculators.Polynomials;
+namespace Calculators.Interpolation;
 
 /// <summary>
 /// Represents a point in the coordinate system.

@@ -5,8 +5,20 @@ namespace BullseyeCalculator.WPF.ViewModel;
 
 public class DelegateCommand : ICommand
 {
+	#region Fields
+
 	private readonly Action<object?> _execute;
 	private readonly Func<object?, bool>? _canExecute;
+
+	#endregion
+
+	#region Events
+
+	public event EventHandler? CanExecuteChanged;
+
+	#endregion
+
+	#region Constructors
 
 	public DelegateCommand(Action<object?> execute) : this(null, execute) { }
 
@@ -16,7 +28,9 @@ public class DelegateCommand : ICommand
 		_canExecute = canExecute;
 	}
 
-	public event EventHandler? CanExecuteChanged;
+	#endregion
+
+	#region Public methods
 
 	public bool CanExecute(object? parameter) => _canExecute is null || _canExecute(parameter);
 
@@ -29,4 +43,6 @@ public class DelegateCommand : ICommand
 	}
 
 	public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+	#endregion
 }

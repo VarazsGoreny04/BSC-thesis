@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Calculators.Polynomials;
+namespace Calculators.Interpolation;
 
 /// <summary>
 /// Contains methods for basic operations with polynomials.
