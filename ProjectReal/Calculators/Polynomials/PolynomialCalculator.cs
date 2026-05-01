@@ -104,7 +104,7 @@ where T :
 			result.Add(($"l({i})", Polynomial<T>.ToString(lagrangeBasisPolynomial)));
 		}
 
-		result.Add(($"L=∑{{k=0..{points.Length}}}y(k)l(k)", Polynomial<T>.ToString(Interpolation<T>.Lagrange(points, [.. lagrangeBasisPolynomials]))));
+		result.Add(($"L=∑{{k=0..{points.Length - 1}}}y(k)l(k)", Polynomial<T>.ToString(Interpolation<T>.Lagrange(points, [.. lagrangeBasisPolynomials]))));
 
 		return result;
 	}
