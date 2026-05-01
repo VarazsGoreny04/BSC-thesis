@@ -1,0 +1,349 @@
+﻿using ProjectReal.Number;
+using System;
+
+namespace ProjectRealTest;
+
+[TestClass]
+public class WritableTest
+{
+	private const int FRACTION_CALCULATION_LENGTH = 10;
+
+	private readonly int fractionCalculationLength;
+	private readonly bool writeSign;
+
+	public WritableTest()
+	{
+		fractionCalculationLength = Writable.FractionCalculationLength;
+		writeSign = Writable.WriteSign;
+
+		Writable.FractionCalculationLength = FRACTION_CALCULATION_LENGTH;
+		Writable.WriteSign = true;
+	}
+
+	[TestCleanup()]
+	public void CleanUp()
+	{
+		Writable.FractionCalculationLength = fractionCalculationLength;
+		Writable.WriteSign = writeSign;
+	}
+
+	private static bool Sign(string sign)
+	{
+		return sign[0] switch
+		{
+			'-' => (new Positive(sign.Replace("+", "").Replace("-", ""))).IsZero,
+			_ => true
+		};
+	}
+
+	[TestMethod]
+	public void ZeroConstructor()
+	{
+		Writable empty = new();
+
+		Writable[] zeros =
+		[
+			new("0"),
+			new("00"),
+			new("0."),
+			new("00."),
+			new("0.0"),
+			new("0.00"),
+			new("00.0"),
+			new("00.00"),
+			new("+0"),
+			new("+00"),
+			new("+0."),
+			new("+00."),
+			new("+0.0"),
+			new("+0.00"),
+			new("+00.0"),
+			new("+00.00"),
+			new(true, new("0")),
+			new(true, new("00")),
+			new(true, new("0.0")),
+			new(true, new("0.00")),
+			new(true, new("00.0")),
+			new(true, new("00.00")),
+			new("-0"),
+			new("-00"),
+			new("-0."),
+			new("-00."),
+			new("-0.0"),
+			new("-0.00"),
+			new("-00.0"),
+			new("-00.00"),
+			new(false, new("0")),
+			new(false, new("00")),
+			new(false, new("0.0")),
+			new(false, new("0.00")),
+			new(false, new("00.0")),
+			new(false, new("00.00"))
+		];
+
+		foreach (Writable zero in zeros)
+			Assert.AreEqual(empty, zero);
+	}
+
+	[TestMethod]
+	public void StringConstructor()
+	{
+		Assert.ThrowsException<NullReferenceException>(() => new Writable(null!));
+
+		string[] tests =
+		[
+			"", "+", "-", ".", "+.", "-.",
+			".123", "+.123", "-.123",
+			"a123", "123a", "12a3"
+		];
+
+		for (int j = 0; j < tests.Length; ++j)
+			Assert.ThrowsException<ArgumentException>(() => new Writable(tests[j]));
+
+		tests = ["a123", "123a", "12a3"];
+
+		for (int i = tests[0].Length; i > 0; --i)
+		{
+			for (int j = 0; j < tests.Length; ++j)
+				Assert.ThrowsException<ArgumentException>(() => new Writable(tests[j].Insert(i, ".")));
+		}
+
+		Writable number1, number2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
+
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			Assert.AreEqual((new Positive(item.Number1.Replace("+", "").Replace("-", ""))).ToString(), number1.Value.ToString());
+
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void PositiveConstructor()
+	{
+		Positive positive1, positive2;
+		Writable number1, number2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
+			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
+
+			number1 = new(Sign(item.Number1), positive1);
+			number2 = new(Sign(item.Number2), positive2);
+
+			Assert.AreEqual(Sign(item.Number1), number1.Sign);
+			Assert.AreEqual((new Positive(item.Number1.Replace("+", "").Replace("-", ""))).ToString(), number1.Value.ToString());
+
+			Assert.AreEqual(Sign(item.Number2), number2.Sign);
+			Assert.AreEqual((new Positive(item.Number2.Replace("+", "").Replace("-", ""))).ToString(), number2.Value.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void ToStringMethod()
+	{
+		Positive positive1, positive2;
+		Writable number1, number2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			positive1 = new(item.Number1.Replace("+", "").Replace("-", ""));
+			positive2 = new(item.Number2.Replace("+", "").Replace("-", ""));
+
+			number1 = new(item.Number1);
+			number2 = new(item.Number2);
+
+			Assert.AreEqual(positive1.IsZero ? "+0" : $"{(Sign(item.Number1) ? '+' : '-')}{positive1}", number1.ToString());
+			Assert.AreEqual(positive2.IsZero ? "+0" : $"{(Sign(item.Number2) ? '+' : '-')}{positive2}", number2.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void EqualsMethod()
+	{
+		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
+
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Positive(item.Number2.Replace("+", "").Replace("-", "")));
+
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
+
+			Assert.AreEqual(item.Equal, numberDigits1 == numberDigits2);
+			Assert.AreEqual(numberDigits1 == numberDigits2, numberDigits2 == numberDigits1);
+		}
+	}
+
+	[TestMethod]
+	public void GreaterThanMethod()
+	{
+		Writable numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			numberCharacters1 = new(item.Number1);
+			numberDigits1 = new(Sign(item.Number1), new Positive(item.Number1.Replace("+", "").Replace("-", "")));
+
+			numberCharacters2 = new(item.Number2);
+			numberDigits2 = new(Sign(item.Number2), new Positive(item.Number2.Replace("+", "").Replace("-", "")));
+
+			Assert.AreEqual(numberCharacters1, numberDigits1);
+			Assert.AreEqual(numberCharacters2, numberDigits2);
+
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberCharacters1, numberCharacters2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberDigits1, numberDigits2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberCharacters1, numberDigits2));
+			Assert.AreEqual(item.Greater, Writable.GreaterThan(numberDigits1, numberCharacters2));
+		}
+	}
+
+
+	[TestMethod]
+	public void AddMethod()
+	{
+		Writable writable1, writable2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			Assert.AreEqual(item.Add, Writable.Add(writable1, writable2).ToString());
+		}
+	}
+
+	[TestMethod]
+	public void SubtractMethod()
+	{
+		Writable writable1, writable2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			Assert.AreEqual(item.Sub, Writable.Subtract(writable1, writable2).ToString());
+		}
+	}
+
+	[TestMethod]
+	public void MultiplyMethod()
+	{
+		Writable writable1, writable2;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			Assert.AreEqual(item.Mul, Writable.Multiply(writable1, writable2).ToString());
+		}
+	}
+
+	[TestMethod]
+	public void DivideMethod()
+	{
+		int length;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			if (item.Div == "ERROR")
+				Assert.ThrowsException<DivideByZeroException>(() => Writable.Divide(writable1, writable2));
+			else if (item.Div != "BIG")
+			{
+				(whole, remainder) = Writable.Divide(writable1, writable2, FRACTION_CALCULATION_LENGTH);
+
+				length = Math.Min(whole.ToString().Length, item.Div.Length);
+
+				Assert.AreEqual((new Writable(item.Div)).ToString()[..length], whole.ToString()[..length]);
+				Assert.AreEqual(writable1.ToString(), ((whole * item.Number2) + remainder).ToString());
+			}
+		}
+	}
+
+	[TestMethod]
+	public void PowerMethod()
+	{
+		int length;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			if (item.Pow == "ERROR")
+			{
+				try
+				{
+					(whole, remainder) = Writable.Power(writable1, writable2);
+					throw new Exception($"({writable1})^({writable2}) did not fail!");
+				}
+				catch (Exception e)
+				{
+					if (!(e is NotImplementedException or NotSupportedException))
+						Assert.Fail(e.Message);
+				}
+			}
+			else if (item.Pow != "BIG")
+			{
+				(whole, remainder) = Writable.Power(writable1, writable2, FRACTION_CALCULATION_LENGTH);
+
+				length = Math.Min(whole.ToString().Length, item.Pow.Length);
+
+				Assert.AreEqual((new Writable(item.Pow)).ToString()[..length], whole.ToString()[..length]);
+			}
+		}
+	}
+
+	[TestMethod]
+	public void RootMethod()
+	{
+		int length;
+		Writable writable1, writable2, whole, remainder;
+
+		foreach (WritableTestCase item in WritableTestCases.List)
+		{
+			writable1 = new(item.Number1);
+			writable2 = new(item.Number2);
+
+			if (item.Root == "ERROR")
+			{
+				try
+				{
+					Writable.Root(writable1, writable2);
+					throw new Exception($"({writable2})^({writable1}) did not fail!");
+				}
+				catch (Exception e)
+				{
+					if (!(e is ArgumentException or DivideByZeroException or NotSupportedException))
+						Assert.Fail(e.Message);
+				}
+			}
+			else if (item.Root != "BIG")
+			{
+				(whole, remainder) = Writable.Root(writable1, writable2, FRACTION_CALCULATION_LENGTH);
+
+				length = Math.Min(whole.ToString().Length, item.Root.Length);
+
+				Assert.AreEqual((new Writable(item.Root)).ToString()[..length], whole.ToString()[..length]);
+				Assert.AreEqual(writable1.ToString(), ((whole ^ item.Number2) + remainder).ToString());
+			}
+		}
+	}
+}

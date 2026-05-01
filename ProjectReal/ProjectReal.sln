@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectReal", "ProjectReal\ProjectReal.csproj", "{10CEED69-B8FD-4F7B-B3EE-F2C85FBE5E05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectRealTest", "Test\ProjectRealTest.csproj", "{5A92210A-3999-496E-996E-A02177707F23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectRealTest", "ProjectRealTest\ProjectRealTest.csproj", "{5A92210A-3999-496E-996E-A02177707F23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullseyeCalculator.WPF", "BullseyeCalculator.WPF\BullseyeCalculator.WPF.csproj", "{F7B49D79-944F-45E5-81BC-0A2DA825B178}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculators", "Calculators\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullseyeCalculator", "BullseyeCalculator\BullseyeCalculator.csproj", "{E6B648EC-BAD1-46DD-82CF-19D554649FBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorsTest", "CalculatorTests\CalculatorsTest.csproj", "{88CA88B7-3C17-4518-9130-ABBA3B289B42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorsTest", "CalculatorsTest\CalculatorsTest.csproj", "{88CA88B7-3C17-4518-9130-ABBA3B289B42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
