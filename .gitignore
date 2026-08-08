@@ -14,3 +14,5 @@ TestResults/
 .vscode/
 
 x64/
+
+~($)*.docx
