@@ -69,12 +69,10 @@ public readonly struct Digit :
 	/// <exception cref="ArgumentOutOfRangeException"><paramref name="character"/> must be a number character.</exception>
 	public Digit(char character)
 	{
-		sbyte number = (sbyte)(character - '0');
-
-		if (number is < 0 or > 9)
+		if (!char.IsDigit(character))
 			throw new ArgumentOutOfRangeException(nameof(character), character, "The given parameter must be a number character!");
 
-		bits = (byte)number;
+		bits = (byte)(character - '0');
 	}
 
 	/// <summary>
