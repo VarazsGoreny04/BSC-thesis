@@ -16,8 +16,8 @@ public class NaturalTest
 		[
 			new("0"),
 			new("00"),
-			new([Digit.ZERO]),
-			new([Digit.ZERO, Digit.ZERO])
+			new([0]),
+			new([0, 0])
 		];
 
 		foreach (Natural zero in zeros)
@@ -55,22 +55,22 @@ public class NaturalTest
 	[TestMethod]
 	public void DigitConstructor()
 	{
-		Digit[] nullArray = null!;
+		byte[] nullArray = null!;
 		Assert.ThrowsException<NullReferenceException>(() => new Natural(nullArray));
 		Assert.ThrowsException<ArgumentException>(() => new Natural([]));
 
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Natural number1, number2;
 
 		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
-			digits1 = new Digit[item.Number1.Length];
+			digits1 = new byte[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
-				digits1[^(j + 1)] = new Digit(item.Number1[j]);
+				digits1[^(j + 1)] = Digit.Create(item.Number1[j]);
 
-			digits2 = new Digit[item.Number2.Length];
+			digits2 = new byte[item.Number2.Length];
 			for (int j = item.Number2.Length - 1; j >= 0; --j)
-				digits2[^(j + 1)] = new Digit(item.Number2[j]);
+				digits2[^(j + 1)] = Digit.Create(item.Number2[j]);
 
 			number1 = new(digits1);
 			number2 = new(digits2);
@@ -101,21 +101,21 @@ public class NaturalTest
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
-			digits1 = new Digit[item.Number1.Length];
+			digits1 = new byte[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(item.Number1[^(j + 1)]);
+				digits1[j] = Digit.Create(item.Number1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(digits1);
 
-			digits2 = new Digit[item.Number2.Length];
+			digits2 = new byte[item.Number2.Length];
 			for (int j = item.Number2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(item.Number2[^(j + 1)]);
+				digits2[j] = Digit.Create(item.Number2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(digits2);
@@ -131,21 +131,21 @@ public class NaturalTest
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Natural numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (NaturalTestCase item in NaturalTestCases.List)
 		{
-			digits1 = new Digit[item.Number1.Length];
+			digits1 = new byte[item.Number1.Length];
 			for (int j = item.Number1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(item.Number1[^(j + 1)]);
+				digits1[j] = Digit.Create(item.Number1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(item.Number1);
 
-			digits2 = new Digit[item.Number2.Length];
+			digits2 = new byte[item.Number2.Length];
 			for (int j = item.Number2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(item.Number2[^(j + 1)]);
+				digits2[j] = Digit.Create(item.Number2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(item.Number2);

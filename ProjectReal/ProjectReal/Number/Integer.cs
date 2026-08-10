@@ -38,9 +38,9 @@ public class Integer :
 
 	#region Properties
 
-	public static Integer AdditiveIdentity => Digit.ZERO;
+	public static Integer AdditiveIdentity => 0;
 
-	public static Integer MultiplicativeIdentity => Digit.ONE;
+	public static Integer MultiplicativeIdentity => 1;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
@@ -70,11 +70,11 @@ public class Integer :
 	public Natural Value => value;
 
 	/// <returns>The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Integer"/>.</returns>
-	public ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<byte> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
-	public Digit this[Index index] => value.Digits[index];
+	public byte this[Index index] => value.Digits[index];
 
 	#endregion
 
@@ -134,7 +134,7 @@ public class Integer :
 	/// <summary>
 	/// Constructs a <see cref="Positive"/> by the given <see cref="Digit"/>.
 	/// </summary>
-	public Integer(Digit value) : this(true, value) { }
+	public Integer(byte value) : this(true, value) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Positive"/> by the given <see cref="Natural"/>.
@@ -298,10 +298,10 @@ public class Integer :
 	/// </exception>
 	public static Integer Power(Integer left, Integer right)
 	{
-		bool sign = left.sign || right[0] % Digit.TWO == Digit.ZERO;
+		bool sign = left.sign || right[0] % 2 == 0;
 
 		if (!right.sign)
-			return left.Length == 1 && left[0] == Digit.ONE ? new Integer(sign, left.value) : Digit.ZERO;
+			return left.Length == 1 && left[0] == 1 ? new Integer(sign, left.value) : 0;
 
 		return new Integer(sign, left.value ^ right.value);
 	}
@@ -331,13 +331,13 @@ public class Integer :
 	/// <exception cref="NotSupportedException"><paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Integer Whole, Integer Remainder) Root(Integer left, Integer right)
 	{
-		if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+		if (!left.sign && right[0] % 2 == 0)
 			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
 		if (!right.sign)
 		{
-			return left.Length == 1 && left[0] == Digit.ONE ? (new Integer(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value), Digit.ZERO) :
-				(Digit.ZERO, left);
+			return left.Length == 1 && left[0] == 1 ? (new Integer(left.sign || right[0] % 2 == 0, left.value), 0) :
+				(0, left);
 		}
 
 		(Natural naturalWhole, Natural naturalRemainder) = Natural.Root(left.value, right.value);
@@ -369,7 +369,7 @@ public class Integer :
 
 	public static implicit operator Integer(char value) => new(value.ToString());
 	public static implicit operator Integer(string value) => new(value);
-	public static implicit operator Integer(Digit value) => new(value);
+	public static implicit operator Integer(byte value) => new(value);
 	public static implicit operator Integer(Natural value) => new(value);
 	public static bool operator ==(Integer? left, Integer? right) => left is Integer l && right is Integer r && Equals(l, r);
 	public static bool operator !=(Integer? left, Integer? right) => !(left == right);
@@ -379,8 +379,8 @@ public class Integer :
 	public static bool operator <=(Integer left, Integer right) => !GreaterThan(left, right);
 	public static Integer operator +(Integer value) => value;
 	public static Integer operator -(Integer value) => new(!value.sign, value.value);
-	public static Integer operator ++(Integer value) => Add(value, Digit.ONE);
-	public static Integer operator --(Integer value) => Subtract(value, Digit.ONE);
+	public static Integer operator ++(Integer value) => Add(value, 1);
+	public static Integer operator --(Integer value) => Subtract(value, 1);
 	public static Integer operator +(Integer left, Integer right) => Add(left, right);
 	public static Integer operator -(Integer left, Integer right) => Subtract(left, right);
 	public static Integer operator *(Integer left, Integer right) => Multiply(left, right);

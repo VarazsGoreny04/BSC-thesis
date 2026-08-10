@@ -38,9 +38,9 @@ public class Positive :
 
 	#region Properties
 
-	public static Positive AdditiveIdentity => Digit.ZERO;
+	public static Positive AdditiveIdentity => 0;
 
-	public static Positive MultiplicativeIdentity => Digit.ONE;
+	public static Positive MultiplicativeIdentity => 1;
 
 	/// <returns>The character the <see cref="ToString"/> method uses as separator.</returns>
 	public static char Separator => separator;
@@ -76,11 +76,11 @@ public class Positive :
 	/// <returns>
 	/// The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Positive"/> without indicating the decimal separator.
 	/// </returns>
-	public ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<byte> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
-	public Digit this[Index index] => value.Digits[index];
+	public byte this[Index index] => value.Digits[index];
 
 	#endregion
 
@@ -149,7 +149,7 @@ public class Positive :
 		{
 			int i = 0;
 
-			while (i < Math.Min(fractionLength, value.Length) && value[i] == Digit.ZERO) { ++i; }
+			while (i < Math.Min(fractionLength, value.Length) && value[i] == 0) { ++i; }
 
 			this.value = new Natural([.. value.Digits[i..]]);
 			this.fractionLength = fractionLength - i;
@@ -160,7 +160,7 @@ public class Positive :
 	/// <summary>
 	/// Constructs a <see cref="Positive"/> by the given <see cref="Digit"/>.
 	/// </summary>
-	public Positive(Digit value) : this(value, 0) { }
+	public Positive(byte value) : this(value, 0) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Positive"/> by the given <see cref="Natural"/>.
@@ -180,7 +180,7 @@ public class Positive :
 	{
 		int i = 0;
 
-		while (i < Math.Min(value.fractionLength, value.Digits.Length) && value[i] == Digit.ZERO) { ++i; }
+		while (i < Math.Min(value.fractionLength, value.Digits.Length) && value[i] == 0) { ++i; }
 
 		return i > 0 ? new Positive(new Natural([.. value.Digits[i..]]), value.fractionLength - i) : value;
 	}
@@ -246,14 +246,14 @@ public class Positive :
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> instance.</param>
 	/// <returns>The whole part of the given <see cref="Positive"/> instance plus one if it was not whole.</returns>
-	public static Natural RoundUp(Positive value) => value.fractionLength > 0 ? RoundDown(value) + Digit.ONE : RoundDown(value);
+	public static Natural RoundUp(Positive value) => value.fractionLength > 0 ? RoundDown(value) + 1 : RoundDown(value);
 
 	/// <summary>
 	/// Rounds the given <see cref="Positive"/> instance to the nearest number.
 	/// </summary>
 	/// <param name="value">The <see cref="Positive"/> instance.</param>
 	/// <returns>The rounded value of the given <see cref="Positive"/> instance.</returns>
-	public static Natural Round(Positive value) => value.fractionLength > 0 && value.Digits[value.fractionLength - 1] > Digit.FOUR ? RoundUp(value) : RoundDown(value);
+	public static Natural Round(Positive value) => value.fractionLength > 0 && value.Digits[value.fractionLength - 1] > 4 ? RoundUp(value) : RoundDown(value);
 
 	/// <summary>
 	/// Compares two <see cref="Positive"/>s.
@@ -283,7 +283,7 @@ public class Positive :
 			return left.value > right.value;
 		else
 		{
-			Digit[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
+			byte[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
 
 			return left.fractionLength < right.fractionLength ? new Natural([.. splicing, .. left.Digits]) > right.Value :
 				left.Value > new Natural([.. splicing, .. right.Digits]);
@@ -315,7 +315,7 @@ public class Positive :
 	public static (bool Swap, Positive Value) Subtract(Positive left, Positive right)
 	{
 		int maxFractionLength = Math.Max(left.fractionLength, right.fractionLength);
-		Digit[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
+		byte[] splicing = Digit.CreateArray(Math.Abs(left.fractionLength - right.fractionLength));
 
 		(bool swap, Natural result) = left.fractionLength < right.fractionLength ? Natural.Subtract(new Natural([.. splicing, .. left.Digits]), right.value) :
 			Natural.Subtract(left.value, new Natural([.. splicing, .. right.Digits]));
@@ -386,7 +386,7 @@ public class Positive :
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Positive Value, Positive Remainder) SquareRoot(Positive value, int? fractionCalculationLength = null)
 	{
-		if (value.IsZero || value == Digit.ONE)
+		if (value.IsZero || value == 1)
 			return (value, new Positive());
 
 		int fCL = Math.Max(fractionCalculationLength ?? Positive.fractionCalculationLength, 0);
@@ -397,7 +397,7 @@ public class Positive :
 		int zeroCalculationLength = Math.Max((fCL * 2 - (value.fractionLength + splicingLength)) / 2, 0);
 		for (int i = 0; i < zeroCalculationLength; ++i)
 		{
-			remainder = new Natural([Digit.ZERO, Digit.ZERO, .. remainder.Digits]);
+			remainder = new Natural([0, 0, .. remainder.Digits]);
 
 			(root, remainder) = Natural.CalculateTwoRootDigits(root, remainder);
 		}
@@ -422,18 +422,18 @@ public class Positive :
 	{
 		if (right.fractionLength != 0)
 			throw new NotSupportedException("This type does not support fractional degrees!");
-		else if (right.value < Digit.THREE)
+		else if (right.value < 3)
 		{
-			return Digit.ToChar(right[0]) switch
+			return right[0] switch
 			{
-				'0' => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
-				'1' => (left, Digit.ZERO),
+				0 => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
+				1 => (left, 0),
 				_ => SquareRoot(left)
 			};
 		}
 
-		if (left.IsZero || left == Digit.ONE)
-			return (left, Digit.ZERO);
+		if (left.IsZero || left == 1)
+			return (left, 0);
 
 		Natural degree = right.Value;
 		int degreeInt = (int)Natural.ToUInt32(degree);
@@ -479,7 +479,7 @@ public class Positive :
 	#region Operators
 
 	public static implicit operator Positive(string value) => new(value);
-	public static implicit operator Positive(Digit value) => new(value);
+	public static implicit operator Positive(byte value) => new(value);
 	public static implicit operator Positive(Natural value) => new(value);
 	public static bool operator ==(Positive? left, Positive? right) => left is Positive l && right is Positive r && Equals(l, r);
 	public static bool operator !=(Positive? left, Positive? right) => !(left == right);
@@ -487,8 +487,8 @@ public class Positive :
 	public static bool operator <(Positive left, Positive right) => GreaterThan(right, left);
 	public static bool operator >=(Positive left, Positive right) => !GreaterThan(right, left);
 	public static bool operator <=(Positive left, Positive right) => !GreaterThan(left, right);
-	public static Positive operator ++(Positive value) => Add(value, Digit.ONE);
-	public static Positive operator --(Positive value) => Subtract(value, Digit.ONE).Value;
+	public static Positive operator ++(Positive value) => Add(value, 1);
+	public static Positive operator --(Positive value) => Subtract(value, 1).Value;
 	public static Positive operator +(Positive left, Positive right) => Add(left, right);
 	public static Positive operator -(Positive left, Positive right) => Subtract(left, right).Value;
 	public static Positive operator *(Positive left, Positive right) => Multiply(left, right);

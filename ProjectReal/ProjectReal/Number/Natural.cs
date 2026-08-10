@@ -30,17 +30,17 @@ public class Natural :
 
 	private readonly int length;
 	private readonly bool isZero;
-	private readonly ImmutableArray<Digit> digits;
+	private readonly ImmutableArray<byte> digits;
 
 	#endregion
 
 	#region Properties
 
-	public static Natural AdditiveIdentity => Digit.ZERO;
+	public static Natural AdditiveIdentity => 0;
 
-	public static Natural MultiplicativeIdentity => Digit.ONE;
+	public static Natural MultiplicativeIdentity => 1;
 
-	/// <returns>The number of <see cref="Digit"/>s used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
+	/// <returns>The number of <see cref="byte"/>s used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
 	public int Length => length;
 
 	/// <summary>
@@ -49,12 +49,12 @@ public class Natural :
 	/// <returns><see langword="true"/> if <see langword="this"/> is equal to 0; otherwise, <see langword="false"/>.</returns>
 	public bool IsZero => isZero;
 
-	/// <returns>The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
-	public ImmutableArray<Digit> Digits => digits;
+	/// <returns>The <see cref="ImmutableArray{byte}"/> used to represent <see langword="this"/> <see cref="Natural"/>.</returns>
+	public ImmutableArray<byte> Digits => digits;
 
-	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
-	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
-	public Digit this[Index index] => digits[index];
+	/// <returns>The <see cref="byte"/> at the specified <see cref="Index"/>.</returns>
+	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds of the digits.</exception>
+	public byte this[Index index] => digits[index];
 
 	#endregion
 
@@ -66,7 +66,7 @@ public class Natural :
 	public Natural()
 	{
 		length = 1;
-		digits = [Digit.ZERO];
+		digits = [0];
 		isZero = true;
 	}
 
@@ -88,12 +88,12 @@ public class Natural :
 			number = "0";
 
 		length = number.Length;
-		Digit[] digits = new Digit[length];
+		byte[] digits = new byte[length];
 
 		try
 		{
 			for (int i = 0; i < length; ++i)
-				digits[i] = new Digit(number[^(i + 1)]);
+				digits[i] = Digit.Create(number[^(i + 1)]);
 		}
 		catch (ArgumentOutOfRangeException)
 		{
@@ -106,22 +106,22 @@ public class Natural :
 	/// <summary>
 	/// Constructs a <see cref="Natural"/> by the given <paramref name="number"/>.
 	/// </summary>
-	/// <param name="number">An array of <see cref="Digit"/>s, where the first index represents the lowest value.</param>
+	/// <param name="number">An array of <see cref="byte"/>s, where the first index represents the lowest value.</param>
 	/// <exception cref="ArgumentException"><paramref name="number"/> cannot be null or empty.</exception>
-	public Natural(Digit[] number)
+	public Natural(byte[] number)
 	{
 		if (number.Length < 1)
 			throw new ArgumentException("The given array parameter must not be empty!", nameof(number));
 
 		digits = ImmutableArray.Create(Digit.TrimEnd(number));
 		length = digits.Length;
-		isZero = length == 1 && digits[0] == Digit.ZERO;
+		isZero = length == 1 && digits[0] == 0;
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Natural"/> by the given <see cref="Digit"/>.
+	/// Constructs a <see cref="Natural"/> by the given <see cref="byte"/>.
 	/// </summary>
-	public Natural(Digit value) : this([value]) { }
+	public Natural(byte value) : this([value]) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Natural"/> by the given <paramref name="number"/>.
@@ -141,31 +141,31 @@ public class Natural :
 	/// <returns>The result of this iteration.</returns>
 	internal static (Natural Root, Natural Remainder) CalculateTwoRootDigits(Natural root, Natural remainder)
 	{
-		Digit xTry;
+		byte xTry;
 		Natural test;
 
 		if (!remainder.IsZero)
 		{
-			Natural rootTimesTwo = root * Digit.TWO;
-			xTry = Digit.FIVE;
+			Natural rootTimesTwo = root * 2;
+			xTry = 5;
 
-			test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
+			test = new Natural([xTry, .. rootTimesTwo.digits]) * xTry;
 			if (test <= remainder)
-				xTry = Digit.ZERO;
+				xTry = 0;
 
 			byte j = 0;
 			do
 			{
-				xTry -= Digit.ONE;
-				test = new Natural([xTry, .. rootTimesTwo.Digits]) * xTry;
+				xTry = Digit.SubtractOne(xTry).Digit;
+				test = new Natural([xTry, .. rootTimesTwo.digits]) * xTry;
 			} while (++j < 5 && test > remainder);
 
 			remainder -= test;
 		}
 		else
-			xTry = Digit.ZERO;
+			xTry = 0;
 
-		return (new Natural([xTry, .. root.Digits]), remainder);
+		return (new Natural([xTry, .. root.digits]), remainder);
 	}
 
 	/// <summary>
@@ -178,52 +178,52 @@ public class Natural :
 	/// <returns>The result of the calculation.</returns>
 	internal static (Natural Root, Natural Remainder) CalculateNRootDigits(Natural root, Natural remainder, Natural degree, Natural degreeFactorial)
 	{
-		Digit xTry;
+		byte xTry;
 		Natural test, degUp, binomial;
 
 		if (!remainder.IsZero)
 		{
-			xTry = Digit.FIVE;
+			xTry = 5;
 			test = new();
 
 			Natural degDown = degree;
 			while (!degDown.IsZero)
 			{
-				degDown -= Digit.ONE;
+				degDown -= 1;
 
 				degUp = degree - degDown;
 				binomial = degreeFactorial / (Factorial(degDown) * Factorial(degUp));
 
-				test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
+				test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).digits]);
 			}
 
 			if (test <= remainder)
-				xTry = Digit.ZERO;
+				xTry = 0;
 
 			byte j = 0;
 			do
 			{
-				xTry -= Digit.ONE;
+				xTry = Digit.SubtractOne(xTry).Digit;
 				test = new();
 
 				degDown = degree;
 				while (!degDown.IsZero)
 				{
-					degDown -= Digit.ONE;
+					degDown -= 1;
 
 					degUp = degree - degDown;
 					binomial = degreeFactorial / (Factorial(degDown) * Factorial(degUp));
 
-					test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).Digits]);
+					test += new Natural([.. Digit.CreateArray((int)ToUInt32(degDown)), .. (binomial * (root ^ degDown) * (xTry ^ degUp)).digits]);
 				}
 			} while (++j < 10 && test > remainder);
 
 			remainder -= test;
 		}
 		else
-			xTry = Digit.ZERO;
+			xTry = 0;
 
-		return (new Natural([xTry, .. root.Digits]), remainder);
+		return (new Natural([xTry, .. root.digits]), remainder);
 	}
 
 	/// <summary>
@@ -355,15 +355,15 @@ public class Natural :
 			(left, right) = (right, left);
 
 		bool carry = false;
-		Digit[] result = [.. left.digits];
+		byte[] result = [.. left.digits];
 
 		for (int i = 0; i < right.Length; ++i)
 			(carry, result[i]) = Digit.Add(left[i], right[i], carry);
 
 		for (int i = right.Length; i < left.length && carry; ++i)
-			(carry, result[i]) = Digit.Add(left[i], Digit.ZERO, carry);
+			(carry, result[i]) = Digit.Add(left[i], 0, carry);
 
-		return carry ? new Natural([.. result, Digit.ONE]) : result;
+		return carry ? new Natural([.. result, 1]) : result;
 	}
 
 	/// <summary>
@@ -380,13 +380,13 @@ public class Natural :
 			(left, right) = (right, left);
 
 		bool carry = false;
-		Digit[] result = [.. left.digits];
+		byte[] result = [.. left.digits];
 
 		for (int i = 0; i < right.Length; ++i)
 			(carry, result[i]) = Digit.Subtract(left[i], right[i], carry);
 
 		for (int i = right.Length; i < left.length && carry; ++i)
-			(carry, result[i]) = Digit.Subtract(left[i], Digit.ZERO, carry);
+			(carry, result[i]) = Digit.Subtract(left[i], 0, carry);
 
 		return (swap, result);
 	}
@@ -404,22 +404,21 @@ public class Natural :
 
 		if (right.isZero)
 			return new Natural();
-		else if (right == Digit.ONE)
+		else if (right == 1)
 			return left;
 
 		Natural result = new();
-		Digit[] temp;
-		Digit overflowD, digit;
+		byte[] temp;
+		byte overflowD, digit;
 		bool overflowB;
 		int addedIndex;
 
 		for (int rightStep = 0; rightStep < right.Length; ++rightStep)
 		{
-			if (right[rightStep] == Digit.ZERO)
+			if (right[rightStep] == 0)
 				continue;
 
-			temp = new Digit[left.Length + rightStep + 1];
-			Array.Fill(temp, Digit.ZERO, 0, rightStep + 1);
+			temp = new byte[left.Length + rightStep + 1];
 
 			addedIndex = rightStep;
 
@@ -428,7 +427,7 @@ public class Natural :
 				(overflowD, digit) = Digit.Multiply(left[leftStep], right[rightStep]);
 				(overflowB, temp[addedIndex]) = Digit.Add(temp[addedIndex], digit);
 				++addedIndex;
-				temp[addedIndex] = Digit.Add(overflowD, Digit.ZERO, overflowB).Digit;
+				temp[addedIndex] = Digit.Add(overflowD, 0, overflowB).Digit;
 			}
 
 			result += temp;
@@ -449,14 +448,14 @@ public class Natural :
 		if (right.isZero)
 			throw new DivideByZeroException("The divisor cannot be 0, as it is not mathematically meaningful!");
 		else if (left.Length < right.Length)
-			return (Digit.ZERO, left);
-		else if (right == Digit.ONE)
-			return (left, Digit.ZERO);
+			return (0, left);
+		else if (right == 1)
+			return (left, 0);
 
 		int initialNextChunkLength;
 		Natural nextChunk = new();
-		Digit[] remainder = [.. left.digits];
-		Digit[] result = Digit.CreateArray(left.Length - right.Length + 1);
+		byte[] remainder = [.. left.digits];
+		byte[] result = Digit.CreateArray(left.Length - right.Length + 1);
 
 		int stepBack = left.Length - right.Length;
 		while (stepBack >= 0)
@@ -467,14 +466,14 @@ public class Natural :
 			while (right <= nextChunk)
 			{
 				nextChunk -= right;
-				result[stepBack] += Digit.ONE;
+				result[stepBack] += 1;
 			}
 
 			Array.Copy(nextChunk.digits.ToArray(), 0, remainder, stepBack, nextChunk.Length);
-			Array.Fill(remainder, Digit.ZERO, stepBack + nextChunk.Length, initialNextChunkLength - nextChunk.Length);
+			Array.Fill(remainder, (byte)0, stepBack + nextChunk.Length, initialNextChunkLength - nextChunk.Length);
 
 			if (nextChunk.isZero)
-				while (--stepBack >= 0 && remainder[stepBack] == Digit.ZERO) { }
+				while (--stepBack >= 0 && remainder[stepBack] == 0) { }
 			else
 				--stepBack;
 		}
@@ -501,19 +500,19 @@ public class Natural :
 	/// </exception>
 	public static Natural Power(Natural left, Natural right)
 	{
-		Natural result = Digit.ONE;
+		Natural result = 1;
 
-		if (right < Digit.THREE)
+		if (right < 3)
 		{
-			return Digit.ToChar(right[0]) switch
+			return right[0] switch
 			{
-				'0' => result,
-				'1' => left,
+				0 => result,
+				1 => left,
 				_ => left * left
 			};
 		}
 
-		if (left < Digit.TWO)
+		if (left < 2)
 			return left;
 
 		if (right.length > 3)
@@ -521,7 +520,7 @@ public class Natural :
 
 		Natural lastPowerCalculated = left;
 
-		(Natural whole, Natural remainder) = Divide(right, Digit.TWO);
+		(Natural whole, Natural remainder) = Divide(right,2);
 
 		if (!remainder.isZero)
 			result = lastPowerCalculated;
@@ -529,7 +528,7 @@ public class Natural :
 		while (!whole.isZero)
 		{
 			lastPowerCalculated *= lastPowerCalculated;
-			(whole, remainder) = Divide(whole, Digit.TWO);
+			(whole, remainder) = Divide(whole, 2);
 
 			if (!remainder.isZero)
 				result *= lastPowerCalculated;
@@ -545,15 +544,15 @@ public class Natural :
 	/// <returns>The whole value and the remainder in a tuple.</returns>
 	public static (Natural Whole, Natural Remainder) SquareRoot(Natural value)
 	{
-		if (value.isZero || value == Digit.ONE)
-			return (value, new Natural());
+		if (value.isZero || value == 1)
+			return (value, 0);
 
 		Natural remainder = new();
 		Natural root = new();
 
 		for (int stepBack = value.length - ((value.Length - 1 & 1) + 1); stepBack >= 0; stepBack -= 2)
 		{
-			remainder = new Natural([value[stepBack], (stepBack + 1 < value.Length ? value[stepBack + 1] : Digit.ZERO), .. remainder.digits]);
+			remainder = new Natural([value[stepBack], (stepBack + 1 < value.Length ? value[stepBack + 1] : (byte)0), .. remainder.digits]);
 
 			(root, remainder) = CalculateTwoRootDigits(root, remainder);
 		}
@@ -575,24 +574,24 @@ public class Natural :
 	{
 		Natural remainder = new();
 
-		if (right < Digit.THREE)
+		if (right < 3)
 		{
-			return Digit.ToChar(right[0]) switch
+			return right[0] switch
 			{
-				'0' => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
-				'1' => (left, remainder),
+				0 => throw new DivideByZeroException("The degree cannot be 0, as it is not mathematically meaningful!"),
+				1 => (left, remainder),
 				_ => SquareRoot(left)
 			};
 		}
 
-		if (left.isZero || left == Digit.ONE)
+		if (left.isZero || left == 1)
 			return (left, remainder);
 
 		if (right.length > 2)
 			throw new NotSupportedException("The degree cannot be higher than 99 as it would be too computationally expensive!");
 
 		int degreeInt = (int)ToUInt32(right);
-		Digit[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - left.Length % degreeInt)];
+		byte[] digits = [.. left.digits, .. Digit.CreateArray(degreeInt - left.Length % degreeInt)];
 
 		Natural degreeFactorial = Factorial(right);
 		Natural root = new();
@@ -618,21 +617,21 @@ public class Natural :
 		{
 			if (a == b)
 				return a;
-			else if (b == a + Digit.ONE)
+			else if (b == a + 1)
 				return a * b;
 
-			Natural m = (a + b) / Digit.TWO;
+			Natural m = (a + b) / 2;
 
 			Natural left = ProductRange(a, m);
-			Natural right = ProductRange(m + Digit.ONE, b);
+			Natural right = ProductRange(m + 1, b);
 
 			return left * right;
 		}
 
-		if (value.isZero || value == Digit.ONE)
-			return Digit.ONE;
+		if (value.isZero || value == 1)
+			return 1;
 
-		return ProductRange(Digit.ONE, value);
+		return ProductRange(1, value);
 	}
 
 	/// <summary>
@@ -658,16 +657,16 @@ public class Natural :
 	#region Operators
 
 	public static implicit operator Natural(string value) => new(value);
-	public static implicit operator Natural(Digit value) => new(value);
-	public static implicit operator Natural(Digit[] value) => new(value);
+	public static implicit operator Natural(byte value) => new(value);
+	public static implicit operator Natural(byte[] value) => new(value);
 	public static bool operator ==(Natural? left, Natural? right) => left is Natural l && right is Natural r && Equals(l, r);
 	public static bool operator !=(Natural? left, Natural? right) => !(left == right);
 	public static bool operator >(Natural left, Natural right) => GreaterThan(left, right);
 	public static bool operator <(Natural left, Natural right) => GreaterThan(right, left);
 	public static bool operator >=(Natural left, Natural right) => !GreaterThan(right, left);
 	public static bool operator <=(Natural left, Natural right) => !GreaterThan(left, right);
-	public static Natural operator ++(Natural value) => Add(value, Digit.ONE);
-	public static Natural operator --(Natural value) => Subtract(value, Digit.ONE).Value;
+	public static Natural operator ++(Natural value) => Add(value, 1);
+	public static Natural operator --(Natural value) => Subtract(value, 1).Value;
 	public static Natural operator +(Natural left, Natural right) => Add(left, right);
 	public static Natural operator -(Natural left, Natural right) => Subtract(left, right).Value;
 	public static Natural operator *(Natural left, Natural right) => Multiply(left, right);

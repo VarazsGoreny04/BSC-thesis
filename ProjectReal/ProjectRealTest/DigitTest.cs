@@ -12,22 +12,14 @@ public class DigitTest
 	private static char ToChar(int num) => Convert.ToChar('0' + num);
 
 	[TestMethod]
-	public void ZeroConstructor()
-	{
-		Digit digit = new();
-
-		Assert.AreEqual(Digit.ZERO, digit);
-	}
-
-	[TestMethod]
 	public void CharConstructor()
 	{
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(ToChar(-1)); });
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(ToChar(10)); });
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = Digit.Create(ToChar(-1)); });
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = Digit.Create(ToChar(10)); });
 
 		for (int i = 0; i < 10; ++i)
 		{
-			Digit digit = new(ToChar(i));
+			byte digit = Digit.Create(ToChar(i));
 
 			Assert.AreEqual(binary[i], digit);
 		}
@@ -39,10 +31,10 @@ public class DigitTest
 		int i = 0;
 
 		for (; i < 10; ++i)
-			Assert.AreEqual(binary[i], (new Digit(binary[i])).Bits);
+			Assert.AreEqual(binary[i], Digit.Create(binary[i]));
 
 		for (; i < binary.Length; ++i)
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = new Digit(binary[i]); });
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = Digit.Create(binary[i]); });
 
 	}
 
@@ -51,7 +43,7 @@ public class DigitTest
 	{
 		for (int i = 0; i < 10; ++i)
 		{
-			Digit digit = new(binary[i]);
+			byte digit = Digit.Create(binary[i]);
 
 			Assert.AreEqual(ToChar(i).ToString(), digit.ToString());
 		}
@@ -65,9 +57,9 @@ public class DigitTest
 
 		for (int i = 0; i < 10; ++i)
 		{
-			Digit digit = new(ToChar(i));
+			byte digit = Digit.Create(ToChar(i));
 
-			foreach (Digit element in Digit.CreateArray(10, digit))
+			foreach (byte element in Digit.CreateArray(10, digit))
 				Assert.AreEqual(digit, element);
 		}
 	}
@@ -75,37 +67,36 @@ public class DigitTest
 	[TestMethod]
 	public void TrimEndMethod()
 	{
-		Random rnd = new();
-		Digit[] array = new Digit[25];
-		int valuableLength = rnd.Next(1, 21);
+		byte[] array = new byte[25];
+		int valuableLength = 20;
 
 		for (int i = valuableLength - 1; i >= 0; --i)
-			array[i] = new Digit(ToChar(rnd.Next(1, 10)));
+			array[i] = Digit.Create(ToChar(i % 9 + 1));
 
 		for (int i = valuableLength; i < 25; ++i)
-			array[i] = Digit.ZERO;
+			array[i] = 0;
 
 		array = Digit.TrimEnd(array);
 
 		Assert.AreEqual(valuableLength, array.Length);
 
-		foreach (Digit digit in array)
-			Assert.AreNotEqual(digit, Digit.ZERO);
+		foreach (byte digit in array)
+			Assert.AreNotEqual(0, digit);
 
 
-		array = Digit.CreateArray(rnd.Next(1, 10), Digit.ZERO);
+		array = Digit.CreateArray(10);
 		array = Digit.TrimEnd(array);
 
 		Assert.AreEqual(1, array.Length);
-		Assert.AreEqual(Digit.ZERO, array[0]);
+		Assert.AreEqual(0, array[0]);
 
 
-		array = Digit.CreateArray(rnd.Next(1, 10), Digit.ZERO);
-		array[0] = Digit.ONE;
+		array = Digit.CreateArray(1);
+		array[0] = 1;
 		array = Digit.TrimEnd(array);
 
 		Assert.AreEqual(1, array.Length);
-		Assert.AreEqual(Digit.ONE, array[0]);
+		Assert.AreEqual(1, array[0]);
 
 
 		array = Digit.TrimEnd([]);
@@ -118,10 +109,10 @@ public class DigitTest
 	{
 		for (int i = 0; i < 10; ++i)
 		{
-			Digit charDigit = new(ToChar(i));
-			Digit charDigitPlusOne = new(i > 8 ? '0' : ToChar(i + 1));
-			Digit arrayDigit = new(binary[i]);
-			Digit arrayDigitPlusOne = new(binary[(i + 1) % 10]);
+			byte charDigit = Digit.Create(ToChar(i));
+			byte charDigitPlusOne = Digit.Create(i > 8 ? '0' : ToChar(i + 1));
+			byte arrayDigit = Digit.Create(binary[i]);
+			byte arrayDigitPlusOne = Digit.Create(binary[(i + 1) % 10]);
 
 			Assert.IsTrue(Digit.Equals(charDigit, arrayDigit));
 			Assert.IsTrue(Digit.Equals(arrayDigit, charDigit));
@@ -151,10 +142,10 @@ public class DigitTest
 	{
 		for (int i = 0; i < 9; ++i)
 		{
-			Digit charDigit = new(ToChar(i));
-			Digit charDigitPlusOne = new(i > 8 ? '0' : ToChar(i + 1));
-			Digit arrayDigit = new(binary[i]);
-			Digit arrayDigitPlusOne = new(binary[(i + 1) % 10]);
+			byte charDigit = Digit.Create(ToChar(i));
+			byte charDigitPlusOne = Digit.Create(i > 8 ? '0' : ToChar(i + 1));
+			byte arrayDigit = Digit.Create(binary[i]);
+			byte arrayDigitPlusOne = Digit.Create(binary[(i + 1) % 10]);
 
 			Assert.IsFalse(Digit.GreaterThan(charDigit, arrayDigit));
 			Assert.IsFalse(Digit.GreaterThan(arrayDigit, charDigit));
@@ -172,15 +163,15 @@ public class DigitTest
 	[TestMethod]
 	public void AddMethod()
 	{
-		Digit a, b, c;
+		byte a, b, c;
 
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				a = new Digit(ToChar(i));
-				b = new Digit(ToChar(j));
-				c = new Digit(ToChar((i + j) % 10));
+				a = Digit.Create(ToChar(i));
+				b = Digit.Create(ToChar(j));
+				c = Digit.Create(ToChar((i + j) % 10));
 
 				Assert.AreEqual(c, Digit.Add(a, b).Digit);
 			}
@@ -190,17 +181,17 @@ public class DigitTest
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		Digit a, b, c;
+		byte a, b, c;
 
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				a = new Digit(ToChar(i));
-				b = new Digit(ToChar(j));
-				c = new Digit(ToChar((i - j + 10) % 10));
+				a = Digit.Create(ToChar(i));
+				b = Digit.Create(ToChar(j));
+				c = Digit.Create(ToChar((i - j + 10) % 10));
 
-				(bool borrow, Digit digit) = Digit.Subtract(a, b);
+				(bool borrow, byte digit) = Digit.Subtract(a, b);
 
 				Assert.AreEqual(((i - j + 10) / 10) == 0, borrow);
 				Assert.AreEqual(c, digit);
@@ -211,19 +202,19 @@ public class DigitTest
 	[TestMethod]
 	public void MultiplyMethod()
 	{
-		Digit a, b, c;
+		byte a, b, c;
 
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				a = new Digit(ToChar(i));
-				b = new Digit(ToChar(j));
-				c = new Digit(ToChar((i * j) % 10));
+				a = Digit.Create(ToChar(i));
+				b = Digit.Create(ToChar(j));
+				c = Digit.Create(ToChar((i * j) % 10));
 
-				(Digit overflow, Digit digit) = Digit.Multiply(a, b);
+				(byte overflow, byte digit) = Digit.Multiply(a, b);
 
-				Assert.AreEqual(new Digit(ToChar((i * j) / 10)), overflow);
+				Assert.AreEqual(Digit.Create(ToChar((i * j) / 10)), overflow);
 				Assert.AreEqual(c, digit);
 			}
 		}
@@ -232,23 +223,23 @@ public class DigitTest
 	[TestMethod]
 	public void DivideMethod()
 	{
-		Digit a, b, c1, c2;
+		byte a, b, c1, c2;
 
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				a = new Digit(ToChar(i));
-				b = new Digit(ToChar(j));
+				a = Digit.Create(ToChar(i));
+				b = Digit.Create(ToChar(j));
 
 				if (j == 0)
 					Assert.ThrowsException<DivideByZeroException>(() => { _ = Digit.Divide(a, b); });
 				else
 				{
-					c1 = new Digit(ToChar(i / j));
-					c2 = new Digit(ToChar(i % j));
+					c1 = Digit.Create(ToChar(i / j));
+					c2 = Digit.Create(ToChar(i % j));
 
-					(Digit whole, Digit remainder) = Digit.Divide(a, b);
+					(byte whole, byte remainder) = Digit.Divide(a, b);
 
 					Assert.AreEqual(c1, whole);
 					Assert.AreEqual(c2, remainder);

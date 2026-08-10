@@ -77,7 +77,7 @@ public class MatrixOperationsTest
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < m; ++j)
-					Assert.AreEqual(Digit.ZERO, matrix[i, j]);
+					Assert.AreEqual((byte)0, matrix[i, j]);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public class MatrixOperationsTest
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < m; ++j)
-					Assert.AreEqual(Digit.ONE, matrix[i, j]);
+					Assert.AreEqual((byte)1, matrix[i, j]);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class MatrixOperationsTest
 				for (int i = 0; i < n; ++i)
 				{
 					for (int j = 0; j < m; ++j)
-						Assert.AreEqual(i == j ? testNumber : Digit.ZERO, matrix[i, j]);
+						Assert.AreEqual(i == j ? testNumber : 0, matrix[i, j]);
 				}
 			}
 		}
@@ -125,7 +125,7 @@ public class MatrixOperationsTest
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < m; ++j)
-					Assert.AreEqual(i == j ? Digit.ONE : Digit.ZERO, matrix[i, j]);
+					Assert.AreEqual((byte)(i == j ? 1 : 0), matrix[i, j]);
 			}
 		}
 	}
@@ -455,11 +455,11 @@ public class MatrixOperationsTest
 			(Rational[,] matrix1, bool sign1) = MatrixOperations<Rational>.GaussianElimination(item.Matrix1);
 			(Rational[,] matrix2, bool sign2) = MatrixOperations<Rational>.GaussianElimination(item.Matrix2);
 
-			Rational expected1 = Digit.ONE;
+			Rational expected1 = 1;
 			for (int i = matrix1.GetLength(0) - 1; i >= 0; --i)
 				expected1 *= matrix1[i, i];
 
-			Rational expected2 = Digit.ONE;
+			Rational expected2 = 1;
 			for (int i = matrix2.GetLength(0) - 1; i >= 0; --i)
 				expected2 *= matrix2[i, i];
 

@@ -192,7 +192,7 @@ public class PositiveTest
 	{
 		int temp, fractionLength1, fractionLength2;
 		string characters1, characters2;
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Positive numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (PositiveTestCase item in PositiveTestCases.List)
@@ -212,16 +212,16 @@ public class PositiveTest
 			characters1 = characters1.Replace(".", "");
 			characters2 = characters2.Replace(".", "");
 
-			digits1 = new Digit[characters1.Length];
+			digits1 = new byte[characters1.Length];
 			for (int j = characters1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(characters1[^(j + 1)]);
+				digits1[j] = Digit.Create(characters1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(new Natural(digits1), fractionLength1);
 
-			digits2 = new Digit[characters2.Length];
+			digits2 = new byte[characters2.Length];
 			for (int j = characters2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(characters2[^(j + 1)]);
+				digits2[j] = Digit.Create(characters2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(new Natural(digits2), fractionLength2);
@@ -239,7 +239,7 @@ public class PositiveTest
 	{
 		int temp, fractionLength1, fractionLength2;
 		string characters1, characters2;
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Positive numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (PositiveTestCase item in PositiveTestCases.List)
@@ -259,16 +259,16 @@ public class PositiveTest
 			characters1 = characters1.Replace(".", "");
 			characters2 = characters2.Replace(".", "");
 
-			digits1 = new Digit[characters1.Length];
+			digits1 = new byte[characters1.Length];
 			for (int j = characters1.Length - 1; j >= 0; --j)
-				digits1[j] = new Digit(characters1[^(j + 1)]);
+				digits1[j] = Digit.Create(characters1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(new Natural(digits1), fractionLength1);
 
-			digits2 = new Digit[characters2.Length];
+			digits2 = new byte[characters2.Length];
 			for (int j = characters2.Length - 1; j >= 0; --j)
-				digits2[j] = new Digit(characters2[^(j + 1)]);
+				digits2[j] = Digit.Create(characters2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(new Natural(digits2), fractionLength2);

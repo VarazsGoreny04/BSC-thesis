@@ -59,7 +59,7 @@ public class VectorOperationsTest
 			Rational[] vector = VectorOperations<Rational>.Zeros(n);
 
 			for (int i = 0; i < n; ++i)
-				Assert.AreEqual(Digit.ZERO, vector[i]);
+				Assert.AreEqual((byte)0, vector[i]);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class VectorOperationsTest
 			Rational[] vector = VectorOperations<Rational>.Ones(n);
 
 			for (int i = 0; i < n; ++i)
-				Assert.AreEqual(Digit.ONE, vector[i]);
+				Assert.AreEqual((byte)1, vector[i]);
 		}
 	}
 

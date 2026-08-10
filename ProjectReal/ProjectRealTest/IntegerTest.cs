@@ -40,10 +40,10 @@ public class IntegerTest
 			new("+00"),
 			new("-0"),
 			new("-00"),
-			new(true, new([Digit.ZERO])),
-			new(true, new([Digit.ZERO, Digit.ZERO])),
-			new(false, new([Digit.ZERO])),
-			new(false, new([Digit.ZERO, Digit.ZERO]))
+			new(true, new([0])),
+			new(true, new([0, 0])),
+			new(false, new([0])),
+			new(false, new([0, 0]))
 		];
 
 		foreach (Integer zero in zeros)
@@ -125,21 +125,21 @@ public class IntegerTest
 	[TestMethod]
 	public void EqualsMethod()
 	{
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
-			digits1 = new Digit[item.Number1.Length - 1];
+			digits1 = new byte[item.Number1.Length - 1];
 			for (int j = item.Number1.Length - 2; j >= 0; --j)
-				digits1[j] = new Digit(item.Number1[^(j + 1)]);
+				digits1[j] = Digit.Create(item.Number1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Natural(digits1));
 
-			digits2 = new Digit[item.Number2.Length - 1];
+			digits2 = new byte[item.Number2.Length - 1];
 			for (int j = item.Number2.Length - 2; j >= 0; --j)
-				digits2[j] = new Digit(item.Number2[^(j + 1)]);
+				digits2[j] = Digit.Create(item.Number2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(Sign(item.Number2), new Natural(digits2));
@@ -155,21 +155,21 @@ public class IntegerTest
 	[TestMethod]
 	public void GreaterThanMethod()
 	{
-		Digit[] digits1, digits2;
+		byte[] digits1, digits2;
 		Integer numberDigits1, numberDigits2, numberCharacters1, numberCharacters2;
 
 		foreach (IntegerTestCase item in IntegerTestCases.List)
 		{
-			digits1 = new Digit[item.Number1.Length - 1];
+			digits1 = new byte[item.Number1.Length - 1];
 			for (int j = item.Number1.Length - 2; j >= 0; --j)
-				digits1[j] = new Digit(item.Number1[^(j + 1)]);
+				digits1[j] = Digit.Create(item.Number1[^(j + 1)]);
 
 			numberCharacters1 = new(item.Number1);
 			numberDigits1 = new(Sign(item.Number1), new Natural(digits1));
 
-			digits2 = new Digit[item.Number2.Length - 1];
+			digits2 = new byte[item.Number2.Length - 1];
 			for (int j = item.Number2.Length - 2; j >= 0; --j)
-				digits2[j] = new Digit(item.Number2[^(j + 1)]);
+				digits2[j] = Digit.Create(item.Number2[^(j + 1)]);
 
 			numberCharacters2 = new(item.Number2);
 			numberDigits2 = new(Sign(item.Number2), new Natural(digits2));

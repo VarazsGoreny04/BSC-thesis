@@ -37,9 +37,9 @@ public class Rational :
 
 	#region Properties
 
-	public static Rational AdditiveIdentity => Digit.ZERO;
+	public static Rational AdditiveIdentity => 0;
 
-	public static Rational MultiplicativeIdentity => Digit.ONE;
+	public static Rational MultiplicativeIdentity => 1;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the number in a fractional form or calculate the division.
@@ -184,7 +184,7 @@ public class Rational :
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <see cref="Digit"/>.
 	/// </summary>
-	public Rational(Digit value) : this(true, value) { }
+	public Rational(byte value) : this(true, value) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Rational"/> by the given <see cref="Natural"/>.
@@ -255,7 +255,7 @@ public class Rational :
 			Positive resultNumerator = new(numerator.Value.Value / gCD, Math.Max(numerator.FractionLength - denominatorValue.FractionLength, 0));
 			Positive resultDenominator = new(denominatorValue.Value / gCD, Math.Max(denominatorValue.FractionLength - numerator.FractionLength, 0));
 
-			return (new Writable(numerator.Sign, resultNumerator), resultDenominator == Digit.ONE ? null : resultDenominator);
+			return (new Writable(numerator.Sign, resultNumerator), resultDenominator == 1 ? null : resultDenominator);
 		}
 		else
 			return (numerator, null);
@@ -400,7 +400,7 @@ public class Rational :
 	{
 		return value.IsZero ?
 			throw new DivideByZeroException("The denominator cannot be 0, as it is not mathematically meaningful to calculate its reciprocal!")
-			: new Rational(value.Sign, value.denominator is Positive p ? p : Digit.ONE, value.Numerator);
+			: new Rational(value.Sign, value.denominator is Positive p ? p : 1, value.Numerator);
 	}
 
 	/// <summary>
@@ -518,7 +518,7 @@ public class Rational :
 	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) SquareRoot(Rational value, int? fractionCalculationLength = null)
 	{
 		(Writable Value, Writable Remainder) numerator = Writable.SquareRoot(value.numerator, fractionCalculationLength);
-		(Positive Value, Positive Remainder) denominator = value.denominator is Positive d ? Positive.SquareRoot(d, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
+		(Positive Value, Positive Remainder) denominator = value.denominator is Positive d ? Positive.SquareRoot(d, fractionCalculationLength) : (1, 0);
 
 		return (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder);
 	}
@@ -538,11 +538,11 @@ public class Rational :
 	public static (Rational Value, Writable NumeratorRemainder, Positive DenominatorRemainder) Root(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
 		if (right.denominator is not null || right.numerator.FractionLength > 0)
-			return (Power(left, Reciprocal(right), fractionCalculationLength), Digit.ZERO, Digit.ZERO);
+			return (Power(left, Reciprocal(right), fractionCalculationLength), 0, 0);
 
 		(Writable Value, Writable Remainder) numerator = Writable.Root(left.numerator, right.numerator, fractionCalculationLength);
 		(Positive Value, Positive Remainder) denominator = left.denominator is Positive d ?
-			Positive.Root(d, right.Numerator, fractionCalculationLength) : (Digit.ONE, Digit.ZERO);
+			Positive.Root(d, right.Numerator, fractionCalculationLength) : (1, 0);
 
 		return (new Rational(numerator.Value, denominator.Value), numerator.Remainder, denominator.Remainder);
 	}
@@ -562,21 +562,21 @@ public class Rational :
 	{
 		static (Natural P, Natural Q, Integer T) BinarySplitting(Natural a, Natural b)
 		{
-			if (a + Digit.ONE >= b)
+			if (a + 1 >= b)
 			{
-				(Natural P, Natural Q) = a.IsZero ? (Digit.ONE, Digit.ONE) :
-					((Digit.SIX * a - Digit.FIVE) * (Digit.TWO * a - Digit.ONE) * (Digit.SIX * a - Digit.ONE), a * a * a * "10939058860032000");
+				(Natural P, Natural Q) = a.IsZero ? (1, 1) :
+					((6 * a - 5) * (2 * a - 1) * (6 * a - 1), a * a * a * "10939058860032000");
 
 				Integer T = P * ("13591409" + "545140134" * a);
 
-				if (a[0] % Digit.TWO == Digit.ONE)
+				if (a[0] % 2 == 1)
 					T = -T;
 
 				return (P, Q, T);
 			}
 			else
 			{
-				Natural m = (a + b) / Digit.TWO;
+				Natural m = (a + b) / 2;
 
 				(Natural Pl, Natural Ql, Integer Tl) = BinarySplitting(a, m);
 				(Natural Pr, Natural Qr, Integer Tr) = BinarySplitting(m, b);
@@ -592,7 +592,7 @@ public class Rational :
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 		int n = fCL / 13 + 1;
 
-		(_, Natural Q, Integer T) = BinarySplitting(Digit.ZERO, new Natural((uint)n));
+		(_, Natural Q, Integer T) = BinarySplitting(0, new Natural((uint)n));
 
 		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL + 2).Value * "426880", T.Value);
 	}
@@ -611,12 +611,12 @@ public class Rational :
 			{
 				return n1 == 0 ?
 				(
-					Q: Digit.ONE,
-					T: Digit.ONE
+					Q: 1,
+					T: 1
 				) :
 				(
 					Q: new Natural((uint)n1),
-					T: Digit.ONE
+					T: (byte)1
 				);
 			}
 			else
@@ -659,9 +659,9 @@ public class Rational :
 			{
 				return n1 == 0 ?
 				(
-					P: Digit.ONE,
-					Q: Digit.ONE,
-					T: Digit.ONE
+					P: 1,
+					Q: 1,
+					T: 1
 				) :
 				(
 					P: x.numerator,
@@ -695,9 +695,9 @@ public class Rational :
 		Rational fraction = x - whole;
 
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
-		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + Digit.ONE);
+		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + 1);
 
-		Rational powE = whole.IsZero ? Digit.ONE : Power(E(n + plusFractionLength), whole, n);
+		Rational powE = whole.IsZero ? 1 : Power(E(n + plusFractionLength), whole, n);
 		return fraction.IsZero ? powE : powE * Exp(n + 5, fraction);
 	}
 
@@ -714,25 +714,25 @@ public class Rational :
 	{
 		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x, int fractionCalculationLength)
 		{
-			Integer n = Digit.ZERO;
+			Integer n = 0;
 
-			if (x >= Digit.TWO)
+			if (x >= 2)
 			{
-				Natural twoToTheNth = Digit.ONE;
+				Natural twoToTheNth = 1;
 
-				while ((twoToTheNth *= Digit.TWO) <= x)
-					n += Digit.ONE;
+				while ((twoToTheNth *= 2) <= x)
+					n += 1;
 
-				return (n, GetValue(Divide(x, twoToTheNth / Digit.TWO)).Value);
+				return (n, GetValue(Divide(x, twoToTheNth / 2)).Value);
 			}
 			else
 			{
-				Rational twoToTheNth = Digit.ONE;
+				Rational twoToTheNth = 1;
 
-				while ((twoToTheNth /= Digit.TWO) >= x)
-					n -= Digit.ONE;
+				while ((twoToTheNth /= 2) >= x)
+					n -= 1;
 
-				return (n - Digit.ONE, GetValue(Divide(x, twoToTheNth)).Value);
+				return (n - 1, GetValue(Divide(x, twoToTheNth)).Value);
 			}
 		}
 
@@ -742,17 +742,17 @@ public class Rational :
 				return y;
 
 			Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
-			return Ln(y + (Digit.TWO * new Rational(x - expY) / new Rational(x + expY)), x, iterations - 1, fractionCalculationLength);
+			return Ln(y + (2 * new Rational(x - expY) / new Rational(x + expY)), x, iterations - 1, fractionCalculationLength);
 		}
 
-		if (x <= Digit.ZERO)
+		if (x <= 0)
 			throw new ArgumentOutOfRangeException(nameof(x), x, "The anti-logarithm cannot be negative as it is not mathematically meaningful!");
 
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 10);
 
 		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, n);
 
-		return Ln(("0.7" * (reducedX - Digit.ONE)) - (Abs("1.5" - reducedX) / Digit.NINE) + "0.06", reducedX, 3, n) + exponent * Ln("0.693", Digit.TWO, 3, n + exponent.Length);
+		return Ln(("0.7" * (reducedX - 1)) - (Abs("1.5" - reducedX) / 9) + "0.06", reducedX, 3, n) + exponent * Ln("0.693", 2, 3, n + exponent.Length);
 	}
 
 	/// <summary>
@@ -776,12 +776,12 @@ public class Rational :
 				return n1 == 0 ?
 				(
 					P: x.numerator,
-					Q: x.denominator ?? Digit.ONE,
+					Q: x.denominator ?? 1,
 					T: x.numerator
 				) :
 				(
 					P: tempP = -Writable.SecondPower(x.numerator),
-					Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Positive.SecondPower(x.denominator ?? Digit.ONE),
+					Q: new Natural((uint)(2 * n1 * (2 * n1 + 1))) * Positive.SecondPower(x.denominator ?? 1),
 					T: tempP
 				);
 			}
@@ -802,8 +802,8 @@ public class Rational :
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		if (Abs(x) > Digit.SIX)
-			x %= Digit.TWO * Pi(fCL);
+		if (Abs(x) > 6)
+			x %= 2 * Pi(fCL);
 
 		int n = IterationsNeededSinCos(x, fCL);
 
@@ -832,13 +832,13 @@ public class Rational :
 
 				return n1 == 0 ?
 				(
-					P: Digit.ONE,
-					Q: Digit.ONE,
-					T: Digit.ONE
+					P: 1,
+					Q: 1,
+					T: 1
 				) :
 				(
 					P: tempP = -Writable.SecondPower(x.numerator),
-					Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Positive.SecondPower(x.denominator ?? Digit.ONE),
+					Q: new Natural((uint)(2 * n1 * (2 * n1 - 1))) * Positive.SecondPower(x.denominator ?? 1),
 					T: tempP
 				);
 			}
@@ -859,8 +859,8 @@ public class Rational :
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		if (Abs(x) > Digit.SIX)
-			x %= Digit.TWO * Pi(fCL);
+		if (Abs(x) > 6)
+			x %= 2 * Pi(fCL);
 
 		int n = IterationsNeededSinCos(x, fCL);
 
@@ -892,7 +892,7 @@ public class Rational :
 	#region Operators
 
 	public static implicit operator Rational(string value) => new(value);
-	public static implicit operator Rational(Digit value) => new(value);
+	public static implicit operator Rational(byte value) => new(value);
 	public static implicit operator Rational(Natural value) => new(value);
 	public static implicit operator Rational(Integer value) => new(value);
 	public static implicit operator Rational(Positive value) => new(value);
@@ -905,8 +905,8 @@ public class Rational :
 	public static bool operator <=(Rational left, Rational right) => !GreaterThan(left, right);
 	public static Rational operator +(Rational value) => value;
 	public static Rational operator -(Rational value) => new(!value.numerator.Sign, value.numerator.Value, value.denominator);
-	public static Rational operator ++(Rational value) => Add(value, Digit.ONE);
-	public static Rational operator --(Rational value) => Subtract(value, Digit.ONE);
+	public static Rational operator ++(Rational value) => Add(value, 1);
+	public static Rational operator --(Rational value) => Subtract(value, 1);
 	public static Rational operator +(Rational left, Rational right) => Add(left, right);
 	public static Rational operator -(Rational left, Rational right) => Subtract(left, right);
 	public static Rational operator *(Rational left, Rational right) => Multiply(left, right);

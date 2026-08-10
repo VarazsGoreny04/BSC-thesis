@@ -1,301 +1,180 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 namespace ProjectReal.Number;
 
 /// <summary>
-/// Represents a decimal digit using the BCD format.
+/// Represents a decimal byte using the BCD format.
 /// </summary>
-public readonly struct Digit :
-	IComparisonOperators<Digit, Digit, bool>,
-	IEqualityOperators<Digit, Digit, bool>,
-	IIncrementOperators<Digit>,
-	IDecrementOperators<Digit>,
-	IAdditionOperators<Digit, Digit, Digit>,
-	ISubtractionOperators<Digit, Digit, Digit>,
-	IMultiplyOperators<Digit, Digit, Digit>,
-	IDivisionOperators<Digit, Digit, Digit>,
-	IModulusOperators<Digit, Digit, Digit>,
-	IAdditiveIdentity<Digit, Digit>,
-	IMultiplicativeIdentity<Digit, Digit>,
-	IParsable<Digit>
+public static class Digit
 {
-	#region Constants
-
-	public static readonly Digit ZERO = new();
-	public static readonly Digit ONE = '1';
-	public static readonly Digit TWO = '2';
-	public static readonly Digit THREE = '3';
-	public static readonly Digit FOUR = '4';
-	public static readonly Digit FIVE = '5';
-	public static readonly Digit SIX = '6';
-	public static readonly Digit SEVEN = '7';
-	public static readonly Digit EIGHT = '8';
-	public static readonly Digit NINE = '9';
-
-	private const byte TEN = 10;
-
-	#endregion
-
-	#region Fields
-
-	private readonly byte bits;
-
-	#endregion
-
-	#region Properties
-
-	/// <returns>The <see cref="byte"/> that represents <see langword="this"/> <see cref="Digit"/> instance.</returns>
-	public readonly byte Bits => bits;
-
-	public static Digit AdditiveIdentity => ZERO;
-
-	public static Digit MultiplicativeIdentity => ONE;
-
-	#endregion
-
-	#region Constructors
+	#region Public methods
 
 	/// <summary>
-	/// Constructs a <see cref="Digit"/> with a value of 0.
-	/// </summary>
-	public Digit() { }
-
-	/// <summary>
-	/// Constructs a <see cref="Digit"/> by the given <paramref name="character"/>.
+	/// Constructs a <see langword="byte"/> by the given <paramref name="character"/>.
 	/// </summary>
 	/// <param name="character">A number character.</param>
 	/// <exception cref="ArgumentOutOfRangeException"><paramref name="character"/> must be a number character.</exception>
-	public Digit(char character)
+	public static byte Create(char character)
 	{
 		if (!char.IsDigit(character))
 			throw new ArgumentOutOfRangeException(nameof(character), character, "The given parameter must be a number character!");
 
-		bits = (byte)(character - '0');
+		return (byte)(character - '0');
 	}
 
 	/// <summary>
-	/// Constructs a <see cref="Digit"/> by the given <paramref name="bits"/>.
+	/// Constructs a <see langword="byte"/> by the given <paramref name="bits"/>.
 	/// </summary>
 	/// <param name="bits">The binary representation of the number, where the first index represents the lowest value.</param>
 	/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> cannot represent a number more than 9.</exception>
-	public Digit(byte bits)
+	public static byte Create(byte bits)
 	{
-		this.bits = TEN > bits ? bits :
-			throw new ArgumentOutOfRangeException(nameof(bits), bits, "The given parameter cannot represent a number more than 9!");
+		return 10 > bits ? bits : throw new ArgumentOutOfRangeException(nameof(bits), bits, "The given parameter cannot represent a number more than 9!");
 	}
 
-	#endregion
-
-	#region Public methods
-
 	/// <summary>
-	/// Constructs an array of <see cref="Digit"/>s with the value of 0.
+	/// Constructs an array of <see ="byte"/>s with the value of 0.
 	/// </summary>
 	/// <param name="length">The length of the created array.</param>
 	/// <returns>The constructed array.</returns>
-	public static Digit[] CreateArray(int length) => CreateArray(length, ZERO);
+	public static byte[] CreateArray(int length) => new byte[length < 1 ? 0 : length];
 
 	/// <summary>
-	/// Constructs an array of <see cref="Digit"/>s with the value of the specified <paramref name="sample"/>.
+	/// Constructs an array of <see langword="byte"/>s with the value of the specified <paramref name="sample"/>.
 	/// </summary>
 	/// <param name="length">The length of the created array.</param>
 	/// <param name="sample">The value every index of the array will be set to.</param>
 	/// <returns>The constructed array.</returns>
-	public static Digit[] CreateArray(int length, Digit sample)
+	public static byte[] CreateArray(int length, byte sample)
 	{
 		if (length < 1)
 			return [];
 
-		Digit[] array = new Digit[length];
+		byte[] array = new byte[length];
 		Array.Fill(array, sample);
 
 		return array;
 	}
 
 	/// <summary>
-	/// Removes the tailing 0 values from the given <see cref="Digit"/> array.
+	/// Removes the tailing 0 values from the given <see langword="byte"/> array.
 	/// </summary>
-	/// <param name="digits">The array to trim.</param>
+	/// <param name="bytes">The array to trim.</param>
 	/// <returns>The trimmed array.</returns>
-	public static Digit[] TrimEnd(Digit[] digits)
+	public static byte[] TrimEnd(byte[] bytes)
 	{
 		int i = 0;
 
-		while (++i < digits.Length && digits[^i] == ZERO) { }
+		while (++i < bytes.Length && bytes[^i] == 0) { }
 
-		return i == 1 ? digits : digits[..^(i - 1)];
+		return i == 1 ? bytes : bytes[..^(i - 1)];
 	}
 
 	/// <summary>
-	/// Returns a string that represents the value of <see langword="this"/> instance.
+	/// Compares two <see langword="byte"/>s.
 	/// </summary>
-	/// <returns>A character form 0 to 9 as a <see langword="string"/>.</returns>
-	public override string ToString() => ToChar(this).ToString();
-
-	/// <summary>
-	/// Converts the numeric value of the given <see cref="Digit"/> instance to its equivalent <see langword="char"/> representation.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <returns>A character form 0 to 9.</returns>
-	public static char ToChar(Digit value) => (char)('0' + value.bits);
-
-	/// <summary>
-	/// Parses a <see cref="string"/> into a <see cref="Digit"/> instance.
-	/// </summary>
-	/// <param name="s">The <see cref="string"/> to parse.</param>
-	/// <param name="_">This parameter is unused.</param>
-	/// <returns>The created instance.</returns>
-	/// <exception cref="FormatException">The length of the given <see cref="string"/> cannot be more than 1!</exception>
-	/// <exception cref="ArgumentOutOfRangeException">The <see cref="string"/> must be accepted by the constructor.</exception>
-	public static Digit Parse(string s, IFormatProvider? _ = null)
-	{
-		return s.Length == 1 ? new(s[0]) : throw new FormatException($"The length of the given string (${s}) cannot be more than 1!");
-	}
-
-	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Digit result)
-	{
-		if (s is null)
-		{
-			result = ZERO;
-			return false;
-		}
-
-		try
-		{
-			result = Parse(s, null);
-			return true;
-		}
-		catch (Exception)
-		{
-			result = ZERO;
-			return false;
-		}
-	}
-
-	/// <summary>
-	/// Compares two <see cref="Digit"/>s.
-	/// </summary>
-	/// <param name="left">The first <see cref="Digit"/> to compare.</param>
-	/// <param name="right">The second <see cref="Digit"/> to compare.</param>
+	/// <param name="left">The first <see langword="byte"/> to compare.</param>
+	/// <param name="right">The second <see langword="byte"/> to compare.</param>
 	/// <returns>
 	/// <see langword="true"/> if the value of <paramref name="left"/> is equal to the value of <paramref name="right"/>; 
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public static bool Equals(Digit left, Digit right) => left.bits == right.bits;
+	public static bool Equals(byte left, byte right) => left == right;
 
 	/// <summary>
-	/// Compares two <see cref="Digit"/>s.
+	/// Compares two <see langword="byte"/>s.
 	/// </summary>
-	/// <param name="left">The first <see cref="Digit"/> to compare.</param>
-	/// <param name="right">The second <see cref="Digit"/> to compare.</param>
+	/// <param name="left">The first <see langword="byte"/> to compare.</param>
+	/// <param name="right">The second <see langword="byte"/> to compare.</param>
 	/// <returns>
 	/// <see langword="true"/> if the value of <paramref name="left"/> is greater than the value of <paramref name="right"/>;
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public static bool GreaterThan(Digit left, Digit right) => left.bits > right.bits;
+	public static bool GreaterThan(byte left, byte right) => left > right;
 
 	/// <summary>
-	/// Adds two <see cref="Digit"/>s.
+	/// Adds two <see langword="byte"/>s.
 	/// </summary>
-	/// <param name="left">The first <see cref="Digit"/> to add.</param>
-	/// <param name="right">The second <see cref="Digit"/> to add.</param>
+	/// <param name="left">The first <see langword="byte"/> to add.</param>
+	/// <param name="right">The second <see langword="byte"/> to add.</param>
 	/// <param name="carry">The carry value.</param>
 	/// <returns>The result value and if there was an overflow in a tuple.</returns>
-	public static (bool Overflow, Digit Digit) Add(Digit left, Digit right, bool carry = false)
+	public static (bool Overflow, byte Digit) Add(byte left, byte right, bool carry = false)
 	{
-		int result = carry ? left.bits + right.bits + 1 : left.bits + right.bits; 
-		bool overflow = TEN <= result;
+		int result = carry ? left + right + 1 : left + right; 
+		bool overflow = 10 <= result;
 
-		return (overflow, (byte)(overflow ? result - TEN : result));
+		return (overflow, (byte)(overflow ? result - 10 : result));
 	}
 
 	/// <summary>
-	/// Subtracts two <see cref="Digit"/>s.
+	/// Adds one to the given <see langword="byte"/>.
 	/// </summary>
-	/// <param name="left">The <see cref="Digit"/> that represents the minuend.</param>
-	/// <param name="right">The <see cref="Digit"/> that represents the subtrahend.</param>
+	/// <param name="value">The <see langword="byte"/> to add to.</param>
+	/// <returns>The result value and if there was an overflow in a tuple.</returns>
+	public static (bool Overflow, byte Digit) AddOne(byte value)
+	{
+		bool overflow = 10 <= ++value;
+
+		return (overflow, (byte)(overflow ? value - 10 : value));
+	}
+
+	/// <summary>
+	/// Subtracts two <see langword="byte"/>s.
+	/// </summary>
+	/// <param name="left">The <see langword="byte"/> that represents the minuend.</param>
+	/// <param name="right">The <see langword="byte"/> that represents the subtrahend.</param>
 	/// <param name="carry">The carry value.</param>
 	/// <returns>The result value and if there was a borrow in a tuple.</returns>
-	public static (bool Borrow, Digit Digit) Subtract(Digit left, Digit right, bool carry = false)
+	public static (bool Borrow, byte Digit) Subtract(byte left, byte right, bool carry = false)
 	{
-		int rightBitsPlusCarry = carry ? right.bits + 1 : right.bits;
-		bool borrow = rightBitsPlusCarry > left.bits;
+		int rightBitsPlusCarry = carry ? right + 1 : right;
+		bool borrow = rightBitsPlusCarry > left;
 
-		return (borrow, (byte)(borrow ? TEN - (rightBitsPlusCarry - left.bits) : left.bits - rightBitsPlusCarry));
+		return (borrow, (byte)(borrow ? 10 - (rightBitsPlusCarry - left) : left - rightBitsPlusCarry));
 	}
 
 	/// <summary>
-	/// Multiplies two <see cref="Digit"/>s.
+	/// Subtracts one from the given <see langword="byte"/>.
 	/// </summary>
-	/// <param name="left">The <see cref="Digit"/> that represents the multiplier.</param>
-	/// <param name="right">The <see cref="Digit"/> that represents the multiplicand.</param>
+	/// <param name="value">The <see langword="byte"/> to subtract from.</param>
+	/// <returns>The result value and if there was an overflow in a tuple.</returns>
+	public static (bool Overflow, byte Digit) SubtractOne(byte value)
+	{
+		bool overflow = value == 0;
+
+		return (overflow, (byte)(overflow ? 9 : --value));
+	}
+
+	/// <summary>
+	/// Multiplies two <see langword="byte"/>s.
+	/// </summary>
+	/// <param name="left">The <see langword="byte"/> that represents the multiplier.</param>
+	/// <param name="right">The <see langword="byte"/> that represents the multiplicand.</param>
 	/// <returns>The result value and the amount of overflow in a tuple.</returns>
-	public static (Digit Overflow, Digit Digit) Multiply(Digit left, Digit right)
+	public static (byte Overflow, byte Digit) Multiply(byte left, byte right)
 	{
-		int whole = left.bits * right.bits;
-		int remainder = whole % TEN;
-		whole /= TEN;
+		int whole = left * right;
+		int remainder = whole % 10;
+		whole /= 10;
 
 		return ((byte)whole, (byte)remainder);
 	}
 
 	/// <summary>
-	/// Divides two <see cref="Digit"/>s.
+	/// Divides two <see langword="byte"/>s.
 	/// </summary>
-	/// <param name="left">The <see cref="Digit"/> that represents the numerator.</param>
-	/// <param name="right">The <see cref="Digit"/> that represents the denominator.</param>
+	/// <param name="left">The <see langword="byte"/> that represents the numerator.</param>
+	/// <param name="right">The <see langword="byte"/> that represents the denominator.</param>
 	/// <returns>The whole value and the remainder in a tuple.</returns>
-	/// <exception cref="DivideByZeroException"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
-	public static (Digit Whole, Digit Remainder) Divide(Digit left, Digit right)
+	/// <exception cref="DivideBy0Exception"><paramref name="right"/> cannot be 0, as it is not mathematically meaningful.</exception>
+	public static (byte Whole, byte Remainder) Divide(byte left, byte right)
 	{
-		int whole = left.bits / right.bits;
-		int remainder = left.bits % right.bits;
+		int whole = left / right;
+		int remainder = left % right;
 
 		return ((byte)whole, (byte)remainder);
 	}
-
-	/// <summary>
-	/// Compares the given <see langword="object"/>? to this instance.
-	/// </summary>
-	/// <param name="obj">The <see langword="object"/>? to compare to.</param>
-	/// <returns>
-	/// <see langword="true"/> if <paramref name="obj"/> is <see cref="Digit"/> and equal to the value of <see langword="this"/>; 
-	/// otherwise, <see langword="false"/>.
-	/// </returns>
-	public override bool Equals(object? obj) => obj is Digit digit && this == digit;
-
-	/// <summary>
-	/// Returns the hash value representing <see langword="this"/> instance.
-	/// </summary>
-	/// <returns>The hash value computed by the <see cref="Bits"/> property.</returns>
-	public override int GetHashCode() => bits;
-
-	#endregion
-
-	#region Operators
-
-	public static implicit operator Digit(char value) => new(value);
-	public static implicit operator Digit(byte value) => new(value);
-	public static bool operator ==(Digit left, Digit right) => Equals(left, right);
-	public static bool operator !=(Digit left, Digit right) => !Equals(left, right);
-	public static bool operator >(Digit left, Digit right) => GreaterThan(left, right);
-	public static bool operator <(Digit left, Digit right) => GreaterThan(right, left);
-	public static bool operator >=(Digit left, Digit right) => !GreaterThan(right, left);
-	public static bool operator <=(Digit left, Digit right) => !GreaterThan(left, right);
-	public static Digit operator ++(Digit value)
-	{
-		int result = value.bits + 1;
-
-		return (byte)(TEN <= result ? result - TEN : result);
-	}
-	public static Digit operator --(Digit value) => (byte)(value.bits == 0 ? 9 : value.bits - 1);
-	public static Digit operator +(Digit left, Digit right) => Add(left, right).Digit;
-	public static Digit operator -(Digit left, Digit right) => Subtract(left, right).Digit;
-	public static Digit operator *(Digit left, Digit right) => Multiply(left, right).Digit;
-	public static Digit operator /(Digit left, Digit right) => Divide(left, right).Whole;
-	public static Digit operator %(Digit left, Digit right) => Divide(left, right).Remainder;
 
 	#endregion
 }

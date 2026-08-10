@@ -8,6 +8,8 @@ namespace BullseyeCalculator.WPF.View;
 
 public partial class MainWindow : Window
 {
+	#region Constructors
+
 	public MainWindow()
 	{
 		InitializeComponent();
@@ -23,6 +25,10 @@ public partial class MainWindow : Window
 		SizeChanged += new SizeChangedEventHandler((_, _) => CalculateFontSize(ActualWidth, ActualHeight));
 	}
 
+	#endregion
+
+	#region Private methods
+
 	[LibraryImport("dwmapi.dll")]
 	private static partial int DwmSetWindowAttribute(IntPtr windowHandle, int attributeID, ref int attributeValue, int attributeSize);
 
@@ -30,4 +36,6 @@ public partial class MainWindow : Window
 	{
 		Application.Current.Resources["ControlFontSize"] = Math.Clamp(Math.Min(width, height) / 20, 14, 28);
 	}
+
+	#endregion
 }

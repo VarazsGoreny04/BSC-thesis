@@ -36,9 +36,9 @@ public class Writable :
 
 	#region Properties
 
-	public static Writable AdditiveIdentity => Digit.ZERO;
+	public static Writable AdditiveIdentity => 0;
 
-	public static Writable MultiplicativeIdentity => Digit.ONE;
+	public static Writable MultiplicativeIdentity => 1;
 
 	/// <summary>
 	/// Gets or sets whether the <see cref="ToString"/> method should write the + sign to the front of the number.
@@ -89,11 +89,11 @@ public class Writable :
 	/// <returns>
 	/// The <see cref="ImmutableArray{Digit}"/> used to represent <see langword="this"/> <see cref="Writable"/> without indicating the decimal separator.
 	/// </returns>
-	public ImmutableArray<Digit> Digits => value.Digits;
+	public ImmutableArray<byte> Digits => value.Digits;
 
 	/// <returns>The <see cref="Digit"/> at the specified <see cref="Index"/>.</returns>
 	/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> must be within the bounds os the digits.</exception>
-	public Digit this[Index index] => value.Digits[index];
+	public byte this[Index index] => value.Digits[index];
 
 	#endregion
 
@@ -156,7 +156,7 @@ public class Writable :
 	/// <summary>
 	/// Constructs a <see cref="Writable"/> by the given <see cref="Digit"/>.
 	/// </summary>
-	public Writable(Digit value) : this(true, value) { }
+	public Writable(byte value) : this(true, value) { }
 
 	/// <summary>
 	/// Constructs a <see cref="Writable"/> by the given <see cref="Natural"/>.
@@ -341,8 +341,8 @@ public class Writable :
 		if (right.FractionLength > 0)
 			throw new NotSupportedException("This type does not support fractional exponents!");
 
-		return right.sign ? (new Writable(left.sign || right[0] % Digit.TWO == Digit.ZERO, left.value ^ right.value), Digit.ZERO) :
-			Divide(Digit.ONE, Power(left, right.Value).Value, fractionCalculationLength);
+		return right.sign ? (new Writable(left.sign || right[0] % 2 == 0, left.value ^ right.value), 0) :
+			Divide(1, Power(left, right.Value).Value, fractionCalculationLength);
 	}
 
 	/// <summary>
@@ -372,15 +372,15 @@ public class Writable :
 	/// <exception cref="NotSupportedException"><paramref name="right"/> cannot be higher than 99 as it would be too computationally expensive.</exception>
 	public static (Writable Value, Writable Remainder) Root(Writable left, Writable right, int? fractionCalculationLength = null)
 	{
-		if (!left.sign && right[0] % Digit.TWO == Digit.ZERO)
+		if (!left.sign && right[0] % 2 == 0)
 			throw new ArgumentException("While the radicand is negative the degree cannot be even as it is not mathematically meaningful!");
 
 		if (!right.sign)
 		{
 			(Writable rootValue, Writable rootRemainder) = Root(left, right.Value, (fractionCalculationLength ?? FractionCalculationLength) + 1);
-			(Writable divisionValue, Writable divisionRemainder) = Divide(Digit.ONE, rootValue, fractionCalculationLength);
+			(Writable divisionValue, Writable divisionRemainder) = Divide(1, rootValue, fractionCalculationLength);
 
-			return (divisionValue, Digit.ZERO);
+			return (divisionValue, 0);
 		}
 
 		(Positive value, Positive remainder) = Positive.Root(left.Value, right.Value, fractionCalculationLength);
@@ -411,7 +411,7 @@ public class Writable :
 	#region Operators
 
 	public static implicit operator Writable(string value) => new(value);
-	public static implicit operator Writable(Digit value) => new(value);
+	public static implicit operator Writable(byte value) => new(value);
 	public static implicit operator Writable(Natural value) => new(value);
 	public static implicit operator Writable(Integer value) => new(value);
 	public static implicit operator Writable(Positive value) => new(value);
@@ -423,8 +423,8 @@ public class Writable :
 	public static bool operator <=(Writable left, Writable right) => !GreaterThan(left, right);
 	public static Writable operator +(Writable value) => value;
 	public static Writable operator -(Writable value) => new(!value.Sign, value.Value);
-	public static Writable operator ++(Writable value) => Add(value, Digit.ONE);
-	public static Writable operator --(Writable value) => Subtract(value, Digit.ONE).Value;
+	public static Writable operator ++(Writable value) => Add(value, 1);
+	public static Writable operator --(Writable value) => Subtract(value, 1).Value;
 	public static Writable operator +(Writable left, Writable right) => Add(left, right);
 	public static Writable operator -(Writable left, Writable right) => Subtract(left, right);
 	public static Writable operator *(Writable left, Writable right) => Multiply(left, right);
