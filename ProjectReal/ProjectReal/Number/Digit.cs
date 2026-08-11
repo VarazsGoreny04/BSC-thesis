@@ -3,7 +3,7 @@
 namespace ProjectReal.Number;
 
 /// <summary>
-/// Represents a decimal byte using the BCD format.
+/// Represents a decimal digit.
 /// </summary>
 public static class Digit
 {

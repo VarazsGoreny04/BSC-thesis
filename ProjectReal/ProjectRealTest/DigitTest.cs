@@ -173,8 +173,28 @@ public class DigitTest
 				b = Digit.Create(ToChar(j));
 				c = Digit.Create(ToChar((i + j) % 10));
 
-				Assert.AreEqual(c, Digit.Add(a, b).Digit);
+				(bool overflow, byte digit) = Digit.Add(a, b);
+
+				Assert.AreEqual((i + j) / 10 > 0, overflow);
+				Assert.AreEqual(c, digit);
 			}
+		}
+	}
+
+	[TestMethod]
+	public void AddOneMethod()
+	{
+		byte a, b;
+
+		for (int i = 0; i < 10; ++i)
+		{
+			a = Digit.Create(ToChar(i));
+			b = Digit.Create(ToChar((i + 1) % 10));
+
+			(bool overflow, byte digit) = Digit.AddOne(a);
+
+			Assert.AreEqual((i + 1) / 10 > 0, overflow);
+			Assert.AreEqual(b, digit);
 		}
 	}
 
@@ -193,9 +213,26 @@ public class DigitTest
 
 				(bool borrow, byte digit) = Digit.Subtract(a, b);
 
-				Assert.AreEqual(((i - j + 10) / 10) == 0, borrow);
+				Assert.AreEqual((i - j + 10) / 10 == 0, borrow);
 				Assert.AreEqual(c, digit);
 			}
+		}
+	}
+
+	[TestMethod]
+	public void SubtractOneMethod()
+	{
+		byte a, b;
+
+		for (int i = 0; i < 10; ++i)
+		{
+			a = Digit.Create(ToChar(i));
+			b = Digit.Create(ToChar((i - 1 + 10) % 10));
+
+			(bool borrow, byte digit) = Digit.SubtractOne(a);
+
+			Assert.AreEqual((i - 1 + 10) / 10 == 0, borrow);
+			Assert.AreEqual(b, digit);
 		}
 	}
 
