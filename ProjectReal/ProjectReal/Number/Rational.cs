@@ -28,7 +28,12 @@ public class Rational :
 {
 	#region Fields
 
-	private static bool fractionalFormat = true;
+	private static bool fractionalFormat = false;
+
+	private const int RECALCULATION_DIFFERENCE = 20;
+	private static (uint Length, Rational Pi) piBackup = (0, new());
+	private static (uint Length, Rational E) eBackup = (0, new());
+	private static (uint Length, Rational Ln2) ln2Backup = (0, new());
 
 	private readonly Writable numerator;
 	private readonly Positive? denominator;
@@ -246,7 +251,7 @@ public class Rational :
 	/// <param name="numerator">The numerator of the <see cref="Rational"/>.</param>
 	/// <param name="denominator">The denominator of the <see cref="Rational"/>.</param>
 	/// <returns>The simplified numerator and denominator value in a tuple.</returns>
-	internal static (Writable Numerator, Positive? Denominator) Simplify(Writable numerator, Positive? denominator)
+	private static (Writable Numerator, Positive? Denominator) Simplify(Writable numerator, Positive? denominator)
 	{
 		if (denominator is Positive denominatorValue)
 		{
@@ -259,6 +264,24 @@ public class Rational :
 		}
 		else
 			return (numerator, null);
+	}
+
+	/// <summary>
+	/// Uses Halley's method to calculate the natural logarithm.
+	/// </summary>
+	/// <param name="y">The estimated value.</param>
+	/// <param name="x">The argument of the logarithm.</param>
+	/// <param name="iterations">The number of iterations in Halley's method.</param>
+	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
+	/// <returns>A better estimate than <paramref name="y"/>.</returns>
+	private static Rational Ln(Rational y, Writable x, int iterations, int fractionCalculationLength)
+	{
+		if (iterations <= 0)
+			return y;
+
+		Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
+
+		return Ln(y + (2 * new Rational(x - expY) / new Rational(x + expY)), x, iterations - 1, fractionCalculationLength);
 	}
 
 	#endregion
@@ -590,11 +613,18 @@ public class Rational :
 		}
 
 		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
-		int n = fCL / 13 + 1;
 
-		(_, Natural Q, Integer T) = BinarySplitting(0, new Natural((uint)n));
+		if (fCL > piBackup.Length || piBackup.Length - fCL > RECALCULATION_DIFFERENCE)
+		{
+			piBackup.Length = (uint)fCL;
+			uint n = piBackup.Length / 13 + 1;
 
-		return new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL + 2).Value * "426880", T.Value);
+			(Natural _, Natural Q, Integer T) = BinarySplitting(0, new Natural(n));
+
+			piBackup.Pi = new Rational(T.Sign, Q * Positive.SquareRoot("10005", fCL + 2).Value * "426880", T.Value);
+		}
+
+		return piBackup.Pi;
 	}
 
 	/// <summary>
@@ -633,11 +663,19 @@ public class Rational :
 			}
 		}
 
-		int n = Math.Max((fractionCalculationLength ?? FractionCalculationLength) / 2, 1) + 23;
+		int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
 
-		(Natural Q, Natural T) = BinarySplitting(0, n);
+		if (fCL > eBackup.Length || eBackup.Length - fCL > RECALCULATION_DIFFERENCE)
+		{
+			eBackup.Length = (uint)fCL;
+			int n = (fCL + 1) / 2 + 23;
 
-		return new Rational(T, Q);
+			(Natural Q, Natural T) = BinarySplitting(0, n);
+			
+			eBackup.E = new Rational(T, Q);
+		}
+
+		return eBackup.E;
 	}
 
 	/// <summary>
@@ -646,7 +684,6 @@ public class Rational :
 	/// </summary>
 	/// <remarks>
 	/// <see href="https://ginac.de/CLN/binsplit.pdf"/><br/>
-	/// <see href="https://stackoverflow.com/questions/57510825/binary-splitting-in-pari-gp"/>
 	/// </remarks>
 	/// <param name="x">The exponent in e^<paramref name="x"/>.</param>
 	/// <param name="fractionCalculationLength">A local variable to override <see cref="FractionCalculationLength"/> just for this method.</param>
@@ -695,9 +732,9 @@ public class Rational :
 		Rational fraction = x - whole;
 
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
-		int plusFractionLength = Integer.ToInt32(RoundDown(x * "0.43457") + 1);
+		int plusFractionLength = Integer.ToInt32(RoundUp(x * "0.4343"));
 
-		Rational powE = whole.IsZero ? 1 : Power(E(n + plusFractionLength), whole, n);
+		Rational powE = whole.IsZero ? 1 : Power(E(n + plusFractionLength), whole);
 		return fraction.IsZero ? powE : powE * Exp(n + 5, fraction);
 	}
 
@@ -712,7 +749,7 @@ public class Rational :
 	/// <exception cref="ArgumentOutOfRangeException">The anti-logarithm cannot be negative as it is not mathematically meaningful.</exception>
 	public static Rational Ln(Rational x, int? fractionCalculationLength = null)
 	{
-		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x, int fractionCalculationLength)
+		static (Integer Exponent, Writable ReducedX) DeconstructToMultiplication(Rational x)
 		{
 			Integer n = 0;
 
@@ -736,13 +773,12 @@ public class Rational :
 			}
 		}
 
-		static Rational Ln(Rational y, Writable x, int iterations, int fractionCalculationLength)
+		static Rational Ln2(int iterations, int fractionCalculationLength)
 		{
-			if (iterations <= 0)
-				return y;
+			if (fractionCalculationLength > ln2Backup.Length || ln2Backup.Length - fractionCalculationLength > RECALCULATION_DIFFERENCE)
+				ln2Backup = ((uint)fractionCalculationLength, Ln("0.693", 2, iterations, fractionCalculationLength));
 
-			Writable expY = GetValue(Exp(y, fractionCalculationLength), fractionCalculationLength).Value;
-			return Ln(y + (2 * new Rational(x - expY) / new Rational(x + expY)), x, iterations - 1, fractionCalculationLength);
+			return ln2Backup.Ln2;
 		}
 
 		if (x <= 0)
@@ -750,9 +786,9 @@ public class Rational :
 
 		int n = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 10);
 
-		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x, n);
+		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x);
 
-		return Ln(("0.7" * (reducedX - 1)) - (Abs("1.5" - reducedX) / 9) + "0.06", reducedX, 3, n) + exponent * Ln("0.693", 2, 3, n + exponent.Length);
+		return Ln(("0.7" * (reducedX - 1)) - (Abs("1.5" - reducedX) / 9) + "0.06", reducedX, 3, n) + exponent * Ln2(3, n + exponent.Length);
 	}
 
 	/// <summary>

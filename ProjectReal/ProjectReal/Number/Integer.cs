@@ -196,7 +196,7 @@ public class Integer :
 	/// Returns an integer that represents the given <paramref name="value"/>.
 	/// </summary>
 	/// <param name="value">The <see cref="Integer"/> to convert.</param>
-	/// <returns>A <see cref="Integer"/> number as an <see langword="int"/>.</returns>
+	/// <returns>An <see cref="Integer"/> number as an <see langword="int"/>.</returns>
 	/// <exception cref="OverflowException"><paramref name="value"/> cannot be greater than than <see cref="int.MaxValue"/>.</exception>
 	public static int ToInt32(Integer value) => Convert.ToInt32(value.ToString());
 
