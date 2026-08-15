@@ -46,9 +46,13 @@ public sealed class Max<T> : Function<T> where T : IComparisonOperators<T, T, bo
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override T GetValue() => First.GetValue() > Second.GetValue() ? First.GetValue() : Second.GetValue();
+	protected override T CalculateValue() => First.GetValue() > Second.GetValue() ? First.GetValue() : Second.GetValue();
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "max";
 
@@ -99,9 +103,13 @@ public sealed class Min<T> : Function<T> where T : IComparisonOperators<T, T, bo
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override T GetValue() => First.GetValue() < Second.GetValue() ? First.GetValue() : Second.GetValue();
+	protected override T CalculateValue() => First.GetValue() < Second.GetValue() ? First.GetValue() : Second.GetValue();
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "min";
 

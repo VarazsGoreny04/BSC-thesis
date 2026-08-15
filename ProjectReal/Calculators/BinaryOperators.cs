@@ -34,9 +34,13 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override T GetValue() => Left.GetValue() + Right.GetValue();
+	protected override T CalculateValue() => Left.GetValue() + Right.GetValue();
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "+";
 
@@ -94,9 +98,13 @@ public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override T GetValue() => Left.GetValue() - Right.GetValue();
+	protected override T CalculateValue() => Left.GetValue() - Right.GetValue();
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "-";
 
@@ -147,6 +155,12 @@ public partial class Multiply<T> : BinaryOperator<T> where T : IMultiplyOperator
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Left.GetValue() * Right.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override Priority Order() => Priority.SecondClass;
@@ -154,8 +168,6 @@ public partial class Multiply<T> : BinaryOperator<T> where T : IMultiplyOperator
 	#endregion
 
 	#region Public methods
-
-	public override T GetValue() => Left.GetValue() * Right.GetValue();
 
 	public override string Sign() => "*";
 
@@ -184,6 +196,12 @@ public partial class Divide<T> : BinaryOperator<T> where T : IDivisionOperators<
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Left.GetValue() / Right.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override Priority Order() => Priority.SecondClass;
@@ -191,8 +209,6 @@ public partial class Divide<T> : BinaryOperator<T> where T : IDivisionOperators<
 	#endregion
 
 	#region Public methods
-
-	public override T GetValue() => Left.GetValue() / Right.GetValue();
 
 	public override string Sign() => "/";
 
@@ -221,6 +237,12 @@ public partial class Modulo<T> : BinaryOperator<T> where T : IModulusOperators<T
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Left.GetValue() % Right.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override Priority Order() => Priority.SecondClass;
@@ -228,8 +250,6 @@ public partial class Modulo<T> : BinaryOperator<T> where T : IModulusOperators<T
 	#endregion
 
 	#region Public methods
-
-	public override T GetValue() => Left.GetValue() % Right.GetValue();
 
 	public override string Sign() => "%";
 
@@ -258,6 +278,12 @@ public partial class Power<T> : BinaryOperator<T> where T : IPowerOperations<T, 
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Left.GetValue() ^ Right.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
@@ -277,8 +303,6 @@ public partial class Power<T> : BinaryOperator<T> where T : IPowerOperations<T, 
 	#endregion
 
 	#region Public methods
-
-	public override T GetValue() => Left.GetValue() ^ Right.GetValue();
 
 	public override string Sign() => "^";
 
@@ -307,6 +331,12 @@ public partial class Root<T> : BinaryOperator<T> where T : IRootOperations<T, T,
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Left.GetValue() | Right.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override Priority Order() => Priority.ThirdClass;
@@ -314,8 +344,6 @@ public partial class Root<T> : BinaryOperator<T> where T : IRootOperations<T, T,
 	#endregion
 
 	#region Public methods
-
-	public override T GetValue() => Left.GetValue() | Right.GetValue();
 
 	public override string Sign() => "|";
 

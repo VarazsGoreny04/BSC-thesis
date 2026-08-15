@@ -12,6 +12,8 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 	#region Fields
 
 	protected readonly ValueHolder<T>[] parameters;
+	protected readonly ValueHolder<T>[] prevParameters;
+	protected T? result;
 
 	#endregion
 
@@ -28,7 +30,23 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 	/// Constructs a <see cref="FunctionBase{T}"/> object with a given parameters.
 	/// </summary>
 	/// <param name="parameters">The parameters of the function.</param>
-	protected FunctionBase(ValueHolder<T>[] parameters) => this.parameters = parameters;
+	protected FunctionBase(ValueHolder<T>[] parameters)
+	{
+		this.parameters = parameters;
+		
+		prevParameters = new ValueHolder<T>[parameters.Length];
+		result = default;
+	}
+
+	#endregion
+
+	#region Protected methods
+
+	/// <summary>
+	/// Calculates the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>The calculated value.</returns>
+	protected abstract T CalculateValue();
 
 	#endregion
 
@@ -55,6 +73,21 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 	#endregion
 
 	#region Public methods
+
+	public override T GetValue()
+	{
+		if (parameters.Zip(prevParameters).All(x => x.First == x.Second) && result is not null)
+			return result;
+		else
+		{
+			for (int i = prevParameters.Length - 1; i >= 0; --i)
+				prevParameters[i] = parameters[i];
+
+			result = CalculateValue();
+
+			return result;
+		}
+	}
 
 	/// <summary>
 	/// Returns the sign of <see langword="this"/> function.

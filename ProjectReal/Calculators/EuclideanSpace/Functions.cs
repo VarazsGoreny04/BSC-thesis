@@ -52,9 +52,13 @@ where T :
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Matrix<T> GetValue() => MatrixOperations<T>.Diagonalize(Matrix<T>.ToMatrix(Parameter.GetValue().Value), 3).Eigenvalues;
+	protected override Matrix<T> CalculateValue() => MatrixOperations<T>.Diagonalize(Matrix<T>.ToMatrix(Parameter.GetValue().Value), 3).Eigenvalues;
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "diag";
 
@@ -109,9 +113,13 @@ where T :
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Matrix<T> GetValue() => MatrixOperations<T>.Inverse(Matrix<T>.ToMatrix(Parameter.GetValue().Value));
+	protected override Matrix<T> CalculateValue() => MatrixOperations<T>.Inverse(Matrix<T>.ToMatrix(Parameter.GetValue().Value));
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "inv";
 

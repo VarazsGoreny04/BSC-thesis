@@ -37,9 +37,9 @@ public abstract partial class ValueHolder<T> : Expression
 	public abstract void FullEvaluation(ref List<(string, string)> partialValues, ValueHolder<T> root, ref int step);
 
 	/// <summary>
-	/// Calculates the value of <see langword="this"/> instance.
+	/// Gets the value of <see langword="this"/> instance.
 	/// </summary>
-	/// <returns>The calculated value.</returns>
+	/// <returns>The value.</returns>
 	public abstract T GetValue();
 
 	#endregion

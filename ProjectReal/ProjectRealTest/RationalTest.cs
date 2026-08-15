@@ -840,7 +840,7 @@ public class RationalTest
 	public void ExpMethod()
 	{
 		Rational.FractionalFormat = false;
-		Rational.FractionCalculationLength = FRACTION_CALCULATION_LENGTH * 2;
+		Rational.FractionCalculationLength = FRACTION_CALCULATION_LENGTH * 10;
 
 		(Rational Value, string Result)[] exp100 = [
 			("+35", "+1586013452313430.7281296446257746601251762039501345261542666970224528012046269232516410621781159779621942264969919859"),

@@ -36,9 +36,13 @@ public sealed class Abs : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Abs(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Abs(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "abs";
 
@@ -78,9 +82,13 @@ public sealed class Floor : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.RoundDown(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.RoundDown(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "floor";
 
@@ -120,9 +128,13 @@ public sealed class Round : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Round(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Round(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "round";
 
@@ -162,9 +174,13 @@ public sealed class Ceiling : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.RoundUp(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.RoundUp(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "ceiling";
 
@@ -204,9 +220,13 @@ public sealed class Sin : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Sin(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Sin(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "sin";
 
@@ -246,9 +266,13 @@ public sealed class Cos : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Cos(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Cos(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "cos";
 
@@ -289,9 +313,13 @@ public sealed class Exp : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Exp(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Exp(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "exp";
 
@@ -331,9 +359,13 @@ public sealed class Ln : Function<Rational>
 
 	#endregion
 
-	#region Public methods
+	#region Protected methods
 
-	public override Rational GetValue() => Rational.Ln(Parameter.GetValue());
+	protected override Rational CalculateValue() => Rational.Ln(Parameter.GetValue());
+
+	#endregion
+
+	#region Public methods
 
 	public override string Sign() => "ln";
 

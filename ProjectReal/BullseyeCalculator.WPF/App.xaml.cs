@@ -51,6 +51,12 @@ public partial class App : Application
 					return;
 				}
 
+				if (e.Key == Key.D3)
+				{
+					viewModel.PushInputCommand.Execute('\u005E');
+					return;
+				}
+
 				(e.Key switch
 				{
 					Key.Back => viewModel.PopInputCommand,

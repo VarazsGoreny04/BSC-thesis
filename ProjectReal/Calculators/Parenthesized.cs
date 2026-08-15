@@ -28,6 +28,12 @@ public sealed partial class Parenthesized<T> : FunctionBase<T>
 
 	#endregion
 
+	#region Protected methods
+
+	protected override T CalculateValue() => Content.GetValue();
+
+	#endregion
+
 	#region Internal methods
 
 	internal override void ToPostfix(ref Stack<Expression> functions, ref List<Expression> result)
@@ -50,8 +56,6 @@ public sealed partial class Parenthesized<T> : FunctionBase<T>
 	{
 		Content.FullEvaluation(ref partialValues, root, ref step);
 	}
-
-	public override T GetValue() => Content.GetValue();
 
 	public override string ToStringByStep(ref int step) => $"({Content.ToStringByStep(ref step)})";
 
