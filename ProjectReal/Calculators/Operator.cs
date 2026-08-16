@@ -24,13 +24,17 @@ public abstract partial class Operator<T> : FunctionBase<T>
 	internal override void ToTree(ref Stack<Expression> result)
 	{
 		int length = Math.Min(parameters.Length, result.Count);
+		int i = 1;
 
-		for (int i = 1; i <= length && result.Peek() is ValueHolder<T> valueHolder; ++i)
+		for (; i <= length && result.Peek() is ValueHolder<T> valueHolder; ++i)
 		{
 			result.Pop();
 
 			parameters[^i] = valueHolder;
 		}
+
+		if (i <= parameters.Length)
+			throw new ArgumentException($"Not enough parameters for the {Sign()} operation!");
 
 		result.Push(this);
 	}

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculators;
@@ -23,12 +24,18 @@ public abstract partial class Function<T> : FunctionBase<T>
 
 	internal override void ToTree(ref Stack<Expression> result)
 	{
-		for (int i = 1; i <= parameters.Length && result.Peek() is Parenthesized<T> parenthesized; ++i)
+		int length = Math.Min(parameters.Length, result.Count);
+		int i = 1;
+
+		for (; i <= length && result.Peek() is Parenthesized<T> parenthesized; ++i)
 		{
 			result.Pop();
 
 			parameters[^i] = parenthesized.Content;
 		}
+
+		if (i <= parameters.Length)
+			throw new ArgumentException($"Not enough parameters for the {Sign()} function!");
 
 		result.Push(this);
 	}

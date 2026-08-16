@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculators;
@@ -76,17 +77,14 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 
 	public override T GetValue()
 	{
-		if (parameters.Zip(prevParameters).All(x => x.First == x.Second) && result is not null)
-			return result;
-		else
+		if (result is null || parameters.Zip(prevParameters).Any(x => x.First != x.Second))
 		{
-			for (int i = prevParameters.Length - 1; i >= 0; --i)
-				prevParameters[i] = parameters[i];
+			Array.Copy(parameters, prevParameters, prevParameters.Length);
 
 			result = CalculateValue();
-
-			return result;
 		}
+
+		return result;
 	}
 
 	/// <summary>

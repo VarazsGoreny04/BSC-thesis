@@ -1,4 +1,5 @@
 ﻿using ProjectReal.NumberSet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -37,6 +38,31 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 	#region Protected methods
 
 	protected override T CalculateValue() => Left.GetValue() + Right.GetValue();
+
+	#endregion
+
+	#region Internal methods
+
+	internal override void ToTree(ref Stack<Expression> result)
+	{
+		if (result.Count > 0 && result.Peek() is ValueHolder<T> valueHolder1)
+		{
+			result.Pop();
+
+			Right = valueHolder1;
+		}
+		else
+			throw new ArgumentException($"Not enough parameters for the {Sign()} operation!");
+
+		if (result.Count > 0 && result.Peek() is ValueHolder<T> valueHolder2)
+		{
+			result.Pop();
+
+			Left = valueHolder2;
+		}
+
+		result.Push(this);
+	}
 
 	#endregion
 
@@ -101,6 +127,31 @@ public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity
 	#region Protected methods
 
 	protected override T CalculateValue() => Left.GetValue() - Right.GetValue();
+
+	#endregion
+
+	#region Internal methods
+
+	internal override void ToTree(ref Stack<Expression> result)
+	{
+		if (result.Count > 0 && result.Peek() is ValueHolder<T> valueHolder1)
+		{
+			result.Pop();
+
+			Right = valueHolder1;
+		}
+		else
+			throw new ArgumentException($"Not enough parameters for the {Sign()} operation!");
+
+		if (result.Count > 0 && result.Peek() is ValueHolder<T> valueHolder2)
+		{
+			result.Pop();
+
+			Left = valueHolder2;
+		}
+
+		result.Push(this);
+	}
 
 	#endregion
 
