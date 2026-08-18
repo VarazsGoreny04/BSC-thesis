@@ -510,6 +510,9 @@ public class Rational :
 	/// </exception>
 	public static Rational Power(Rational left, Rational right, int? fractionCalculationLength = null)
 	{
+		if (left.IsZero || left == 1)
+			return right.IsZero ? 1 : left;
+
 		Rational rightAbs = Abs(right);
 		Rational result;
 
@@ -518,7 +521,7 @@ public class Rational :
 			if (!left.Sign)
 				throw new NotSupportedException("This type does not support complex number results!");
 
-			int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1);
+			int fCL = Math.Max(fractionCalculationLength ?? FractionCalculationLength, 1) + 2;
 
 			Rational ln = Ln(left, fCL + (right.numerator.WholeLength - right.denominator?.WholeLength) + 1);
 			Rational mul = right * ln;
@@ -788,7 +791,7 @@ public class Rational :
 
 		(Integer exponent, Writable reducedX) = DeconstructToMultiplication(x);
 
-		return Ln(("0.7" * (reducedX - 1)) - (Abs("1.5" - reducedX) / 9) + "0.06", reducedX, 3, n) + exponent * Ln2(3, n + exponent.Length);
+		return Ln(("0.7" * (reducedX - 1)) - (Abs("1.5" - reducedX) / 9) + "0.06", reducedX, 3, n + 1) + exponent * Ln2(3, n + exponent.Length);
 	}
 
 	/// <summary>

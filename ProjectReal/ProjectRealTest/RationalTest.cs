@@ -722,8 +722,6 @@ public class RationalTest
 	{
 		Rational.FractionalFormat = false;
 
-		Rational epsilon = $"0.{new string('0', Rational.FractionCalculationLength / 10 * 8)}2";
-
 		int length;
 		Rational rational1, rational2, result;
 		string expected;
@@ -743,10 +741,7 @@ public class RationalTest
 
 				expected = (new Rational(item.Pow[..length])).ToString();
 
-				if (rational2.Denominator is not null || rational2.Numerator.FractionLength > 0)
-					Assert.IsTrue(Rational.Abs(expected - result) < epsilon, $"Expected:<{expected}> Actual:<{result}>");
-				else
-					Assert.AreEqual(expected[..length], result.ToString()[..length]);
+				Assert.AreEqual(expected[..length], result.ToString()[..length]);
 			}
 		}
 	}
@@ -755,8 +750,6 @@ public class RationalTest
 	public void RootMethod()
 	{
 		Rational.FractionalFormat = false;
-
-		Rational epsilon = $"0.{new string('0', Rational.FractionCalculationLength / 10 * 8)}2";
 
 		int length;
 		Rational rational1, rational2, result, reconstruction;
@@ -790,10 +783,7 @@ public class RationalTest
 
 				expected = (new Rational(item.Root[..length])).ToString();
 
-				if (rational2.Denominator is not null || rational2.Numerator.FractionLength > 0)
-					Assert.IsTrue(Rational.Abs(expected - result) < epsilon, $"Expected:<{expected}> Actual:<{result}>");
-				else
-					Assert.AreEqual(expected[..length], result.ToString()[..length]);
+				Assert.AreEqual(expected[..length], result.ToString()[..length]);
 
 				if (!(!rational2.Sign || rational2.Denominator is not null || rational2.Numerator.FractionLength > 0))
 				{
@@ -874,8 +864,6 @@ public class RationalTest
 		Rational.FractionalFormat = false;
 		Rational.FractionCalculationLength = FRACTION_CALCULATION_LENGTH;
 
-		Rational epsilon = $"0.{new string('0', Rational.FractionCalculationLength / 10 * 9)}2";
-
 		(Rational Value, string Result)[] ln100 = [
 			("+70.02", "+4.2487809155265196170203599195666722132870686909566619986012036523832758543072703286026251651114217226960230334572495"),
 			("+35", "+3.5553480614894136797061120766693673691626860838503789103720380414117588504597270324177923766810511377930279972275667"),
@@ -889,16 +877,13 @@ public class RationalTest
 			("+0.001", "-6.907755278982137052053974364053092622803304465886318928099983702902717829032057440707991615268794895025903352126858")
 		];
 
-		Rational result;
-		Rational expected;
+		string result;
 
 		for (int i = 0; i < ln100.Length; ++i)
 		{
-			result = Rational.Ln(ln100[i].Value);
+			result = Rational.Ln(ln100[i].Value).ToString();
 
-			expected = new Rational(ln100[i].Result);
-
-			Assert.IsTrue(Rational.Abs(expected - result) < epsilon, $"Expected:<{expected}> Actual:<{result}>");
+			Assert.AreEqual(ln100[i].Result[..result.Length], result);
 		}
 	}
 
@@ -916,9 +901,11 @@ public class RationalTest
 			("3.1", "+0.0415806624332905791946982715966731005546134229638067506480090007658845511597234572946939472109701753234146820689647554061961178531850555155363675021848588063757273930034415001917096097245368443124561892928747946192223166201207265076276310153915113498725161318322464587005418325792881586916599054657483105710943454527306743650927259450082752433630444898500951578614990163537044313632093820962685647218358467710031326204439263461600287834297610927289689443771147430877018689316415435910390283262674607")
 		];
 
+		string result;
+
 		for (int i = 0; i < sin500.Length; ++i)
 		{
-			string result = Rational.Sin(sin500[i].Value).ToString();
+			result = Rational.Sin(sin500[i].Value).ToString();
 
 			Assert.AreEqual(sin500[i].Result[..result.Length], result);
 		}
@@ -945,9 +932,11 @@ public class RationalTest
 			("+6.28", "+0.99999492691337521120835293804732270895196916047194905749344068724856502867448504153004751757463200997669845856149925997658283861351165731492494496050155382146409638109491827389633659445766418781866347981307162610767039360710539764174353778180705444577118582760247114038289809666665255894994711270968944181482596986855558684961757279256269847819648732350523110031208442196910434299634489099194473841964656787503472494209800307693115194589526723693573239648270665334589510906346673669641979997915142437")
 		];
 
+		string result;
+
 		for (int i = 0; i < cos500.Length; ++i)
 		{
-			string result = Rational.Cos(cos500[i].Value).ToString();
+			result = Rational.Cos(cos500[i].Value).ToString();
 
 			Assert.AreEqual(cos500[i].Result[..result.Length], result);
 		}
