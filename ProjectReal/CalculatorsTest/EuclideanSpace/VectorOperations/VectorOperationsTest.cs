@@ -78,7 +78,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void DuplicateMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational[] result1 = VectorOperations<Rational>.Duplicate(item.Vector1);
 
@@ -95,7 +95,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void ScaleMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			foreach (Rational testNumber in testNumbers)
 			{
@@ -117,7 +117,7 @@ public class VectorOperationsTest
 	{
 		Rational epsilon = $"0.{new string('0', fractionCalculationLength - 3)}1";
 
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational result1 = VectorOperations<Rational>.Magnitude(item.Vector1);
 			Rational result2 = VectorOperations<Rational>.Magnitude(item.Vector2);
@@ -138,7 +138,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void InnerProductMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational result1 = VectorOperations<Rational>.InnerProduct(item.Vector1, item.Vector2);
 			Rational result2 = VectorOperations<Rational>.InnerProduct(item.Vector2, item.Vector1);
@@ -152,7 +152,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void OuterProductMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational[,] result = VectorOperations<Rational>.OuterProduct(item.Vector1, item.Vector2);
 
@@ -164,7 +164,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void EqualMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			bool result1 = VectorOperations<Rational>.Equals(item.Vector1, item.Vector2);
 			bool result2 = VectorOperations<Rational>.Equals(item.Vector2, item.Vector1);
@@ -181,7 +181,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void AddMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational[] result = VectorOperations<Rational>.Add(item.Vector1, item.Vector2);
 
@@ -193,7 +193,7 @@ public class VectorOperationsTest
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		foreach (TestVector item in TestVectors.List)
+		foreach (VectorOperationsTestCase item in VectorOperationsTestCases.List)
 		{
 			Rational[] result = VectorOperations<Rational>.Subtract(item.Vector1, item.Vector2);
 

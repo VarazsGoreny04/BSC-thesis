@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.EuclideanSpace.VectorOperations;
 
-public readonly struct TestVector(
+public class VectorOperationsTestCase(
 	Rational[] vector1, Rational[] vector2,
 	Rational[] add, Rational[] sub,
 	Rational[,] outerProduct1, Rational[,] outerProduct2)
@@ -16,9 +16,9 @@ public readonly struct TestVector(
 	public readonly Rational[,] OuterProduct2 = outerProduct2;
 }
 
-public static class TestVectors
+public static class VectorOperationsTestCases
 {
-	public static readonly ImmutableArray<TestVector> List =
+	public static readonly ImmutableArray<VectorOperationsTestCase> List =
 	[
 		/*Zero*/
 		new(

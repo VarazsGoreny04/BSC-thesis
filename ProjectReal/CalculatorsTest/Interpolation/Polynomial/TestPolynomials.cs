@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.Interpolation.Polynomial;
 
-public readonly struct TestPolynomial(Rational[] polynomial, Rational[] basePoints, Rational[] evaluations)
+public class TestPolynomial(Rational[] polynomial, Rational[] basePoints, Rational[] evaluations)
 {
 	public readonly Rational[] Polynomial = polynomial;
 	public readonly Rational[] BasePoints = basePoints;

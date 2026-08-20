@@ -2,7 +2,7 @@
 
 namespace ProjectRealTest;
 
-public readonly struct WritableTestCase(
+public class WritableTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, string sub,

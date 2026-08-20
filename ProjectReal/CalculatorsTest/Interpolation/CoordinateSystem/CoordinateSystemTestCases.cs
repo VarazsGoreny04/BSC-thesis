@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.Interpolation.CoordinateSystem;
 
-public readonly struct CoordinateSystemTestCase(Rational start, Rational end, int points, Rational[] linSpace)
+public class CoordinateSystemTestCase(Rational start, Rational end, int points, Rational[] linSpace)
 {
 	public readonly Rational Start = start;
 	public readonly Rational End = end;

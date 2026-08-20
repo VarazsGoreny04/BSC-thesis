@@ -2,7 +2,7 @@
 
 namespace ProjectRealTest;
 
-public readonly struct PositiveTestCase(
+public class PositiveTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, bool subSwap, string subNum,

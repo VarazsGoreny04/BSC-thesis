@@ -2,7 +2,7 @@
 
 namespace ProjectRealTest;
 
-public readonly struct RationalTestCase(
+public class RationalTestCase(
 	string number1, string number2,
 	bool equal, bool greater,
 	string add, string sub,

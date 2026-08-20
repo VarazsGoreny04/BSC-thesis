@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.Interpolation.Point;
 
-public readonly struct Point2DTestCase(
+public class Point2DTestCase(
 	(Rational X, Rational Y) point1, (Rational X, Rational Y) point2)
 {
 	public readonly (Rational X, Rational Y) Point1 = point1;

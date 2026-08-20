@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.EuclideanSpace.MatrixOperations;
 
-public readonly struct TestMatrix(
+public class MatrixOperationsTestCase(
 	Rational[,] matrix1, Rational[,] matrix2,
 	Rational[,] add, Rational[,] sub,
 	Rational[,] mul, Rational[,] div,
@@ -22,9 +22,9 @@ public readonly struct TestMatrix(
 	public readonly (Rational[,] L, Rational[,] U) LU2 = LU2;
 }
 
-public static class TestMatrices
+public static class MatrixOperationsTestCases
 {
-	public static readonly ImmutableArray<TestMatrix> List =
+	public static readonly ImmutableArray<MatrixOperationsTestCase> List =
 	[
 		/*Zero*/
 		new(

@@ -133,7 +133,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void GetRowMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			for (int n = item.Matrix1.GetLength(0) - 1; n >= 0; --n)
 			{
@@ -156,7 +156,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void GetColumnMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			for (int m = item.Matrix1.GetLength(1) - 1; m >= 0; --m)
 			{
@@ -179,7 +179,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void DuplicateMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result1 = MatrixOperations<Rational>.Duplicate(item.Matrix1);
 
@@ -202,7 +202,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void ScaleMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			foreach (Rational testNumber in testNumbers)
 			{
@@ -228,7 +228,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void TransposeMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result1 = MatrixOperations<Rational>.Transpose(item.Matrix1);
 
@@ -251,7 +251,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void HorizontalConcatMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result1 = MatrixOperations<Rational>.HorizontalConcat(item.Matrix1, item.Matrix2);
 
@@ -284,7 +284,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void VerticalConcatMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result1 = MatrixOperations<Rational>.VerticalConcat(item.Matrix1, item.Matrix2);
 
@@ -317,7 +317,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void EqualMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			bool result1 = MatrixOperations<Rational>.Equals(item.Matrix1, item.Matrix2);
 			bool result2 = MatrixOperations<Rational>.Equals(item.Matrix2, item.Matrix1);
@@ -342,7 +342,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void AddMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result = MatrixOperations<Rational>.Add(item.Matrix1, item.Matrix2);
 
@@ -354,7 +354,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void SubtractMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result = MatrixOperations<Rational>.Subtract(item.Matrix1, item.Matrix2);
 
@@ -366,11 +366,11 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void ProductWithVectorMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			int n = item.Matrix1.GetLength(0);
 			int m = item.Matrix1.GetLength(0);
-			List<Rational[]> vectors = [.. TestVectors.List.Where(x => x.Vector1.Length == m).SelectMany(x => new List<Rational[]> { x.Vector1, x.Vector2 })];
+			List<Rational[]> vectors = [.. VectorOperationsTestCases.List.Where(x => x.Vector1.Length == m).SelectMany(x => new List<Rational[]> { x.Vector1, x.Vector2 })];
 
 			foreach (Rational[] vector in vectors)
 			{
@@ -396,7 +396,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void ProductMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result = MatrixOperations<Rational>.Product(item.Matrix1, item.Matrix2);
 
@@ -408,7 +408,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void InverseMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			Rational[,] result1 = MatrixOperations<Rational>.Inverse(item.Matrix1);
 			Rational[,] result2 = MatrixOperations<Rational>.Inverse(item.Matrix2);
@@ -430,7 +430,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void LUDecompositionMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			(Rational[,] L1, Rational[,] U1) = MatrixOperations<Rational>.LUDecomposition(item.Matrix1);
 			(Rational[,] L2, Rational[,] U2) = MatrixOperations<Rational>.LUDecomposition(item.Matrix2);
@@ -450,7 +450,7 @@ public class MatrixOperationsTest
 	[TestMethod]
 	public void DeterminantMethod()
 	{
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			(Rational[,] matrix1, bool sign1) = MatrixOperations<Rational>.GaussianElimination(item.Matrix1);
 			(Rational[,] matrix2, bool sign2) = MatrixOperations<Rational>.GaussianElimination(item.Matrix2);
@@ -477,7 +477,7 @@ public class MatrixOperationsTest
 	{
 		Rational epsilon = $"0.{new string('0', fractionCalculationLength / 2)}1";
 
-		foreach (TestMatrix item in TestMatrices.List)
+		foreach (MatrixOperationsTestCase item in MatrixOperationsTestCases.List)
 		{
 			(Rational[,] Q1, Rational[,] R1) = MatrixOperations<Rational>.QRDecomposition(item.Matrix1);
 			(Rational[,] Q2, Rational[,] R2) = MatrixOperations<Rational>.QRDecomposition(item.Matrix2);
