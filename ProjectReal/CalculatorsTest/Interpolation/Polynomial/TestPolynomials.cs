@@ -15,6 +15,11 @@ public static class TestPolynomials
 	public static readonly ImmutableArray<TestPolynomial> List =
 	[
 		new(
+			[],
+			["0", "1", "2", "3.5"],
+			["0", "0", "0", "0"]
+		),
+		new(
 			["0"],
 			["0", "1", "2", "3.5"],
 			["0", "0", "0", "0"]

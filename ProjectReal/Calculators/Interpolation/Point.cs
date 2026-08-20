@@ -10,7 +10,21 @@ namespace Calculators.Interpolation;
 /// Represents a point in the coordinate system.
 /// </summary>
 /// <typeparam name="T">The type of values within the point.</typeparam>
-public abstract class Point<T> where T : IEqualityOperators<T, T, bool>
+public abstract class Point<T>
+where T :
+	IComparisonOperators<T, T, bool>,
+	IEqualityOperators<T, T, bool>,
+	IUnaryNegationOperators<T, T>,
+	IAdditionOperators<T, T, T>,
+	ISubtractionOperators<T, T, T>,
+	IMultiplyOperators<T, T, T>,
+	IDivisionOperators<T, T, T>,
+	IModulusOperators<T, T, T>,
+	IPowerOperations<T, T, T>,
+	IRootOperations<T, T, T>,
+	IAdditiveIdentity<T, T>,
+	IMultiplicativeIdentity<T, T>,
+	IParsable<T>
 {
 	#region Fields
 
@@ -24,7 +38,20 @@ public abstract class Point<T> where T : IEqualityOperators<T, T, bool>
 	/// Constructs a <see cref="Point{T}"/> by the given <paramref name="values"/>.
 	/// </summary>
 	/// <param name="values">The extent of the <see cref="Point{T}"/> in the coordinate system.</param>
-	public Point(T[] values) => this.values = values;
+	protected Point(T[] values) => this.values = values;
+
+	#endregion
+
+	#region Protected methods
+
+	/// <summary>
+	/// Calculates the distance of two <see cref="Point{T}"/>s.
+	/// </summary>
+	/// <param name="a">The first <see cref="Point{T}"/>.</param>
+	/// <param name="b">The second <see cref="Point{T}"/>.</param>
+	/// <returns>The result of the calculation.</returns>
+	/// <exception cref="ArgumentException">The two <see cref="Point{T}"/>s must be the same type.</exception>
+	protected static T Distance(Point<T> a, Point<T> b) => ~VectorOperations<T>.Subtract(a.values, b.values).Aggregate(T.AdditiveIdentity, (r, x) => r + x * x);
 
 	#endregion
 
@@ -86,11 +113,11 @@ where T :
 	/// Constructs a <see cref="Point2D{T}"/> by the given <paramref name="values"/>.
 	/// </summary>
 	/// <param name="values">The extent of the <see cref="Point2D{T}"/> in the coordinate system.</param>
-	/// <exception cref="ArgumentException">The length of <paramref name="values"/> is not 2.</exception>
+	/// <exception cref="ArgumentException">The length of <paramref name="values"/> is less than 2.</exception>
 	protected Point2D(T[] values) : base(values)
 	{
-		if (values.Length != 2)
-			throw new ArgumentException("The length of the given array must have a length of 2!", nameof(values));
+		if (values.Length < 2)
+			throw new ArgumentException("The length of the given array must be at least 2!", nameof(values));
 	}
 
 	/// <summary>
@@ -132,13 +159,7 @@ where T :
 	/// <param name="a">The first <see cref="Point2D{T}"/>.</param>
 	/// <param name="b">The second <see cref="Point2D{T}"/>.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static T Distance(Point2D<T> a, Point2D<T> b)
-	{
-		T diffX = a.X - b.X;
-		T diffY = a.Y - b.Y;
-
-		return ~(diffX * diffX + diffY * diffY);
-	}
+	public static T Distance(Point2D<T> a, Point2D<T> b) => Point<T>.Distance(a, b);
 
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.
@@ -207,8 +228,8 @@ where T :
 	/// <exception cref="ArgumentException">The length of <paramref name="values"/> is not 3.</exception>
 	protected Point3D(T[] values) : base(values)
 	{
-		if (values.Length != 3)
-			throw new ArgumentException("The length of the given array must have a length of 3!", nameof(values));
+		if (values.Length < 3)
+			throw new ArgumentException("The length of the given array must be at least 3!", nameof(values));
 	}
 
 	/// <summary>
@@ -251,14 +272,7 @@ where T :
 	/// <param name="a">The first <see cref="Point3D{T}"/>.</param>
 	/// <param name="b">The second <see cref="Point3D{T}"/>.</param>
 	/// <returns>The result of the calculation.</returns>
-	public static T Distance(Point3D<T> a, Point3D<T> b)
-	{
-		T diffX = a.X - b.X;
-		T diffY = a.Y - b.Y;
-		T diffZ = a.Z - b.Z;
-
-		return ~(diffX * diffX + diffY * diffY + diffZ * diffZ);
-	}
+	public static T Distance(Point3D<T> a, Point3D<T> b) => Point<T>.Distance(a, b);
 
 	/// <summary>
 	/// Compares the given <see langword="object"/>? to this instance.

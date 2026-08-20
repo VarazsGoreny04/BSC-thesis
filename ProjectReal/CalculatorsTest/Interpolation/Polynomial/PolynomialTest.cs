@@ -7,7 +7,7 @@ namespace CalculatorsTest.Interpolation.Polynomial;
 public class PolynomialTest
 {
 	[TestMethod]
-	public void EvaluateTest()
+	public void EvaluateMethod()
 	{
 		Point2D<Rational> result, expected;
 
@@ -25,7 +25,7 @@ public class PolynomialTest
 	}
 
 	[TestMethod]
-	public void EvaluateRangeTest()
+	public void EvaluateRangeMethod()
 	{
 		Point2D<Rational>[] result, expected;
 
@@ -36,6 +36,8 @@ public class PolynomialTest
 			expected = new Point2D<Rational>[item.Evaluations.Length];
 			for (int i = item.BasePoints.Length - 1; i >= 0; --i)
 				expected[i] = new Point2D<Rational>(item.BasePoints[i], item.Evaluations[i]);
+
+			Assert.AreEqual(expected.Length, result.Length);
 
 			for (int i = expected.Length - 1; i >= 0; --i)
 				Assert.AreEqual(expected[i], result[i]);

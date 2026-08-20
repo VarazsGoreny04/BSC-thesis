@@ -37,7 +37,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void FullTest()
+	public void FullMethod()
 	{
 		foreach (int n in testDimensions)
 		{
@@ -52,7 +52,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void ZerosTest()
+	public void ZerosMethod()
 	{
 		foreach (int n in testDimensions)
 		{
@@ -64,7 +64,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void OnesTest()
+	public void OnesMethod()
 	{
 		foreach (int n in testDimensions)
 		{
@@ -76,7 +76,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void DuplicateTest()
+	public void DuplicateMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -93,7 +93,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void ScaleTest()
+	public void ScaleMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -113,7 +113,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void MagnitudeTest()
+	public void MagnitudeMethod()
 	{
 		Rational epsilon = $"0.{new string('0', fractionCalculationLength - 3)}1";
 
@@ -136,7 +136,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void InnerProductTest()
+	public void InnerProductMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -150,7 +150,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void OuterProductTest()
+	public void OuterProductMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -162,7 +162,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void EqualTest()
+	public void EqualMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -179,7 +179,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void AddTest()
+	public void AddMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{
@@ -191,7 +191,7 @@ public class VectorOperationsTest
 	}
 
 	[TestMethod]
-	public void SubtractTest()
+	public void SubtractMethod()
 	{
 		foreach (TestVector item in TestVectors.List)
 		{

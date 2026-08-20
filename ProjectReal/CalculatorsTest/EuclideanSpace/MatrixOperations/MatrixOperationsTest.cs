@@ -50,7 +50,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void FullTest()
+	public void FullMethod()
 	{
 		foreach ((int n, int m) in testDimensions)
 		{
@@ -68,7 +68,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void ZerosTest()
+	public void ZerosMethod()
 	{
 		foreach ((int n, int m) in testDimensions)
 		{
@@ -83,7 +83,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void OnesTest()
+	public void OnesMethod()
 	{
 		foreach ((int n, int m) in testDimensions)
 		{
@@ -98,7 +98,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void DiagonalTest()
+	public void DiagonalMethod()
 	{
 		foreach ((int n, int m) in testDimensions)
 		{
@@ -116,7 +116,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void IdentityTest()
+	public void IdentityMethod()
 	{
 		foreach ((int n, int m) in testDimensions)
 		{
@@ -131,7 +131,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void GetRowTest()
+	public void GetRowMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -154,7 +154,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void GetColumnTest()
+	public void GetColumnMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -177,7 +177,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void DuplicateTest()
+	public void DuplicateMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -200,7 +200,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void ScaleTest()
+	public void ScaleMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -226,7 +226,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void TransposeTest()
+	public void TransposeMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -249,7 +249,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void HorizontalConcatTest()
+	public void HorizontalConcatMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -282,7 +282,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void VerticalConcatTest()
+	public void VerticalConcatMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -315,7 +315,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void EqualTest()
+	public void EqualMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -340,7 +340,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void AddTest()
+	public void AddMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -352,7 +352,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void SubtractTest()
+	public void SubtractMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -364,7 +364,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void ProductWithVectorTest()
+	public void ProductWithVectorMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -394,7 +394,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void ProductTest()
+	public void ProductMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -406,7 +406,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void InverseTest()
+	public void InverseMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -428,7 +428,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void LUDecompositionTest()
+	public void LUDecompositionMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -448,7 +448,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void DeterminantTest()
+	public void DeterminantMethod()
 	{
 		foreach (TestMatrix item in TestMatrices.List)
 		{
@@ -473,7 +473,7 @@ public class MatrixOperationsTest
 	}
 
 	[TestMethod]
-	public void QRDecompositionTest()
+	public void QRDecompositionMethod()
 	{
 		Rational epsilon = $"0.{new string('0', fractionCalculationLength / 2)}1";
 
