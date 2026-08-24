@@ -11,7 +11,7 @@ public class PolynomialTest
 	{
 		Point2D<Rational> result, expected;
 
-		foreach (TestPolynomial item in TestPolynomials.List)
+		foreach (PolynomialTestCase item in PolynomialTestCases.List)
 		{
 			for (int i = item.BasePoints.Length - 1; i >= 0; --i)
 			{
@@ -29,7 +29,7 @@ public class PolynomialTest
 	{
 		Point2D<Rational>[] result, expected;
 
-		foreach (TestPolynomial item in TestPolynomials.List)
+		foreach (PolynomialTestCase item in PolynomialTestCases.List)
 		{
 			result = Polynomial<Rational>.EvaluateRange(item.Polynomial, item.BasePoints);
 

@@ -40,11 +40,11 @@ where T :
 	public static void CheckBases(Point2D<T>[] points)
 	{
 		if (points.Length < 1)
-			throw new ArgumentException("The vector must be at least one dimensional!");
+			throw new ArgumentException("At least 1 point must be given to perform the algorithm!", nameof(points));
 
-		for (int i = 0; i < points.Length; ++i)
+		for (int i = points.Length - 1; i >= 0; --i)
 		{
-			for (int j = i + 1; j < points.Length; ++j)
+			for (int j = i - 1; j >= 0; --j)
 			{
 				if (points[i].X == points[j].X)
 					throw new ArgumentException("Some of the points have matching X coordinate");
@@ -64,11 +64,13 @@ where T :
 	{
 		if (points.Length < 1)
 			throw new ArgumentException("The array cannot be empty!", nameof(points));
+		else if (index < 0 || points.Length - 1 < index)
+			throw new ArgumentOutOfRangeException(nameof(index), index, $"The given index must be within the length of the points array ({points.Length - 1})!");
 
 		T denominator = T.MultiplicativeIdentity;
 		T[] numerator = [T.MultiplicativeIdentity];
 
-		for (int i = 0; i < points.Length; ++i)
+		for (int i = points.Length - 1; i >= 0; --i)
 		{
 			if (index == i)
 				continue;
@@ -97,9 +99,11 @@ where T :
 	/// <exception cref="ArgumentException">The <paramref name="points"/> array cannot be empty.</exception>
 	public static T[] Lagrange(Point2D<T>[] points)
 	{
+		CheckBases(points);
+
 		T[] result = VectorOperations<T>.Zeros(points.Length);
 
-		for (int i = 0; i < points.Length; ++i)
+		for (int i = points.Length - 1; i >= 0; --i)
 			result = VectorOperations<T>.Add(result, VectorOperations<T>.Scale(LagrangeBasis(points, i), points[i].Y));
 
 		return result;
@@ -114,6 +118,9 @@ where T :
 	/// <exception cref="ArgumentException">Make sure to give the corresponding points and basis polynomials to this method.</exception>
 	public static T[] Lagrange(Point2D<T>[] points, T[][] lagrangeBasisPolynomials)
 	{
+		if (points.Length != lagrangeBasisPolynomials.Length)
+			throw new ArgumentException($"The number of points ({points.Length}) must be equal to the number of basis polynomials ({lagrangeBasisPolynomials.Length})!");
+
 		T[] result = VectorOperations<T>.Zeros(points.Length);
 
 		for (int i = points.Length - 1; i >= 0; --i)

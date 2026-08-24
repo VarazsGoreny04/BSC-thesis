@@ -96,7 +96,7 @@ where T :
 
 		List<T[]> lagrangeBasisPolynomials = [];
 
-		for (int i = 0; i < points.Length; ++i)
+		for (int i = points.Length - 1; i >= 0; --i)
 		{
 			T[] lagrangeBasisPolynomial = Interpolation<T>.LagrangeBasis(points, i);
 

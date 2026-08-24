@@ -9,6 +9,8 @@ public class CoordinateSystemTest
 	[TestMethod]
 	public void LinSpaceMethod()
 	{
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => CoordinateSystem<Rational>.LinSpace("0", "10", 1));
+		
 		Rational[] result;
 
 		foreach (CoordinateSystemTestCase item in CoordinateSystemTestCases.List)

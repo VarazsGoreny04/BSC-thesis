@@ -3,16 +3,16 @@ using System.Collections.Immutable;
 
 namespace CalculatorsTest.Interpolation.Polynomial;
 
-public class TestPolynomial(Rational[] polynomial, Rational[] basePoints, Rational[] evaluations)
+public class PolynomialTestCase(Rational[] polynomial, Rational[] basePoints, Rational[] evaluations)
 {
 	public readonly Rational[] Polynomial = polynomial;
 	public readonly Rational[] BasePoints = basePoints;
 	public readonly Rational[] Evaluations = evaluations;
 }
 
-public static class TestPolynomials
+public static class PolynomialTestCases
 {
-	public static readonly ImmutableArray<TestPolynomial> List =
+	public static readonly ImmutableArray<PolynomialTestCase> List =
 	[
 		new(
 			[],
