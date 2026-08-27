@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BullseyeCalculator\BullseyeCalculator.csproj" />
+    <ProjectReference Include="..\Calculators\Calculators.csproj" />
+    <ProjectReference Include="..\ProjectRealTest\ProjectRealTest.csproj" />
     <ProjectReference Include="..\ProjectReal\ProjectReal.csproj" />
   </ItemGroup>
 

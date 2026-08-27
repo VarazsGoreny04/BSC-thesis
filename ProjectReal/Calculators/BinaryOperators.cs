@@ -27,6 +27,12 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 	public Add() : base(new Number<T>(T.AdditiveIdentity), null!) => initialLeft = Left;
 
 	/// <summary>
+	/// Constructs an <see cref="Add{T}"/> operator with the <paramref name="right"/> value
+	/// and sets the left value to <see cref="T.AdditiveIdentity"/>.
+	/// </summary>
+	public Add(ValueHolder<T> right) : base(new Number<T>(T.AdditiveIdentity), right) => initialLeft = Left;
+
+	/// <summary>
 	/// Constructs an <see cref="Add{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
@@ -37,6 +43,11 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 
 	#region Protected methods
 
+	/// <summary>
+	/// Calculates the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>The calculated value.</returns>
+	/// <exception cref="NullReferenceException">The right value must not be <see langword="null"/> when evaluating.</exception>
 	protected override T CalculateValue() => Left.GetValue() + Right.GetValue();
 
 	#endregion
@@ -99,7 +110,7 @@ public partial class Add<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T
 /// Represents the subtract operator.
 /// </summary>
 /// <typeparam name="T">The type of the <see cref="ValueHolder{T}"/> in the parameters.</typeparam>
-public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T>, ISubtractionOperators<T, T, T>, IUnaryNegationOperators<T, T>
+public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity<T, T>, ISubtractionOperators<T, T, T>
 {
 	#region Fields
 
@@ -116,6 +127,12 @@ public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity
 	public Subtract() : base(new Number<T>(T.AdditiveIdentity), null!) => initialLeft = Left;
 
 	/// <summary>
+	/// Constructs a <see cref="Subtract{T}"/> operator with the <paramref name="right"/> value
+	/// and sets the left value to <see cref="T.AdditiveIdentity"/>.
+	/// </summary>
+	public Subtract(ValueHolder<T> right) : base(new Number<T>(T.AdditiveIdentity), right) => initialLeft = Left;
+
+	/// <summary>
 	/// Constructs a <see cref="Subtract{T}"/> operator with the <paramref name="left"/> and <paramref name="right"/> values.
 	/// </summary>
 	/// <param name="left">The left hand side of the operator.</param>
@@ -126,6 +143,11 @@ public partial class Subtract<T> : BinaryOperator<T> where T : IAdditiveIdentity
 
 	#region Protected methods
 
+	/// <summary>
+	/// Calculates the value of <see langword="this"/> instance.
+	/// </summary>
+	/// <returns>The calculated value.</returns>
+	/// <exception cref="NullReferenceException">The right value must not be <see langword="null"/> when evaluating.</exception>
 	protected override T CalculateValue() => Left.GetValue() - Right.GetValue();
 
 	#endregion

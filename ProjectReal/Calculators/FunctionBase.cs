@@ -47,6 +47,7 @@ public abstract partial class FunctionBase<T> : ValueHolder<T>
 	/// Calculates the value of <see langword="this"/> instance.
 	/// </summary>
 	/// <returns>The calculated value.</returns>
+	/// <exception cref="NullReferenceException">None of the parameters can be <see langword="null"/> when evaluating.</exception>
 	protected abstract T CalculateValue();
 
 	#endregion

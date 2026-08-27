@@ -7,7 +7,7 @@ namespace ProjectRealTest;
 [TestClass]
 public class DigitTest
 {
-	private readonly byte[] binary = [.. Enumerable.Range(0, 16).Select(x => (byte)x)];
+	private static readonly byte[] BINARY = [.. Enumerable.Range(0, 16).Select(x => (byte)x)];
 
 	private static char ToChar(int num) => Convert.ToChar('0' + num);
 
@@ -21,7 +21,7 @@ public class DigitTest
 		{
 			byte digit = Digit.Create(ToChar(i));
 
-			Assert.AreEqual(binary[i], digit);
+			Assert.AreEqual(BINARY[i], digit);
 		}
 	}
 
@@ -31,10 +31,10 @@ public class DigitTest
 		int i = 0;
 
 		for (; i < 10; ++i)
-			Assert.AreEqual(binary[i], Digit.Create(binary[i]));
+			Assert.AreEqual(BINARY[i], Digit.Create(BINARY[i]));
 
-		for (; i < binary.Length; ++i)
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = Digit.Create(binary[i]); });
+		for (; i < BINARY.Length; ++i)
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => { _ = Digit.Create(BINARY[i]); });
 
 	}
 
@@ -43,7 +43,7 @@ public class DigitTest
 	{
 		for (int i = 0; i < 10; ++i)
 		{
-			byte digit = Digit.Create(binary[i]);
+			byte digit = Digit.Create(BINARY[i]);
 
 			Assert.AreEqual(ToChar(i).ToString(), digit.ToString());
 		}
@@ -111,8 +111,8 @@ public class DigitTest
 		{
 			byte charDigit = Digit.Create(ToChar(i));
 			byte charDigitPlusOne = Digit.Create(i > 8 ? '0' : ToChar(i + 1));
-			byte arrayDigit = Digit.Create(binary[i]);
-			byte arrayDigitPlusOne = Digit.Create(binary[(i + 1) % 10]);
+			byte arrayDigit = Digit.Create(BINARY[i]);
+			byte arrayDigitPlusOne = Digit.Create(BINARY[(i + 1) % 10]);
 
 			Assert.IsTrue(Digit.Equals(charDigit, arrayDigit));
 			Assert.IsTrue(Digit.Equals(arrayDigit, charDigit));
@@ -144,8 +144,8 @@ public class DigitTest
 		{
 			byte charDigit = Digit.Create(ToChar(i));
 			byte charDigitPlusOne = Digit.Create(i > 8 ? '0' : ToChar(i + 1));
-			byte arrayDigit = Digit.Create(binary[i]);
-			byte arrayDigitPlusOne = Digit.Create(binary[(i + 1) % 10]);
+			byte arrayDigit = Digit.Create(BINARY[i]);
+			byte arrayDigitPlusOne = Digit.Create(BINARY[(i + 1) % 10]);
 
 			Assert.IsFalse(Digit.GreaterThan(charDigit, arrayDigit));
 			Assert.IsFalse(Digit.GreaterThan(arrayDigit, charDigit));
