@@ -1,6 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 using ProjectRealTest;
+using System;
 
 namespace CalculatorsTest;
 
@@ -25,7 +26,7 @@ public class AddTest
 		Number<Rational> number1, number2;
 		Add<Rational> add1, add2;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -51,7 +52,7 @@ public class AddTest
 		Number<Rational> number1, number2;
 		Add<Rational> add;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -76,7 +77,7 @@ public class AddTest
 		Number<Rational> number1, number2;
 		Add<Rational> add1, add2;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -93,7 +94,7 @@ public class AddTest
 			Assert.IsTrue(add2.GetValue() == add1.GetValue());
 		}
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -114,4 +115,33 @@ public class AddTest
 			Assert.AreEqual(second + rational2, add2.GetValue());
 		}
 	}
+
+	/*[TestMethod]
+	public void FullEvaluationMethod()
+	{
+		Rational rational1, rational2;
+		Number<Rational> number1, number2;
+		Add<Rational> add;
+		List<(string Calculation, string State)> partialValues;
+		int steps;
+
+		foreach (RationalTestCase item in RationalTestCases.List)
+		{
+			rational1 = item.Number1;
+			rational2 = item.Number2;
+
+			number1 = new(rational1);
+			number2 = new(rational2);
+
+			add = new(number1, number2);
+
+			partialValues = [];
+			steps = 3;
+
+			add.FullEvaluation(ref partialValues, add, ref steps);
+
+			Assert.AreEqual(partialValues.Last().State, add.GetValue());
+			Assert.AreEqual(1, partialValues.Count);
+		}
+	}*/
 }

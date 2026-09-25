@@ -1,5 +1,6 @@
 ﻿using Calculators.Interpolation;
 using ProjectReal.Number;
+using System;
 
 namespace CalculatorsTest.Interpolation.CoordinateSystem;
 

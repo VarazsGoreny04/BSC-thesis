@@ -42,35 +42,34 @@ public partial class App : Application
 
 		mainWindow = new MainWindow { DataContext = viewModel };
 		mainWindow.KeyDown += new KeyEventHandler((_, e) =>
+		{
+			char input = GetCharFromKey(e.Key);
+
+			if (input is >= '\u0020' and < '\u007F')
 			{
-				char input = GetCharFromKey(e.Key);
-
-				if (input is >= '\u0020' and < '\u007F')
-				{
-					viewModel.PushInputCommand.Execute(input);
-					return;
-				}
-
-				if (e.Key == Key.D3)
-				{
-					viewModel.PushInputCommand.Execute('\u005E');
-					return;
-				}
-
-				(e.Key switch
-				{
-					Key.Back => viewModel.PopInputCommand,
-					Key.Enter => viewModel.EvaluateCommand,
-					Key.Delete => viewModel.ClearInputCommand,
-					Key.F1 => viewModel.StandardModeCommand,
-					Key.F2 => viewModel.EuclideanModeCommand,
-					Key.F3 => viewModel.InterpolationModeCommand,
-					Key.Tab => viewModel.ShowStepsCommand,
-					Key.Escape => viewModel.ShowOptionsCommand,
-					_ => null
-				})?.Execute(null);
+				viewModel.PushInputCommand.Execute(input);
+				return;
 			}
-		);
+
+			if (e.Key == Key.D3)
+			{
+				viewModel.PushInputCommand.Execute('\u005E');
+				return;
+			}
+
+			(e.Key switch
+			{
+				Key.Back => viewModel.PopInputCommand,
+				Key.Enter => viewModel.EvaluateCommand,
+				Key.Delete => viewModel.ClearInputCommand,
+				Key.F1 => viewModel.StandardModeCommand,
+				Key.F2 => viewModel.EuclideanModeCommand,
+				Key.F3 => viewModel.InterpolationModeCommand,
+				Key.Tab => viewModel.ShowStepsCommand,
+				Key.Escape => viewModel.ShowOptionsCommand,
+				_ => null
+			})?.Execute(null);
+		});
 		mainWindow.Show();
 	}
 

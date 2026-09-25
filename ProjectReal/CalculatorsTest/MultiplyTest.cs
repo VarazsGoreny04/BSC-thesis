@@ -1,6 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 using ProjectRealTest;
+using System;
 
 namespace CalculatorsTest;
 
@@ -55,7 +56,7 @@ public class MultiplyTest
 		Number<Rational> number1, number2;
 		Multiply<Rational> mul;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -77,7 +78,7 @@ public class MultiplyTest
 		Number<Rational> number1, number2;
 		Multiply<Rational> mul1, mul2;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;

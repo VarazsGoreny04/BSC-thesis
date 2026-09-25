@@ -1,5 +1,6 @@
 ﻿using Calculators.EuclideanSpace;
 using ProjectReal.Number;
+using System.Linq;
 
 namespace CalculatorsTest.EuclideanSpace.VectorOperations;
 

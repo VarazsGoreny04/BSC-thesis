@@ -1,6 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 using ProjectRealTest;
+using System;
 
 namespace CalculatorsTest;
 
@@ -25,7 +26,7 @@ public class SubtractTest
 		Number<Rational> number1, number2;
 		Subtract<Rational> sub1, sub2;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -51,7 +52,7 @@ public class SubtractTest
 		Number<Rational> number1, number2;
 		Subtract<Rational> sub;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -76,7 +77,7 @@ public class SubtractTest
 		Number<Rational> number1, number2;
 		Subtract<Rational> sub, sub1, sub2;
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;
@@ -91,7 +92,7 @@ public class SubtractTest
 			Assert.AreEqual(expected, sub.GetValue());
 		}
 
-		foreach (RationalTestCase item in RationalTestCases.List)
+		foreach (NumberTestCase item in NumberTestCases.List)
 		{
 			rational1 = item.Number1;
 			rational2 = item.Number2;

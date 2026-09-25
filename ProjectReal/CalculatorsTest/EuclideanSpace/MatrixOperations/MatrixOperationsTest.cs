@@ -1,6 +1,8 @@
 ﻿using Calculators.EuclideanSpace;
 using CalculatorsTest.EuclideanSpace.VectorOperations;
 using ProjectReal.Number;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CalculatorsTest.EuclideanSpace.MatrixOperations;
 
