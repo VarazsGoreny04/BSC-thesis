@@ -44,6 +44,8 @@ internal class Program
 		}
 	}
 
+	#region Private methods
+
 	/// <summary>
 	/// Creates a calculator instance based on the given calculator type.
 	/// </summary>
@@ -100,4 +102,6 @@ internal class Program
 		else
 			Console.WriteLine(input);
 	}
+
+	#endregion
 }
