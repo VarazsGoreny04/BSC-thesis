@@ -43,8 +43,8 @@ public class Matrix<T> :
 {
 	#region Constants
 
-	private const char rowSeparator = '&';
-	private const char columnSeparator = ';';
+	private const char ROW_SEPARATOR = '&';
+	private const char COLUMN_SEPARATOR = ';';
 
 	#endregion
 
@@ -57,10 +57,10 @@ public class Matrix<T> :
 	#region Properties
 
 	/// <returns>The row separator used in the <see cref="string"/> representation of the <see cref="Matrix{T}"/>.</returns>
-	public static char RowSeparator => rowSeparator;
+	public static char RowSeparator => ROW_SEPARATOR;
 
 	/// <returns>The column separator used in the <see cref="string"/> representation of the <see cref="Matrix{T}"/>.</returns>
-	public static char ColumnSeparator => columnSeparator;
+	public static char ColumnSeparator => COLUMN_SEPARATOR;
 
 	/// <returns>The 1-by-1 zero <see cref="Matrix{T}"/>. [0]</returns>
 	public static Matrix<T> AdditiveIdentity => new(new T[1, 1] { { T.AdditiveIdentity } });
@@ -96,8 +96,8 @@ public class Matrix<T> :
 	/// <exception cref="FormatException">The calculator could not understand the input.</exception>
 	public Matrix(string content, StandardCalculator<T> standardCalculator)
 	{
-		string[] rows = content.Split(rowSeparator, StringSplitOptions.TrimEntries);
-		string[][] tokenized = [.. rows.Select(row => row.Split(columnSeparator, StringSplitOptions.TrimEntries))];
+		string[] rows = content.Split(ROW_SEPARATOR, StringSplitOptions.TrimEntries);
+		string[][] tokenized = [.. rows.Select(row => row.Split(COLUMN_SEPARATOR, StringSplitOptions.TrimEntries))];
 
 		for (int i = 1; i < tokenized.Length; ++i)
 		{

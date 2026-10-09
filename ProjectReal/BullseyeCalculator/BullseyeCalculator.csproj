@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Calculators\Calculators.csproj" />
-    <ProjectReference Include="..\ProjectReal\ProjectReal.csproj" />
+    <ProjectReference Include="..\BullseyeCalculator.Process\BullseyeCalculator.Process.csproj" />
   </ItemGroup>
 
 </Project>

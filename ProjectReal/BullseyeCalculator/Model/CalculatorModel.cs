@@ -1,18 +1,19 @@
 ﻿using BullseyeCalculator.Persistence;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BullseyeCalculator.Model;
 
-public class CalculatorModel
+public sealed class CalculatorModel
 {
 	#region Fields
 
 	private readonly CalculatorData data;
-	private CancellationTokenSource? tokenSource;
+
+	private System.Diagnostics.Process? process;
 
 	#endregion
 
@@ -31,27 +32,13 @@ public class CalculatorModel
 	public CalculatorModel()
 	{
 		data = new CalculatorData();
-		tokenSource = null;
+
+		process = null;
 	}
 
 	#endregion
 
 	#region Private methods
-
-	private async Task<List<(string Calculation, string State)>> FullEvaluationAsync(string input) => await Task.Run(() => data.Calculator.FullEvaluation(input));
-
-	private static List<string> FormatEvaluation(List<(string Calculation, string State)> evaluation)
-	{
-		List<string> result = [];
-
-		if (evaluation.Count < 1)
-			return result;
-
-		int maxLength = evaluation.Max(step => step.Calculation.Length);
-		evaluation.ForEach(step => result.Add($"{step.Calculation}{new string(' ', maxLength - step.Calculation.Length)}  ─→  {step.State}"));
-
-		return result;
-	}
 
 	private void OnInputChange() => InputChange?.Invoke(this, EventArgs.Empty);
 
@@ -59,104 +46,133 @@ public class CalculatorModel
 
 	private void OnResultChange() => ResultChange?.Invoke(this, EventArgs.Empty);
 
+	private void AddEvaluation(List<string> evaluation)
+	{
+		evaluation.ForEach(data.Evaluation.Add);
+		OnEvaluationChange();
+	}
+
+	private void ClearEvaluation()
+	{
+		data.Evaluation.Clear();
+		OnEvaluationChange();
+	}
+
+	private void ChangeResult(string result)
+	{
+		data.Result = result;
+		OnResultChange();
+	}
+
 	#endregion
 
 	#region Public methods
 
 	public void PushInput(string text)
 	{
-		if (tokenSource is not null)
+		if (process is not null)
 			return;
 
-		data.input.Add(text);
+		data.Input.Add(text);
 		OnInputChange();
 
-		if (data.evaluation.Count > 0)
+		if (data.Evaluation.Count > 0)
 			ClearEvaluation();
 
-		if (data.result.Length > 0)
+		if (data.Result.Length > 0)
 			ChangeResult(string.Empty);
 	}
 
 	public void PopInput()
 	{
-		if (tokenSource is not null)
+		if (process is not null)
 			return;
 
-		if (data.input.Count > 0)
+		if (data.Input.Count > 0)
 		{
-			data.input.RemoveAt(data.input.Count - 1);
+			data.Input.RemoveAt(data.Input.Count - 1);
 			OnInputChange();
 		}
 	}
 
 	public void ClearInput()
 	{
-		if (tokenSource is not null)
+		if (process is not null)
 			return;
 
-		data.input.Clear();
+		data.Input.Clear();
 		OnInputChange();
-	}
-
-	public void AddEvaluation(List<string> evaluation)
-	{
-		if (tokenSource is not null)
-			return;
-
-		evaluation.ForEach(data.evaluation.Add);
-		OnEvaluationChange();
-	}
-
-	public void ClearEvaluation()
-	{
-		if (tokenSource is not null)
-			return;
-
-		data.evaluation.Clear();
-		OnEvaluationChange();
-	}
-
-	public void ChangeResult(string result)
-	{
-		data.result = result;
-		OnResultChange();
 	}
 
 	public async void Evaluate()
 	{
-		if (tokenSource is not null)
-			return;
-
-		string input = data.Input;
-
-		if (input.Length > 0)
+		async Task StartEvaluation()
 		{
+			string input = data.ConcatInput();
+
+			if (input.Length < 1)
+				return;
+
+			process = new System.Diagnostics.Process()
+			{
+				StartInfo = new System.Diagnostics.ProcessStartInfo()
+				{
+					FileName = Path.Combine(AppContext.BaseDirectory, "BullseyeCalculator.Process.exe"),
+					Arguments = $"{(char)data.Mode} {data.FractionalFormat} {data.FractionCalculationLength} \"{input}\"",
+
+					UseShellExecute = false,
+					CreateNoWindow = true,
+
+					RedirectStandardOutput = true,
+					StandardOutputEncoding = Encoding.Unicode
+				}
+			};
+
 			ClearEvaluation();
 			ChangeResult("Calculating...");
 
-			try
+			(string result, List<string> evaluation) = await Task.Run(() =>
 			{
-				tokenSource = new CancellationTokenSource();
+				process?.Start();
 
-				List<(string Calculation, string State)> fullEvaluation = await FullEvaluationAsync(input);
+				string result = process?.StandardOutput.ReadLine() ?? "Cancelled.";
 
-				tokenSource = null;
+				List<string> evaluation = [];
 
-				string result = fullEvaluation.Count > 0 ? fullEvaluation.Last().State : input;
+				while (process?.StandardOutput.ReadLine() is string line)
+					evaluation.Add(line);
 
-				AddEvaluation(FormatEvaluation(fullEvaluation));
-				ChangeResult(result);
+				return (result, evaluation);
+			});
 
-				data.input.Clear();
-				data.input.Add(result);
-			}
-			catch (Exception e)
+			AddEvaluation(evaluation);
+			ChangeResult(result);
+
+			if (process is not null)
 			{
-				tokenSource = null;
-				ChangeResult(e.Message);
+				data.Input.Clear();
+				data.Input.Add(result);
 			}
+
+			process?.Dispose();
+			process = null;
 		}
+
+		void CancelEvaluation()
+		{
+			process?.Kill();
+
+			process?.Dispose();
+			process = null;
+
+			AddEvaluation([]);
+			ChangeResult("Cancelled.");
+		}
+
+		if (process is null)
+			await StartEvaluation();
+		else
+			CancelEvaluation();
 	}
 
 	#endregion

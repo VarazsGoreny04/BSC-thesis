@@ -26,11 +26,15 @@ public class Rational :
 	IMultiplicativeIdentity<Rational, Rational>,
 	IParsable<Rational>
 {
+	#region
+
+	private const int RECALCULATION_DIFFERENCE = 20;
+
+	#endregion
+
 	#region Fields
 
 	private static bool fractionalFormat = false;
-
-	private const int RECALCULATION_DIFFERENCE = 20;
 	private static (uint Length, Rational Pi) piBackup = (0, new());
 	private static (uint Length, Rational E) eBackup = (0, new());
 	private static (uint Length, Rational Ln2) ln2Backup = (0, new());

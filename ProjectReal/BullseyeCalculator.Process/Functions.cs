@@ -1,7 +1,7 @@
 ﻿using Calculators;
 using ProjectReal.Number;
 
-namespace BullseyeCalculator.Persistence;
+namespace BullseyeCalculator.Process;
 
 /// <summary>
 /// Represents an absolute value function in an expression.

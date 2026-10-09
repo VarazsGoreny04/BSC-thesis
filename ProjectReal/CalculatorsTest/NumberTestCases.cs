@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace ProjectRealTest;
+namespace CalculatorsTest;
 
 public class NumberTestCase(
 	string number1, string number2,

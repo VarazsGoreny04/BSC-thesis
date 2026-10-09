@@ -25,9 +25,14 @@ public class Positive :
 	IMultiplicativeIdentity<Positive, Positive>,
 	IParsable<Positive>
 {
+	#region Constants
+
+	private const char SEPARATOR = '.';
+
+	#endregion
+
 	#region Fields
 
-	private const char separator = '.';
 	private static int fractionCalculationLength = 10;
 
 	private readonly int length;
@@ -43,7 +48,7 @@ public class Positive :
 	public static Positive MultiplicativeIdentity => 1;
 
 	/// <returns>The character the <see cref="ToString"/> method uses as separator.</returns>
-	public static char Separator => separator;
+	public static char Separator => SEPARATOR;
 
 	/// <summary>
 	/// Gets or sets the length of calculating fractions.
@@ -107,15 +112,15 @@ public class Positive :
 	{
 		if (number.Length < 1)
 			throw new ArgumentException("The given string parameter must not be empty!", nameof(number));
-		else if (number[0] == separator)
+		else if (number[0] == SEPARATOR)
 			throw new ArgumentException("The given string parameter cannot start with the separator!", nameof(number));
 
 		number = number.TrimStart('0');
 
-		if (number.Length < 1 || number[0] == separator)
+		if (number.Length < 1 || number[0] == SEPARATOR)
 			number = '0' + number;
 
-		fractionLength = number.IndexOf(separator);
+		fractionLength = number.IndexOf(SEPARATOR);
 
 		if (fractionLength != -1)
 		{
@@ -199,7 +204,7 @@ public class Positive :
 			(
 				fractionLength < Digits.Length ? value.ToString() :
 				new string('0', length - Digits.Length) + value.ToString()
-			).Insert(WholeLength, separator.ToString());
+			).Insert(WholeLength, SEPARATOR.ToString());
 	}
 
 	/// <summary>

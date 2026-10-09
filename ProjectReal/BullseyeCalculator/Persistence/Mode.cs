@@ -2,7 +2,7 @@
 
 public enum Mode
 {
-	Standard,
-	Matrix,
-	Interpolation
+	Standard = 'S',
+	Matrix = 'M',
+	Interpolation = 'I'
 }

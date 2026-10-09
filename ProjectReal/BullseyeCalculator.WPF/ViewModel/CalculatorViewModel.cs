@@ -19,7 +19,7 @@ public class CalculatorViewModel : ViewModelBase
 
 	#region Properties
 
-	public string Input => model.Data.Input;
+	public string Input => model.Data.ConcatInput();
 	public ObservableCollection<string> Evaluation => model.Data.Evaluation;
 	public string Result => model.Data.Result;
 	public bool ShowSteps
@@ -47,7 +47,7 @@ public class CalculatorViewModel : ViewModelBase
 		get => model.Data.Mode;
 		set
 		{
-			model.Data.SwitchMode(value);
+			model.Data.Mode = value;
 
 			OnPropertyChanged(nameof(CurrentMode));
 		}
@@ -64,28 +64,25 @@ public class CalculatorViewModel : ViewModelBase
 		}
 	}
 	public string CurrentPanelName => $"⨍{(int)CurrentPanel}";
-	public static char Separator => CalculatorData.Separator;
-	public static char ColumnSeparator => CalculatorData.ColumnSeparator;
-	public static char RowSeparator => CalculatorData.RowSeparator;
 	public bool FractionalFormat
 	{
-		get => CalculatorData.FractionalFormat;
+		get => model.Data.FractionalFormat;
 		set
 		{
-			CalculatorData.FractionalFormat = value;
+			model.Data.FractionalFormat = value;
 
 			OnPropertyChanged(nameof(FractionalFormat));
 		}
 	}
 	public int FractionCalculationLength
 	{
-		get => CalculatorData.FractionCalculationLength;
+		get => model.Data.FractionCalculationLength;
 		set
 		{
 			if (value < 0)
 				return;
 
-			CalculatorData.FractionCalculationLength = value;
+			model.Data.FractionCalculationLength = value;
 
 			OnPropertyChanged(nameof(FractionCalculationLength));
 		}
@@ -118,9 +115,6 @@ public class CalculatorViewModel : ViewModelBase
 
 	public CalculatorViewModel()
 	{
-		FractionalFormat = false;
-		FractionCalculationLength = 10;
-
 		model = new CalculatorModel();
 		model.InputChange += new EventHandler((_, _) => OnPropertyChanged(nameof(Input)));
 		model.EvaluationChange += new EventHandler((_, _) => OnPropertyChanged(nameof(Evaluation)));
@@ -130,7 +124,6 @@ public class CalculatorViewModel : ViewModelBase
 		showOptions = false;
 
 		CurrentPanel = Panel.ExponentialFunctions;
-
 		CurrentMode = Mode.Standard;
 
 		PushInputCommand = new DelegateCommand(param => model.PushInput(param?.ToString() ?? throw new FormatException("Input format is invalid!")));
