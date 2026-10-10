@@ -50,6 +50,8 @@ public partial class App : Application
 				viewModel.PushInputCommand.Execute(input);
 				return;
 			}
+			else if (input is '\u0003')
+				viewModel.CopyCommand.Execute(viewModel.Input);
 			else if (input is '\u0016')
 				viewModel.PasteCommand.Execute(null);
 
