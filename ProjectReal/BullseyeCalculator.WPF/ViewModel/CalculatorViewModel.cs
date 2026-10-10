@@ -2,6 +2,7 @@
 using BullseyeCalculator.Persistence;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace BullseyeCalculator.WPF.ViewModel;
 
@@ -109,6 +110,9 @@ public class CalculatorViewModel : ViewModelBase
 	public DelegateCommand IncreaseFractionCalculationLengthCommand { get; }
 	public DelegateCommand DecreaseFractionCalculationLengthCommand { get; }
 
+	public DelegateCommand CopyCommand { get; }
+	public DelegateCommand PasteCommand { get; }
+
 	#endregion
 
 	#region Constructors
@@ -142,6 +146,9 @@ public class CalculatorViewModel : ViewModelBase
 
 		IncreaseFractionCalculationLengthCommand = new DelegateCommand(_ => ++FractionCalculationLength);
 		DecreaseFractionCalculationLengthCommand = new DelegateCommand(_ => --FractionCalculationLength);
+
+		CopyCommand = new DelegateCommand(param => Clipboard.SetText(param?.ToString() ?? ""));
+		PasteCommand = new DelegateCommand(_ => model.PushInput(Clipboard.GetText()));
 	}
 
 	#endregion

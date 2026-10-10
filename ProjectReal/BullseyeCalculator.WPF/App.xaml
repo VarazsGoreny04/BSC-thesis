@@ -11,6 +11,7 @@
 				<ResourceDictionary Source="/Resources/DarkButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/SpecialButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/ListViewStyle.xaml" />
+				<ResourceDictionary Source="/Resources/ListViewButtonStyle.xaml" />
 				<ResourceDictionary Source="/Resources/RoundedBorderStyle.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

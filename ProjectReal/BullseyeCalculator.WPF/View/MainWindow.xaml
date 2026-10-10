@@ -25,7 +25,7 @@
 					</Style.Triggers>
 				</Style>
 			</Grid.Style>
-			
+
 			<Grid.RowDefinitions>
 				<RowDefinition Height="4*" />
 				<RowDefinition Height="2*" />
@@ -55,11 +55,8 @@
 				</Grid.RowDefinitions>
 
 				<Button Content="▲" Grid.Row="0" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding IncreaseFractionCalculationLengthCommand}" />
-				
-				<Border BorderThickness="1" BorderBrush="Gray" Margin="2,2,2,2" Grid.Row="1" 
-					VerticalAlignment="Center" HorizontalAlignment="Stretch">
 
-					<!--Bind the TextBlock to the Value property-->
+				<Border BorderThickness="1" BorderBrush="Gray" Margin="2" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 					<Label Content="{Binding FractionCalculationLength}" FontSize="{DynamicResource ControlFontSize}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Border>
 
@@ -160,7 +157,23 @@
 			</Button>
 		</Grid>
 
-		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" FontSize="{DynamicResource ControlFontSize}" />
+		<ListView Grid.Row="2" ItemsSource="{Binding Evaluation}" FontSize="{DynamicResource ControlFontSize}">
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+					<Setter Property="VerticalContentAlignment" Value="Stretch" />
+					<Setter Property="Padding" Value="0" />
+					<Setter Property="Margin" Value="0" />
+					<Setter Property="BorderThickness" Value="0" />
+				</Style>
+			</ListView.ItemContainerStyle>
+			
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<Button Content="{Binding}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource ListViewButton}" Command="{Binding DataContext.CopyCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
 
 		<Grid x:Name="Keys" Grid.Row="2">
 			<Grid.ColumnDefinitions>
@@ -272,7 +285,7 @@
 				<Button Grid.Row="5" Grid.Column="5" Content="=" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource SpecialButton}" Command="{Binding EvaluateCommand}" />
 
 				<Button Grid.Row="5" Grid.Column="1" Content="␣" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter=" " />
-				<Button Grid.Row="5" Grid.Column="3" Content="." Command="{Binding PushInputCommand}" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" CommandParameter="." />
+				<Button Grid.Row="5" Grid.Column="3" Content="." FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource LightButton}" Command="{Binding PushInputCommand}" CommandParameter="." />
 
 				<Button Grid.Row="0" Grid.Column="1" Content="(" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="(" />
 				<Button Grid.Row="0" Grid.Column="2" Content=")" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter=")" />
@@ -345,7 +358,7 @@
 					<Button Grid.Row="1" Content="cos" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="cos(" />
 					<Button Grid.Row="2" Content="eˣ" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="exp(" />
 					<Button Grid.Row="3" Content="ln" FontSize="{DynamicResource ControlFontSize}" Style="{StaticResource DarkButton}" Command="{Binding PushInputCommand}" CommandParameter="ln(" />
-					
+
 					<Grid.Style>
 						<Style TargetType="Grid">
 							<Setter Property="Visibility" Value="Hidden" />

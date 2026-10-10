@@ -50,6 +50,8 @@ public partial class App : Application
 				viewModel.PushInputCommand.Execute(input);
 				return;
 			}
+			else if (input is '\u0016')
+				viewModel.PasteCommand.Execute(null);
 
 			if (e.Key == Key.D3)
 			{
@@ -85,10 +87,10 @@ public partial class App : Application
 
 	[LibraryImport("user32.dll")]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	private static partial bool GetKeyboardState(byte[] lpKeyState);
+	private static partial bool GetKeyboardState([In] byte[] lpKeyState);
 
-	[DllImport("user32.dll")]
-	private static extern uint MapVirtualKey(uint uCode, MapType uMapType);
+	[LibraryImport("user32.dll", EntryPoint = "MapVirtualKeyA")]
+	private static partial uint MapVirtualKey(uint uCode, MapType uMapType);
 
 	private static char GetCharFromKey(Key key)
 	{
